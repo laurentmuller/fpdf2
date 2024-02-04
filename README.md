@@ -24,3 +24,12 @@ Or you can include the following in your `composer.json` file:
     }
 }
 ```
+
+## Actions
+
+[![Markdown Lint](https://github.com/laurentmuller/fpdf2/actions/workflows/markdown.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/markdown.yaml)
+[![PHP-CS-Fixer](https://github.com/laurentmuller/fpdf2/actions/workflows/php-cs-fixer.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/php-cs-fixer.yaml)
+[![PHPStan](https://github.com/laurentmuller/fpdf2/actions/workflows/php-stan.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/php-stan.yaml)
+[![PHPUnit](https://github.com/laurentmuller/fpdf2/actions/workflows/php-unit.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/php-unit.yaml)
+[![Psalm](https://github.com/laurentmuller/fpdf2/actions/workflows/psalm.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/psalm.yaml)
+[![Rector](https://github.com/laurentmuller/fpdf2/actions/workflows/rector.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/rector.yaml)
