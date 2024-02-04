@@ -516,7 +516,7 @@ class PdfDocument
         }
 
         // Restore font
-        if ($family) {
+        if ('' !== $family) {
             $this->setFont($family, $style, $fontSizeInPoint);
         }
 
@@ -655,7 +655,7 @@ class PdfDocument
                 $this->link($this->x + $dx, $this->y + .5 * $height - .5 * $this->fontSize, $this->getStringWidth($text), $this->fontSize, $link);
             }
         }
-        if ($s) {
+        if ('' !== $s) {
             $this->out($s);
         }
         $this->lastHeight = $height;
@@ -1332,11 +1332,7 @@ class PdfDocument
 
     public function setCompression(bool $compression): self
     {
-        if (\function_exists('gzcompress')) {
-            $this->compression = $compression;
-        } else {
-            $this->compression = false;
-        }
+        $this->compression = \function_exists('gzcompress') ? $compression : false;
 
         return $this;
     }
@@ -1390,11 +1386,7 @@ class PdfDocument
      */
     public function setFont(string $family, string $style = '', float $size = 0): self
     {
-        if ('' === $family) {
-            $family = $this->fontFamily;
-        } else {
-            $family = \strtolower($family);
-        }
+        $family = '' === $family ? $this->fontFamily : \strtolower($family);
         $style = \strtoupper($style);
         if (\str_contains($style, 'U')) {
             $this->underline = true;
@@ -1453,7 +1445,7 @@ class PdfDocument
         }
         $this->fontSizeInPoint = $size;
         $this->fontSize = $size / $this->scaleFactor;
-        if ($this->page > 0 && isset($this->currentFont)) {
+        if ($this->page > 0 && null !== $this->currentFont) {
             $this->outf('BT /F%d %.2F Tf ET', $this->currentFont['i'], $this->fontSizeInPoint);
         }
 
@@ -1553,11 +1545,7 @@ class PdfDocument
 
     public function setX(float $x): self
     {
-        if ($x >= 0) {
-            $this->x = $x;
-        } else {
-            $this->x = $this->width + $x;
-        }
+        $this->x = $x >= 0 ? $x : $this->width + $x;
 
         return $this;
     }
@@ -1572,11 +1560,7 @@ class PdfDocument
 
     public function setY(float $y, bool $resetX = true): self
     {
-        if ($y >= 0) {
-            $this->y = $y;
-        } else {
-            $this->y = $this->height + $y;
-        }
+        $this->y = $y >= 0 ? $y : $this->height + $y;
         if ($resetX) {
             $this->x = $this->leftMargin;
         }
@@ -1734,14 +1718,10 @@ class PdfDocument
         $this->y = $this->topMargin;
         $this->fontFamily = '';
         // Check page size and orientation
-        if (null === $orientation) {
+        if (!$orientation instanceof PdfOrientation) {
             $orientation = $this->defaultOrientation;
         }
-        if (null === $size) {
-            $size = $this->defaultPageSize;
-        } else {
-            $size = $this->getPageSize($size);
-        }
+        $size = null === $size ? $this->defaultPageSize : $this->getPageSize($size);
         if ($orientation !== $this->currentOrientation
             || $size[0] !== $this->currentPageSize[0]
             || $size[1] !== $this->currentPageSize[1]) {
@@ -1778,10 +1758,8 @@ class PdfDocument
      */
     protected function checkOutput(): void
     {
-        if (\PHP_SAPI !== 'cli') {
-            if (\headers_sent($file, $line)) {
-                throw new PdfException(\sprintf('Some data has already been output, can not send PDF file (output started at %s:%s).', $file, $line));
-            }
+        if (\PHP_SAPI !== 'cli' && \headers_sent($file, $line)) {
+            throw new PdfException(\sprintf('Some data has already been output, can not send PDF file (output started at %s:%s).', $file, $line));
         }
         if (false !== \ob_get_length()) {
             // The output buffer is not empty
@@ -2441,7 +2419,7 @@ class PdfDocument
         }
         if (isset($info['trns']) && \is_array($info['trns'])) {
             $trns = '';
-            for ($i = 0; $i < \count($info['trns']); ++$i) {
+            for ($i = 0, $counter = \count($info['trns']); $i < $counter; ++$i) {
                 $trns .= $info['trns'][$i] . ' ' . $info['trns'][$i] . ' ';
             }
             $this->put('/Mask [' . $trns . ']');
@@ -2756,9 +2734,8 @@ class PdfDocument
         $s .= "endcmap\n";
         $s .= "CMapName currentdict /CMap defineresource pop\n";
         $s .= "end\n";
-        $s .= 'end';
 
-        return $s;
+        return $s . 'end';
     }
 
     protected function utf8encode(string $string): string
