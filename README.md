@@ -33,3 +33,4 @@ Or you can include the following in your `composer.json` file:
 [![PHPUnit](https://github.com/laurentmuller/fpdf2/actions/workflows/php-unit.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/php-unit.yaml)
 [![Psalm](https://github.com/laurentmuller/fpdf2/actions/workflows/psalm.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/psalm.yaml)
 [![Rector](https://github.com/laurentmuller/fpdf2/actions/workflows/rector.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/rector.yaml)
+[![StyleCI](https://github.styleci.io/repos/752676081/shield?branch=main)](https://github.styleci.io/repos/752676081?branch=main)
