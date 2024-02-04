@@ -15,12 +15,12 @@ namespace fpdf;
 /**
  * PDF move enumeration.
  */
-enum PdfMove: int
+enum PdfMove
 {
     /**
      * Move below of the printed cell.
      */
-    case BELOW = 2;
+    case BELOW;
 
     /**
      * Move at the beginning of the next line after the cell is printed.
@@ -28,10 +28,10 @@ enum PdfMove: int
      * It is equivalent to the setting <b>RIGHT</b> and calling the
      * <code>PdfDocument->Ln()</code> method immediately afterward.
      */
-    case NEW_LINE = 1;
+    case NEW_LINE;
 
     /**
      * Move to the right position of the printed cell.
      */
-    case RIGHT = 0;
+    case RIGHT;
 }

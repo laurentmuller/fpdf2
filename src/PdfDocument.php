@@ -197,7 +197,7 @@ class PdfDocument
     /**
      * The current font style.
      */
-    protected string $fontStyle = '';
+    protected PdfFontStyle $fontStyle = PdfFontStyle::REGULAR;
     /**
      * The current page height in user unit.
      */
@@ -392,28 +392,24 @@ class PdfDocument
         $this->pdfVersion = '1.3';
         // font size and style
         $this->fontSize = $this->fontSizeInPoint / $this->scaleFactor;
-    }
-
-    public function acceptPageBreak(): bool
-    {
-        return $this->autoPageBreak;
+        // creation date
+        $this->creationDate = \time();
     }
 
     /**
      * @throws PdfException
      */
-    public function addFont(string $family, string $style = '', string $file = '', string $dir = ''): self
-    {
+    public function addFont(
+        string $family,
+        PdfFontStyle $style = PdfFontStyle::REGULAR,
+        string $file = '',
+        string $dir = ''
+    ): self {
         $family = \strtolower($family);
         if ('' === $file) {
-            $file = \str_replace(' ', '', $family) . \strtolower($style) . '.php';
+            $file = \str_replace(' ', '', $family) . $style->value . '.php';
         }
-        $style = \strtoupper($style);
-        if ('IB' === $style) {
-            $style = 'BI';
-        }
-
-        $fontKey = $family . $style;
+        $fontKey = $family . $style->value;
         if (isset($this->fonts[$fontKey])) {
             return $this;
         }
@@ -465,8 +461,8 @@ class PdfDocument
             throw new PdfException('The document is closed.');
         }
         // Start a new page
-        $family = $this->fontFamily;
-        $style = $this->fontStyle;
+        $fontFamily = $this->fontFamily;
+        $fontStyle = $this->fontStyle;
         $fontSizeInPoint = $this->fontSizeInPoint;
         $lineWidth = $this->lineWidth;
         $drawColor = $this->drawColor;
@@ -488,9 +484,9 @@ class PdfDocument
         // Set line width
         $this->lineWidth = $lineWidth;
         $this->outf('%.2F w', $lineWidth * $this->scaleFactor);
-        // Set font
-        if ('' !== $family) {
-            $this->setFont($family, $style, $fontSizeInPoint);
+        // Restore font
+        if ('' !== $fontFamily) {
+            $this->setFont($fontFamily, $fontStyle, $fontSizeInPoint);
         }
         // Set colors
         $this->drawColor = $drawColor;
@@ -516,8 +512,8 @@ class PdfDocument
         }
 
         // Restore font
-        if ('' !== $family) {
-            $this->setFont($family, $style, $fontSizeInPoint);
+        if ('' !== $fontFamily) {
+            $this->setFont($fontFamily, $fontStyle, $fontSizeInPoint);
         }
 
         // Restore colors
@@ -544,14 +540,14 @@ class PdfDocument
         string $text = '',
         string|int $border = 0,
         PdfMove $move = PdfMove::RIGHT,
-        string $align = '',
+        PdfTextAlignment $align = PdfTextAlignment::LEFT,
         bool $fill = false,
         string|int $link = ''
     ): self {
         $scaleFactor = $this->scaleFactor;
         if ($this->y + $height > $this->pageBreakTrigger
             && !$this->inHeader && !$this->inFooter
-            && $this->acceptPageBreak()) {
+            && $this->isAutoPageBreak()) {
             // Automatic page break
             $x = $this->x;
             $wordSpacing = $this->wordSpacing;
@@ -629,9 +625,9 @@ class PdfDocument
             if (null === $this->currentFont) {
                 throw new PdfException('No font has been set.');
             }
-            if ('R' === $align) {
+            if (PdfTextAlignment::RIGHT === $align) {
                 $dx = $width - $this->cellMargin - $this->getStringWidth($text);
-            } elseif ('C' === $align) {
+            } elseif (PdfTextAlignment::CENTER === $align) {
                 $dx = ($width - $this->getStringWidth($text)) / 2.0;
             } else {
                 $dx = $this->cellMargin;
@@ -973,7 +969,7 @@ class PdfDocument
 
         // Flowing mode
         if (null === $y) {
-            if ($this->y + $height > $this->pageBreakTrigger && !$this->inHeader && !$this->inFooter && $this->acceptPageBreak()) {
+            if ($this->y + $height > $this->pageBreakTrigger && !$this->inHeader && !$this->inFooter && $this->isAutoPageBreak()) {
                 // Automatic page break
                 $x2 = $this->x;
                 $this->addPage($this->currentOrientation, $this->currentPageSize, $this->currentRotation);
@@ -999,6 +995,11 @@ class PdfDocument
         }
 
         return $this;
+    }
+
+    public function isAutoPageBreak(): bool
+    {
+        return $this->autoPageBreak;
     }
 
     /**
@@ -1078,7 +1079,7 @@ class PdfDocument
         float $height,
         string $text,
         string|int $border = 0,
-        string $align = 'J',
+        PdfTextAlignment $align = PdfTextAlignment::JUSTIFIED,
         bool $fill = false
     ): self {
         if (null === $this->currentFont) {
@@ -1156,7 +1157,7 @@ class PdfDocument
                     }
                     $this->cell($width, $height, \substr($s, $j, $index - $j), $border1, PdfMove::BELOW, $align, $fill);
                 } else {
-                    if ('J' === $align) {
+                    if (PdfTextAlignment::JUSTIFIED === $align) {
                         $this->wordSpacing = ($ns > 1) ? ($widthMax - $ls) / 1000.0 * $this->fontSize / (float) ($ns - 1) : 0.0;
                         $this->outf('%.3F Tw', $this->wordSpacing * $this->scaleFactor);
                     }
@@ -1276,22 +1277,20 @@ class PdfDocument
     /**
      * @throws PdfException
      */
-    public function rect(float $x, float $y, float $width, float $height, string $style = ''): self
-    {
-        if ('F' === $style) {
-            $op = 'f';
-        } elseif ('FD' === $style || 'DF' === $style) {
-            $op = 'B';
-        } else {
-            $op = 'S';
-        }
+    public function rect(
+        float $x,
+        float $y,
+        float $width,
+        float $height,
+        PdfRectangleStyle $style = PdfRectangleStyle::BORDER
+    ): self {
         $this->outf(
             '%.2F %.2F %.2F %.2F re %s',
             $x * $this->scaleFactor,
             ($this->height - $y) * $this->scaleFactor,
             $width * $this->scaleFactor,
             -$height * $this->scaleFactor,
-            $op
+            $style->value
         );
 
         return $this;
@@ -1384,19 +1383,10 @@ class PdfDocument
     /**
      * @throws PdfException
      */
-    public function setFont(string $family, string $style = '', float $size = 0): self
+    public function setFont(string $family = '', PdfFontStyle $style = PdfFontStyle::REGULAR, float $size = 0): self
     {
         $family = '' === $family ? $this->fontFamily : \strtolower($family);
-        $style = \strtoupper($style);
-        if (\str_contains($style, 'U')) {
-            $this->underline = true;
-            $style = \str_replace('U', '', $style);
-        } else {
-            $this->underline = false;
-        }
-        if ('IB' === $style) {
-            $style = 'BI';
-        }
+        $this->underline = $style->isUnderLine();
         if (0.0 === $size) {
             $size = $this->fontSizeInPoint;
         }
@@ -1405,19 +1395,22 @@ class PdfDocument
             return $this;
         }
         // Test if font is already loaded
-        $fontKey = $family . $style;
+        if ($this->underline) {
+            $style = $style->removeUnderLine();
+        }
+        $fontKey = $family . $style->value;
         if (!isset($this->fonts[$fontKey])) {
             // Test if one of the core fonts
             if ('arial' === $family) {
                 $family = 'helvetica';
             }
             if (!\in_array($family, self::CORE_FONTS, true)) {
-                throw new PdfException(\sprintf('Undefined font: %s %s.' . $family, $style));
+                throw new PdfException(\sprintf('Undefined font: %s %s.' . $family, $style->value));
             }
             if ('symbol' === $family || 'zapfdingbats' === $family) {
-                $style = '';
+                $style = PdfFontStyle::REGULAR;
             }
-            $fontKey = $family . $style;
+            $fontKey = $family . $style->value;
             if (!isset($this->fonts[$fontKey])) {
                 $this->addFont($family, $style);
             }
@@ -1636,7 +1629,7 @@ class PdfDocument
             $c = $s[$i];
             if ("\n" === $c) {
                 // Explicit line break
-                $this->cell($width, $h, \substr($s, $j, $i - $j), 0, PdfMove::BELOW, '', false, $link);
+                $this->cell($width, $h, \substr($s, $j, $i - $j), 0, PdfMove::BELOW, PdfTextAlignment::LEFT, false, $link);
                 ++$i;
                 $sep = -1;
                 $j = $i;
@@ -1669,9 +1662,9 @@ class PdfDocument
                     if ($i === $j) {
                         ++$i;
                     }
-                    $this->cell($width, $h, \substr($s, $j, $i - $j), 0, PdfMove::BELOW, '', false, $link);
+                    $this->cell($width, $h, \substr($s, $j, $i - $j), 0, PdfMove::BELOW, PdfTextAlignment::LEFT, false, $link);
                 } else {
-                    $this->cell($width, $h, \substr($s, $j, $sep - $j), 0, PdfMove::BELOW, '', false, $link);
+                    $this->cell($width, $h, \substr($s, $j, $sep - $j), 0, PdfMove::BELOW, PdfTextAlignment::LEFT, false, $link);
                     $i = $sep + 1;
                 }
                 $sep = -1;
@@ -1689,7 +1682,7 @@ class PdfDocument
         }
         // Last chunk
         if ($i !== $j) {
-            $this->cell($l / 1000.0 * $this->fontSize, $h, \substr($s, $j), 0, PdfMove::RIGHT, '', false, $link);
+            $this->cell($l / 1000.0 * $this->fontSize, $h, \substr($s, $j), 0, PdfMove::RIGHT, PdfTextAlignment::LEFT, false, $link);
         }
 
         return $this;
@@ -2462,8 +2455,9 @@ class PdfDocument
 
     protected function putInfo(): void
     {
-        $date = @\date('YmdHisO', $this->creationDate);
-        $this->addMetaData('CreationDate', 'D:' . \substr($date, 0, -2) . "'" . \substr($date, -2) . "'");
+        $date = \date('YmdHisO', $this->creationDate);
+        $value = \sprintf("D:%s'%s'", \substr($date, 0, -2), \substr($date, -2));
+        $this->addMetaData('CreationDate', $value);
         foreach ($this->metadata as $key => $value) {
             $this->put('/' . $key . ' ' . $this->textString($value));
         }

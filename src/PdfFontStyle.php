@@ -14,6 +14,9 @@ namespace fpdf;
 
 /**
  * The PDF font style enumeration.
+ *
+ * @see PdfDocument::addFont()
+ * @see PdfDocument::setFont()
  */
 enum PdfFontStyle: string
 {
@@ -22,42 +25,42 @@ enum PdfFontStyle: string
      *
      * Not allowed for <code>Symbol</code> and <code>ZapfDingbats</code> fonts.
      */
-    case BOLD = 'B';
+    case BOLD = 'b';
 
     /**
      * Bold and italic.
      *
      * Not allowed for <code>Symbol</code> and <code>ZapfDingbats</code> fonts.
      */
-    case BOLD_ITALIC = 'BI';
+    case BOLD_ITALIC = 'bi';
 
     /**
      * Bold, italic and underline.
      *
      * Not allowed for <code>Symbol</code> and <code>ZapfDingbats</code> fonts.
      */
-    case BOLD_ITALIC_UNDERLINE = 'BIU';
+    case BOLD_ITALIC_UNDERLINE = 'biu';
 
     /**
      * Bold and underline.
      *
      * Not allowed for <code>Symbol</code> and <code>ZapfDingbats</code> fonts.
      */
-    case BOLD_UNDERLINE = 'BU';
+    case BOLD_UNDERLINE = 'bu';
 
     /**
      * Italic.
      *
      * Not allowed for <code>Symbol</code> and <code>ZapfDingbats</code> fonts.
      */
-    case ITALIC = 'I';
+    case ITALIC = 'i';
 
     /**
      * Italic and underline.
      *
      * Not allowed for <code>Symbol</code> and <code>ZapfDingbats</code> fonts.
      */
-    case ITALIC_UNDERLINE = 'IU';
+    case ITALIC_UNDERLINE = 'iu';
 
     /**
      * Regular (default).
@@ -67,7 +70,7 @@ enum PdfFontStyle: string
     /**
      * Underline.
      */
-    case UNDERLINE = 'U';
+    case UNDERLINE = 'u';
 
     /**
      * Returns if the font style contain the underline.

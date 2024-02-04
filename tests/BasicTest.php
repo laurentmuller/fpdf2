@@ -12,10 +12,25 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
 
 class BasicTest extends TestCase
 {
+    #[Depends('testToFileNew')]
+    #[Depends('testToFileOld')]
+    public function testEqual(): void
+    {
+        $file_old = __DIR__ . '/test_old.pdf';
+        $file_new = __DIR__ . '/test_new.pdf';
+
+        self::assertFileExists($file_old);
+        self::assertFileExists($file_new);
+        $content_old = \file_get_contents($file_old);
+        $content_new = \file_get_contents($file_new);
+        self::assertSame($content_old, $content_new);
+    }
+
     /**
      * @throws PdfException
      */
@@ -23,10 +38,10 @@ class BasicTest extends TestCase
     {
         $file = __DIR__ . '/test_new.pdf';
         $doc = new PdfDocument();
-        $doc->setFont('Arial', 'B', 16);
+        $doc->setFont('Arial', PdfFontStyle::BOLD, 16);
         $doc->addPage();
         $doc->cell(0.0, 5.0, 'This is  test 3456.', move: PdfMove::BELOW);
-        $doc->setFont('ZapfDingbats', 'B', 12);
+        $doc->setFont('ZapfDingbats', PdfFontStyle::BOLD, 12);
         $doc->cell(0.0, 5.0, 'This is  test 3456.', move: PdfMove::BELOW);
         $doc->multiCell(0.0, 5.0, "This is multi cells\nNew Line");
 
@@ -62,7 +77,7 @@ class BasicTest extends TestCase
         $doc->SetTextColor(0, 0, 255);
         $x = $doc->GetX();
         $y = $doc->GetY() + 10.0;
-        $doc->rect($x, $y, 100, 100, 'FD');
+        $doc->rect($x, $y, 100, 100, PdfRectangleStyle::BOTH);
 
         $doc->setDrawColor(255);
         $doc->setFillColor(255);
