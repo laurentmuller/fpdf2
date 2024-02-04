@@ -1,10 +1,10 @@
 # FPDF2
 
-**This repository is clone of http://www.fpdf.org with typed variables, 
+**This repository is clone of http://www.fpdf.org with typed variables,
 enumerations and PHP 8.1 dependencies.**
 
-FPDF is a PHP class, which allows to generate PDF files with pure PHP. F from 
-FPDF stands for Free: you may use it for any kind of usage and modify it to 
+FPDF is a PHP class, which allows to generate PDF files with pure PHP. F from
+FPDF stands for Free: you may use it for any kind of usage and modify it to
 suit your needs.
 
 ## Installation with [Composer](https://packagist.org/packages/laurentmuller/fpdf2)
