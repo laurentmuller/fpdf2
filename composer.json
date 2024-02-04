@@ -1,0 +1,74 @@
+{
+    "name": "laurentmuller/fpdf2",
+    "homepage": "https://github.com/laurentmuller/fpdf2",
+    "description": "FPDF 2 is a PHP class which allows to generate PDF files with pure PHP. F from FPDF stands for Free: you may use it for any kind of usage and modify it to suit your needs.",
+    "type": "library",
+    "keywords": [
+        "pdf",
+        "fpdf"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Laurent Muller",
+            "email": "bibi@bibi.nu",
+            "homepage": "https://www.bibi.nu",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/laurentmuller/fpdf2/issues",
+        "source": "https://github.com/laurentmuller/fpdf2"
+    },
+    "autoload": {
+        "psr-4": {
+            "fpdf\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "fpdf\\": "tests/"
+        }
+    },
+    "require": {
+        "php": "^8.1",
+        "ext-zlib": "*",
+        "ext-gd": "*",
+        "ext-iconv": "*"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "orklah/psalm-insane-comparison": "^2.0",
+        "orklah/psalm-not-empty": "^1.0",
+        "orklah/psalm-strict-equality": "^2.0",
+        "phpstan/extension-installer": "^1.0",
+        "phpstan/phpstan": "^1.0",
+        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "phpunit/phpunit": "^10.0",
+        "vimeo/psalm": "^5.0"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true,
+        "discard-changes": true,
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
+    },
+    "scripts": {
+        "fixer-fix": "vendor/bin/php-cs-fixer fix --diff",
+        "fixer": "vendor/bin/php-cs-fixer fix --diff --dry-run",
+        "psalm": "vendor/bin/psalm --config psalm.xml",
+        "phpstan": "vendor/bin/phpstan analyse --configuration phpstan.neon --memory-limit 2G",
+        "tests": "vendor/bin/phpunit",
+        "all": [
+            "@fixer",
+            "@psalm",
+            "@phpstan",
+            "@tests"
+        ]
+    }
+}

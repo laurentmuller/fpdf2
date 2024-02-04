@@ -1,0 +1,11 @@
+parameters:
+    level: 8
+    paths:
+        - src
+
+    excludePaths:
+        - tests/FPDF.php
+
+    reportUnmatchedIgnoredErrors: true
+    checkUninitializedProperties: true
+    checkMissingIterableValueType: false
