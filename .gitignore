@@ -1,5 +1,4 @@
 /vendor
 /.php-cs-fixer.cache
 /.phpunit.result.cache
-/tests/test_new.pdf
-/tests/test_old.pdf
+/tests/*.pdf

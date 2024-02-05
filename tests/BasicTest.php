@@ -17,18 +17,29 @@ use PHPUnit\Framework\TestCase;
 
 class BasicTest extends TestCase
 {
+    private string $newFile = '';
+    private string $oldFile = '';
+
+    protected function setUp(): void
+    {
+        $this->newFile = __DIR__ . '/test_new.pdf';
+        $this->oldFile = __DIR__ . '/test_old.pdf';
+    }
+
     #[Depends('testToFileNew')]
     #[Depends('testToFileOld')]
     public function testEqual(): void
     {
-        $file_old = __DIR__ . '/test_old.pdf';
-        $file_new = __DIR__ . '/test_new.pdf';
+        self::assertFileExists($this->oldFile);
+        self::assertFileExists($this->newFile);
 
-        self::assertFileExists($file_old);
-        self::assertFileExists($file_new);
-        $content_old = \file_get_contents($file_old);
-        $content_new = \file_get_contents($file_new);
-        self::assertSame($content_old, $content_new);
+        $old_content = \file_get_contents($this->oldFile);
+        $new_content = \file_get_contents($this->newFile);
+
+        \unlink($this->oldFile);
+        \unlink($this->newFile);
+
+        self::assertSame($old_content, $new_content);
     }
 
     /**
@@ -36,7 +47,6 @@ class BasicTest extends TestCase
      */
     public function testToFileNew(): void
     {
-        $file = __DIR__ . '/test_new.pdf';
         $doc = new PdfDocument();
         $doc->setFont('Arial', PdfFontStyle::BOLD, 16);
         $doc->addPage();
@@ -88,16 +98,14 @@ class BasicTest extends TestCase
         $doc->write(5.0, 'Write', 1);
 
         $doc->setDisplayMode(PdfZoom::FULL_PAGE, PdfLayout::SINGLE);
-        $doc->output(PdfDestination::FILE, $file);
-        self::assertFileExists($file);
-        // \unlink($file);
+        $doc->output(PdfDestination::FILE, $this->newFile);
+        self::assertFileExists($this->newFile);
     }
 
     public function testToFileOld(): void
     {
         \define('FPDF_FONTPATH', __DIR__ . '/../src/font');
 
-        $file = __DIR__ . '/test_old.pdf';
         $doc = new FPDF();
         $doc->SetFont('Arial', 'B', 16);
         $doc->AddPage();
@@ -149,8 +157,7 @@ class BasicTest extends TestCase
         $doc->Write(5.0, 'Write', 1);
 
         $doc->SetDisplayMode('fullpage', 'single');
-        $doc->Output('F', $file);
-        self::assertFileExists($file);
-        // \unlink($file);
+        $doc->Output('F', $this->oldFile);
+        self::assertFileExists($this->oldFile);
     }
 }

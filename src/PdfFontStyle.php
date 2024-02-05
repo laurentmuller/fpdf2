@@ -73,13 +73,16 @@ enum PdfFontStyle: string
     case UNDERLINE = 'u';
 
     /**
-     * Returns if the font style contain the underline.
+     * Returns if the font style contain the underline state.
      */
     public function isUnderLine(): bool
     {
         return \str_contains($this->value, 'U');
     }
 
+    /**
+     * Gets the corresponding font style without the underline state.
+     */
     public function removeUnderLine(): self
     {
         return match ($this) {
