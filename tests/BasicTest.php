@@ -55,9 +55,9 @@ class BasicTest extends TestCase
         $doc->cell(0.0, 5.0, 'This is  test 3456.', move: PdfMove::BELOW);
         $doc->multiCell(0.0, 5.0, "This is multi cells\nNew Line");
 
-        $doc->lineFeed();
+        $doc->lineBreak();
         $doc->image(__DIR__ . '/android.png');
-        $doc->lineFeed(5.0);
+        $doc->lineBreak(5.0);
         $doc->image(__DIR__ . '/bibi.jpg');
 
         $x = $doc->getX();

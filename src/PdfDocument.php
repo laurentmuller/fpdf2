@@ -1258,7 +1258,7 @@ class PdfDocument
      * @param float|null $height The height of the break. By default, the value equals the height of the last printed
      *                           cell.
      */
-    public function lineFeed(?float $height = null): self
+    public function lineBreak(?float $height = null): self
     {
         $this->x = $this->leftMargin;
         $this->y += $height ?? $this->lastHeight;
