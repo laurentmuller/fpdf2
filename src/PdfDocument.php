@@ -367,10 +367,7 @@ class PdfDocument
         PdfSize|array $size = PdfSize::A4
     ) {
         // Font path
-        if (!\defined('FPDF_FONTPATH')) {
-            \define('FPDF_FONTPATH', __DIR__ . '/font/');
-        }
-        $this->fontPath = (string) FPDF_FONTPATH;
+        $this->fontPath = \defined('FPDF_FONTPATH') ? (string) FPDF_FONTPATH : __DIR__ . '/font/';
 
         // Scale factor
         $this->scaleFactor = $unit->getScaleFactor();
