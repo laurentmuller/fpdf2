@@ -14,6 +14,9 @@ namespace fpdf;
 
 /**
  * The PDF font name enumeration.
+ *
+ * @see PdfDocument::addFont()
+ * @see PdfDocument::setFont()
  */
 enum PdfFontName: string
 {

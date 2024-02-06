@@ -16,44 +16,25 @@ use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
-use Rector\Symfony\Set\SymfonySetList;
-use Rector\Symfony\Set\TwigSetList;
 
-return static function (RectorConfig $rectorConfig): void {
-    // bootstrap files
-    $rectorConfig->bootstrapFiles([__DIR__ . '/vendor/autoload.php']);
-
-    // paths
-    $rectorConfig->paths([
+return RectorConfig::configure()
+    ->withBootstrapFiles([
+        __DIR__ . '/vendor/autoload.php',
+    ])->withPaths([
         __DIR__ . '/src',
         __DIR__ . '/tests',
         __DIR__ . '/rector.php',
-    ]);
-
-    // rules to skip
-    $rectorConfig->skip([
+    ])->withSkip([
         AddSeeTestAnnotationRector::class,
         PreferPHPUnitThisCallRector::class,
         DisallowedEmptyRuleFixerRector::class,
         __DIR__ . '/tests/FPDF.php',
-    ]);
-
-    // rules to apply
-    $rectorConfig->sets([
+    ])->withSets([
         // global
-        SetList::PHP_82,
+        SetList::PHP_81,
         SetList::CODE_QUALITY,
         // PHP-Unit
         PHPUnitSetList::PHPUNIT_100,
         PHPUnitSetList::PHPUNIT_CODE_QUALITY,
         PHPUnitSetList::ANNOTATIONS_TO_ATTRIBUTES,
-        // Symfony
-        SymfonySetList::SYMFONY_63,
-        SymfonySetList::SYMFONY_CODE_QUALITY,
-        SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES,
-        SymfonySetList::SYMFONY_CONSTRUCTOR_INJECTION,
-        // twig
-        TwigSetList::TWIG_240,
-        TwigSetList::TWIG_UNDERSCORE_TO_NAMESPACE,
     ]);
-};

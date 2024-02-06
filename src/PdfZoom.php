@@ -14,6 +14,8 @@ namespace fpdf;
 
 /**
  * The PDF document zoom enumeration.
+ *
+ * @see PdfDocument::setDisplayMode()
  */
 enum PdfZoom: string
 {

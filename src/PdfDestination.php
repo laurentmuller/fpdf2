@@ -14,6 +14,8 @@ namespace fpdf;
 
 /**
  * The PDF document output enumeration.
+ *
+ * @see PdfDocument::output()
  */
 enum PdfDestination
 {

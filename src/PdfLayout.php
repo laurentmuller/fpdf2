@@ -14,6 +14,8 @@ namespace fpdf;
 
 /**
  * The PDF display layout enumeration.
+ *
+ * @see PdfDocument::setDisplayMode()
  */
 enum PdfLayout
 {
@@ -23,7 +25,7 @@ enum PdfLayout
     case CONTINUOUS;
 
     /**
-     * Uses viewer default mode.
+     * Uses layout default mode.
      */
     case DEFAULT;
 

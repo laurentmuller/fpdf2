@@ -31,7 +31,7 @@
         }
     },
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "ext-zlib": "*",
         "ext-gd": "*",
         "ext-iconv": "*"
@@ -49,6 +49,9 @@
         "vimeo/psalm": "^5.0"
     },
     "config": {
+        "platform": {
+            "php": "8.2.13"
+        },
         "optimize-autoloader": true,
         "preferred-install": {
             "*": "dist"

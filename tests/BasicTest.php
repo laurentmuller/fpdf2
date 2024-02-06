@@ -12,53 +12,25 @@ declare(strict_types=1);
 
 namespace fpdf;
 
-use PHPUnit\Framework\Attributes\Depends;
-use PHPUnit\Framework\TestCase;
-
-class BasicTest extends TestCase
+class BasicTest extends AbstractTestCase
 {
-    private string $newFile = '';
-    private string $oldFile = '';
-
-    protected function setUp(): void
-    {
-        $this->newFile = __DIR__ . '/test_new.pdf';
-        $this->oldFile = __DIR__ . '/test_old.pdf';
-    }
-
-    #[Depends('testToFileNew')]
-    #[Depends('testToFileOld')]
-    public function testEqual(): void
-    {
-        self::assertFileExists($this->oldFile);
-        self::assertFileExists($this->newFile);
-
-        $old_content = \file_get_contents($this->oldFile);
-        $new_content = \file_get_contents($this->newFile);
-
-        \unlink($this->oldFile);
-        \unlink($this->newFile);
-
-        self::assertSame($old_content, $new_content);
-    }
-
     /**
      * @throws PdfException
      */
-    public function testToFileNew(): void
+    protected function updateNewDocument(PdfDocument $doc): void
     {
-        $doc = new PdfDocument();
         $doc->setFont('Arial', PdfFontStyle::BOLD, 16);
-        $doc->addPage();
         $doc->cell(0.0, 5.0, 'This is  test 3456.', move: PdfMove::BELOW);
         $doc->setFont('ZapfDingbats', PdfFontStyle::BOLD, 12);
         $doc->cell(0.0, 5.0, 'This is  test 3456.', move: PdfMove::BELOW);
         $doc->multiCell(0.0, 5.0, "This is multi cells\nNew Line");
 
         $doc->lineBreak();
-        $doc->image(__DIR__ . '/android.png');
+        $doc->image(__DIR__ . '/images/image.png');
         $doc->lineBreak(5.0);
-        $doc->image(__DIR__ . '/bibi.jpg');
+        $doc->image(__DIR__ . '/images/image.jpg');
+        $doc->lineBreak(5.0);
+        $doc->image(__DIR__ . '/images/image.gif');
 
         $x = $doc->getX();
         $y = $doc->getY();
@@ -98,27 +70,24 @@ class BasicTest extends TestCase
         $doc->write(5.0, 'Write', 1);
 
         $doc->setDisplayMode(PdfZoom::FULL_PAGE, PdfLayout::SINGLE);
-        $doc->output(PdfDestination::FILE, $this->newFile);
-        self::assertFileExists($this->newFile);
     }
 
-    public function testToFileOld(): void
+    protected function updateOldDocument(FPDF $doc): void
     {
-        \define('FPDF_FONTPATH', __DIR__ . '/../src/font');
-
-        $doc = new FPDF();
         $doc->SetFont('Arial', 'B', 16);
-        $doc->AddPage();
         $doc->Cell(0.0, 5.0, 'This is  test 3456.', ln: 1);
         $doc->SetFont('ZapfDingbats', 'B', 12);
         $doc->Cell(0.0, 5.0, 'This is  test 3456.', ln: 1);
         $doc->MultiCell(0.0, 5.0, "This is multi cells\nNew Line");
 
         $doc->Ln();
-        $doc->Image(__DIR__ . '/android.png');
+        $doc->Image(__DIR__ . '/images/image.png');
         $doc->Ln(5.0);
-        $doc->Image(__DIR__ . '/bibi.jpg');
+        $doc->Image(__DIR__ . '/images/image.jpg');
+        $doc->Ln(5.0);
+        $doc->Image(__DIR__ . '/images/image.gif');
 
+        /** @var float $x */
         $x = $doc->GetX();
         $y = $doc->GetY();
         $doc->SetLineWidth(1.0);
@@ -157,7 +126,5 @@ class BasicTest extends TestCase
         $doc->Write(5.0, 'Write', 1);
 
         $doc->SetDisplayMode('fullpage', 'single');
-        $doc->Output('F', $this->oldFile);
-        self::assertFileExists($this->oldFile);
     }
 }
