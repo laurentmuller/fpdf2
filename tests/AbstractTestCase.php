@@ -24,7 +24,9 @@ abstract class AbstractTestCase extends TestCase
     {
         $this->newFile = __DIR__ . '/doc_new.pdf';
         $this->oldFile = __DIR__ . '/doc_old.pdf';
-        \define('FPDF_FONTPATH', __DIR__ . '/../src/font/');
+        if (!\defined('FPDF_FONTPATH')) {
+            \define('FPDF_FONTPATH', __DIR__ . '/../src/font/');
+        }
     }
 
     #[Depends('testOld')]
