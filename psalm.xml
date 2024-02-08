@@ -20,9 +20,7 @@
         </ignoreFiles>
     </projectFiles>
 
-    <issueHandlers>
-
-    </issueHandlers>
+    <issueHandlers/>
 
     <plugins>
         <pluginClass class="Orklah\NotEmpty\Plugin"/>

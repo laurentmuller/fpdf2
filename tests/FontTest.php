@@ -14,7 +14,6 @@ namespace fpdf;
 
 class FontTest extends AbstractTestCase
 {
-    private const FONT_NAME = 'Roboto-Light';
     private const FONTS_DIR = __DIR__ . '/fonts/';
 
     /**
@@ -22,33 +21,73 @@ class FontTest extends AbstractTestCase
      */
     protected function updateNewDocument(PdfDocument $doc): void
     {
-        $doc->addFont(self::FONT_NAME, PdfFontStyle::REGULAR, self::FONT_NAME . '.php', self::FONTS_DIR);
-        $doc->setFont(self::FONT_NAME, size: 9.0);
-
-        foreach (\range(10.0, 24.0, 2.0) as $size) {
-            $doc->setFontSize($size);
-            $doc->cell(
-                0.0,
-                $size,
-                \sprintf('Font name "%s" and size: "%.0f".', self::FONT_NAME, $size),
-                move: PdfMove::BELOW
-            );
-        }
+        $callback = function (string $base_name, string $file_name, bool $add_page) use ($doc): void {
+            $style = match (true) {
+                \str_ends_with($file_name, 'BoldItalic') => PdfFontStyle::BOLD_ITALIC,
+                \str_ends_with($file_name, 'Italic') => PdfFontStyle::ITALIC,
+                \str_ends_with($file_name, 'Bold') => PdfFontStyle::BOLD,
+                default => PdfFontStyle::REGULAR
+            };
+            if ($add_page) {
+                $doc->addPage();
+            }
+            $doc->addFont($file_name, $style, $base_name, self::FONTS_DIR);
+            foreach (\range(10.0, 24.0, 2.0) as $size) {
+                $doc->setFont($file_name, $style, $size);
+                $doc->cell(
+                    0.0,
+                    $size,
+                    \sprintf('Font name "%s" with size: "%.0f".', $file_name, $size),
+                    move: PdfMove::BELOW
+                );
+            }
+        };
+        $this->applyFonts($callback);
     }
 
     protected function updateOldDocument(FPDF $doc): void
     {
-        $doc->AddFont(self::FONT_NAME, '', self::FONT_NAME . '.php', self::FONTS_DIR);
-        $doc->SetFont(self::FONT_NAME, size: 9.0);
+        $callback = function (string $base_name, string $file_name, bool $add_page) use ($doc): void {
+            $style = match (true) {
+                \str_ends_with($file_name, 'BoldItalic') => 'BI',
+                \str_ends_with($file_name, 'Italic') => 'I',
+                \str_ends_with($file_name, 'Bold') => 'B',
+                default => ''
+            };
+            if ($add_page) {
+                $doc->AddPage();
+            }
+            $doc->AddFont($file_name, $style, $base_name, self::FONTS_DIR);
+            foreach (\range(10.0, 24.0, 2.0) as $size) {
+                $doc->SetFont($file_name, $style, $size);
+                $doc->Cell(
+                    0.0,
+                    $size,
+                    \sprintf('Font name "%s" with size: "%.0f".', $file_name, $size),
+                    ln: 1
+                );
+            }
+        };
+        $this->applyFonts($callback);
+    }
 
-        foreach (\range(10.0, 24.0, 2.0) as $size) {
-            $doc->SetFontSize($size);
-            $doc->Cell(
-                0.0,
-                $size,
-                \sprintf('Font name "%s" and size: "%.0f".', self::FONT_NAME, $size),
-                ln: 1
-            );
+    /**
+     * @phpstan-param callable(string, string, bool):void $callable
+     */
+    private function applyFonts(callable $callable): void
+    {
+        $pattern = self::FONTS_DIR . '*.php';
+        $files = \glob($pattern);
+        if (!\is_array($files) || [] === $files) {
+            self::fail("No font found with the glob pattern '$pattern'!");
+        }
+
+        $add_page = false;
+        foreach ($files as $file) {
+            $base_name = \pathinfo($file, \PATHINFO_BASENAME);
+            $file_name = \pathinfo($file, \PATHINFO_FILENAME);
+            $callable($base_name, $file_name, $add_page);
+            $add_page = true;
         }
     }
 }

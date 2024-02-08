@@ -13,9 +13,11 @@ declare(strict_types=1);
 namespace fpdf;
 
 /**
- * @phpstan-type PdfPageSizeType = array{
- *     0: float,
- *     1: float}
+ * Represent a PDF document.
+ *
+ * @phpstan-type PdfPageSizeType = array{0: float, 1: float}
+ * @phpstan-type ColorType = int<0, 255>
+ * @phpstan-type UvType = array<int, int|int[]>
  * @phpstan-type PdfFontType = array{
  *     i: int,
  *     n: int,
@@ -27,7 +29,7 @@ namespace fpdf;
  *     subsetted: bool,
  *     up: int,
  *     ut: int,
- *     uv?: array<int, int|int[]>,
+ *     uv?: UvType,
  *     desc: array<string, string>,
  *     cw: array<string, int>,
  *     diff?: string,
@@ -72,9 +74,7 @@ class PdfDocument
      */
     public const VERSION = '1.86';
 
-    /**
-     * The array of core font names.
-     */
+    // The array of core font names.
     private const CORE_FONTS = [
         'courier',
         'helvetica',
@@ -82,6 +82,9 @@ class PdfDocument
         'symbol',
         'zapfdingbats',
     ];
+
+    // the empty color
+    private const EMPTY_COLOR = '0 G';
 
     // the document is closed
     private const STATE_CLOSED = 3;
@@ -163,7 +166,7 @@ class PdfDocument
     /**
      * The commands for drawing color.
      */
-    protected string $drawColor = '0 G';
+    protected string $drawColor = self::EMPTY_COLOR;
     /**
      * The array of encodings.
      *
@@ -173,7 +176,7 @@ class PdfDocument
     /**
      * The commands for filling color.
      */
-    protected string $fillColor = '0 G';
+    protected string $fillColor = self::EMPTY_COLOR;
     /**
      * The current font family.
      */
@@ -311,7 +314,7 @@ class PdfDocument
     /**
      * The commands for text color.
      */
-    protected string $textColor = '0 G';
+    protected string $textColor = self::EMPTY_COLOR;
     /**
      * The document title.
      */
@@ -416,12 +419,10 @@ class PdfDocument
      *
      * The definition file (and the font file itself in case of embedding) must be present in:
      * <ul>
-     * <li>The directory indicated by the 4th parameter (if that parameter is set)</li>
-     * <li>The directory indicated by the FPDF_FONTPATH constant (if that constant is defined)</li>
-     * <li>The font directory located in the same directory as fpdf.php</li>
+     * <li>The directory indicated by the 4th parameter (if that parameter is set).</li>
+     * <li>The directory indicated by the <code>FPDF_FONTPATH</code> constant (if that constant is defined).</li>
+     * <li>The font directory located in the same directory as this class.</li>
      * </ul>
-     *
-     * If the file is not found, an exception is raised.
      *
      * @param PdfFontName|string $family The font family. The name can be chosen arbitrarily. If it is a standard
      *                                   family name, it will override the corresponding font.
@@ -431,7 +432,10 @@ class PdfDocument
      * @param string             $dir    The directory where to load the definition file. If not specified, the default
      *                                   directory will be used.
      *
-     * @throws PdfException
+     * @throws PdfException if the font file is not found
+     *
+     * @see PdfDocument::setFont()
+     * @see PdfDocument::setFontSize()
      */
     public function addFont(
         PdfFontName|string $family,
@@ -457,7 +461,7 @@ class PdfDocument
             $dir = $this->fontPath;
         }
         if (!\str_ends_with($dir, '/') && !\str_ends_with($dir, '\\')) {
-            $dir .= '/';
+            $dir .= \DIRECTORY_SEPARATOR;
         }
         /** @phpstan-var PdfFontType $info */
         $info = $this->loadFont($dir . $file);
@@ -512,10 +516,10 @@ class PdfDocument
      *
      * The origin of the coordinate system is in the top-left corner and increasing ordinates go downwards.
      *
-     * @param PdfOrientation|null  $orientation the page orientation or null to use the current orientation
-     * @param PdfSize|float[]|null $size        the page size or null to use the current size
-     * @param int                  $rotation    the angle by which to rotate the page or 0 to use the current
-     *                                          orientation. It must be a multiple of 90; positive values mean
+     * @param PdfOrientation|null  $orientation the page orientation or <code>null</code> to use the current orientation
+     * @param PdfSize|float[]|null $size        the page size or <code>null</code> to use the current size
+     * @param int|null             $rotation    the angle by which to rotate the page or <code>null</code> to use the
+     *                                          current orientation. It must be a multiple of 90; positive values mean
      *                                          clockwise rotation.
      *
      * @phpstan-param PdfSize|PdfPageSizeType|null $size
@@ -525,12 +529,12 @@ class PdfDocument
     public function addPage(
         PdfOrientation|null $orientation = null,
         PdfSize|array|null $size = null,
-        int $rotation = 0
+        int|null $rotation = null
     ): self {
         if (self::STATE_CLOSED === $this->state) {
             throw new PdfException('The document is closed.');
         }
-        // Start a new page
+        // save context
         $fontFamily = $this->fontFamily;
         $fontStyle = $this->fontStyle;
         $fontSizeInPoint = $this->fontSizeInPoint;
@@ -539,32 +543,31 @@ class PdfDocument
         $fillColor = $this->fillColor;
         $textColor = $this->textColor;
         $colorFlag = $this->colorFlag;
+
+        // Page footer and close page
         if ($this->page > 0) {
-            // Page footer
             $this->inFooter = true;
             $this->footer();
             $this->inFooter = false;
-            // Close page
             $this->endPage();
         }
         // Start new page
         $this->beginPage($orientation, $size, $rotation);
         // Set line cap style to square
         $this->out('2 J');
-        // Set line width
+
+        // restore context
         $this->lineWidth = $lineWidth;
         $this->outf('%.2F w', $lineWidth * $this->scaleFactor);
-        // Restore font
         if ('' !== $fontFamily) {
             $this->setFont($fontFamily, $fontStyle, $fontSizeInPoint);
         }
-        // Set colors
         $this->drawColor = $drawColor;
-        if ('0 G' !== $drawColor) {
+        if (self::EMPTY_COLOR !== $drawColor) {
             $this->out($drawColor);
         }
         $this->fillColor = $fillColor;
-        if ('0 G' !== $fillColor) {
+        if (self::EMPTY_COLOR !== $fillColor) {
             $this->out($fillColor);
         }
         $this->textColor = $textColor;
@@ -575,18 +578,14 @@ class PdfDocument
         $this->header();
         $this->inHeader = false;
 
-        // Restore line width
+        // restore context
         if ($this->lineWidth !== $lineWidth) {
             $this->lineWidth = $lineWidth;
             $this->outf('%.2F w', $lineWidth * $this->scaleFactor);
         }
-
-        // Restore font
         if ('' !== $fontFamily) {
             $this->setFont($fontFamily, $fontStyle, $fontSizeInPoint);
         }
-
-        // Restore colors
         if ($this->drawColor !== $drawColor) {
             $this->drawColor = $drawColor;
             $this->out($drawColor);
@@ -604,15 +603,15 @@ class PdfDocument
     /**
      * Prints a cell (rectangular area) with optional borders, background color and character string.
      *
-     * @param float            $width  the cell width. If 0, the cell extends up to the right margin.
+     * @param float            $width  the cell width. If 0.0, the cell extends up to the right margin.
      * @param float            $height the cell height
      * @param string           $text   the cell text
-     * @param string|int       $border indicates if borders must be drawn around the cell. The value can be either:
+     * @param string|bool      $border indicates if borders must be drawn around the cell. The value can be either:
      *                                 <ul>
-     *                                 <li>A number:
+     *                                 <li>A boolean:
      *                                 <ul>
-     *                                 <li><code>0</code>: No border (default value).</li>
-     *                                 <li><code>1</code>: Frame.</li>
+     *                                 <li><code>false</code>: No border (default value).</li>
+     *                                 <li><code>true</code>: Draw a frame.</li>
      *                                 </ul>
      *                                 </li>
      *                                 <li>A string containing some or all of the following characters (in any order):
@@ -626,16 +625,19 @@ class PdfDocument
      *                                 </ul>
      * @param PdfMove          $move   indicates where the current position should go after the call
      * @param PdfTextAlignment $align  the text alignment
-     * @param bool             $fill   indicates if the cell background must be painted (true) or transparent (false)
+     * @param bool             $fill   indicates if the cell background must be painted (<code>true</code>) or
+     *                                 transparent (<code>false</code>)
      * @param string|int       $link   a URL or an identifier returned by <code>addLink()</code>
      *
      * @throws PdfException
+     *
+     * @see PdfDocument::multiCell()
      */
     public function cell(
         float $width = 0.0,
         float $height = 0.0,
         string $text = '',
-        string|int $border = 0,
+        string|bool $border = false,
         PdfMove $move = PdfMove::RIGHT,
         PdfTextAlignment $align = PdfTextAlignment::LEFT,
         bool $fill = false,
@@ -663,13 +665,13 @@ class PdfDocument
             $width = $this->getRemainingWidth();
         }
         $output = '';
-        if ($fill || 1 === $border) {
+        if ($fill || true === $border) {
             if ($fill) {
-                $op = (1 === $border) ? 'B' : 'f';
+                $op = (true === $border) ? 'B' : 'f';
             } else {
                 $op = 'S';
             }
-            $output = \sprintf(
+            $output .= \sprintf(
                 '%.2F %.2F %.2F %.2F re %s ',
                 $this->x * $scaleFactor,
                 ($this->height - $this->y) * $scaleFactor,
@@ -678,7 +680,7 @@ class PdfDocument
                 $op
             );
         }
-        if (0 !== $border && \is_string($border)) {
+        if (\is_string($border) && '' !== $border) {
             $x = $this->x;
             $y = $this->y;
             $border = \strtoupper($border);
@@ -811,8 +813,6 @@ class PdfDocument
      *
      * @see PdfDocument::AddLink()
      * @see PdfDocument::SetLink()
-     *
-     * @psalm-api
      */
     public function createLink(float|int $y = -1, int $page = -1): int
     {
@@ -825,13 +825,16 @@ class PdfDocument
     /**
      * This method is used to render the page footer.
      *
-     * It is automatically called by <code>addPage()</code> and <code>close()</code> and should not be called directly
-     * by the application. The implementation is empty, so you have to subclass it and override the method if you want
-     * a specific processing.
+     * It is automatically called before <code>addPage()</code> and <code>close()</code> methods and should not be
+     * called directly by the application.
+     *
+     * The implementation is empty, so you have to subclass it and override the method if you want a specific
+     * processing.
+     *
+     * @see PdfDocument::header()
      */
     public function footer(): void
     {
-        // To be implemented in your own inherited class
     }
 
     /**
@@ -855,9 +858,7 @@ class PdfDocument
     /**
      * Gets the height of last printed cell.
      *
-     * @return float the height or 0 if no printed cell
-     *
-     * @psalm-api
+     * @return float the height or 0.0 if no printed cell
      */
     public function getLastHeight(): float
     {
@@ -870,14 +871,12 @@ class PdfDocument
      * Computes the number of lines a <code>multiCell()</code> of the given width will take.
      *
      * @param ?string $text       the text to compute
-     * @param float   $width      the desired width. If 0, the width extends up to the right margin.
-     * @param ?float  $cellMargin the desired cell margin or null to use current value
+     * @param float   $width      the desired width. If 0.0, the width extends up to the right margin.
+     * @param ?float  $cellMargin the desired cell margin or <code>null</code> to use current value
      *
      * @return int the number of lines
      *
      * @throws PdfException if no font is set
-     *
-     * @psalm-api
      */
     public function getLinesCount(?string $text, float $width = 0.0, ?float $cellMargin = null): int
     {
@@ -901,7 +900,7 @@ class PdfDocument
         $lastIndex = 0;
         $linesCount = 1;
         $currentWidth = 0.0;
-        $cw = $this->currentFont['cw'];
+        $charWidths = $this->currentFont['cw'];
         $cellMargin ??= $this->cellMargin;
         $maxWidth = ($width - 2.0 * $cellMargin) * 1000.0 / $this->fontSize;
 
@@ -919,7 +918,7 @@ class PdfDocument
             if (' ' === $ch) {
                 $sep = $index;
             }
-            $currentWidth += (float) $cw[$ch];
+            $currentWidth += (float) $charWidths[$ch];
             if ($currentWidth > $maxWidth) {
                 if (-1 === $sep) {
                     if ($index === $lastIndex) {
@@ -950,8 +949,6 @@ class PdfDocument
 
     /**
      * Gets the current page height.
-     *
-     * @psalm-api
      */
     public function getPageHeight(): float
     {
@@ -960,8 +957,6 @@ class PdfDocument
 
     /**
      * Gets the current page width.
-     *
-     * @psalm-api
      */
     public function getPageWidth(): float
     {
@@ -1031,8 +1026,6 @@ class PdfDocument
      *
      * @see PdfDocument::getX()
      * @see PdfDocument::getY()
-     *
-     * @psalm-api
      */
     public function getXY(): array
     {
@@ -1050,12 +1043,16 @@ class PdfDocument
     /**
      * This method is used to render the page header.
      *
-     * It is automatically called by <code>addPage()</code> and should not be called directly by the application. The
-     * implementation is empty, so you have to subclass it and override the method if you want a specific processing.
+     * It is automatically called after <code>addPage()</code> method and should not be called directly by the
+     * application.
+     *
+     * The implementation is empty, so you have to subclass it and override the method if you want a specific
+     * processing.
+     *
+     * @see PdfDocument::footer()
      */
     public function header(): void
     {
-        // To be implemented in your own inherited class
     }
 
     /**
@@ -1063,11 +1060,9 @@ class PdfDocument
      *
      * @param float      $beforeSpace the verticale space before the line
      * @param float      $afterSpace  the verticale space after the line
-     * @param float|null $lineWidth   the optional line width or null to use current line width
+     * @param float|null $lineWidth   the optional line width or <code>null</code> to use current line width
      *
      * @throws PdfException
-     *
-     * @psalm-api
      */
     public function horizontalLine(float $beforeSpace = 1.0, float $afterSpace = 1.0, ?float $lineWidth = null): self
     {
@@ -1100,7 +1095,7 @@ class PdfDocument
      *
      * Supported formats are JPEG, PNG and GIF. The GD extension is required for GIF.
      *
-     * For JPEG, all flavors are allowed:
+     * For JPEG, the following variants are allowed:
      * <ul>
      * <li>Gray scales.</li>
      * <li>True colors (24 bits).</li>
@@ -1114,23 +1109,27 @@ class PdfDocument
      * <li>True colors (24 bits).</li>
      * </ul>
      *
-     * For GIF: in case of an animated GIF, only the first frame is displayed.
+     * For GIF:
+     * <ul>
+     * <li>In case of an animated GIF, only the first frame is displayed.</li>
+     * </ul>
      *
-     * Transparency is supported.
-     *
-     * The format can be specified explicitly or inferred from the file extension.
-     *
-     * It is possible to put a link on the image.
+     * For all:
+     * <ul>
+     * <li>Transparency is supported.</li>
+     * <li>The format can be specified explicitly or inferred from the file extension.</li>
+     * <li>It is possible to put a link on the image.</li>
+     * </ul>
      *
      * <b>Remark: </b>If an image is used several times, only one copy is embedded in the file.
      *
      * @param string     $file   the path or the URL of the image
-     * @param ?float     $x      the abscissa of the upper-left corner. If not specified or equal to null, the current
+     * @param ?float     $x      the abscissa of the upper-left corner. If equal to <code>null</code>, the current
      *                           abscissa is used.
-     * @param ?float     $y      the ordinate of the upper-left corner. If not specified or equal to null, the current
+     * @param ?float     $y      the ordinate of the upper-left corner. If equal to <code>null</code>, the current
      *                           ordinate is used; moreover, a page break is triggered first if necessary (in case
-     *                           automatic page breaking is enabled) and, after the call, the current ordinate is move
-     *                           to the bottom of the image.
+     *                           automatic page breaking is enabled) and, after the call, the current ordinate
+     *                           is move to the bottom of the image.
      * @param float      $width  the width of the image in the page. There are three cases:
      *                           <ul>
      *                           <li>If the value is positive, it represents the width in user unit.</li>
@@ -1255,14 +1254,12 @@ class PdfDocument
      * Returns if the given height would not cause an overflow (new page).
      *
      * @param float  $height the desired height
-     * @param ?float $y      the ordinate position or null to use the current position
+     * @param ?float $y      the ordinate position or <code>null</code> to use the current position
      *
      * @return bool true if printable within the current page; false if a new page is
      *              needed
      *
      * @see PdfDocument::AddPage()
-     *
-     * @psalm-api
      */
     public function isPrintable(float $height, ?float $y = null): bool
     {
@@ -1330,8 +1327,6 @@ class PdfDocument
      *
      * @param float $delta  the delta value of the ordinate to move to
      * @param bool  $resetX whether to reset the abscissa
-     *
-     * @psalm-api
      */
     public function moveY(float $delta, bool $resetX = true): self
     {
@@ -1349,15 +1344,15 @@ class PdfDocument
      *  (via the \n character). As many cells as necessary are output, one below the other. Text can be aligned,
      *  centered or justified. The cell block can be framed and the background painted.
      *
-     * @param float            $width  the cell width. If 0, the cell extends up to the right margin.
+     * @param float            $width  the cell width. If 0.0, the cell extends up to the right margin.
      * @param float            $height the cell height
      * @param string           $text   the cell text
-     * @param string|int       $border indicates if borders must be drawn around the cell. The value can be either:
+     * @param string|bool      $border indicates if borders must be drawn around the cell. The value can be either:
      *                                 <ul>
-     *                                 <li>A number:
+     *                                 <li>A boolean:
      *                                 <ul>
-     *                                 <li><code>0</code>: No border (default value).</li>
-     *                                 <li><code>1</code>: Frame.</li>
+     *                                 <li><code>false</code>: No border (default value).</li>
+     *                                 <li><code>true</code>: Draw a frame.</li>
      *                                 </ul>
      *                                 </li>
      *                                 <li>A string containing some or all of the following characters (in any order):
@@ -1373,12 +1368,14 @@ class PdfDocument
      * @param bool             $fill   indicates if the cell background must be painted (true) or transparent (false)
      *
      * @throws PdfException
+     *
+     * @see PdfDocument::cell()
      */
     public function multiCell(
         float $width,
         float $height,
         string $text,
-        string|int $border = 0,
+        string|bool $border = false,
         PdfTextAlignment $align = PdfTextAlignment::JUSTIFIED,
         bool $fill = false
     ): self {
@@ -1393,9 +1390,9 @@ class PdfDocument
         $widthMax = ($width - 2.0 * $this->cellMargin) * 1000.0 / $this->fontSize;
         $text = \rtrim(\str_replace("\r", '', $text));
         $len = \strlen($text);
-        $border1 = 0;
+        $border1 = false;
         $border2 = '';
-        if (1 === $border) {
+        if (true === $border) {
             $border = 'LTRB';
             $border1 = 'LRT';
             $border2 = 'LR';
@@ -1408,13 +1405,14 @@ class PdfDocument
             }
             $border1 = (\str_contains($border, 'T')) ? $border2 . 'T' : $border2;
         }
-        $sep = -1;
+
         $index = 0;
-        $lastIndex = 0;
-        $currentWidth = 0.0;
-        $newSeparator = 0;
         $newLine = 1;
+        $lastIndex = 0;
+        $sepIndex = -1;
+        $newSeparator = 0;
         $lineSpace = 0.0;
+        $currentWidth = 0.0;
         while ($index < $len) {
             $ch = $text[$index];
             if ("\n" === $ch) {
@@ -1433,7 +1431,7 @@ class PdfDocument
                     $fill
                 );
                 ++$index;
-                $sep = -1;
+                $sepIndex = -1;
                 $lastIndex = $index;
                 $currentWidth = 0.0;
                 $newSeparator = 0;
@@ -1444,14 +1442,14 @@ class PdfDocument
                 continue;
             }
             if (' ' === $ch) {
-                $sep = $index;
+                $sepIndex = $index;
                 $lineSpace = $currentWidth;
                 ++$newSeparator;
             }
             $currentWidth += (float) $charWidths[$ch];
             if ($currentWidth > $widthMax) {
                 // Automatic line break
-                if (-1 === $sep) {
+                if (-1 === $sepIndex) {
                     if ($index === $lastIndex) {
                         ++$index;
                     }
@@ -1478,15 +1476,15 @@ class PdfDocument
                     $this->cell(
                         $width,
                         $height,
-                        \substr($text, $lastIndex, $sep - $lastIndex),
+                        \substr($text, $lastIndex, $sepIndex - $lastIndex),
                         $border1,
                         PdfMove::BELOW,
                         $align,
                         $fill
                     );
-                    $index = $sep + 1;
+                    $index = $sepIndex + 1;
                 }
-                $sep = -1;
+                $sepIndex = -1;
                 $lastIndex = $index;
                 $currentWidth = 0.0;
                 $newSeparator = 0;
@@ -1503,7 +1501,7 @@ class PdfDocument
             $this->wordSpacing = 0.0;
             $this->out('0 Tw');
         }
-        if (0 !== $border && \is_string($border) && \str_contains($border, 'B') && \is_string($border1)) {
+        if (\is_string($border) && \str_contains($border, 'B') && \is_string($border1)) {
             $border1 .= 'B';
         }
         $this->cell(
@@ -1584,8 +1582,6 @@ class PdfDocument
      * @param float     $dpi    the dot per inch
      *
      * @return float the converted value as millimeters
-     *
-     * @psalm-api
      */
     public function pixels2mm(float|int $pixels, float $dpi = 72): float
     {
@@ -1602,8 +1598,6 @@ class PdfDocument
      * @param float|int $pixels the pixels to convert
      *
      * @return float the converted value as user unit
-     *
-     * @psalm-api
      */
     public function pixels2UserUnit(float|int $pixels): float
     {
@@ -1612,8 +1606,6 @@ class PdfDocument
 
     /**
      * Converts the given points to user unit.
-     *
-     * @psalm-api
      */
     public function points2UserUnit(float|int $points): float
     {
@@ -1650,8 +1642,6 @@ class PdfDocument
      * Defines an alias for the total number of pages.
      *
      * It will be substituted as the document is closed.
-     *
-     * @psalm-api
      */
     public function setAliasNumberPages(string $aliasNumberPages = '{nb}'): self
     {
@@ -1767,9 +1757,9 @@ class PdfDocument
      * @see PdfDocument::setFillColor()
      * @see PdfDocument::setTextColor()
      *
-     * @phpstan-param int<0, 255> $r
-     * @phpstan-param int<0, 255>|null $g
-     * @phpstan-param int<0, 255>|null $b
+     * @phpstan-param ColorType $r
+     * @phpstan-param ColorType|null $g
+     * @phpstan-param ColorType|null $b
      */
     public function setDrawColor(int $r, ?int $g = null, ?int $b = null): self
     {
@@ -1797,9 +1787,9 @@ class PdfDocument
      * @see PdfDocument::setDrawColor()
      * @see PdfDocument::setTextColor()
      *
-     * @phpstan-param int<0, 255> $r
-     * @phpstan-param int<0, 255>|null $g
-     * @phpstan-param int<0, 255>|null $b
+     * @phpstan-param ColorType $r
+     * @phpstan-param ColorType|null $g
+     * @phpstan-param ColorType|null $b
      */
     public function setFillColor(int $r, ?int $g = null, ?int $b = null): self
     {
@@ -1836,10 +1826,12 @@ class PdfDocument
      *                                   It is also possible to pass an empty string. In that case, the current family
      *                                   is kept.
      * @param PdfFontStyle       $style  The font style. The default value is regular.
-     * @param float              $size   The font size in points or 0 to use the current size. If no size has been
+     * @param float              $size   The font size in points or 0.0 to use the current size. If no size has been
      *                                   specified since the beginning of the document, the value is 9.0.
      *
      * @throws PdfException
+     *
+     * @see PdfDocument::addFont()
      */
     public function setFont(PdfFontName|string $family = '', PdfFontStyle $style = PdfFontStyle::REGULAR, float $size = 0): self
     {
@@ -1894,6 +1886,8 @@ class PdfDocument
      * Defines the size (in points) of the current font.
      *
      * @throws PdfException
+     *
+     * @see PdfDocument::setFont()
      */
     public function setFontSize(float $size): self
     {
@@ -2036,9 +2030,9 @@ class PdfDocument
      * @see PdfDocument::setDrawColor()
      * @see PdfDocument::setFillColor()
      *
-     * @phpstan-param int<0, 255> $r
-     * @phpstan-param int<0, 255>|null $g
-     * @phpstan-param int<0, 255>|null $b
+     * @phpstan-param ColorType $r
+     * @phpstan-param ColorType|null $g
+     * @phpstan-param ColorType|null $b
      */
     public function setTextColor(int $r, ?int $g = null, ?int $b = null): self
     {
@@ -2065,8 +2059,6 @@ class PdfDocument
      * Defines the top margin.
      *
      * The method can be called before creating the first page.
-     *
-     * @psalm-api
      */
     public function setTopMargin(float $topMargin): self
     {
@@ -2166,8 +2158,6 @@ class PdfDocument
 
     /**
      * Set the cell margins to the given value, call the given user function and reset margins to previous value.
-     *
-     * @psalm-api
      */
     public function useCellMargin(callable $callable, float $margin = 0.0): self
     {
@@ -2197,8 +2187,8 @@ class PdfDocument
         if (null === $this->currentFont) {
             throw new PdfException('No font has been set.');
         }
-        $charWidths = $this->currentFont['cw'];
         $width = $this->getRemainingWidth();
+        $charWidths = $this->currentFont['cw'];
         $widthMax = ($width - 2.0 * $this->cellMargin) * 1000.0 / $this->fontSize;
         $text = \str_replace("\r", '', $text);
         $len = \strlen($text);
@@ -2216,7 +2206,7 @@ class PdfDocument
                     $width,
                     $height,
                     \substr($text, $currentIndex, $index - $currentIndex),
-                    0,
+                    false,
                     PdfMove::BELOW,
                     PdfTextAlignment::LEFT,
                     false,
@@ -2258,7 +2248,7 @@ class PdfDocument
                         $width,
                         $height,
                         \substr($text, $currentIndex, $index - $currentIndex),
-                        0,
+                        false,
                         PdfMove::BELOW,
                         PdfTextAlignment::LEFT,
                         false,
@@ -2269,7 +2259,7 @@ class PdfDocument
                         $width,
                         $height,
                         \substr($text, $currentIndex, $sep - $currentIndex),
-                        0,
+                        false,
                         PdfMove::BELOW,
                         PdfTextAlignment::LEFT,
                         false,
@@ -2296,7 +2286,7 @@ class PdfDocument
                 $currentWidth / 1000.0 * $this->fontSize,
                 $height,
                 \substr($text, $currentIndex),
-                0,
+                false,
                 PdfMove::RIGHT,
                 PdfTextAlignment::LEFT,
                 false,
@@ -2329,7 +2319,7 @@ class PdfDocument
     protected function beginPage(
         ?PdfOrientation $orientation = null,
         PdfSize|array|null $size = null,
-        int $rotation = 0
+        int|null $rotation = null
     ): void {
         ++$this->page;
         $this->pages[$this->page] = '';
@@ -2365,6 +2355,7 @@ class PdfDocument
             || $size[1] !== $this->defaultPageSize[1]) {
             $this->pageInfos[$this->page]['size'] = [$this->widthInPoint, $this->heightInPoint];
         }
+        $rotation ??= $this->currentRotation;
         if (0 !== $rotation) {
             if (0 !== $rotation % 90) {
                 throw new PdfException(\sprintf('Incorrect rotation value: %d.', $rotation));
@@ -2557,16 +2548,9 @@ class PdfDocument
     /**
      * Returns if the given string is only containing ASCII characters.
      */
-    protected function isAscii(string $s): bool
+    protected function isAscii(string $str): bool
     {
-        // Test if string is ASCII
-        for ($i = 0, $len = \strlen($s); $i < $len; ++$i) {
-            if (\ord($s[$i]) > 127) {
-                return false;
-            }
-        }
-
-        return true;
+        return \mb_check_encoding($str, 'ASCII');
     }
 
     /**
@@ -2574,9 +2558,9 @@ class PdfDocument
      *
      * @throws PdfException
      *
+     * @psalm-suppress UnresolvableInclude
      * @psalm-suppress UndefinedVariable
      * @psalm-suppress UnusedVariable
-     * @psalm-suppress UnresolvableInclude
      */
     protected function loadFont(string $path): array
     {
@@ -3057,7 +3041,7 @@ class PdfDocument
                 $charWidths = $font['cw'];
                 $output = '[';
                 for ($i = 32; $i <= 255; ++$i) {
-                    $output .= (string) $charWidths[\chr($i)] . ' ';
+                    $output .= \sprintf('%d ', $charWidths[\chr($i)]);
                 }
                 $output .= ']';
                 $this->put($output);
@@ -3066,7 +3050,7 @@ class PdfDocument
                 $this->newObj();
                 $output = \sprintf('<</Type /FontDescriptor /FontName /%s', $name);
                 foreach ($font['desc'] as $descKey => $descValue) {
-                    $output .= ' /' . $descKey . ' ' . $descValue;
+                    $output .= \sprintf(' /%s %s', $descKey, $descValue);
                 }
                 if (!empty($font['file'])) {
                     $n = $this->fontFiles[$font['file']]['n'];
@@ -3114,7 +3098,7 @@ class PdfDocument
                 $this->objectNumber + 1
             );
         } else {
-            $this->put('/ColorSpace /' . $info['cs']);
+            $this->putf('/ColorSpace /%s', $info['cs']);
             if ('DeviceCMYK' === $info['cs']) {
                 $this->put('/Decode [1 0 1 0 1 0 1 0]');
             }
@@ -3199,9 +3183,9 @@ class PdfDocument
                 $pageLink[0] + $pageLink[2],
                 $pageLink[1] - $pageLink[3]
             );
-            $output = '<</Type /Annot /Subtype /Link /Rect [' . $rect . '] /Border [0 0 0] ';
+            $output = \sprintf('<</Type /Annot /Subtype /Link /Rect [%s] /Border [0 0 0] ', $rect);
             if (\is_string($pageLink[4])) {
-                $output .= '/A <</S /URI /URI ' . $this->textString($pageLink[4]) . '>>>>';
+                $output .= \sprintf('/A <</S /URI /URI %s>>>>', $this->textString($pageLink[4]));
             } else {
                 $link = $this->links[$pageLink[4]];
                 $index = (int) $link[0];
@@ -3273,8 +3257,8 @@ class PdfDocument
         for ($i = 1; $i <= $page; ++$i) {
             $this->pageInfos[$i]['n'] = ++$n;
             ++$n;
-            foreach ($this->pageLinks[$i] as &$pl) {
-                $pl[5] = ++$n;
+            foreach ($this->pageLinks[$i] as &$pageLink) {
+                $pageLink[5] = ++$n;
             }
         }
         for ($i = 1; $i <= $page; ++$i) {
@@ -3285,19 +3269,19 @@ class PdfDocument
         $this->put('<</Type /Pages');
         $kids = '/Kids [';
         for ($i = 1; $i <= $page; ++$i) {
-            $kids .= \sprintf('%d 0 R ', (string) $this->pageInfos[$i]['n']);
+            $kids .= \sprintf('%d 0 R ', $this->pageInfos[$i]['n']);
         }
         $kids .= ']';
         $this->put($kids);
         $this->putf('/Count %d', $page);
         if (PdfOrientation::PORTRAIT === $this->defaultOrientation) {
-            $w = $this->defaultPageSize[0];
-            $h = $this->defaultPageSize[1];
+            $width = $this->defaultPageSize[0];
+            $height = $this->defaultPageSize[1];
         } else {
-            $w = $this->defaultPageSize[1];
-            $h = $this->defaultPageSize[0];
+            $width = $this->defaultPageSize[1];
+            $height = $this->defaultPageSize[0];
         }
-        $this->putf('/MediaBox [0 0 %.2F %.2F]', $w * $this->scaleFactor, $h * $this->scaleFactor);
+        $this->putf('/MediaBox [0 0 %.2F %.2F]', $width * $this->scaleFactor, $height * $this->scaleFactor);
         $this->put('>>');
         $this->endObj();
     }
@@ -3393,7 +3377,7 @@ class PdfDocument
     protected function readInt($stream): int
     {
         // Read a 4-byte integer from stream
-        /** @phpstan-var int[] $a */
+        /** @phpstan-var array{i: int} $a */
         $a = (array) \unpack('Ni', $this->readStream($stream, 4));
 
         return $a['i'];
@@ -3402,7 +3386,7 @@ class PdfDocument
     /**
      * Read a string from the given stream.
      *
-     * @phpstan-param  resource $stream
+     * @phpstan-param resource $stream
      *
      * @throws PdfException
      */
@@ -3441,7 +3425,7 @@ class PdfDocument
     /**
      * Convert the array to Unicode C map.
      *
-     * @param array<int, int|int[]> $uv
+     * @phpstan-param UvType $uv
      */
     protected function toUnicodeCmap(array $uv): string
     {
@@ -3472,12 +3456,12 @@ class PdfDocument
         $output .= "<00> <FF>\n";
         $output .= "endcodespacerange\n";
         if ($nbr > 0) {
-            $output .= "$nbr beginbfrange\n";
+            $output .= \sprintf("%d beginbfrange\n", $nbr);
             $output .= $ranges;
             $output .= "endbfrange\n";
         }
         if ($nbc > 0) {
-            $output .= "$nbc beginbfchar\n";
+            $output .= \sprintf("%d beginbfchar\n", $nbc);
             $output .= $chars;
             $output .= "endbfchar\n";
         }

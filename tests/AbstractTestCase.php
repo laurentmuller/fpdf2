@@ -20,13 +20,17 @@ abstract class AbstractTestCase extends TestCase
     private string $newFile = '';
     private string $oldFile = '';
 
+    public static function setUpBeforeClass(): void
+    {
+        if (!\defined('FPDF_FONTPATH')) {
+            \define('FPDF_FONTPATH', __DIR__ . '/../src/font/');
+        }
+    }
+
     protected function setUp(): void
     {
         $this->newFile = __DIR__ . '/doc_new.pdf';
         $this->oldFile = __DIR__ . '/doc_old.pdf';
-        if (!\defined('FPDF_FONTPATH')) {
-            \define('FPDF_FONTPATH', __DIR__ . '/../src/font/');
-        }
     }
 
     #[Depends('testOld')]
@@ -39,8 +43,10 @@ abstract class AbstractTestCase extends TestCase
         $old_content = \file_get_contents($this->oldFile);
         $new_content = \file_get_contents($this->newFile);
 
-        \unlink($this->oldFile);
-        \unlink($this->newFile);
+        if ($this->isUnlink()) {
+            \unlink($this->oldFile);
+            \unlink($this->newFile);
+        }
 
         self::assertIsString($old_content);
         self::assertIsString($new_content);
@@ -66,6 +72,11 @@ abstract class AbstractTestCase extends TestCase
         self::assertFileExists($this->oldFile);
     }
 
+    protected function isUnlink(): bool
+    {
+        return true;
+    }
+
     /**
      * @throws PdfException
      */
@@ -88,7 +99,7 @@ abstract class AbstractTestCase extends TestCase
     private function createOldDocument(): FPDF
     {
         $doc = new FPDF();
-        $doc->setFont(PdfFontName::ARIAL->value, PdfFontStyle::REGULAR->value, 9.0);
+        $doc->setFont('Arial', '', 9.0);
         $doc->AddPage();
 
         return $doc;

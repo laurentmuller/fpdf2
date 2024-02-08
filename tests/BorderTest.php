@@ -19,8 +19,8 @@ class BorderTest extends AbstractTestCase
      */
     protected function updateNewDocument(PdfDocument $doc): void
     {
-        $doc->cell(0.0, 5.0, 'None Border', 0, PdfMove::BELOW);
-        $doc->cell(0.0, 5.0, 'All Border', 1, PdfMove::BELOW);
+        $doc->cell(0.0, 5.0, 'None Border', false, PdfMove::BELOW);
+        $doc->cell(0.0, 5.0, 'All Border', true, PdfMove::BELOW);
 
         $doc->cell(0.0, 5.0, 'Left Border', 'L', PdfMove::BELOW);
         $doc->cell(0.0, 5.0, 'Right Border', 'R', PdfMove::BELOW);

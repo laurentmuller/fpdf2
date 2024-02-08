@@ -35,7 +35,7 @@ class BasicTest extends AbstractTestCase
         $x = $doc->getX();
         $y = $doc->getY();
         $doc->setLineWidth(1.0);
-        $doc->line($x, $y, $x + 100, $y);
+        $doc->line($x, $y, $x + 100.0, $y);
 
         $doc->link($x, $y, 100, 20, 'https://www.bibi.nu');
         $doc->addLink();
@@ -53,7 +53,7 @@ class BasicTest extends AbstractTestCase
         $x = $doc->getX();
         $y = $doc->getY();
         $doc->setLineWidth(0.5);
-        $doc->line($x, $y, $x + 100, $y);
+        $doc->line($x, $y, $x + 100.0, $y);
 
         $doc->setFillColor(0, 255, 0);
         $doc->SetTextColor(0, 0, 255);
@@ -68,6 +68,9 @@ class BasicTest extends AbstractTestCase
 
         $doc->text($doc->GetX(), $doc->GetY(), 'Text');
         $doc->write(5.0, 'Write', 1);
+
+        $doc->addPage();
+        $doc->cell(0.0, 5.0, 'Greek: Γειά σου κόσμος', true, PdfMove::RIGHT, PdfTextAlignment::RIGHT, true);
 
         $doc->setDisplayMode(PdfZoom::FULL_PAGE, PdfLayout::SINGLE);
     }
@@ -87,11 +90,12 @@ class BasicTest extends AbstractTestCase
         $doc->Ln(5.0);
         $doc->Image(__DIR__ . '/images/image.gif');
 
-        /** @var float $x */
+        /** @phpstan-var float $x */
         $x = $doc->GetX();
+        /** @phpstan-var float $y */
         $y = $doc->GetY();
         $doc->SetLineWidth(1.0);
-        $doc->Line($x, $y, $x + 100, $y);
+        $doc->Line($x, $y, $x + 100.0, $y);
 
         $doc->Link($x, $y, 100, 20, 'https://www.bibi.nu');
         $doc->AddLink();
@@ -106,15 +110,20 @@ class BasicTest extends AbstractTestCase
         $doc->Cell(0.0, 5.0, 'This is  test 3456.', ln: 1);
 
         $doc->SetDrawColor(255, 0, 0);
+        /** @phpstan-var float $x */
         $x = $doc->GetX();
+        /** @phpstan-var float $y */
         $y = $doc->GetY();
         $doc->SetLineWidth(0.5);
-        $doc->Line($x, $y, $x + 100, $y);
+        $doc->Line($x, $y, $x + 100.0, $y);
 
         $doc->SetFillColor(0, 255, 0);
         $doc->SetTextColor(0, 0, 255);
+        /** @phpstan-var float $x */
         $x = $doc->GetX();
-        $y = $doc->GetY() + 10.0;
+        /** @phpstan-var float $y */
+        $y = $doc->GetY();
+        $y += 10.0;
         $doc->Rect($x, $y, 100, 100, 'FD');
 
         $doc->SetDrawColor(255);
@@ -124,6 +133,9 @@ class BasicTest extends AbstractTestCase
 
         $doc->Text($doc->GetX(), $doc->GetY(), 'Text');
         $doc->Write(5.0, 'Write', 1);
+
+        $doc->AddPage();
+        $doc->Cell(0.0, 5.0, 'Greek: Γειά σου κόσμος', 1, 0, 'R', true);
 
         $doc->SetDisplayMode('fullpage', 'single');
     }
