@@ -7,6 +7,7 @@ finder:
         - "docs"
         - "vendor"
         - "makefont"
+        - "src/font"
     name: "*.php"
     not-name:
         - "FPDF.php"
