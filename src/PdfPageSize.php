@@ -15,7 +15,7 @@ namespace fpdf;
 /**
  * The PDF document size enumeration.
  */
-enum PdfSize: string
+enum PdfPageSize: string
 {
     /**
      * A3 (297 × 420 mm).

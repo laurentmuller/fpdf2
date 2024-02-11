@@ -13,29 +13,26 @@ declare(strict_types=1);
 namespace fpdf;
 
 /**
- * The PDF document zoom enumeration.
+ * The PDF document rotation enumeration.
  *
- * @see PdfDocument::setDisplayMode()
+ * @see PdfDocument::addPage()
  */
-enum PdfZoom
+enum PdfRotation: int
 {
     /**
-     * Uses viewer default mode.
+     * 180 degree clockwise.
      */
-    case DEFAULT;
-
+    case CLOCKWISE_180 = 180;
     /**
-     * Displays the entire page on screen.
+     * 270 degree clockwise.
      */
-    case FULL_PAGE;
-
+    case CLOCKWISE_270 = 270;
     /**
-     * Uses maximum width of window.
+     * 90 degree clockwise.
      */
-    case FULL_WIDTH;
-
+    case CLOCKWISE_90 = 90;
     /**
-     * Uses real size (equivalent to 100% zoom).
+     * 0 degree clockwise (default).
      */
-    case REAL;
+    case DEFAULT = 0;
 }

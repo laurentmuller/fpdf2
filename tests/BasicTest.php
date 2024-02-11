@@ -14,6 +14,15 @@ namespace fpdf;
 
 class BasicTest extends AbstractTestCase
 {
+    private const COMMENT = <<<COMMENT
+        This file is part of the 'fpdf' package.
+
+        For the license information, please view the LICENSE
+        file that was distributed with this source code.
+
+        @author bibi.nu <bibi@bibi.nu>
+        COMMENT;
+
     /**
      * @throws PdfException
      */
@@ -40,7 +49,7 @@ class BasicTest extends AbstractTestCase
         $doc->link($x, $y, 100, 20, 'https://www.bibi.nu');
         $doc->addLink();
 
-        $doc->setAuthor('Author');
+        $doc->setAuthor('Author Ĝ');
         $doc->setCreator('Creator');
         $doc->setKeywords('Keywords');
         $doc->setSubject('Subject');
@@ -56,9 +65,9 @@ class BasicTest extends AbstractTestCase
         $doc->line($x, $y, $x + 100.0, $y);
 
         $doc->setFillColor(0, 255, 0);
-        $doc->SetTextColor(0, 0, 255);
-        $x = $doc->GetX();
-        $y = $doc->GetY() + 10.0;
+        $doc->setTextColor(0, 0, 255);
+        $x = $doc->getX();
+        $y = $doc->getY() + 10.0;
         $doc->rect($x, $y, 100, 100, PdfRectangleStyle::BOTH);
 
         $doc->setDrawColor(255);
@@ -66,13 +75,15 @@ class BasicTest extends AbstractTestCase
         $doc->setTextColor(255);
         $doc->setFontSize(9.5);
 
-        $doc->text($doc->GetX(), $doc->GetY(), 'Text');
+        $doc->text($doc->getX(), $doc->getY(), 'Text');
         $doc->write(5.0, 'Write', 1);
 
         $doc->addPage();
         $doc->cell(0.0, 5.0, 'Greek: Γειά σου κόσμος', true, PdfMove::RIGHT, PdfTextAlignment::RIGHT, true);
 
         $doc->setDisplayMode(PdfZoom::FULL_PAGE, PdfLayout::SINGLE);
+
+        $doc->multiCell(0.0, 5.0, self::COMMENT);
     }
 
     protected function updateOldDocument(FPDF $doc): void
@@ -100,7 +111,7 @@ class BasicTest extends AbstractTestCase
         $doc->Link($x, $y, 100, 20, 'https://www.bibi.nu');
         $doc->AddLink();
 
-        $doc->SetAuthor('Author');
+        $doc->SetAuthor('Author Ĝ');
         $doc->SetCreator('Creator');
         $doc->SetKeywords('Keywords');
         $doc->SetSubject('Subject');
@@ -138,5 +149,7 @@ class BasicTest extends AbstractTestCase
         $doc->Cell(0.0, 5.0, 'Greek: Γειά σου κόσμος', 1, 0, 'R', true);
 
         $doc->SetDisplayMode('fullpage', 'single');
+
+        $doc->MultiCell(0.0, 5.0, self::COMMENT);
     }
 }

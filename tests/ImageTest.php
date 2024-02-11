@@ -26,9 +26,9 @@ class ImageTest extends AbstractTestCase
     protected function updateOldDocument(FPDF $doc): void
     {
         $doc->Image(__DIR__ . '/images/image.png');
-        $doc->ln(5.0);
+        $doc->Ln(5.0);
         $doc->Image(__DIR__ . '/images/image.jpg');
-        $doc->ln(5.0);
+        $doc->Ln(5.0);
         $doc->Image(__DIR__ . '/images/image.gif');
     }
 }

@@ -51,4 +51,22 @@ enum PdfFontName: string
      * The ZapfDingbats font name (symbolic).
      */
     case ZAPFDINGBATS = 'ZapfDingbats';
+
+    /**
+     * Try to find a font name for the given family; ignore case consideration.
+     *
+     * @param string $family the font family to search font name for
+     *
+     * @return PdfFontName|null the font name, if found; <code>null</code> otherwise
+     */
+    public static function tryFromIgnoreCase(string $family): ?PdfFontName
+    {
+        foreach (self::cases() as $fontName) {
+            if (0 === \strcasecmp($family, $fontName->value)) {
+                return $fontName;
+            }
+        }
+
+        return null;
+    }
 }

@@ -72,6 +72,27 @@ abstract class AbstractTestCase extends TestCase
         self::assertFileExists($this->oldFile);
     }
 
+    /**
+     * @throws PdfException
+     */
+    protected function createNewDocument(): PdfDocument
+    {
+        $doc = new PdfDocument();
+        $doc->setFont(PdfFontName::ARIAL, PdfFontStyle::REGULAR, 9.0);
+        $doc->addPage();
+
+        return $doc;
+    }
+
+    protected function createOldDocument(): FPDF
+    {
+        $doc = new FPDF();
+        $doc->SetFont('Arial', '', 9.0);
+        $doc->AddPage();
+
+        return $doc;
+    }
+
     protected function isUnlink(): bool
     {
         return true;
@@ -83,25 +104,4 @@ abstract class AbstractTestCase extends TestCase
     abstract protected function updateNewDocument(PdfDocument $doc): void;
 
     abstract protected function updateOldDocument(FPDF $doc): void;
-
-    /**
-     * @throws PdfException
-     */
-    private function createNewDocument(): PdfDocument
-    {
-        $doc = new PdfDocument();
-        $doc->setFont(PdfFontName::ARIAL, PdfFontStyle::REGULAR, 9.0);
-        $doc->addPage();
-
-        return $doc;
-    }
-
-    private function createOldDocument(): FPDF
-    {
-        $doc = new FPDF();
-        $doc->setFont('Arial', '', 9.0);
-        $doc->AddPage();
-
-        return $doc;
-    }
 }

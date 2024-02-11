@@ -16,7 +16,7 @@ class MetadataTest extends AbstractTestCase
 {
     protected function updateNewDocument(PdfDocument $doc): void
     {
-        $doc->setTitle('Title');
+        $doc->setTitle('Title æ', true);
         $doc->setSubject('Subject');
         $doc->setAuthor('Author');
         $doc->setCreator('Creator');
@@ -25,7 +25,7 @@ class MetadataTest extends AbstractTestCase
 
     protected function updateOldDocument(FPDF $doc): void
     {
-        $doc->SetTitle('Title');
+        $doc->SetTitle('Title æ', true);
         $doc->SetSubject('Subject');
         $doc->SetAuthor('Author');
         $doc->SetCreator('Creator');

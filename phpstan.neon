@@ -1,11 +1,14 @@
 parameters:
-    level: 8
+    level: 9
     paths:
         - src
+        - tests
 
     excludePaths:
+        - src/font
+        - tests/fonts
         - tests/FPDF.php
+        - vendor
 
     reportUnmatchedIgnoredErrors: true
     checkUninitializedProperties: true
-    checkMissingIterableValueType: false

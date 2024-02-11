@@ -15,16 +15,16 @@ namespace fpdf;
 /**
  * Represent a PDF document.
  *
- * @phpstan-type PdfPageSizeType = array{0: float, 1: float}
  * @phpstan-type ColorType = int<0, 255>
  * @phpstan-type UvType = array<int, int|int[]>
- * @phpstan-type PdfFontType = array{
- *     i: int,
- *     n: int,
+ * @phpstan-type PageSizeType = array{0: float, 1: float}
+ * @phpstan-type FontType = array{
+ *     index: int,
+ *     number: int,
  *     type: string,
  *     name: string,
  *     path: string,
- *     file: string,
+ *     file?: string,
  *     enc?: string,
  *     subsetted: bool,
  *     up: int,
@@ -38,27 +38,27 @@ namespace fpdf;
  *     size2: int,
  *     length1: int,
  *     length2?: int}
- * @phpstan-type PdfFontFileType = array{
- *     n: int,
+ * @phpstan-type FontFileType = array{
+ *     number: int,
  *     length1: int,
  *     length2?: int}
- * @phpstan-type PdfPageInfoType = array{
- *     n: int,
- *     rotation: int,
- *     size?: PdfPageSizeType}
- * @phpstan-type PdfImageType = array{
- *     i: int,
- *     n: int,
- *     w: int,
- *     h: int,
- *     cs: string,
- *     bpc: int,
- *     f?: string,
+ * @phpstan-type PageInfoType = array{
+ *     number: int,
+ *     rotation: PdfRotation,
+ *     size?: PageSizeType}
+ * @phpstan-type ImageType = array{
+ *     index: int,
+ *     number: int,
+ *     width: int,
+ *     height: int,
+ *     color_space: string,
+ *     bits_per_component: int,
+ *     filter?: string,
  *     data: string,
- *     dp?: string,
- *     smask?: string,
- *     pal: string,
- *     trns?: string|array<int, string>}
+ *     decode_parms?: string,
+ *     soft_mask?: string,
+ *     palette: string,
+ *     transparencies?: string|array<int, string>}
  * @phpstan-type PageLinkType = array{
  *     0: float,
  *     1: float,
@@ -74,18 +74,8 @@ class PdfDocument
      */
     public const VERSION = '1.86';
 
-    // The array of core font names.
-    private const CORE_FONTS = [
-        'courier',
-        'helvetica',
-        'times',
-        'symbol',
-        'zapfdingbats',
-    ];
-
     // the empty color
     private const EMPTY_COLOR = '0 G';
-
     // the document is closed
     private const STATE_CLOSED = 3;
     // the end page has been called
@@ -136,7 +126,7 @@ class PdfDocument
     /**
      * The current font info.
      *
-     * @phpstan-var PdfFontType|null array
+     * @phpstan-var FontType|null array
      */
     protected ?array $currentFont = null;
     /**
@@ -146,13 +136,13 @@ class PdfDocument
     /**
      * The current page size.
      *
-     * @phpstan-var PdfPageSizeType
+     * @phpstan-var PageSizeType
      */
     protected array $currentPageSize;
     /**
      * The current page rotation.
      */
-    protected int $currentRotation = 0;
+    protected PdfRotation $currentRotation = PdfRotation::DEFAULT;
     /**
      * The default orientation.
      */
@@ -160,7 +150,7 @@ class PdfDocument
     /**
      * The default page size.
      *
-     * @phpstan-var PdfPageSizeType
+     * @phpstan-var PageSizeType
      */
     protected array $defaultPageSize;
     /**
@@ -184,7 +174,7 @@ class PdfDocument
     /**
      * The array of font files.
      *
-     * @phpstan-var array<string, PdfFontFileType>
+     * @phpstan-var array<string, FontFileType>
      */
     protected array $fontFiles = [];
     /**
@@ -194,7 +184,7 @@ class PdfDocument
     /**
      * The array of used fonts.
      *
-     * @phpstan-var array<string, PdfFontType>
+     * @phpstan-var array<string, FontType>
      */
     protected array $fonts = [];
     /**
@@ -220,7 +210,7 @@ class PdfDocument
     /**
      * The array of used images.
      *
-     * @phpstan-var array<string, PdfImageType>
+     * @phpstan-var array<string, ImageType>
      */
     protected array $images = [];
     /**
@@ -280,7 +270,7 @@ class PdfDocument
     /**
      * The page-related data.
      *
-     * @phpstan-var array<int, PdfPageInfoType>
+     * @phpstan-var array<int, PageInfoType>
      */
     protected array $pageInfos = [];
     /**
@@ -362,16 +352,16 @@ class PdfDocument
      * It allows to set up the page size, the page orientation and the unit of measure used in all methods (except for
      * font sizes).
      *
-     * @param PdfOrientation  $orientation the page orientation
-     * @param PdfUnit         $unit        the document unit to use
-     * @param PdfSize|float[] $size        the page size
+     * @param PdfOrientation      $orientation the page orientation
+     * @param PdfUnit             $unit        the document unit to use
+     * @param PdfPageSize|float[] $size        the page size
      *
-     * @phpstan-param PdfSize|PdfPageSizeType $size
+     * @phpstan-param PdfPageSize|PageSizeType $size
      */
     public function __construct(
         PdfOrientation $orientation = PdfOrientation::PORTRAIT,
         PdfUnit $unit = PdfUnit::MILLIMETER,
-        PdfSize|array $size = PdfSize::A4
+        PdfPageSize|array $size = PdfPageSize::A4
     ) {
         // Font path
         $this->fontPath = \defined('FPDF_FONTPATH') ? (string) FPDF_FONTPATH : __DIR__ . '/font/';
@@ -427,9 +417,9 @@ class PdfDocument
      * @param PdfFontName|string $family The font family. The name can be chosen arbitrarily. If it is a standard
      *                                   family name, it will override the corresponding font.
      * @param PdfFontStyle       $style  The font style. The default value is regular.
-     * @param string             $file   The name of the font definition file. By default, it is built from the family
+     * @param ?string            $file   The name of the font definition file. By default, it is built from the family
      *                                   and style, in lower case with no space.
-     * @param string             $dir    The directory where to load the definition file. If not specified, the default
+     * @param ?string            $dir    The directory where to load the definition file. If not specified, the default
      *                                   directory will be used.
      *
      * @throws PdfException if the font file is not found
@@ -440,16 +430,14 @@ class PdfDocument
     public function addFont(
         PdfFontName|string $family,
         PdfFontStyle $style = PdfFontStyle::REGULAR,
-        string $file = '',
-        string $dir = ''
+        ?string $file = null,
+        ?string $dir = null
     ): self {
         if ($family instanceof PdfFontName) {
             $family = $family->value;
         }
         $family = \strtolower($family);
-        if ('' === $file) {
-            $file = \str_replace(' ', '', $family) . $style->value . '.php';
-        }
+        $file ??= \str_replace(' ', '', $family) . $style->value . '.php';
         $fontKey = $family . $style->value;
         if (isset($this->fonts[$fontKey])) {
             return $this;
@@ -457,27 +445,25 @@ class PdfDocument
         if (\str_contains($file, '/') || \str_contains($file, '\\')) {
             throw new PdfException(\sprintf('Incorrect font definition file name: %s.', $file));
         }
-        if ('' === $dir) {
-            $dir = $this->fontPath;
-        }
+        $dir ??= $this->fontPath;
         if (!\str_ends_with($dir, '/') && !\str_ends_with($dir, '\\')) {
             $dir .= \DIRECTORY_SEPARATOR;
         }
-        /** @phpstan-var PdfFontType $info */
+        /** @phpstan-var FontType $info */
         $info = $this->loadFont($dir . $file);
-        $info['i'] = \count($this->fonts) + 1;
-        if (!empty($info['file'])) {
+        $info['index'] = \count($this->fonts) + 1;
+        if (isset($info['file']) && '' !== $info['file']) {
             // Embedded font
             $key = $dir . $info['file'];
             $info['file'] = $key;
             if ('TrueType' === $info['type']) {
                 $this->fontFiles[$key] = [
-                    'n' => 0,
+                    'number' => 0,
                     'length1' => $info['originalsize'],
                 ];
             } else {
                 $this->fontFiles[$key] = [
-                    'n' => 0,
+                    'number' => 0,
                     'length1' => $info['size1'],
                     'length2' => $info['size2'],
                 ];
@@ -496,6 +482,8 @@ class PdfDocument
      * destination is defined with SetLink().
      *
      * @return int the link identifier
+     *
+     * @see PdfDocument::link()
      */
     public function addLink(): int
     {
@@ -516,20 +504,20 @@ class PdfDocument
      *
      * The origin of the coordinate system is in the top-left corner and increasing ordinates go downwards.
      *
-     * @param PdfOrientation|null  $orientation the page orientation or <code>null</code> to use the current orientation
-     * @param PdfSize|float[]|null $size        the page size or <code>null</code> to use the current size
-     * @param int|null             $rotation    the angle by which to rotate the page or <code>null</code> to use the
-     *                                          current orientation. It must be a multiple of 90; positive values mean
-     *                                          clockwise rotation.
+     * @param PdfOrientation|null      $orientation the page orientation or <code>null</code> to use the current
+     *                                              orientation
+     * @param PdfPageSize|float[]|null $size        the page size or <code>null</code> to use the current size
+     * @param PdfRotation|null         $rotation    the rotation by which to rotate the page or <code>null</code> to
+     *                                              use the current rotation
      *
-     * @phpstan-param PdfSize|PdfPageSizeType|null $size
+     * @phpstan-param PdfPageSize|PageSizeType|null $size
      *
      * @throws PdfException if the document is closed
      */
     public function addPage(
         PdfOrientation|null $orientation = null,
-        PdfSize|array|null $size = null,
-        int|null $rotation = null
+        PdfPageSize|array|null $size = null,
+        PdfRotation|null $rotation = null
     ): self {
         if (self::STATE_CLOSED === $this->state) {
             throw new PdfException('The document is closed.');
@@ -740,12 +728,16 @@ class PdfDocument
                 $this->escape($text)
             );
             if ($this->underline) {
-                $output .= ' ' . $this->doUnderline($this->x + $dx, $this->y + 0.5 * $height + 0.3 * $this->fontSize, $text);
+                $output .= ' ' . $this->doUnderline(
+                    $this->x + $dx,
+                    $this->y + 0.5 * $height + 0.3 * $this->fontSize,
+                    $text
+                );
             }
             if ($this->colorFlag) {
                 $output .= ' Q';
             }
-            if ('' !== $link) {
+            if ('' !== $link && 0 !== $link) {
                 $this->link(
                     $this->x + $dx,
                     $this->y + 0.5 * $height - 0.5 * $this->fontSize,
@@ -781,7 +773,7 @@ class PdfDocument
      * It is unnecessary to call this method explicitly because <code>output()</code> does it automatically. If the
      * document contains no page, <code>addPage()</code> is called to prevent from getting an invalid document.
      *
-     * @throws PdfException
+     * @throws PdfException if a font file not found
      */
     public function close(): void
     {
@@ -811,12 +803,12 @@ class PdfDocument
      *
      * @return int the link identifier
      *
-     * @see PdfDocument::AddLink()
-     * @see PdfDocument::SetLink()
+     * @see PdfDocument::addLink()
+     * @see PdfDocument::setLink()
      */
     public function createLink(float|int $y = -1, int $page = -1): int
     {
-        $id = $this->addLinK();
+        $id = $this->addLink();
         $this->setLink($id, $y, $page);
 
         return $id;
@@ -1173,7 +1165,7 @@ class PdfDocument
             }
             $type = \strtolower($type);
 
-            /** @phpstan-var PdfImageType $info */
+            /** @phpstan-var ImageType $info */
             $info = match ($type) {
                 'jpeg',
                 'jpg' => $this->parseJpg($file),
@@ -1181,7 +1173,7 @@ class PdfDocument
                 'png' => $this->parsePng($file),
                 default => throw new PdfException(\sprintf('Unsupported image type: %s.', $type)),
             };
-            $info['i'] = \count($this->images) + 1;
+            $info['index'] = \count($this->images) + 1;
             $this->images[$file] = $info;
         } else {
             $info = $this->images[$file];
@@ -1194,8 +1186,8 @@ class PdfDocument
             $height = -96.0;
         }
 
-        $infoWidth = (float) $info['w'];
-        $infoHeight = (float) $info['h'];
+        $infoWidth = (float) $info['width'];
+        $infoHeight = (float) $info['height'];
         if ($width < 0.0) {
             $width = -$infoWidth * 72.0 / $width / $this->scaleFactor;
         }
@@ -1211,8 +1203,7 @@ class PdfDocument
 
         // Flowing mode
         if (null === $y) {
-            if ($this->y + $height > $this->pageBreakTrigger
-                && !$this->inHeader && !$this->inFooter && $this->isAutoPageBreak()) {
+            if (!$this->isPrintable($height) && $this->autoPageBreak && !$this->inHeader && !$this->inFooter) {
                 // Automatic page break
                 $oldX = $this->x;
                 $this->addPage($this->currentOrientation, $this->currentPageSize, $this->currentRotation);
@@ -1228,8 +1219,8 @@ class PdfDocument
             $width * $this->scaleFactor,
             $height * $this->scaleFactor,
             $x * $this->scaleFactor,
-            ($this->height - ($y + $height)) * $this->scaleFactor,
-            $info['i']
+            ($this->height - $y - $height) * $this->scaleFactor,
+            $info['index']
         );
         if ('' !== $link && 0 !== $link) {
             $this->link($x, $y, $width, $height, $link);
@@ -1305,6 +1296,14 @@ class PdfDocument
      *
      * Text or image links are generally put via <code>cell()</code>, <code>write()</code> or <code>image()</code>, but
      * this method can be useful for instance to define a clickable area inside an image.
+     *
+     * @param float      $x      the abscissa of the upper-left corner of the rectangle
+     * @param float      $y      the ordinate of the upper-left corner of the rectangle
+     * @param float      $width  the width of the rectangle
+     * @param float      $height the height of the rectangle
+     * @param string|int $link   an URL or identifier returned by <code>addLink()</code>
+     *
+     * @see PdfDocument::addLink()
      */
     public function link(float $x, float $y, float $width, float $height, string|int $link): self
     {
@@ -1525,24 +1524,24 @@ class PdfDocument
      * <code>close()</code> if necessary to terminate the document.
      *
      * @param PdfDestination $destination The destination where to send the document
-     * @param string         $name        The name of the file. It is ignored in case of
+     * @param ?string        $name        The name of the file. It is ignored in case of
      *                                    destination <code>PdfDestination::STRING</code>. The default value
      *                                    is 'doc.pdf'.
      * @param bool           $isUTF8      Indicates if name is encoded in ISO-8859-1 (false) or UTF-8 (true).
      *                                    Only used for destinations <code>PdfDestination::INLINE</code> and
      *                                    <code>PdfDestination::DOWNLOAD</code>.
      *
-     * @throws PdfException
+     * @return string the content if the output is <code>PdfDestination::STRING</code>, an empty string otherwise
+     *
+     * @throws PdfException if a font file not found or if some data has already been output
      */
     public function output(
         PdfDestination $destination = PdfDestination::INLINE,
-        string $name = '',
+        ?string $name = null,
         bool $isUTF8 = false
     ): string {
         $this->close();
-        if ('' === $name) {
-            $name = 'doc.pdf';
-        }
+        $name ??= 'doc.pdf';
         switch ($destination) {
             case PdfDestination::INLINE:
                 $this->checkOutput();
@@ -1814,35 +1813,39 @@ class PdfDocument
      *
      * If you just wish to change the current font size, it is simpler to call <code>setFontSize()</code>.
      *
-     * @param PdfFontName|string $family The font family. It can be either a font name enumeration, a name defined by
-     *                                   <code>addFont()</code> or one of the standard families (case-insensitive):
-     *                                   <ul>
-     *                                   <li><code>'Courier'</code>: Fixed-width.</li>
-     *                                   <li><code>'Helvetica'</code> or <code>Arial</code>: Synonymous: sans
-     *                                   serif.</li>
-     *                                   <li><code>'Symbol'</code>: Symbolic.</li>
-     *                                   <li><code>'ZapfDingbats'</code>: Symbolic.</li>
-     *                                   </ul>
-     *                                   It is also possible to pass an empty string. In that case, the current family
-     *                                   is kept.
-     * @param PdfFontStyle       $style  The font style. The default value is regular.
-     * @param float              $size   The font size in points or 0.0 to use the current size. If no size has been
-     *                                   specified since the beginning of the document, the value is 9.0.
+     * @param PdfFontName|string|null $family The font family. It can be either a font name enumeration, a name defined
+     *                                        by <code>addFont()</code> or one of the standard families
+     *                                        (case-insensitive):
+     *                                        <ul>
+     *                                        <li><code>'Courier'</code>: Fixed-width.</li>
+     *                                        <li><code>'Helvetica'</code> or <code>Arial</code>: Synonymous: sans
+     *                                        serif.</li>
+     *                                        <li><code>'Symbol'</code>: Symbolic.</li>
+     *                                        <li><code>'ZapfDingbats'</code>: Symbolic.</li>
+     *                                        </ul>
+     *                                        It is also possible to pass <code>null</code>. In that case, the current
+     *                                        family is kept.
+     * @param PdfFontStyle            $style  The font style. The default value is regular.
+     * @param ?float                  $size   The font size in points or <code>null</code> to use the current size. If
+     *                                        no size has been specified since the beginning of the document, the value
+     *                                        is 9.0.
      *
-     * @throws PdfException
+     * @throws PdfException if the font is not found
      *
      * @see PdfDocument::addFont()
+     * @see PdfDocument::setFontSize()
      */
-    public function setFont(PdfFontName|string $family = '', PdfFontStyle $style = PdfFontStyle::REGULAR, float $size = 0): self
-    {
+    public function setFont(
+        PdfFontName|string|null $family = null,
+        PdfFontStyle $style = PdfFontStyle::REGULAR,
+        ?float $size = null
+    ): self {
         if ($family instanceof PdfFontName) {
             $family = $family->value;
         }
-        $family = '' === $family ? $this->fontFamily : \strtolower($family);
+        $family = null === $family ? $this->fontFamily : \strtolower($family);
         $this->underline = $style->isUnderLine();
-        if (0.0 === $size) {
-            $size = $this->fontSizeInPoint;
-        }
+        $size ??= $this->fontSizeInPoint;
         // Test if font is already selected
         if ($this->fontFamily === $family && $this->fontStyle === $style && $this->fontSizeInPoint === $size) {
             return $this;
@@ -1858,10 +1861,11 @@ class PdfDocument
             if ('arial' === $family) {
                 $family = 'helvetica';
             }
-            if (!\in_array($family, self::CORE_FONTS, true)) {
+            $coreName = PdfFontName::tryFromIgnoreCase($family);
+            if (!$coreName instanceof PdfFontName) {
                 throw new PdfException(\sprintf('Undefined font: %s %s.' . $family, $style->value));
             }
-            if ('symbol' === $family || 'zapfdingbats' === $family) {
+            if (PdfFontName::SYMBOL === $coreName || PdfFontName::ZAPFDINGBATS === $coreName) {
                 $style = PdfFontStyle::REGULAR;
             }
             $fontKey = $family . $style->value;
@@ -1876,7 +1880,7 @@ class PdfDocument
         $this->fontSize = $size / $this->scaleFactor;
         $this->currentFont = $this->fonts[$fontKey];
         if ($this->page > 0) {
-            $this->outf('BT /F%d %.2F Tf ET', $this->currentFont['i'], $this->fontSizeInPoint);
+            $this->outf('BT /F%d %.2F Tf ET', $this->currentFont['index'], $this->fontSizeInPoint);
         }
 
         return $this;
@@ -1897,7 +1901,7 @@ class PdfDocument
         $this->fontSizeInPoint = $size;
         $this->fontSize = $size / $this->scaleFactor;
         if ($this->page > 0 && null !== $this->currentFont) {
-            $this->outf('BT /F%d %.2F Tf ET', $this->currentFont['i'], $this->fontSizeInPoint);
+            $this->outf('BT /F%d %.2F Tf ET', $this->currentFont['index'], $this->fontSizeInPoint);
         }
 
         return $this;
@@ -2086,8 +2090,8 @@ class PdfDocument
      */
     public function setXY(float $x, float $y): self
     {
-        $this->SetX($x);
-        $this->SetY($y, false);
+        $this->setX($x);
+        $this->setY($y, false);
 
         return $this;
     }
@@ -2312,14 +2316,12 @@ class PdfDocument
     /**
      * Begin a new page.
      *
-     * @phpstan-param PdfSize|PdfPageSizeType|null $size
-     *
-     * @throws PdfException
+     * @phpstan-param PdfPageSize|PageSizeType|null $size
      */
     protected function beginPage(
         ?PdfOrientation $orientation = null,
-        PdfSize|array|null $size = null,
-        int|null $rotation = null
+        PdfPageSize|array|null $size = null,
+        PdfRotation|null $rotation = null
     ): void {
         ++$this->page;
         $this->pages[$this->page] = '';
@@ -2355,14 +2357,12 @@ class PdfDocument
             || $size[1] !== $this->defaultPageSize[1]) {
             $this->pageInfos[$this->page]['size'] = [$this->widthInPoint, $this->heightInPoint];
         }
-        $rotation ??= $this->currentRotation;
-        if (0 !== $rotation) {
-            if (0 !== $rotation % 90) {
-                throw new PdfException(\sprintf('Incorrect rotation value: %d.', $rotation));
-            }
-            $this->pageInfos[$this->page]['rotation'] = $rotation;
+        if ($rotation instanceof PdfRotation) {
+            $this->currentRotation = $rotation;
         }
-        $this->currentRotation = $rotation;
+        if (PdfRotation::DEFAULT !== $this->currentRotation) {
+            $this->pageInfos[$this->page]['rotation'] = $this->currentRotation;
+        }
     }
 
     /**
@@ -2378,7 +2378,7 @@ class PdfDocument
         if (false !== \ob_get_length()) {
             // The output buffer is not empty
             $content = \ob_get_contents();
-            if (\is_string($content) && \preg_match('/^(\xEF\xBB\xBF)?\s*$/', $content)) {
+            if (\is_string($content) && 1 === \preg_match('/^(\xEF\xBB\xBF)?\s*$/', $content)) {
                 // It contains only a UTF-8 BOM and/or whitespace, let's clean it
                 \ob_clean();
             } else {
@@ -2392,7 +2392,7 @@ class PdfDocument
      */
     protected function convertIsoToUtf8(string $str): string
     {
-        return (string) \iconv('ISO-8859-1', 'UTF-8', $str);
+        return \mb_convert_encoding($str, 'UTF-8', 'ISO-8859-1');
     }
 
     /**
@@ -2400,13 +2400,13 @@ class PdfDocument
      */
     protected function convertUtf8ToUtf16(string $str): string
     {
-        return "\xFE\xFF" . (string) \iconv('UTF-8', 'UTF-16BE', $str);
+        return "\xFE\xFF" . \mb_convert_encoding($str, 'UTF-16BE', 'UTF-8');
     }
 
     /**
      * Output the underline font.
      *
-     * @throws PdfException
+     * @throws PdfException if No font has been set
      */
     protected function doUnderline(float $x, float $y, string $str): string
     {
@@ -2431,7 +2431,7 @@ class PdfDocument
     /**
      * Output the end of document.
      *
-     * @throws PdfException
+     * @throws PdfException if a font file not found
      */
     protected function endDoc(): void
     {
@@ -2511,13 +2511,13 @@ class PdfDocument
     /**
      * Gets the page size.
      *
-     * @param PdfSize|PdfPageSizeType $size
+     * @phpstan-param PdfPageSize|PageSizeType $size
      *
-     * @return PdfPageSizeType
+     * @phpstan-return PageSizeType
      */
-    protected function getPageSize(PdfSize|array $size): array
+    protected function getPageSize(PdfPageSize|array $size): array
     {
-        if ($size instanceof PdfSize) {
+        if ($size instanceof PdfPageSize) {
             $size = $size->getSize();
 
             return [$size[0] / $this->scaleFactor, $size[1] / $this->scaleFactor];
@@ -2546,11 +2546,23 @@ class PdfDocument
     }
 
     /**
-     * Returns if the given string is only containing ASCII characters.
+     * Returns if the given string is valid for the <code>ASCII</code> encoding.
+     *
+     * @return bool <code>true</code> if the given string is only containing <code>ASCII</code> characters
      */
     protected function isAscii(string $str): bool
     {
         return \mb_check_encoding($str, 'ASCII');
+    }
+
+    /**
+     * Returns if the given string is valid for the <code>UTF-8</code> encoding.
+     *
+     * @return bool <code>true</code> if the given string is only containing <code>UTF-8</code> characters
+     */
+    protected function isUTF8(string $str): bool
+    {
+        return \mb_check_encoding($str, 'UTF-8');
     }
 
     /**
@@ -2561,6 +2573,8 @@ class PdfDocument
      * @psalm-suppress UnresolvableInclude
      * @psalm-suppress UndefinedVariable
      * @psalm-suppress UnusedVariable
+     *
+     * @phpstan-return array<array-key, mixed>
      */
     protected function loadFont(string $path): array
     {
@@ -2595,7 +2609,7 @@ class PdfDocument
     /**
      * Output the given string.
      *
-     * @throws PdfException
+     * @throws PdfException if the document is closed, no page has been added or if called after end page
      */
     protected function out(string $output): void
     {
@@ -2616,7 +2630,7 @@ class PdfDocument
     /**
      * Output a formatted string.
      *
-     * @throws PdfException
+     * @throws PdfException if the document is closed, no page has been added or if called after end page
      */
     protected function outf(string $format, string|int|float ...$values): void
     {
@@ -2642,6 +2656,8 @@ class PdfDocument
      * Parse the given GIF image.
      *
      * @throws PdfException
+     *
+     * @phpstan-return array<array-key, mixed>
      */
     protected function parseGif(string $file): array
     {
@@ -2652,7 +2668,6 @@ class PdfDocument
         if (!\function_exists('imagecreatefromgif')) {
             throw new PdfException('GD has no GIF read support.');
         }
-        /** @phpstan-var \GdImage $image */
         $image = \imagecreatefromgif($file);
         if (!$image instanceof \GdImage) {
             throw new PdfException(\sprintf('Missing or incorrect image file: %s.', $file));
@@ -2681,6 +2696,8 @@ class PdfDocument
      * Parse the given JPG image.
      *
      * @throws PdfException
+     *
+     * @phpstan-return array<array-key, mixed>
      */
     protected function parseJpg(string $file): array
     {
@@ -2689,10 +2706,10 @@ class PdfDocument
         if (!\is_array($size)) {
             throw new PdfException(\sprintf('Missing or incorrect image file: %s.', $file));
         }
-        /** @phpstan-var array $size */
         if (2 !== $size[2]) {
             throw new PdfException(\sprintf('The file is not a JPEG image: %s.', $file));
         }
+        /** @phpstan-var array{0: int, 1: int, channels?: int, bits?: int, ...} $size */
         if (!isset($size['channels']) || 3 === $size['channels']) {
             $color_space = 'DeviceRGB';
         } elseif (4 === $size['channels']) {
@@ -2708,11 +2725,11 @@ class PdfDocument
         }
 
         return [
-            'w' => $size[0],
-            'h' => $size[1],
-            'cs' => $color_space,
-            'bpc' => $bpc,
-            'f' => 'DCTDecode',
+            'width' => $size[0],
+            'height' => $size[1],
+            'color_space' => $color_space,
+            'bits_per_component' => $bpc,
+            'filter' => 'DCTDecode',
             'data' => $data,
         ];
     }
@@ -2721,6 +2738,8 @@ class PdfDocument
      * Parse the given PNG image.
      *
      * @throws PdfException
+     *
+     * @phpstan-return array<array-key, mixed>
      */
     protected function parsePng(string $file): array
     {
@@ -2742,7 +2761,9 @@ class PdfDocument
      *
      * @param resource $stream
      *
-     * @throws PdfException
+     * @throws PdfException if an error occurs while reading stream or if end of stream is reached
+     *
+     * @phpstan-return array<string, mixed>
      */
     protected function parsePngStream($stream, string $file): array
     {
@@ -2782,7 +2803,7 @@ class PdfDocument
             throw new PdfException(\sprintf('Interlacing not supported: %s.', $file));
         }
         $this->readStream($stream, 4);
-        $dp = \sprintf(
+        $decodeParams = \sprintf(
             '/Predictor 15 /Colors %d /BitsPerComponent %d /Columns %d',
             'DeviceRGB' === $colorSpace ? 3 : 1,
             $bitsPerComponent,
@@ -2797,12 +2818,12 @@ class PdfDocument
             $length = $this->readInt($stream);
             $type = $this->readStream($stream, 4);
             switch ($type) {
-                case 'PLTE':
+                case 'PLTE': // @phpstan-ignore-line
                     // Read palette
                     $palette = $this->readStream($stream, $length);
                     $this->readStream($stream, 4);
                     break;
-                case 'tRNS':
+                case 'tRNS': // @phpstan-ignore-line
                     // Read transparency info
                     $t = $this->readStream($stream, $length);
                     if (0 === $ct) {
@@ -2817,7 +2838,7 @@ class PdfDocument
                     }
                     $this->readStream($stream, 4);
                     break;
-                case 'IDAT':
+                case 'IDAT': // @phpstan-ignore-line
                     // Read image data block
                     $data .= $this->readStream($stream, $length);
                     $this->readStream($stream, 4);
@@ -2832,14 +2853,14 @@ class PdfDocument
             throw new PdfException(\sprintf('Missing palette in %s.', $file));
         }
         $info = [
-            'w' => $width,
-            'h' => $height,
-            'cs' => $colorSpace,
-            'bpc' => $bitsPerComponent,
-            'f' => 'FlateDecode',
-            'dp' => $dp,
-            'pal' => $palette,
-            'trns' => $transparencies,
+            'width' => $width,
+            'height' => $height,
+            'color_space' => $colorSpace,
+            'bits_per_component' => $bitsPerComponent,
+            'filter' => 'FlateDecode',
+            'decode_parms' => $decodeParams,
+            'palette' => $palette,
+            'transparencies' => $transparencies,
         ];
         if ($ct >= 4) {
             // Extract alpha channel
@@ -2875,7 +2896,7 @@ class PdfDocument
             }
             unset($data);
             $data = \gzcompress($color);
-            $info['smask'] = \gzcompress($alpha);
+            $info['soft_mask'] = \gzcompress($alpha);
             $this->updateVersion('1.4');
             $this->withAlpha = true;
         }
@@ -2885,7 +2906,7 @@ class PdfDocument
     }
 
     /**
-     * Put the given string to this buffer.
+     * Put the given value to this buffer.
      */
     protected function put(string|int $value): void
     {
@@ -2897,25 +2918,25 @@ class PdfDocument
      */
     protected function putCatalog(): void
     {
-        $n = $this->pageInfos[1]['n'];
+        $number = $this->pageInfos[1]['number'];
         $this->put('/Type /Catalog');
         $this->put('/Pages 1 0 R');
         if ($this->zoom instanceof PdfZoom) {
             switch ($this->zoom) {
                 case PdfZoom::FULL_PAGE:
-                    $this->putf('/OpenAction [%d 0 R /Fit]', $n);
+                    $this->putf('/OpenAction [%d 0 R /Fit]', $number);
                     break;
                 case PdfZoom::FULL_WIDTH:
-                    $this->putf('/OpenAction [%d 0 R /FitH null]', $n);
+                    $this->putf('/OpenAction [%d 0 R /FitH null]', $number);
                     break;
                 case PdfZoom::REAL:
-                    $this->putf('/OpenAction [%d 0 R /XYZ null null 1]', $n);
+                    $this->putf('/OpenAction [%d 0 R /XYZ null null 1]', $number);
                     break;
                 default:
                     break;
             }
         } else {
-            $this->putf('/OpenAction [%d 0 R /XYZ null null %.2F]', $n, (float) $this->zoom / 100.0);
+            $this->putf('/OpenAction [%d 0 R /XYZ null null %.2F]', $number, (float) $this->zoom / 100.0);
         }
 
         switch ($this->layout) {
@@ -2944,14 +2965,14 @@ class PdfDocument
     /**
      * Put fonts to this buffer.
      *
-     * @throws PdfException
+     * @throws PdfException if the font file not found
      */
     protected function putFonts(): void
     {
         foreach ($this->fontFiles as $file => $info) {
             // Font file embedding
             $this->newObj();
-            $this->fontFiles[$file]['n'] = $this->objectNumber;
+            $this->fontFiles[$file]['number'] = $this->objectNumber;
             $content = \file_get_contents($file);
             if (false === $content) {
                 throw new PdfException(\sprintf('Font file not found: %s.', $file));
@@ -2998,7 +3019,7 @@ class PdfDocument
                 }
             }
             // Font object
-            $this->fonts[$key]['n'] = $this->objectNumber + 1;
+            $this->fonts[$key]['number'] = $this->objectNumber + 1;
             if ($font['subsetted']) {
                 $name = 'AAAAAA+' . $name;
             }
@@ -3039,12 +3060,12 @@ class PdfDocument
                 // Widths
                 $this->newObj();
                 $charWidths = $font['cw'];
-                $output = '[';
-                for ($i = 32; $i <= 255; ++$i) {
-                    $output .= \sprintf('%d ', $charWidths[\chr($i)]);
-                }
-                $output .= ']';
-                $this->put($output);
+                $output = \array_reduce(
+                    \range(\chr(32), \chr(255)),
+                    fn (string $carry, string $ch): string => $carry . \sprintf('%d ', $charWidths[$ch]),
+                    ''
+                );
+                $this->putf('[%s]', $output);
                 $this->endObj();
                 // Descriptor
                 $this->newObj();
@@ -3052,8 +3073,8 @@ class PdfDocument
                 foreach ($font['desc'] as $descKey => $descValue) {
                     $output .= \sprintf(' /%s %s', $descKey, $descValue);
                 }
-                if (!empty($font['file'])) {
-                    $n = $this->fontFiles[$font['file']]['n'];
+                if (isset($font['file']) && '' !== $font['file']) {
+                    $n = $this->fontFiles[$font['file']]['number'];
                     $output .= \sprintf(' /FontFile%s %d 0 R', 'Type1' === $type ? '' : '2', $n);
                 }
                 $output .= '>>';
@@ -3065,6 +3086,7 @@ class PdfDocument
                 if (!\method_exists($this, $method)) {
                     throw new PdfException(\sprintf('Unsupported font type: %s.', $type));
                 }
+                // @phpstan-ignore-next-line
                 $this->$method($font);
             }
         }
@@ -3081,66 +3103,67 @@ class PdfDocument
     /**
      * Put image to this buffer.
      *
-     * @phpstan-param PdfImageType $info
+     * @phpstan-param ImageType $info
      */
     protected function putImage(array &$info): void
     {
         $this->newObj();
-        $info['n'] = $this->objectNumber;
+        $info['number'] = $this->objectNumber;
         $this->put('<</Type /XObject');
         $this->put('/Subtype /Image');
-        $this->putf('/Width %d', $info['w']);
-        $this->putf('/Height %d', $info['h']);
-        if ('Indexed' === $info['cs']) {
+        $this->putf('/Width %d', $info['width']);
+        $this->putf('/Height %d', $info['height']);
+        if ('Indexed' === $info['color_space']) {
             $this->putf(
                 '/ColorSpace [/Indexed /DeviceRGB %d %d 0 R]',
-                \intdiv(\strlen($info['pal']), 3) - 1,
+                \intdiv(\strlen($info['palette']), 3) - 1,
                 $this->objectNumber + 1
             );
         } else {
-            $this->putf('/ColorSpace /%s', $info['cs']);
-            if ('DeviceCMYK' === $info['cs']) {
+            $this->putf('/ColorSpace /%s', $info['color_space']);
+            if ('DeviceCMYK' === $info['color_space']) {
                 $this->put('/Decode [1 0 1 0 1 0 1 0]');
             }
         }
-        $this->putf('/BitsPerComponent %d', $info['bpc']);
-        if (isset($info['f'])) {
-            $this->putf('/Filter /%s', $info['f']);
+        $this->putf('/BitsPerComponent %d', $info['bits_per_component']);
+        if (isset($info['filter'])) {
+            $this->putf('/Filter /%s', $info['filter']);
         }
-        if (isset($info['dp'])) {
-            $this->putf('/DecodeParms <<%s>>', $info['dp']);
+        if (isset($info['decode_parms'])) {
+            $this->putf('/DecodeParms <<%s>>', $info['decode_parms']);
         }
-        if (isset($info['trns']) && \is_array($info['trns'])) {
-            $trns = '';
-            for ($i = 0, $len = \count($info['trns']); $i < $len; ++$i) {
-                $trns .= \sprintf('%1$s %1$s ', $info['trns'][$i]);
-            }
-            $this->putf('/Mask [%s]', $trns);
+        if (isset($info['transparencies']) && \is_array($info['transparencies'])) {
+            $transparencies = \array_reduce(
+                $info['transparencies'],
+                fn (string $carry, string $value): string => $carry . \sprintf('%1$s %1$s ', $value),
+                ''
+            );
+            $this->putf('/Mask [%s]', $transparencies);
         }
-        if (isset($info['smask'])) {
+        if (isset($info['soft_mask'])) {
             $this->putf('/SMask %d 0 R', $this->objectNumber + 1);
         }
         $this->putf('/Length %d>>', \strlen($info['data']));
         $this->putStream($info['data']);
         $this->endObj();
         // Soft mask
-        if (isset($info['smask'])) {
-            $dp = \sprintf('/Predictor 15 /Colors 1 /BitsPerComponent 8 /Columns %.2f', $info['w']);
-            /** @phpstan-var PdfImageType $info */
+        if (isset($info['soft_mask'])) {
+            $decodeParms = \sprintf('/Predictor 15 /Colors 1 /BitsPerComponent 8 /Columns %.2f', $info['width']);
+            /** @phpstan-var ImageType $info */
             $info = [
-                'w' => $info['w'],
-                'h' => $info['h'],
-                'cs' => 'DeviceGray',
-                'bpc' => 8,
-                'f' => $info['f'] ?? '',
-                'dp' => $dp,
-                'data' => $info['smask'],
+                'width' => $info['width'],
+                'height' => $info['height'],
+                'color_space' => 'DeviceGray',
+                'bits_per_component' => 8,
+                'filter' => $info['filter'] ?? '',
+                'decode_parms' => $decodeParms,
+                'data' => $info['soft_mask'],
             ];
             $this->putImage($info);
         }
         // Palette
-        if ('Indexed' === $info['cs']) {
-            $this->putStreamObject($info['pal']);
+        if ('Indexed' === $info['color_space']) {
+            $this->putStreamObject($info['palette']);
         }
     }
 
@@ -3152,7 +3175,7 @@ class PdfDocument
         foreach (\array_keys($this->images) as $file) {
             $this->putImage($this->images[$file]);
             unset($this->images[$file]['data']);
-            unset($this->images[$file]['smask']);
+            unset($this->images[$file]['soft_mask']);
         }
     }
 
@@ -3164,8 +3187,8 @@ class PdfDocument
         $date = \date('YmdHisO', $this->creationDate);
         $value = \sprintf("D:%s'%s'", \substr($date, 0, -2), \substr($date, -2));
         $this->addMetaData('CreationDate', $value);
-        foreach ($this->metadata as $key => $value) {
-            $this->putf('/%s %s', $key, $this->textString($value));
+        foreach ($this->metadata as $key => $data) {
+            $this->putf('/%s %s', $key, $this->textString($data));
         }
     }
 
@@ -3199,7 +3222,7 @@ class PdfDocument
                 }
                 $output .= \sprintf(
                     '/Dest [%d 0 R /XYZ 0 %.2F null]>>',
-                    $pageInfo['n'] ?? 0,
+                    $pageInfo['number'] ?? 0,
                     $height - (float) $link[1] * $this->scaleFactor
                 );
             }
@@ -3220,10 +3243,10 @@ class PdfDocument
             $this->putf('/MediaBox [0 0 %.2F %.2F]', $this->pageInfos[$n]['size'][0], $this->pageInfos[$n]['size'][1]);
         }
         if (isset($this->pageInfos[$n]['rotation'])) {
-            $this->putf('/Rotate %d', $this->pageInfos[$n]['rotation']);
+            $this->putf('/Rotate %d', $this->pageInfos[$n]['rotation']->value);
         }
         $this->put('/Resources 2 0 R');
-        if (!empty($this->pageLinks[$n])) {
+        if ([] !== $this->pageLinks[$n]) {
             $output = '/Annots [';
             foreach ($this->pageLinks[$n] as $pageLink) {
                 $output .= \sprintf('%d 0 R ', $pageLink[5]);
@@ -3237,7 +3260,7 @@ class PdfDocument
         $this->putf('/Contents %d 0 R>>', $this->objectNumber + 1);
         $this->endObj();
         // Page content
-        if (!empty($this->aliasNumberPages)) {
+        if ('' !== $this->aliasNumberPages) {
             $this->pages[$n] = \str_replace($this->aliasNumberPages, (string) $this->page, $this->pages[$n]);
         }
         $this->putStreamObject($this->pages[$n]);
@@ -3255,7 +3278,7 @@ class PdfDocument
         $page = $this->page;
         $n = $this->objectNumber;
         for ($i = 1; $i <= $page; ++$i) {
-            $this->pageInfos[$i]['n'] = ++$n;
+            $this->pageInfos[$i]['number'] = ++$n;
             ++$n;
             foreach ($this->pageLinks[$i] as &$pageLink) {
                 $pageLink[5] = ++$n;
@@ -3269,7 +3292,7 @@ class PdfDocument
         $this->put('<</Type /Pages');
         $kids = '/Kids [';
         for ($i = 1; $i <= $page; ++$i) {
-            $kids .= \sprintf('%d 0 R ', $this->pageInfos[$i]['n']);
+            $kids .= \sprintf('%d 0 R ', $this->pageInfos[$i]['number']);
         }
         $kids .= ']';
         $this->put($kids);
@@ -3294,7 +3317,7 @@ class PdfDocument
         $this->put('/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]');
         $this->put('/Font <<');
         foreach ($this->fonts as $font) {
-            $this->putf('/F%d %d 0 R', $font['i'], $font['n']);
+            $this->putf('/F%d %d 0 R', $font['index'], $font['number']);
         }
         $this->put('>>');
         $this->put('/XObject <<');
@@ -3305,7 +3328,7 @@ class PdfDocument
     /**
      * Put resources dictionary to this buffer.
      *
-     * @throws PdfException
+     * @throws PdfException if a font file not found
      */
     protected function putResources(): void
     {
@@ -3334,11 +3357,10 @@ class PdfDocument
      */
     protected function putStreamObject(string $data): void
     {
+        $entries = '';
         if ($this->compression) {
             $entries = '/Filter /FlateDecode ';
             $data = (string) \gzcompress($data);
-        } else {
-            $entries = '';
         }
         $entries .= \sprintf('/Length %d', \strlen($data));
         $this->newObj();
@@ -3363,32 +3385,32 @@ class PdfDocument
     protected function putXObjectDictionary(): void
     {
         foreach ($this->images as $image) {
-            $this->putf('/I%d %d 0 R', $image['i'], $image['n']);
+            $this->putf('/I%d %d 0 R', $image['index'], $image['number']);
         }
     }
 
     /**
-     * Read an integer from the given stream.
+     * Read a 4-byte integer from the given stream.
      *
-     * @param resource $stream
+     * @param resource $stream the stream to read integer from
      *
-     * @throws PdfException
+     * @throws PdfException if an error occurs while reading stream or if end of stream is reached
      */
     protected function readInt($stream): int
     {
-        // Read a 4-byte integer from stream
-        /** @phpstan-var array{i: int} $a */
-        $a = (array) \unpack('Ni', $this->readStream($stream, 4));
+        /** @phpstan-var array{i: int} $unpack */
+        $unpack = \unpack('Ni', $this->readStream($stream, 4));
 
-        return $a['i'];
+        return $unpack['i'];
     }
 
     /**
      * Read a string from the given stream.
      *
-     * @phpstan-param resource $stream
+     * @param resource $stream the stream to read string from
+     * @param int      $len    the number of bytes read
      *
-     * @throws PdfException
+     * @throws PdfException if an error occurs while reading stream or if end of stream is reached
      */
     protected function readStream($stream, int $len): string
     {
@@ -3423,7 +3445,7 @@ class PdfDocument
     }
 
     /**
-     * Convert the array to Unicode C map.
+     * Convert the V type array to Unicode C map.
      *
      * @phpstan-param UvType $uv
      */
@@ -3456,14 +3478,10 @@ class PdfDocument
         $output .= "<00> <FF>\n";
         $output .= "endcodespacerange\n";
         if ($nbr > 0) {
-            $output .= \sprintf("%d beginbfrange\n", $nbr);
-            $output .= $ranges;
-            $output .= "endbfrange\n";
+            $output .= \sprintf("%d beginbfrange\n%sendbfrange\n", $nbr, $ranges);
         }
         if ($nbc > 0) {
-            $output .= \sprintf("%d beginbfchar\n", $nbc);
-            $output .= $chars;
-            $output .= "endbfchar\n";
+            $output .= \sprintf("%d beginbfchar\n%sendbfchar\n", $nbc, $chars);
         }
         $output .= "endcmap\n";
         $output .= "CMapName currentdict /CMap defineresource pop\n";
