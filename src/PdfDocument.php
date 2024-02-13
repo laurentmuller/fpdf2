@@ -3243,69 +3243,69 @@ class PdfDocument
     /**
      * Put image to this buffer.
      *
-     * @phpstan-param ImageType $info
+     * @phpstan-param ImageType $image
      */
-    protected function putImage(array &$info): void
+    protected function putImage(array &$image): void
     {
         $this->newObj();
-        $info['number'] = $this->objectNumber;
+        $image['number'] = $this->objectNumber;
         $this->put('<</Type /XObject');
         $this->put('/Subtype /Image');
-        $this->putf('/Width %d', $info['width']);
-        $this->putf('/Height %d', $info['height']);
-        if ('Indexed' === $info['color_space']) {
+        $this->putf('/Width %d', $image['width']);
+        $this->putf('/Height %d', $image['height']);
+        if ('Indexed' === $image['color_space']) {
             $this->putf(
                 '/ColorSpace [/Indexed /DeviceRGB %d %d 0 R]',
-                \intdiv(\strlen($info['palette']), 3) - 1,
+                \intdiv(\strlen($image['palette']), 3) - 1,
                 $this->objectNumber + 1
             );
         } else {
-            $this->putf('/ColorSpace /%s', $info['color_space']);
-            if ('DeviceCMYK' === $info['color_space']) {
+            $this->putf('/ColorSpace /%s', $image['color_space']);
+            if ('DeviceCMYK' === $image['color_space']) {
                 $this->put('/Decode [1 0 1 0 1 0 1 0]');
             }
         }
-        $this->putf('/BitsPerComponent %d', $info['bits_per_component']);
-        if (isset($info['filter'])) {
-            $this->putf('/Filter /%s', $info['filter']);
+        $this->putf('/BitsPerComponent %d', $image['bits_per_component']);
+        if (isset($image['filter'])) {
+            $this->putf('/Filter /%s', $image['filter']);
         }
-        if (isset($info['decode_parms'])) {
-            $this->putf('/DecodeParms <<%s>>', $info['decode_parms']);
+        if (isset($image['decode_parms'])) {
+            $this->putf('/DecodeParms <<%s>>', $image['decode_parms']);
         }
-        if (isset($info['transparencies']) && \is_array($info['transparencies'])) {
+        if (isset($image['transparencies']) && \is_array($image['transparencies'])) {
             $transparencies = \array_reduce(
-                $info['transparencies'],
+                $image['transparencies'],
                 fn (string $carry, string $value): string => $carry . \sprintf('%1$s %1$s ', $value),
                 ''
             );
             $this->putf('/Mask [%s]', $transparencies);
         }
-        if (isset($info['soft_mask'])) {
+        if (isset($image['soft_mask'])) {
             $this->putf('/SMask %d 0 R', $this->objectNumber + 1);
         }
-        if (isset($info['data'])) {
-            $this->putf('/Length %d>>', \strlen($info['data']));
-            $this->putStream($info['data']);
+        if (isset($image['data'])) {
+            $this->putf('/Length %d>>', \strlen($image['data']));
+            $this->putStream($image['data']);
         }
         $this->endObj();
         // Soft mask
-        if (isset($info['soft_mask'])) {
-            $decodeParms = \sprintf('/Predictor 15 /Colors 1 /BitsPerComponent 8 /Columns %.2f', $info['width']);
-            /** @phpstan-var ImageType $info */
-            $soft_mask = [
-                'width' => $info['width'],
-                'height' => $info['height'],
+        if (isset($image['soft_mask'])) {
+            $decodeParms = \sprintf('/Predictor 15 /Colors 1 /BitsPerComponent 8 /Columns %.2f', $image['width']);
+            /** @phpstan-var ImageType $soft_image */
+            $soft_image = [
+                'width' => $image['width'],
+                'height' => $image['height'],
                 'color_space' => 'DeviceGray',
                 'bits_per_component' => 8,
-                'filter' => $info['filter'] ?? '',
+                'filter' => $image['filter'] ?? '',
                 'decode_parms' => $decodeParms,
-                'data' => $info['soft_mask'],
+                'data' => $image['soft_mask'],
             ];
-            $this->putImage($soft_mask);
+            $this->putImage($soft_image);
         }
         // Palette
-        if ('Indexed' === $info['color_space']) {
-            $this->putStreamObject($info['palette']);
+        if ('Indexed' === $image['color_space']) {
+            $this->putStreamObject($image['palette']);
         }
     }
 
