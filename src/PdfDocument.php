@@ -434,7 +434,7 @@ class PdfDocument
         PdfFontStyle $style = PdfFontStyle::REGULAR,
         ?string $file = null,
         ?string $dir = null
-    ): self {
+    ): static {
         if ($family instanceof PdfFontName) {
             $family = $family->value;
         }
@@ -521,7 +521,7 @@ class PdfDocument
         ?PdfOrientation $orientation = null,
         PdfPageSize|array|null $size = null,
         ?PdfRotation $rotation = null
-    ): self {
+    ): static {
         if (self::STATE_CLOSED === $this->state) {
             throw new PdfException('The document is closed.');
         }
@@ -633,7 +633,7 @@ class PdfDocument
         PdfTextAlignment $align = PdfTextAlignment::LEFT,
         bool $fill = false,
         string|int $link = ''
-    ): self {
+    ): static {
         $scaleFactor = $this->scaleFactor;
         if (!$this->isPrintable($height) && !$this->inHeader && !$this->inFooter && $this->autoPageBreak) {
             // Automatic page break
@@ -776,7 +776,7 @@ class PdfDocument
      *
      * @throws PdfException if a font file not found
      */
-    public function close(): self
+    public function close(): static
     {
         if (self::STATE_CLOSED === $this->state) {
             return $this;
@@ -1068,7 +1068,7 @@ class PdfDocument
      *
      * @throws PdfException
      */
-    public function horizontalLine(float $beforeSpace = 1.0, float $afterSpace = 1.0, ?float $lineWidth = null): self
+    public function horizontalLine(float $beforeSpace = 1.0, float $afterSpace = 1.0, ?float $lineWidth = null): static
     {
         $x = $this->x;
         $y = $this->y + $beforeSpace;
@@ -1163,7 +1163,7 @@ class PdfDocument
         float $height = 0.0,
         string $type = '',
         string|int $link = ''
-    ): self {
+    ): static {
         if ('' === $file) {
             throw new PdfException('Image file name is empty.');
         }
@@ -1274,7 +1274,7 @@ class PdfDocument
      *
      * @throws PdfException
      */
-    public function line(float $x1, float $y1, float $x2, float $y2): self
+    public function line(float $x1, float $y1, float $x2, float $y2): static
     {
         $this->outf(
             '%.2F %.2F m %.2F %.2F l S',
@@ -1299,7 +1299,7 @@ class PdfDocument
      * @see PdfDocument::setY()
      * @see PdfDocument::setXY()
      */
-    public function lineBreak(?float $height = null): self
+    public function lineBreak(?float $height = null): static
     {
         $this->x = $this->leftMargin;
         $this->y += $height ?? $this->lastHeight;
@@ -1322,7 +1322,7 @@ class PdfDocument
      * @see PdfDocument::addLink()
      * @see PdfDocument::setLink()
      */
-    public function link(float $x, float $y, float $width, float $height, string|int $link): self
+    public function link(float $x, float $y, float $width, float $height, string|int $link): static
     {
         $this->pageLinks[$this->page][] = [
             $x * $this->scaleFactor,
@@ -1344,7 +1344,7 @@ class PdfDocument
      * @param float $delta  the delta value of the ordinate to move to
      * @param bool  $resetX if <code>true</code>, the abscissa is reset to the left margin
      */
-    public function moveY(float $delta, bool $resetX = true): self
+    public function moveY(float $delta, bool $resetX = true): static
     {
         if (0.0 !== $delta) {
             $this->setY($this->y + $delta, $resetX);
@@ -1394,7 +1394,7 @@ class PdfDocument
         string|bool $border = false,
         PdfTextAlignment $align = PdfTextAlignment::JUSTIFIED,
         bool $fill = false
-    ): self {
+    ): static {
         if (null === $this->currentFont) {
             throw new PdfException('No font has been set.');
         }
@@ -1657,7 +1657,7 @@ class PdfDocument
         float $width,
         float $height,
         PdfRectangleStyle $style = PdfRectangleStyle::BORDER
-    ): self {
+    ): static {
         $this->outf(
             '%.2F %.2F %.2F %.2F re %s',
             $x * $this->scaleFactor,
@@ -1675,7 +1675,7 @@ class PdfDocument
      *
      * It will be substituted as the document is closed.
      */
-    public function setAliasNumberPages(string $aliasNumberPages = '{nb}'): self
+    public function setAliasNumberPages(string $aliasNumberPages = '{nb}'): static
     {
         $this->aliasNumberPages = $aliasNumberPages;
 
@@ -1688,7 +1688,7 @@ class PdfDocument
      * @param string $author the name of the author
      * @param bool   $isUTF8 indicates if the string is encoded in ISO-8859-1 (false) or UTF-8 (true)
      */
-    public function setAuthor(string $author, bool $isUTF8 = false): self
+    public function setAuthor(string $author, bool $isUTF8 = false): static
     {
         return $this->addMetaData('Author', $author, $isUTF8);
     }
@@ -1699,7 +1699,7 @@ class PdfDocument
      * When enabling, the second parameter is the distance from the bottom of the page that defines the triggering
      * limit.
      */
-    public function setAutoPageBreak(bool $autoPageBreak, float $bottomMargin = 0): self
+    public function setAutoPageBreak(bool $autoPageBreak, float $bottomMargin = 0): static
     {
         $this->autoPageBreak = $autoPageBreak;
         $this->bottomMargin = $bottomMargin;
@@ -1713,7 +1713,7 @@ class PdfDocument
      *
      * The minimum value allowed is 0.
      */
-    public function setCellMargin(float $margin): self
+    public function setCellMargin(float $margin): static
     {
         $this->cellMargin = \max(0.0, $margin);
 
@@ -1728,7 +1728,7 @@ class PdfDocument
      *
      * <b>Note:</b> the Zlib extension is required for this feature. If not present, compression will be turned off.
      */
-    public function setCompression(bool $compression): self
+    public function setCompression(bool $compression): static
     {
         $this->compression = \function_exists('gzcompress') ? $compression : false;
 
@@ -1743,7 +1743,7 @@ class PdfDocument
      * @param string $creator the name of the creator
      * @param bool   $isUTF8  indicates if the string is encoded in ISO-8859-1 (false) or UTF-8 (true)
      */
-    public function setCreator(string $creator, bool $isUTF8 = false): self
+    public function setCreator(string $creator, bool $isUTF8 = false): static
     {
         return $this->addMetaData('Creator', $creator, $isUTF8);
     }
@@ -1766,7 +1766,7 @@ class PdfDocument
     public function setDisplayMode(
         PdfZoom|int $zoom = PdfZoom::DEFAULT,
         PdfLayout $layout = PdfLayout::DEFAULT
-    ): self {
+    ): static {
         $this->zoom = $zoom;
         $this->layout = $layout;
 
@@ -1793,7 +1793,7 @@ class PdfDocument
      * @phpstan-param ColorType|null $g
      * @phpstan-param ColorType|null $b
      */
-    public function setDrawColor(int $r, ?int $g = null, ?int $b = null): self
+    public function setDrawColor(int $r, ?int $g = null, ?int $b = null): static
     {
         $this->drawColor = $this->parseColor($r, $g, $b, true);
         if ($this->page > 0) {
@@ -1823,7 +1823,7 @@ class PdfDocument
      * @phpstan-param ColorType|null $g
      * @phpstan-param ColorType|null $b
      */
-    public function setFillColor(int $r, ?int $g = null, ?int $b = null): self
+    public function setFillColor(int $r, ?int $g = null, ?int $b = null): static
     {
         $this->fillColor = $this->parseColor($r, $g, $b);
         $this->colorFlag = ($this->fillColor !== $this->textColor);
@@ -1872,7 +1872,7 @@ class PdfDocument
         PdfFontName|string|null $family = null,
         PdfFontStyle $style = PdfFontStyle::REGULAR,
         ?float $size = null
-    ): self {
+    ): static {
         if ($family instanceof PdfFontName) {
             $family = $family->value;
         }
@@ -1924,7 +1924,7 @@ class PdfDocument
      *
      * @see PdfDocument::setFont()
      */
-    public function setFontSize(float $size): self
+    public function setFontSize(float $size): static
     {
         if ($this->fontSizeInPoint === $size) {
             return $this;
@@ -1942,7 +1942,7 @@ class PdfDocument
      * @param string $keywords The list of keywords separated by space
      * @param bool   $isUTF8   Indicates if the string is encoded in ISO-8859-1 (false) or UTF-8 (true)
      */
-    public function setKeywords(string $keywords, bool $isUTF8 = false): self
+    public function setKeywords(string $keywords, bool $isUTF8 = false): static
     {
         return $this->addMetaData('Keywords', $keywords, $isUTF8);
     }
@@ -1952,7 +1952,7 @@ class PdfDocument
      *
      * The method can be called before creating the first page.
      */
-    public function setLeftMargin(float $leftMargin): self
+    public function setLeftMargin(float $leftMargin): static
     {
         $this->leftMargin = $leftMargin;
         if ($this->page > 0 && $this->x < $leftMargin) {
@@ -1970,7 +1970,7 @@ class PdfDocument
      *
      * @throws PdfException if the document is closed or if called after end page
      */
-    public function setLineWidth(float $lineWidth): self
+    public function setLineWidth(float $lineWidth): static
     {
         $this->lineWidth = $lineWidth;
         if ($this->page > 0) {
@@ -1991,7 +1991,7 @@ class PdfDocument
      * @see PdfDocument::addLink()
      * @see PdfDocument::link()
      */
-    public function setLink(int $link, int|float $y = 0, int $page = -1): self
+    public function setLink(int $link, int|float $y = 0, int $page = -1): static
     {
         if (-1 === $y) {
             $y = $this->y;
@@ -2013,7 +2013,7 @@ class PdfDocument
      * @param float  $topMargin   the top margin
      * @param ?float $rightMargin the right margin or <code>null</code> to use the left margin
      */
-    public function setMargins(float $leftMargin, float $topMargin, ?float $rightMargin = null): self
+    public function setMargins(float $leftMargin, float $topMargin, ?float $rightMargin = null): static
     {
         $this->leftMargin = $leftMargin;
         $this->topMargin = $topMargin;
@@ -2028,7 +2028,7 @@ class PdfDocument
      * @param string $producer the producer
      * @param bool   $isUTF8   Indicates if the string is encoded in ISO-8859-1 (false) or UTF-8 (true)
      */
-    public function setProducer(string $producer, bool $isUTF8 = false): self
+    public function setProducer(string $producer, bool $isUTF8 = false): static
     {
         return $this->addMetaData('Producer', $producer, $isUTF8);
     }
@@ -2038,7 +2038,7 @@ class PdfDocument
      *
      * The method can be called before creating the first page.
      */
-    public function setRightMargin(float $rightMargin): self
+    public function setRightMargin(float $rightMargin): static
     {
         $this->rightMargin = $rightMargin;
 
@@ -2051,7 +2051,7 @@ class PdfDocument
      * @param string $subject the subject
      * @param bool   $isUTF8  Indicates if the string is encoded in ISO-8859-1 (false) or UTF-8 (true)
      */
-    public function setSubject(string $subject, bool $isUTF8 = false): self
+    public function setSubject(string $subject, bool $isUTF8 = false): static
     {
         return $this->addMetaData('Subject', $subject, $isUTF8);
     }
@@ -2074,7 +2074,7 @@ class PdfDocument
      * @phpstan-param ColorType|null $g
      * @phpstan-param ColorType|null $b
      */
-    public function setTextColor(int $r, ?int $g = null, ?int $b = null): self
+    public function setTextColor(int $r, ?int $g = null, ?int $b = null): static
     {
         $this->textColor = $this->parseColor($r, $g, $b);
         $this->colorFlag = ($this->fillColor !== $this->textColor);
@@ -2088,7 +2088,7 @@ class PdfDocument
      * @param string $title  the title
      * @param bool   $isUTF8 Indicates if the string is encoded in ISO-8859-1 (false) or UTF-8 (true)
      */
-    public function setTitle(string $title, bool $isUTF8 = false): self
+    public function setTitle(string $title, bool $isUTF8 = false): static
     {
         $this->title = $title;
 
@@ -2100,7 +2100,7 @@ class PdfDocument
      *
      * The method can be called before creating the first page.
      */
-    public function setTopMargin(float $topMargin): self
+    public function setTopMargin(float $topMargin): static
     {
         $this->topMargin = $topMargin;
 
@@ -2117,7 +2117,7 @@ class PdfDocument
      * @see PdfDocument::setXY()
      * @see PdfDocument::setY()
      */
-    public function setX(float $x): self
+    public function setX(float $x): static
     {
         $this->x = $x >= 0 ? $x : $this->width + $x;
 
@@ -2137,7 +2137,7 @@ class PdfDocument
      * @see PdfDocument::getX()
      * @see PdfDocument::getY()
      */
-    public function setXY(float $x, float $y): self
+    public function setXY(float $x, float $y): static
     {
         return $this->setX($x)
             ->setY($y, false);
@@ -2154,7 +2154,7 @@ class PdfDocument
      * @see PdfDocument::setX()
      * @see PdfDocument::setXY()
      */
-    public function setY(float $y, bool $resetX = true): self
+    public function setY(float $y, bool $resetX = true): static
     {
         $this->y = $y >= 0 ? $y : $this->height + $y;
         if ($resetX) {
@@ -2181,7 +2181,7 @@ class PdfDocument
      *
      * @see PdfDocument::write()
      */
-    public function text(float $x, float $y, string $text): self
+    public function text(float $x, float $y, string $text): static
     {
         if ('' === $text) {
             return $this;
@@ -2211,7 +2211,7 @@ class PdfDocument
      *
      * @param string $version the minimum version to set
      */
-    public function updateVersion(string $version): self
+    public function updateVersion(string $version): static
     {
         if (\version_compare($this->pdfVersion, $version, '<')) {
             $this->pdfVersion = $version;
@@ -2226,7 +2226,7 @@ class PdfDocument
      * @param callable $callable the function to call
      * @param float    $margin   the cell margin to set. The minimum value allowed is 0.
      */
-    public function useCellMargin(callable $callable, float $margin = 0.0): self
+    public function useCellMargin(callable $callable, float $margin = 0.0): static
     {
         $oldMargin = $this->getCellMargin();
         $this->setCellMargin($margin);
@@ -2253,7 +2253,7 @@ class PdfDocument
      *
      * @see PdfDocument::text()
      */
-    public function write(float $height, string $text, string|int $link = ''): self
+    public function write(float $height, string $text, string|int $link = ''): static
     {
         if ('' === $text) {
             return $this;
@@ -2380,7 +2380,7 @@ class PdfDocument
      *
      * @phpstan-param non-empty-string $key
      */
-    protected function addMetaData(string $key, string $value, bool $isUTF8 = false): self
+    protected function addMetaData(string $key, string $value, bool $isUTF8 = false): static
     {
         $this->metadata[$key] = $isUTF8 ? $value : $this->convertIsoToUtf8($value);
 
@@ -2722,7 +2722,7 @@ class PdfDocument
      *
      * @throws PdfException if the document is closed or if called after end page
      */
-    protected function outCurrentFont(): self
+    protected function outCurrentFont(): static
     {
         if ($this->page > 0 && null !== $this->currentFont) {
             $this->outf('BT /F%d %.2F Tf ET', $this->currentFont['index'], $this->fontSizeInPoint);

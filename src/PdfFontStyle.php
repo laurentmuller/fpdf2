@@ -73,6 +73,28 @@ enum PdfFontStyle: string
     case UNDERLINE = 'u';
 
     /**
+     * Converts the given string (if any) to a font style.
+     *
+     * If no match, the <code>PdfFontStyle::REGULAR</code> is returned.
+     */
+    public static function fromStyle(?string $style): self
+    {
+        if (null === $style || '' === $style) {
+            return self::REGULAR;
+        }
+
+        $result = '';
+        $enums = [self::BOLD, self::ITALIC, self::UNDERLINE];
+        foreach ($enums as $enum) {
+            if (false !== \stripos($style, $enum->value)) {
+                $result .= $enum->value;
+            }
+        }
+
+        return self::from($result);
+    }
+
+    /**
      * Returns if this font style contain the underline state.
      */
     public function isUnderLine(): bool
