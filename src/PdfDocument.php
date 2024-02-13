@@ -481,11 +481,12 @@ class PdfDocument
      *
      * An internal link is a clickable area, which directs to another place within the document. The identifier can
      * then be passed to <code>cell()</code>, <code>write()</code>, <code>image()</code> or <code>link()</code>. The
-     * destination is defined with SetLink().
+     * destination is defined with <code>setLink()</code>.
      *
      * @return int the link identifier
      *
      * @see PdfDocument::link()
+     * @see PdfDocument::setLink()
      */
     public function addLink(): int
     {
@@ -506,10 +507,10 @@ class PdfDocument
      *
      * The origin of the coordinate system is in the top-left corner and increasing ordinates go downwards.
      *
-     * @param PdfOrientation|null      $orientation the page orientation or <code>null</code> to use the current
+     * @param ?PdfOrientation          $orientation the page orientation or <code>null</code> to use the current
      *                                              orientation
      * @param PdfPageSize|float[]|null $size        the page size or <code>null</code> to use the current size
-     * @param PdfRotation|null         $rotation    the rotation by which to rotate the page or <code>null</code> to
+     * @param ?PdfRotation             $rotation    the rotation by which to rotate the page or <code>null</code> to
      *                                              use the current rotation
      *
      * @phpstan-param PdfPageSize|PageSizeType|null $size
@@ -517,9 +518,9 @@ class PdfDocument
      * @throws PdfException if the document is closed
      */
     public function addPage(
-        PdfOrientation|null $orientation = null,
+        ?PdfOrientation $orientation = null,
         PdfPageSize|array|null $size = null,
-        PdfRotation|null $rotation = null
+        ?PdfRotation $rotation = null
     ): self {
         if (self::STATE_CLOSED === $this->state) {
             throw new PdfException('The document is closed.');
@@ -634,9 +635,7 @@ class PdfDocument
         string|int $link = ''
     ): self {
         $scaleFactor = $this->scaleFactor;
-        if ($this->y + $height > $this->pageBreakTrigger
-            && !$this->inHeader && !$this->inFooter
-            && $this->isAutoPageBreak()) {
+        if (!$this->isPrintable($height) && !$this->inHeader && !$this->inFooter && $this->autoPageBreak) {
             // Automatic page break
             $x = $this->x;
             $wordSpacing = $this->wordSpacing;
@@ -739,7 +738,7 @@ class PdfDocument
             if ($this->colorFlag) {
                 $output .= ' Q';
             }
-            if ('' !== $link && 0 !== $link) {
+            if ($this->isLink($link)) {
                 $this->link(
                     $this->x + $dx,
                     $this->y + 0.5 * $height - 0.5 * $this->fontSize,
@@ -777,10 +776,10 @@ class PdfDocument
      *
      * @throws PdfException if a font file not found
      */
-    public function close(): void
+    public function close(): self
     {
         if (self::STATE_CLOSED === $this->state) {
-            return;
+            return $this;
         }
         if (0 === $this->page) {
             $this->addPage();
@@ -793,6 +792,8 @@ class PdfDocument
         $this->endPage();
         // Close document
         $this->endDoc();
+
+        return $this;
     }
 
     /**
@@ -1214,7 +1215,7 @@ class PdfDocument
 
         // Flowing mode
         if (null === $y) {
-            if (!$this->isPrintable($height) && $this->autoPageBreak && !$this->inHeader && !$this->inFooter) {
+            if (!$this->isPrintable($height) && !$this->inHeader && !$this->inFooter && $this->autoPageBreak) {
                 // Automatic page break
                 $oldX = $this->x;
                 $this->addPage($this->currentOrientation, $this->currentPageSize, $this->currentRotation);
@@ -1233,7 +1234,7 @@ class PdfDocument
             ($this->height - $y - $height) * $this->scaleFactor,
             $info['index']
         );
-        if ('' !== $link && 0 !== $link) {
+        if ($this->isLink($link)) {
             $this->link($x, $y, $width, $height, $link);
         }
 
@@ -1261,7 +1262,7 @@ class PdfDocument
      * @return bool true if printable within the current page; false if a new page is
      *              needed
      *
-     * @see PdfDocument::AddPage()
+     * @see PdfDocument::addPage()
      */
     public function isPrintable(float $height, ?float $y = null): bool
     {
@@ -1319,6 +1320,7 @@ class PdfDocument
      * @param string|int $link   an URL or identifier returned by <code>addLink()</code>
      *
      * @see PdfDocument::addLink()
+     * @see PdfDocument::setLink()
      */
     public function link(float $x, float $y, float $width, float $height, string|int $link): self
     {
@@ -1340,7 +1342,7 @@ class PdfDocument
      * If the delta value is equal to 0, no move is set.
      *
      * @param float $delta  the delta value of the ordinate to move to
-     * @param bool  $resetX whether to reset the abscissa
+     * @param bool  $resetX if <code>true</code>, the abscissa is reset to the left margin
      */
     public function moveY(float $delta, bool $resetX = true): self
     {
@@ -1410,7 +1412,8 @@ class PdfDocument
             $border = 'LTRB';
             $border1 = 'LRT';
             $border2 = 'LR';
-        } elseif (\is_string($border)) {
+        } elseif (\is_string($border) && '' !== $border) {
+            $border = \strtoupper($border);
             if (\str_contains($border, 'L')) {
                 $border2 .= 'L';
             }
@@ -1984,6 +1987,9 @@ class PdfDocument
      * @param int|float $y    Ordinate of target position; -1 indicates the current position. The default value is 0
      *                        (top of page).
      * @param int       $page Number of target page; -1 indicates the current page. This is the default value.
+     *
+     * @see PdfDocument::addLink()
+     * @see PdfDocument::link()
      */
     public function setLink(int $link, int|float $y = 0, int $page = -1): self
     {
@@ -2605,6 +2611,14 @@ class PdfDocument
     protected function isAscii(string $str): bool
     {
         return \mb_check_encoding($str, 'ASCII');
+    }
+
+    /**
+     * Returns if the given link is valid.
+     */
+    protected function isLink(string|int $link): bool
+    {
+        return (\is_string($link) && '' !== $link) || (\is_int($link) && 0 !== $link);
     }
 
     /**
