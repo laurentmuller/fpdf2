@@ -94,11 +94,11 @@ class PdfDocument
     /**
      * The automatic page breaking.
      */
-    protected bool $autoPageBreak;
+    protected bool $autoPageBreak = false;
     /**
      * The bottom margin (page break margin).
      */
-    protected float $bottomMargin;
+    protected float $bottomMargin = 0.0;
     /**
      * The buffer holding in-memory PDF.
      */
@@ -106,7 +106,7 @@ class PdfDocument
     /**
      * The cell margin.
      */
-    protected float $cellMargin;
+    protected float $cellMargin = 0.0;
     /**
      * The map character codes to character glyphs.
      *
@@ -120,7 +120,7 @@ class PdfDocument
     /**
      * The compression flag.
      */
-    protected bool $compression;
+    protected bool $compression = false;
     /**
      * The document creation date.
      */
@@ -134,13 +134,13 @@ class PdfDocument
     /**
      * The current orientation.
      */
-    protected PdfOrientation $currentOrientation;
+    protected PdfOrientation $currentOrientation = PdfOrientation::PORTRAIT;
     /**
      * The current page size.
      *
      * @phpstan-var PageSizeType
      */
-    protected array $currentPageSize;
+    protected array $currentPageSize = [0, 0];
     /**
      * The current page rotation.
      */
@@ -148,13 +148,13 @@ class PdfDocument
     /**
      * The default orientation.
      */
-    protected PdfOrientation $defaultOrientation;
+    protected PdfOrientation $defaultOrientation = PdfOrientation::PORTRAIT;
     /**
      * The default page size.
      *
      * @phpstan-var PageSizeType
      */
-    protected array $defaultPageSize;
+    protected array $defaultPageSize = [0, 0];
     /**
      * The commands for drawing color.
      */
@@ -182,7 +182,7 @@ class PdfDocument
     /**
      * The directory containing fonts.
      */
-    protected string $fontPath;
+    protected string $fontPath = '';
     /**
      * The used fonts.
      *
@@ -192,7 +192,7 @@ class PdfDocument
     /**
      * The current font size in user unit.
      */
-    protected float $fontSize;
+    protected float $fontSize = 0.0;
     /**
      * The current font size in points.
      */
@@ -204,11 +204,11 @@ class PdfDocument
     /**
      * The current page height in user unit.
      */
-    protected float $height;
+    protected float $height = 0.0;
     /**
      * The current page height in points.
      */
-    protected float $heightInPoint;
+    protected float $heightInPoint = 0.0;
     /**
      * The used images.
      *
@@ -230,15 +230,15 @@ class PdfDocument
     /**
      * The layout display mode.
      */
-    protected PdfLayout $layout;
+    protected PdfLayout $layout = PdfLayout::DEFAULT;
     /**
      * The left margin.
      */
-    protected float $leftMargin;
+    protected float $leftMargin = 0.0;
     /**
      * The line width in user unit.
      */
-    protected float $lineWidth;
+    protected float $lineWidth = 0.0;
     /**
      * The internal links.
      *
@@ -268,7 +268,7 @@ class PdfDocument
     /**
      * The threshold used to trigger page breaks.
      */
-    protected float $pageBreakTrigger;
+    protected float $pageBreakTrigger = 0.0;
     /**
      * The page-related data.
      *
@@ -294,11 +294,11 @@ class PdfDocument
     /**
      * The right margin.
      */
-    protected float $rightMargin;
+    protected float $rightMargin = 0.0;
     /**
      * The scale factor (number of points in user unit).
      */
-    protected float $scaleFactor;
+    protected float $scaleFactor = 1.0;
     /**
      * The current document state.
      */
@@ -314,7 +314,7 @@ class PdfDocument
     /**
      * The top margin.
      */
-    protected float $topMargin;
+    protected float $topMargin = 0.0;
     /**
      * The underlining flag.
      */
@@ -322,11 +322,11 @@ class PdfDocument
     /**
      * The current page width in user unit.
      */
-    protected float $width;
+    protected float $width = 0.0;
     /**
      * The current page width in point.
      */
-    protected float $widthInPoint;
+    protected float $widthInPoint = 0.0;
     /**
      * Indicates whether alpha channel is used.
      */
@@ -346,7 +346,7 @@ class PdfDocument
     /**
      * The zoom display mode.
      */
-    protected PdfZoom|int $zoom;
+    protected PdfZoom|int $zoom = PdfZoom::DEFAULT;
 
     /**
      * Create a new instance.
@@ -833,6 +833,14 @@ class PdfDocument
     }
 
     /**
+     * Gets the bottom margin.
+     */
+    public function getBottomMargin(): float
+    {
+        return $this->bottomMargin;
+    }
+
+    /**
      * Gets the cell margin.
      *
      * The default value is 1 mm.
@@ -858,6 +866,14 @@ class PdfDocument
     public function getLastHeight(): float
     {
         return $this->lastHeight;
+    }
+
+    /**
+     * Gets the left margin.
+     */
+    public function getLeftMargin(): float
+    {
+        return $this->leftMargin;
     }
 
     /**
@@ -978,6 +994,14 @@ class PdfDocument
     }
 
     /**
+     * Gets the right margin.
+     */
+    public function getRightMargin(): float
+    {
+        return $this->rightMargin;
+    }
+
+    /**
      * Gets the length of a string in user unit.
      *
      * @param string $str the string to get width for
@@ -1005,6 +1029,14 @@ class PdfDocument
     public function getTitle(): string
     {
         return $this->title;
+    }
+
+    /**
+     * Gets the top margin.
+     */
+    public function getTopMargin(): float
+    {
+        return $this->topMargin;
     }
 
     /**
@@ -1247,6 +1279,8 @@ class PdfDocument
      *
      * The default implementation returns a value according to the mode selected by <code>setAutoPageBreak()</code>.
      * This method is called automatically and should not be called directly by the application.
+     *
+     * @see PdfDocument::setAutoPageBreak()
      */
     public function isAutoPageBreak(): bool
     {
@@ -1698,6 +1732,8 @@ class PdfDocument
      *
      * When enabling, the second parameter is the distance from the bottom of the page that defines the triggering
      * limit.
+     *
+     * @see PdfDocument::isAutoPageBreak()
      */
     public function setAutoPageBreak(bool $autoPageBreak, float $bottomMargin = 0): static
     {
