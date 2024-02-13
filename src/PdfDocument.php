@@ -3292,7 +3292,7 @@ class PdfDocument
         if (isset($info['soft_mask'])) {
             $decodeParms = \sprintf('/Predictor 15 /Colors 1 /BitsPerComponent 8 /Columns %.2f', $info['width']);
             /** @phpstan-var ImageType $info */
-            $info = [
+            $soft_mask = [
                 'width' => $info['width'],
                 'height' => $info['height'],
                 'color_space' => 'DeviceGray',
@@ -3301,7 +3301,7 @@ class PdfDocument
                 'decode_parms' => $decodeParms,
                 'data' => $info['soft_mask'],
             ];
-            $this->putImage($info);
+            $this->putImage($soft_mask);
         }
         // Palette
         if ('Indexed' === $info['color_space']) {
