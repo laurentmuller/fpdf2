@@ -54,7 +54,7 @@ namespace fpdf;
  *     color_space: string,
  *     bits_per_component: int,
  *     filter?: string,
- *     data: string,
+ *     data?: string,
  *     decode_parms?: string,
  *     soft_mask?: string,
  *     palette: string,
@@ -108,11 +108,11 @@ class PdfDocument
      */
     protected float $cellMargin;
     /**
-     * The ToUnicode CMaps.
+     * The map character codes to character glyphs.
      *
      * @phpstan-var array<string, int>
      */
-    protected array $cMaps = [];
+    protected array $charMaps = [];
     /**
      * Indicates whether fill and text colors are different.
      */
@@ -1894,11 +1894,11 @@ class PdfDocument
             if ('arial' === $family) {
                 $family = 'helvetica';
             }
-            $coreName = PdfFontName::tryFromIgnoreCase($family);
-            if (!$coreName instanceof PdfFontName) {
+            $name = PdfFontName::tryFromIgnoreCase($family);
+            if (!$name instanceof PdfFontName) {
                 throw new PdfException(\sprintf('Undefined font: %s %s.' . $family, $style->value));
             }
-            if (PdfFontName::SYMBOL === $coreName || PdfFontName::ZAPFDINGBATS === $coreName) {
+            if (PdfFontName::SYMBOL === $name || PdfFontName::ZAPFDINGBATS === $name) {
                 $style = PdfFontStyle::REGULAR;
             }
             $fontKey = $family . $style->value;
@@ -1968,7 +1968,7 @@ class PdfDocument
      * By default, the value equals 0.2 mm. The method can be called before the first page is created and the value is
      * retained from page to page.
      *
-     * @throws PdfException
+     * @throws PdfException if the document is closed or if called after end page
      */
     public function setLineWidth(float $lineWidth): self
     {
@@ -1984,9 +1984,9 @@ class PdfDocument
      * Defines the page and position a link points to.
      *
      * @param int       $link the link identifier returned by <code>addLink()</code>
-     * @param int|float $y    Ordinate of target position; -1 indicates the current position. The default value is 0
-     *                        (top of page).
-     * @param int       $page Number of target page; -1 indicates the current page. This is the default value.
+     * @param int|float $y    the ordinate of target position; -1 indicates the current position. The default value is
+     *                        0 (top of page).
+     * @param int       $page the target page; -1 indicates the current page. This is the default value.
      *
      * @see PdfDocument::addLink()
      * @see PdfDocument::link()
@@ -2007,7 +2007,11 @@ class PdfDocument
     /**
      * Defines the left, top and right margins.
      *
-     * By default, they equal 1 cm. Call this method to change them.
+     * By default, they are equal to 1 cm. Call this method to change them.
+     *
+     * @param float  $leftMargin  the left margin
+     * @param float  $topMargin   the top margin
+     * @param ?float $rightMargin the right margin or <code>null</code> to use the left margin
      */
     public function setMargins(float $leftMargin, float $topMargin, ?float $rightMargin = null): self
     {
@@ -2218,13 +2222,16 @@ class PdfDocument
 
     /**
      * Set the cell margins to the given value, call the given user function and reset margins to previous value.
+     *
+     * @param callable $callable the function to call
+     * @param float    $margin   the cell margin to set. The minimum value allowed is 0.
      */
     public function useCellMargin(callable $callable, float $margin = 0.0): self
     {
-        $previousMargin = $this->getCellMargin();
+        $oldMargin = $this->getCellMargin();
         $this->setCellMargin($margin);
         \call_user_func($callable);
-        $this->setCellMargin($previousMargin);
+        $this->setCellMargin($oldMargin);
 
         return $this;
     }
@@ -2236,6 +2243,8 @@ class PdfDocument
      * left margin. Upon method exit, the current position is left just at the end of the text. It is possible to put
      * a link on the text.
      *
+     * Do nothing if the text is empty.
+     *
      * @param float      $height the line height
      * @param string     $text   the string to print
      * @param string|int $link   a URL or an identifier returned by <code>addLink()</code>
@@ -2246,6 +2255,9 @@ class PdfDocument
      */
     public function write(float $height, string $text, string|int $link = ''): self
     {
+        if ('' === $text) {
+            return $this;
+        }
         if (null === $this->currentFont) {
             throw new PdfException('No font has been set.');
         }
@@ -2360,7 +2372,11 @@ class PdfDocument
     }
 
     /**
-     * Add the given key/value pair to document meta-data.
+     * Add the given key/value pair to document meta-datas.
+     *
+     * @param string $key    the meta-data key
+     * @param string $value  the meta-data value
+     * @param bool   $isUTF8 indicates if the value is encoded in ISO-8859-1 (false) or UTF-8 (true)
      *
      * @phpstan-param non-empty-string $key
      */
@@ -2473,16 +2489,16 @@ class PdfDocument
         }
 
         // Underline text
-        $up = $this->currentFont['up'];
-        $ut = $this->currentFont['ut'];
+        $up = (float) $this->currentFont['up'];
+        $ut = (float) $this->currentFont['ut'];
         $width = $this->getStringWidth($str) + $this->wordSpacing * (float) \substr_count($str, ' ');
 
         return \sprintf(
             ' %.2F %.2F %.2F %.2F re f',
             $x * $this->scaleFactor,
-            ($this->height - ($y - (float) $up / 1000.0 * $this->fontSize)) * $this->scaleFactor,
+            ($this->height - ($y - $up / 1000.0 * $this->fontSize)) * $this->scaleFactor,
             $width * $this->scaleFactor,
-            (float) -$ut / 1000.0 * $this->fontSizeInPoint
+            -$ut / 1000.0 * $this->fontSizeInPoint
         );
     }
 
@@ -2615,6 +2631,12 @@ class PdfDocument
 
     /**
      * Returns if the given link is valid.
+     *
+     * To be valid the link must be a non-empty string or a positive integer.
+     *
+     * @param string|int $link the link to validate
+     *
+     * @return bool <code>true</code> if valid
      */
     protected function isLink(string|int $link): bool
     {
@@ -3094,10 +3116,10 @@ class PdfDocument
             $name = $font['name'];
             if (isset($font['uv'])) {
                 $mapKey = $font['enc'] ?? $name;
-                if (!isset($this->cMaps[$mapKey])) {
+                if (!isset($this->charMaps[$mapKey])) {
                     $map = $this->toUnicodeCmap($font['uv']);
                     $this->putStreamObject($map);
-                    $this->cMaps[$mapKey] = $this->objectNumber;
+                    $this->charMaps[$mapKey] = $this->objectNumber;
                 }
             }
             // Font object
@@ -3116,7 +3138,7 @@ class PdfDocument
                     $this->put('/Encoding /WinAnsiEncoding');
                 }
                 if (isset($font['uv'])) {
-                    $this->putf('/ToUnicode %d 0 R', $this->cMaps[$mapKey]);
+                    $this->putf('/ToUnicode %d 0 R', $this->charMaps[$mapKey]);
                 }
                 $this->put('>>');
                 $this->endObj();
@@ -3135,7 +3157,7 @@ class PdfDocument
                     $this->put('/Encoding /WinAnsiEncoding');
                 }
                 if (isset($font['uv'])) {
-                    $this->putf('/ToUnicode %d 0 R', $this->cMaps[$mapKey]);
+                    $this->putf('/ToUnicode %d 0 R', $this->charMaps[$mapKey]);
                 }
                 $this->put('>>');
                 $this->endObj();
@@ -3225,8 +3247,10 @@ class PdfDocument
         if (isset($info['soft_mask'])) {
             $this->putf('/SMask %d 0 R', $this->objectNumber + 1);
         }
-        $this->putf('/Length %d>>', \strlen($info['data']));
-        $this->putStream($info['data']);
+        if (isset($info['data'])) {
+            $this->putf('/Length %d>>', \strlen($info['data']));
+            $this->putStream($info['data']);
+        }
         $this->endObj();
         // Soft mask
         if (isset($info['soft_mask'])) {
@@ -3527,7 +3551,7 @@ class PdfDocument
     }
 
     /**
-     * Convert the V type array to Unicode C map.
+     * Convert the V type array to unicode character map.
      *
      * @phpstan-param UvType $uv
      */

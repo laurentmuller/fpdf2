@@ -17,6 +17,8 @@ use PHPUnit\Framework\TestCase;
 
 abstract class AbstractTestCase extends TestCase
 {
+    protected bool $unlink = true;
+
     private string $newFile = '';
     private string $oldFile = '';
 
@@ -43,7 +45,7 @@ abstract class AbstractTestCase extends TestCase
         $old_content = \file_get_contents($this->oldFile);
         $new_content = \file_get_contents($this->newFile);
 
-        if ($this->isUnlink()) {
+        if ($this->unlink) {
             \unlink($this->oldFile);
             \unlink($this->newFile);
         }
@@ -91,11 +93,6 @@ abstract class AbstractTestCase extends TestCase
         $doc->AddPage();
 
         return $doc;
-    }
-
-    protected function isUnlink(): bool
-    {
-        return true;
     }
 
     /**
