@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Replaced static by self as return value. Added clean text function.
+- Corrected put image.
+- Corrected image soft mask.
+- Initialize properties. Added left and right margins.
+- Replaced self by static. Added test for PdfFontStyle.
+- Removed replace entries in composer.
+- Added CHANGELOG file. Added tests.
 - Added isLink function.
 - Added new line constant.
 - Updated PHP doc.
