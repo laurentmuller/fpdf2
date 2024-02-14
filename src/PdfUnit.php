@@ -15,27 +15,27 @@ namespace fpdf;
 /**
  * The PDF document unit enumeration.
  */
-enum PdfUnit
+enum PdfUnit: string
 {
     /**
      * Centimeter.
      */
-    case CENTIMETER;
+    case CENTIMETER = 'cm';
 
     /**
      * Inch.
      */
-    case INCH;
+    case INCH = 'in';
 
     /**
      * Millimeter.
      */
-    case MILLIMETER;
+    case MILLIMETER = 'mm';
 
     /**
      * Point.
      */
-    case POINT;
+    case POINT = 'pt';
 
     /**
      * Get the document scale factor.

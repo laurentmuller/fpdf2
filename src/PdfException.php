@@ -15,6 +15,6 @@ namespace fpdf;
 /**
  * This exception is raise in case of a fatal error.
  */
-class PdfException extends \Exception
+class PdfException extends \RuntimeException
 {
 }

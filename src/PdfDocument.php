@@ -365,14 +365,16 @@ class PdfDocument
         PdfUnit $unit = PdfUnit::MILLIMETER,
         PdfPageSize|array $size = PdfPageSize::A4
     ) {
-        // Font path
-        $this->fontPath = \defined('FPDF_FONTPATH') ? (string) FPDF_FONTPATH : __DIR__ . '/font/';
-        // Scale factor
+        // scale factor
         $this->scaleFactor = $unit->getScaleFactor();
-        // Page orientation
+        // font path
+        $this->fontPath = \defined('FPDF_FONTPATH') ? (string) FPDF_FONTPATH : __DIR__ . '/font/';
+        // font size
+        $this->fontSize = $this->fontSizeInPoint / $this->scaleFactor;
+        // page orientation
         $this->defaultOrientation = $orientation;
         $this->currentOrientation = $orientation;
-        // Page size
+        // page size
         $size = $this->getPageSize($size);
         $this->defaultPageSize = $size;
         $this->currentPageSize = $size;
@@ -385,23 +387,19 @@ class PdfDocument
         }
         $this->widthInPoint = $this->width * $this->scaleFactor;
         $this->heightInPoint = $this->height * $this->scaleFactor;
-        // Page margins (1 cm)
+        // page margins (1 cm)
         $margin = 28.35 / $this->scaleFactor;
         $this->setMargins($margin, $margin);
-        // Interior cell margin (1 mm)
+        // interior cell margin (1 mm)
         $this->cellMargin = $margin / 10.0;
-        // Line width (0.2 mm)
+        // line width (0.2 mm)
         $this->lineWidth = .567 / $this->scaleFactor;
-        // Automatic page break
+        // automatic page break
         $this->setAutoPageBreak(true, 2.0 * $margin);
-        // Default display mode
-        $this->setDisplayMode();
-        // Enable compression
+        // enable compression
         $this->setCompression(true);
         // producer
         $this->setProducer('FPDF ' . self::VERSION);
-        // font size
-        $this->fontSize = $this->fontSizeInPoint / $this->scaleFactor;
     }
 
     /**
@@ -424,8 +422,6 @@ class PdfDocument
      * @param ?string            $dir    The directory where to load the definition file. If not specified, the default
      *                                   directory will be used.
      *
-     * @throws PdfException if the font file is not found
-     *
      * @see PdfDocument::setFont()
      * @see PdfDocument::setFontSize()
      */
@@ -434,7 +430,7 @@ class PdfDocument
         PdfFontStyle $style = PdfFontStyle::REGULAR,
         ?string $file = null,
         ?string $dir = null
-    ): static {
+    ): self {
         if ($family instanceof PdfFontName) {
             $family = $family->value;
         }
@@ -514,14 +510,12 @@ class PdfDocument
      *                                              use the current rotation
      *
      * @phpstan-param PdfPageSize|PageSizeType|null $size
-     *
-     * @throws PdfException if the document is closed
      */
     public function addPage(
         ?PdfOrientation $orientation = null,
         PdfPageSize|array|null $size = null,
         ?PdfRotation $rotation = null
-    ): static {
+    ): self {
         if (self::STATE_CLOSED === $this->state) {
             throw new PdfException('The document is closed.');
         }
@@ -535,16 +529,16 @@ class PdfDocument
         $textColor = $this->textColor;
         $colorFlag = $this->colorFlag;
 
-        // Page footer and close page
+        // page footer and close page
         if ($this->page > 0) {
             $this->inFooter = true;
             $this->footer();
             $this->inFooter = false;
             $this->endPage();
         }
-        // Start new page
+        // start new page
         $this->beginPage($orientation, $size, $rotation);
-        // Set line cap style to square
+        // set line cap style to square
         $this->out('2 J');
 
         // restore context
@@ -564,7 +558,7 @@ class PdfDocument
         $this->textColor = $textColor;
         $this->colorFlag = $colorFlag;
 
-        // Page header
+        // page header
         $this->inHeader = true;
         $this->header();
         $this->inHeader = false;
@@ -620,8 +614,6 @@ class PdfDocument
      *                                 transparent (<code>false</code>)
      * @param string|int       $link   a URL or an identifier returned by <code>addLink()</code>
      *
-     * @throws PdfException
-     *
      * @see PdfDocument::multiCell()
      */
     public function cell(
@@ -633,10 +625,10 @@ class PdfDocument
         PdfTextAlignment $align = PdfTextAlignment::LEFT,
         bool $fill = false,
         string|int $link = ''
-    ): static {
+    ): self {
         $scaleFactor = $this->scaleFactor;
         if (!$this->isPrintable($height) && !$this->inHeader && !$this->inFooter && $this->autoPageBreak) {
-            // Automatic page break
+            // automatic page break
             $x = $this->x;
             $wordSpacing = $this->wordSpacing;
             if ($wordSpacing > 0) {
@@ -710,6 +702,7 @@ class PdfDocument
                 );
             }
         }
+        $text = $this->cleanText($text);
         if ('' !== $text) {
             if (null === $this->currentFont) {
                 throw new PdfException('No font has been set.');
@@ -773,10 +766,8 @@ class PdfDocument
      *
      * It is unnecessary to call this method explicitly because <code>output()</code> does it automatically. If the
      * document contains no page, <code>addPage()</code> is called to prevent from getting an invalid document.
-     *
-     * @throws PdfException if a font file not found
      */
-    public function close(): static
+    public function close(): self
     {
         if (self::STATE_CLOSED === $this->state) {
             return $this;
@@ -784,13 +775,12 @@ class PdfDocument
         if (0 === $this->page) {
             $this->addPage();
         }
-        // Page footer
+        // page footer
         $this->inFooter = true;
         $this->footer();
         $this->inFooter = false;
-        // Close page
+        // close page and document
         $this->endPage();
-        // Close document
         $this->endDoc();
 
         return $this;
@@ -834,6 +824,8 @@ class PdfDocument
 
     /**
      * Gets the bottom margin.
+     *
+     * The default value is 10 mm.
      */
     public function getBottomMargin(): float
     {
@@ -870,6 +862,8 @@ class PdfDocument
 
     /**
      * Gets the left margin.
+     *
+     * The default value is 10 mm.
      */
     public function getLeftMargin(): float
     {
@@ -886,15 +880,13 @@ class PdfDocument
      * @param ?float  $cellMargin the desired cell margin or <code>null</code> to use current value
      *
      * @return int the number of lines
-     *
-     * @throws PdfException if no font is set
      */
     public function getLinesCount(?string $text, ?float $width = null, ?float $cellMargin = null): int
     {
         if (null === $text || '' === $text) {
             return 0;
         }
-        $text = \rtrim(\str_replace("\r", '', $text));
+        $text = $this->cleanText($text);
         $len = \strlen($text);
         if (0 === $len) {
             return 0;
@@ -995,6 +987,8 @@ class PdfDocument
 
     /**
      * Gets the right margin.
+     *
+     * The default value is 10 mm.
      */
     public function getRightMargin(): float
     {
@@ -1011,6 +1005,10 @@ class PdfDocument
     public function getStringWidth(string $str): float
     {
         if (null === $this->currentFont || '' === $str) {
+            return 0.0;
+        }
+        $str = $this->cleanText($str);
+        if ('' === $str) {
             return 0.0;
         }
 
@@ -1033,6 +1031,8 @@ class PdfDocument
 
     /**
      * Gets the top margin.
+     *
+     * The default value is 10 mm.
      */
     public function getTopMargin(): float
     {
@@ -1097,10 +1097,8 @@ class PdfDocument
      * @param float      $beforeSpace the verticale space before the line
      * @param float      $afterSpace  the verticale space after the line
      * @param float|null $lineWidth   the optional line width or <code>null</code> to use current line width
-     *
-     * @throws PdfException
      */
-    public function horizontalLine(float $beforeSpace = 1.0, float $afterSpace = 1.0, ?float $lineWidth = null): static
+    public function horizontalLine(float $beforeSpace = 1.0, float $afterSpace = 1.0, ?float $lineWidth = null): self
     {
         $x = $this->x;
         $y = $this->y + $beforeSpace;
@@ -1184,8 +1182,6 @@ class PdfDocument
      *                           </ul>
      * @param string     $type   the image format. If not specified, the type is inferred from the file extension.
      * @param string|int $link   the URL or an identifier returned by <code>addLink()</code>
-     *
-     * @throws PdfException
      */
     public function image(
         string $file,
@@ -1195,12 +1191,12 @@ class PdfDocument
         float $height = 0.0,
         string $type = '',
         string|int $link = ''
-    ): static {
+    ): self {
         if ('' === $file) {
             throw new PdfException('Image file name is empty.');
         }
         if (!isset($this->images[$file])) {
-            // First use of this image, get info
+            // first use of this image, get info
             if ('' === $type) {
                 $type = \pathinfo($file, \PATHINFO_EXTENSION);
                 if ('' === $type) {
@@ -1223,7 +1219,7 @@ class PdfDocument
             $info = $this->images[$file];
         }
 
-        // Automatic width and height calculation if needed
+        // automatic width and height calculation if needed
         if (0.0 === $width && 0.0 === $height) {
             // Put image at 96 dpi
             $width = -96.0;
@@ -1245,10 +1241,10 @@ class PdfDocument
             $height = $width * $infoHeight / $infoWidth;
         }
 
-        // Flowing mode
+        // flowing mode
         if (null === $y) {
             if (!$this->isPrintable($height) && !$this->inHeader && !$this->inFooter && $this->autoPageBreak) {
-                // Automatic page break
+                // automatic page break
                 $oldX = $this->x;
                 $this->addPage($this->currentOrientation, $this->currentPageSize, $this->currentRotation);
                 $this->x = $oldX;
@@ -1305,10 +1301,8 @@ class PdfDocument
 
     /**
      * Draws a line between two points.
-     *
-     * @throws PdfException
      */
-    public function line(float $x1, float $y1, float $x2, float $y2): static
+    public function line(float $x1, float $y1, float $x2, float $y2): self
     {
         $this->outf(
             '%.2F %.2F m %.2F %.2F l S',
@@ -1333,7 +1327,7 @@ class PdfDocument
      * @see PdfDocument::setY()
      * @see PdfDocument::setXY()
      */
-    public function lineBreak(?float $height = null): static
+    public function lineBreak(?float $height = null): self
     {
         $this->x = $this->leftMargin;
         $this->y += $height ?? $this->lastHeight;
@@ -1356,7 +1350,7 @@ class PdfDocument
      * @see PdfDocument::addLink()
      * @see PdfDocument::setLink()
      */
-    public function link(float $x, float $y, float $width, float $height, string|int $link): static
+    public function link(float $x, float $y, float $width, float $height, string|int $link): self
     {
         $this->pageLinks[$this->page][] = [
             $x * $this->scaleFactor,
@@ -1378,7 +1372,7 @@ class PdfDocument
      * @param float $delta  the delta value of the ordinate to move to
      * @param bool  $resetX if <code>true</code>, the abscissa is reset to the left margin
      */
-    public function moveY(float $delta, bool $resetX = true): static
+    public function moveY(float $delta, bool $resetX = true): self
     {
         if (0.0 !== $delta) {
             $this->setY($this->y + $delta, $resetX);
@@ -1417,8 +1411,6 @@ class PdfDocument
      * @param PdfTextAlignment $align  the text alignment
      * @param bool             $fill   indicates if the cell background must be painted (true) or transparent (false)
      *
-     * @throws PdfException
-     *
      * @see PdfDocument::cell()
      */
     public function multiCell(
@@ -1428,7 +1420,7 @@ class PdfDocument
         string|bool $border = false,
         PdfTextAlignment $align = PdfTextAlignment::JUSTIFIED,
         bool $fill = false
-    ): static {
+    ): self {
         if (null === $this->currentFont) {
             throw new PdfException('No font has been set.');
         }
@@ -1438,8 +1430,7 @@ class PdfDocument
             $width = $this->getRemainingWidth();
         }
         $widthMax = ($width - 2.0 * $this->cellMargin) * 1000.0 / $this->fontSize;
-        $text = \rtrim(\str_replace("\r", '', $text));
-        $len = \strlen($text);
+
         $border1 = false;
         $border2 = '';
         if (true === $border) {
@@ -1457,6 +1448,9 @@ class PdfDocument
             $border1 = (\str_contains($border, 'T')) ? $border2 . 'T' : $border2;
         }
 
+        $text = $this->cleanText($text);
+        $len = \strlen($text);
+
         $index = 0;
         $newLine = 1;
         $lastIndex = 0;
@@ -1467,7 +1461,7 @@ class PdfDocument
         while ($index < $len) {
             $ch = $text[$index];
             if (self::NEW_LINE === $ch) {
-                // Explicit line break
+                // explicit line break
                 if ($this->wordSpacing > 0) {
                     $this->wordSpacing = 0;
                     $this->out('0 Tw');
@@ -1499,7 +1493,7 @@ class PdfDocument
             }
             $currentWidth += (float) $charWidths[$ch];
             if ($currentWidth > $widthMax) {
-                // Automatic line break
+                // automatic line break
                 if (-1 === $sepIndex) {
                     if ($index === $lastIndex) {
                         ++$index;
@@ -1547,7 +1541,7 @@ class PdfDocument
                 ++$index;
             }
         }
-        // Last chunk
+        // last chunk
         if ($this->wordSpacing > 0.0) {
             $this->wordSpacing = 0.0;
             $this->out('0 Tw');
@@ -1584,8 +1578,6 @@ class PdfDocument
      *                                    <code>PdfDestination::DOWNLOAD</code>.
      *
      * @return string the content if the output is <code>PdfDestination::STRING</code>, an empty string otherwise
-     *
-     * @throws PdfException if a font file not found or if some data has already been output
      */
     public function output(
         PdfDestination $destination = PdfDestination::INLINE,
@@ -1682,8 +1674,6 @@ class PdfDocument
      * Outputs a rectangle.
      *
      * It can be drawn (border only), filled (with no border) or both.
-     *
-     * @throws PdfException
      */
     public function rect(
         float $x,
@@ -1691,7 +1681,7 @@ class PdfDocument
         float $width,
         float $height,
         PdfRectangleStyle $style = PdfRectangleStyle::BORDER
-    ): static {
+    ): self {
         $this->outf(
             '%.2F %.2F %.2F %.2F re %s',
             $x * $this->scaleFactor,
@@ -1709,7 +1699,7 @@ class PdfDocument
      *
      * It will be substituted as the document is closed.
      */
-    public function setAliasNumberPages(string $aliasNumberPages = '{nb}'): static
+    public function setAliasNumberPages(string $aliasNumberPages = '{nb}'): self
     {
         $this->aliasNumberPages = $aliasNumberPages;
 
@@ -1722,7 +1712,7 @@ class PdfDocument
      * @param string $author the name of the author
      * @param bool   $isUTF8 indicates if the string is encoded in ISO-8859-1 (false) or UTF-8 (true)
      */
-    public function setAuthor(string $author, bool $isUTF8 = false): static
+    public function setAuthor(string $author, bool $isUTF8 = false): self
     {
         return $this->addMetaData('Author', $author, $isUTF8);
     }
@@ -1735,7 +1725,7 @@ class PdfDocument
      *
      * @see PdfDocument::isAutoPageBreak()
      */
-    public function setAutoPageBreak(bool $autoPageBreak, float $bottomMargin = 0): static
+    public function setAutoPageBreak(bool $autoPageBreak, float $bottomMargin = 0): self
     {
         $this->autoPageBreak = $autoPageBreak;
         $this->bottomMargin = $bottomMargin;
@@ -1749,7 +1739,7 @@ class PdfDocument
      *
      * The minimum value allowed is 0.
      */
-    public function setCellMargin(float $margin): static
+    public function setCellMargin(float $margin): self
     {
         $this->cellMargin = \max(0.0, $margin);
 
@@ -1764,7 +1754,7 @@ class PdfDocument
      *
      * <b>Note:</b> the Zlib extension is required for this feature. If not present, compression will be turned off.
      */
-    public function setCompression(bool $compression): static
+    public function setCompression(bool $compression): self
     {
         $this->compression = \function_exists('gzcompress') ? $compression : false;
 
@@ -1779,7 +1769,7 @@ class PdfDocument
      * @param string $creator the name of the creator
      * @param bool   $isUTF8  indicates if the string is encoded in ISO-8859-1 (false) or UTF-8 (true)
      */
-    public function setCreator(string $creator, bool $isUTF8 = false): static
+    public function setCreator(string $creator, bool $isUTF8 = false): self
     {
         return $this->addMetaData('Creator', $creator, $isUTF8);
     }
@@ -1802,7 +1792,7 @@ class PdfDocument
     public function setDisplayMode(
         PdfZoom|int $zoom = PdfZoom::DEFAULT,
         PdfLayout $layout = PdfLayout::DEFAULT
-    ): static {
+    ): self {
         $this->zoom = $zoom;
         $this->layout = $layout;
 
@@ -1820,8 +1810,6 @@ class PdfDocument
      * @param ?int $g the green component (between 0 and 255)
      * @param ?int $b the blue component (between 0 and 255)
      *
-     * @throws PdfException
-     *
      * @see PdfDocument::setFillColor()
      * @see PdfDocument::setTextColor()
      *
@@ -1829,7 +1817,7 @@ class PdfDocument
      * @phpstan-param ColorType|null $g
      * @phpstan-param ColorType|null $b
      */
-    public function setDrawColor(int $r, ?int $g = null, ?int $b = null): static
+    public function setDrawColor(int $r, ?int $g = null, ?int $b = null): self
     {
         $this->drawColor = $this->parseColor($r, $g, $b, true);
         if ($this->page > 0) {
@@ -1850,8 +1838,6 @@ class PdfDocument
      * @param ?int $g the green component (between 0 and 255)
      * @param ?int $b the blue component (between 0 and 255)
      *
-     * @throws PdfException
-     *
      * @see PdfDocument::setDrawColor()
      * @see PdfDocument::setTextColor()
      *
@@ -1859,7 +1845,7 @@ class PdfDocument
      * @phpstan-param ColorType|null $g
      * @phpstan-param ColorType|null $b
      */
-    public function setFillColor(int $r, ?int $g = null, ?int $b = null): static
+    public function setFillColor(int $r, ?int $g = null, ?int $b = null): self
     {
         $this->fillColor = $this->parseColor($r, $g, $b);
         $this->colorFlag = ($this->fillColor !== $this->textColor);
@@ -1894,39 +1880,40 @@ class PdfDocument
      *                                        </ul>
      *                                        It is also possible to pass <code>null</code>. In that case, the current
      *                                        family is kept.
-     * @param PdfFontStyle            $style  The font style. The default value is regular.
+     * @param ?PdfFontStyle           $style  The font style or <code>null</code> to use the current style. If no style
+     *                                        has been specified since the beginning of the document, the value is
+     *                                        <code>PdfFontStyle::REGULAR</code>.
      * @param ?float                  $size   The font size in points or <code>null</code> to use the current size. If
      *                                        no size has been specified since the beginning of the document, the value
      *                                        is 9.0.
-     *
-     * @throws PdfException if the font is not found
      *
      * @see PdfDocument::addFont()
      * @see PdfDocument::setFontSize()
      */
     public function setFont(
         PdfFontName|string|null $family = null,
-        PdfFontStyle $style = PdfFontStyle::REGULAR,
+        ?PdfFontStyle $style = null,
         ?float $size = null
-    ): static {
+    ): self {
         if ($family instanceof PdfFontName) {
             $family = $family->value;
         }
         $family = null === $family ? $this->fontFamily : \strtolower($family);
-        $this->underline = $style->isUnderLine();
+        $style ??= $this->fontStyle;
         $size ??= $this->fontSizeInPoint;
-        // Test if font is already selected
+        $this->underline = $style->isUnderLine();
+        // test if font is already selected
         if ($this->fontFamily === $family && $this->fontStyle === $style && $this->fontSizeInPoint === $size) {
             return $this;
         }
-        // Remove underline style
+        // remove underline style
         if ($this->underline) {
             $style = $style->removeUnderLine();
         }
-        // Test if font is already loaded
+        // test if font is already loaded
         $fontKey = $family . $style->value;
         if (!isset($this->fonts[$fontKey])) {
-            // Test if one of the core fonts
+            // test if one of the core fonts
             if ('arial' === $family) {
                 $family = 'helvetica';
             }
@@ -1942,7 +1929,7 @@ class PdfDocument
                 $this->addFont($family, $style);
             }
         }
-        // Select it
+        // select it
         $this->fontFamily = $family;
         $this->fontStyle = $style;
         $this->fontSizeInPoint = $size;
@@ -1956,11 +1943,9 @@ class PdfDocument
     /**
      * Defines the size (in points) of the current font.
      *
-     * @throws PdfException
-     *
      * @see PdfDocument::setFont()
      */
-    public function setFontSize(float $size): static
+    public function setFontSize(float $size): self
     {
         if ($this->fontSizeInPoint === $size) {
             return $this;
@@ -1978,7 +1963,7 @@ class PdfDocument
      * @param string $keywords The list of keywords separated by space
      * @param bool   $isUTF8   Indicates if the string is encoded in ISO-8859-1 (false) or UTF-8 (true)
      */
-    public function setKeywords(string $keywords, bool $isUTF8 = false): static
+    public function setKeywords(string $keywords, bool $isUTF8 = false): self
     {
         return $this->addMetaData('Keywords', $keywords, $isUTF8);
     }
@@ -1988,7 +1973,7 @@ class PdfDocument
      *
      * The method can be called before creating the first page.
      */
-    public function setLeftMargin(float $leftMargin): static
+    public function setLeftMargin(float $leftMargin): self
     {
         $this->leftMargin = $leftMargin;
         if ($this->page > 0 && $this->x < $leftMargin) {
@@ -2003,10 +1988,8 @@ class PdfDocument
      *
      * By default, the value equals 0.2 mm. The method can be called before the first page is created and the value is
      * retained from page to page.
-     *
-     * @throws PdfException if the document is closed or if called after end page
      */
-    public function setLineWidth(float $lineWidth): static
+    public function setLineWidth(float $lineWidth): self
     {
         $this->lineWidth = $lineWidth;
         if ($this->page > 0) {
@@ -2027,7 +2010,7 @@ class PdfDocument
      * @see PdfDocument::addLink()
      * @see PdfDocument::link()
      */
-    public function setLink(int $link, int|float $y = 0, int $page = -1): static
+    public function setLink(int $link, int|float $y = 0, int $page = -1): self
     {
         if (-1 === $y) {
             $y = $this->y;
@@ -2049,7 +2032,7 @@ class PdfDocument
      * @param float  $topMargin   the top margin
      * @param ?float $rightMargin the right margin or <code>null</code> to use the left margin
      */
-    public function setMargins(float $leftMargin, float $topMargin, ?float $rightMargin = null): static
+    public function setMargins(float $leftMargin, float $topMargin, ?float $rightMargin = null): self
     {
         $this->leftMargin = $leftMargin;
         $this->topMargin = $topMargin;
@@ -2064,7 +2047,7 @@ class PdfDocument
      * @param string $producer the producer
      * @param bool   $isUTF8   Indicates if the string is encoded in ISO-8859-1 (false) or UTF-8 (true)
      */
-    public function setProducer(string $producer, bool $isUTF8 = false): static
+    public function setProducer(string $producer, bool $isUTF8 = false): self
     {
         return $this->addMetaData('Producer', $producer, $isUTF8);
     }
@@ -2074,7 +2057,7 @@ class PdfDocument
      *
      * The method can be called before creating the first page.
      */
-    public function setRightMargin(float $rightMargin): static
+    public function setRightMargin(float $rightMargin): self
     {
         $this->rightMargin = $rightMargin;
 
@@ -2087,7 +2070,7 @@ class PdfDocument
      * @param string $subject the subject
      * @param bool   $isUTF8  Indicates if the string is encoded in ISO-8859-1 (false) or UTF-8 (true)
      */
-    public function setSubject(string $subject, bool $isUTF8 = false): static
+    public function setSubject(string $subject, bool $isUTF8 = false): self
     {
         return $this->addMetaData('Subject', $subject, $isUTF8);
     }
@@ -2110,7 +2093,7 @@ class PdfDocument
      * @phpstan-param ColorType|null $g
      * @phpstan-param ColorType|null $b
      */
-    public function setTextColor(int $r, ?int $g = null, ?int $b = null): static
+    public function setTextColor(int $r, ?int $g = null, ?int $b = null): self
     {
         $this->textColor = $this->parseColor($r, $g, $b);
         $this->colorFlag = ($this->fillColor !== $this->textColor);
@@ -2124,7 +2107,7 @@ class PdfDocument
      * @param string $title  the title
      * @param bool   $isUTF8 Indicates if the string is encoded in ISO-8859-1 (false) or UTF-8 (true)
      */
-    public function setTitle(string $title, bool $isUTF8 = false): static
+    public function setTitle(string $title, bool $isUTF8 = false): self
     {
         $this->title = $title;
 
@@ -2136,7 +2119,7 @@ class PdfDocument
      *
      * The method can be called before creating the first page.
      */
-    public function setTopMargin(float $topMargin): static
+    public function setTopMargin(float $topMargin): self
     {
         $this->topMargin = $topMargin;
 
@@ -2153,7 +2136,7 @@ class PdfDocument
      * @see PdfDocument::setXY()
      * @see PdfDocument::setY()
      */
-    public function setX(float $x): static
+    public function setX(float $x): self
     {
         $this->x = $x >= 0 ? $x : $this->width + $x;
 
@@ -2173,7 +2156,7 @@ class PdfDocument
      * @see PdfDocument::getX()
      * @see PdfDocument::getY()
      */
-    public function setXY(float $x, float $y): static
+    public function setXY(float $x, float $y): self
     {
         return $this->setX($x)
             ->setY($y, false);
@@ -2190,7 +2173,7 @@ class PdfDocument
      * @see PdfDocument::setX()
      * @see PdfDocument::setXY()
      */
-    public function setY(float $y, bool $resetX = true): static
+    public function setY(float $y, bool $resetX = true): self
     {
         $this->y = $y >= 0 ? $y : $this->height + $y;
         if ($resetX) {
@@ -2213,12 +2196,11 @@ class PdfDocument
      * @param float  $y    the ordinate of the origin
      * @param string $text the string to print
      *
-     * @throws PdfException if no font is set
-     *
      * @see PdfDocument::write()
      */
-    public function text(float $x, float $y, string $text): static
+    public function text(float $x, float $y, string $text): self
     {
+        $text = $this->cleanText($text);
         if ('' === $text) {
             return $this;
         }
@@ -2247,7 +2229,7 @@ class PdfDocument
      *
      * @param string $version the minimum version to set
      */
-    public function updateVersion(string $version): static
+    public function updateVersion(string $version): self
     {
         if (\version_compare($this->pdfVersion, $version, '<')) {
             $this->pdfVersion = $version;
@@ -2262,7 +2244,7 @@ class PdfDocument
      * @param callable $callable the function to call
      * @param float    $margin   the cell margin to set. The minimum value allowed is 0.
      */
-    public function useCellMargin(callable $callable, float $margin = 0.0): static
+    public function useCellMargin(callable $callable, float $margin = 0.0): self
     {
         $oldMargin = $this->getCellMargin();
         $this->setCellMargin($margin);
@@ -2285,33 +2267,32 @@ class PdfDocument
      * @param string     $text   the string to print
      * @param string|int $link   a URL or an identifier returned by <code>addLink()</code>
      *
-     * @throws PdfException if no font is set
-     *
      * @see PdfDocument::text()
      */
-    public function write(float $height, string $text, string|int $link = ''): static
+    public function write(float $height, string $text, string|int $link = ''): self
     {
+        $text = $this->cleanText($text);
         if ('' === $text) {
             return $this;
         }
         if (null === $this->currentFont) {
             throw new PdfException('No font has been set.');
         }
+
+        $len = \strlen($text);
         $width = $this->getRemainingWidth();
         $charWidths = $this->currentFont['cw'];
         $widthMax = ($width - 2.0 * $this->cellMargin) * 1000.0 / $this->fontSize;
-        $text = \str_replace("\r", '', $text);
-        $len = \strlen($text);
-        $sep = -1;
+
         $index = 0;
+        $newLine = 1;
+        $sepIndex = -1;
         $currentIndex = 0;
         $currentWidth = 0.0;
-        $newLine = 1;
         while ($index < $len) {
-            // Get next character
-            $c = $text[$index];
-            if (self::NEW_LINE === $c) {
-                // Explicit line break
+            $ch = $text[$index];
+            if (self::NEW_LINE === $ch) {
+                // explicit line break
                 $this->cell(
                     $width,
                     $height,
@@ -2323,7 +2304,7 @@ class PdfDocument
                     $link
                 );
                 ++$index;
-                $sep = -1;
+                $sepIndex = -1;
                 $currentIndex = $index;
                 $currentWidth = 0.0;
                 if (1 === $newLine) {
@@ -2334,13 +2315,13 @@ class PdfDocument
                 ++$newLine;
                 continue;
             }
-            if (' ' === $c) {
-                $sep = $index;
+            if (' ' === $ch) {
+                $sepIndex = $index;
             }
-            $currentWidth += (float) $charWidths[$c];
+            $currentWidth += (float) $charWidths[$ch];
             if ($currentWidth > $widthMax) {
-                // Automatic line break
-                if (-1 === $sep) {
+                // automatic line break
+                if (-1 === $sepIndex) {
                     if ($this->x > $this->leftMargin) {
                         // Move to next line
                         $this->x = $this->leftMargin;
@@ -2368,16 +2349,16 @@ class PdfDocument
                     $this->cell(
                         $width,
                         $height,
-                        \substr($text, $currentIndex, $sep - $currentIndex),
+                        \substr($text, $currentIndex, $sepIndex - $currentIndex),
                         false,
                         PdfMove::BELOW,
                         PdfTextAlignment::LEFT,
                         false,
                         $link
                     );
-                    $index = $sep + 1;
+                    $index = $sepIndex + 1;
                 }
-                $sep = -1;
+                $sepIndex = -1;
                 $currentIndex = $index;
                 $currentWidth = 0.0;
                 if (1 === $newLine) {
@@ -2390,7 +2371,7 @@ class PdfDocument
                 ++$index;
             }
         }
-        // Last chunk
+        // last chunk
         if ($index !== $currentIndex) {
             $this->cell(
                 $currentWidth / 1000.0 * $this->fontSize,
@@ -2416,7 +2397,7 @@ class PdfDocument
      *
      * @phpstan-param non-empty-string $key
      */
-    protected function addMetaData(string $key, string $value, bool $isUTF8 = false): static
+    protected function addMetaData(string $key, string $value, bool $isUTF8 = false): self
     {
         $this->metadata[$key] = $isUTF8 ? $value : $this->convertIsoToUtf8($value);
 
@@ -2440,7 +2421,7 @@ class PdfDocument
         $this->x = $this->leftMargin;
         $this->y = $this->topMargin;
         $this->fontFamily = '';
-        // Check page size and orientation
+        // check page size and orientation
         if (!$orientation instanceof PdfOrientation) {
             $orientation = $this->defaultOrientation;
         }
@@ -2448,7 +2429,7 @@ class PdfDocument
         if ($orientation !== $this->currentOrientation
             || $size[0] !== $this->currentPageSize[0]
             || $size[1] !== $this->currentPageSize[1]) {
-            // New size or orientation
+            // new size or orientation
             if (PdfOrientation::PORTRAIT === $orientation) {
                 $this->width = $size[0];
                 $this->height = $size[1];
@@ -2477,8 +2458,6 @@ class PdfDocument
 
     /**
      * Check if the output is not yet started.
-     *
-     * @throws PdfException if some data has already been output
      */
     protected function checkOutput(): void
     {
@@ -2486,15 +2465,24 @@ class PdfDocument
             throw new PdfException(\sprintf('Some data has already been output, can not send PDF file (output started at %s:%s).', $file, $line));
         }
         if (false !== \ob_get_length()) {
-            // The output buffer is not empty
+            // the output buffer is not empty
             $content = \ob_get_contents();
             if (\is_string($content) && 1 === \preg_match('/^(\xEF\xBB\xBF)?\s*$/', $content)) {
-                // It contains only a UTF-8 BOM and/or whitespace, let's clean it
+                // it contains only a UTF-8 BOM and/or whitespace, let's clean it
                 \ob_clean();
             } else {
                 throw new PdfException('Some data has already been output, can not send PDF file.');
             }
         }
+    }
+
+    /**
+     * Remove the carriage return characters and strip whitespace (and other characters) from the end of the
+     * given string.
+     */
+    protected function cleanText(string $str): string
+    {
+        return '' === $str ? $str : \rtrim(\str_replace("\r", '', $str));
     }
 
     /**
@@ -2515,8 +2503,6 @@ class PdfDocument
 
     /**
      * Output the underline font.
-     *
-     * @throws PdfException if no font has been set
      */
     protected function doUnderline(float $x, float $y, string $str): string
     {
@@ -2524,7 +2510,7 @@ class PdfDocument
             throw new PdfException('No font has been set.');
         }
 
-        // Underline text
+        // underline text
         $up = (float) $this->currentFont['up'];
         $ut = (float) $this->currentFont['ut'];
         $width = $this->getStringWidth($str) + $this->wordSpacing * (float) \substr_count($str, ' ');
@@ -2540,8 +2526,6 @@ class PdfDocument
 
     /**
      * Output the end of document.
-     *
-     * @throws PdfException if a font file not found
      */
     protected function endDoc(): void
     {
@@ -2549,19 +2533,19 @@ class PdfDocument
         $this->putHeader();
         $this->putPages();
         $this->putResources();
-        // Info
-        $this->newObj();
+        // info
+        $this->putNewObj();
         $this->put('<<');
         $this->putInfo();
         $this->put('>>');
-        $this->endObj();
-        // Catalog
-        $this->newObj();
+        $this->putEndObj();
+        // catalog
+        $this->putNewObj();
         $this->put('<<');
         $this->putCatalog();
         $this->put('>>');
-        $this->endObj();
-        // Cross-ref
+        $this->putEndObj();
+        // cross-reference
         $offset = $this->getOffset();
         $this->put('xref');
         $this->putf('0 %d', $this->objectNumber + 1);
@@ -2569,7 +2553,7 @@ class PdfDocument
         for ($i = 1; $i <= $this->objectNumber; ++$i) {
             $this->putf('%010d 00000 n ', $this->offsets[$i]);
         }
-        // Trailer
+        // trailer
         $this->put('trailer');
         $this->put('<<');
         $this->putTrailer();
@@ -2581,14 +2565,6 @@ class PdfDocument
     }
 
     /**
-     * Output the end object.
-     */
-    protected function endObj(): void
-    {
-        $this->put('endobj');
-    }
-
-    /**
      * Output the end of page.
      */
     protected function endPage(): void
@@ -2597,14 +2573,17 @@ class PdfDocument
     }
 
     /**
-     * Escape the given string.
+     * Escape special characters from the given string.
      */
     protected function escape(string $str): string
     {
-        // Escape special characters
         if (\str_contains($str, '(') || \str_contains($str, ')')
             || \str_contains($str, '\\') || \str_contains($str, "\r")) {
-            return \str_replace(['\\', '(', ')', "\r"], ['\\\\', '\\(', '\\)', '\\r'], $str);
+            return \str_replace(
+                ['\\', '(', ')', "\r"],
+                ['\\\\', '\\(', '\\)', '\\r'],
+                $str
+            );
         }
 
         return $str;
@@ -2644,7 +2623,7 @@ class PdfDocument
      */
     protected function httpEncode(string $name, string $value, bool $isUTF8): string
     {
-        // Encode HTTP header field parameter
+        // encode HTTP header field parameter
         if ($this->isAscii($value)) {
             return \sprintf('%s="%s"', $name, $value);
         }
@@ -2692,8 +2671,6 @@ class PdfDocument
     /**
      * Load the font from the given file path.
      *
-     * @throws PdfException
-     *
      * @psalm-suppress UnresolvableInclude
      * @psalm-suppress UndefinedVariable
      * @psalm-suppress UnusedVariable
@@ -2702,7 +2679,6 @@ class PdfDocument
      */
     protected function loadFont(string $path): array
     {
-        // Load a font definition file
         include $path;
         if (!isset($name)) {
             throw new PdfException(\sprintf('Could not include font definition file: %s.', $path));
@@ -2718,26 +2694,10 @@ class PdfDocument
     }
 
     /**
-     * Output a new object.
-     */
-    protected function newObj(?int $index = null): void
-    {
-        // Begin a new object
-        if (null === $index) {
-            $index = ++$this->objectNumber;
-        }
-        $this->offsets[$index] = $this->getOffset();
-        $this->putf('%d 0 obj', $index);
-    }
-
-    /**
      * Output the given string.
-     *
-     * @throws PdfException if the document is closed, no page has been added or if called after end page
      */
     protected function out(string $output): void
     {
-        // Add a line to the current page
         switch ($this->state) {
             case self::STATE_NO_PAGE:
                 throw new PdfException('No page has been added yet.');
@@ -2755,10 +2715,8 @@ class PdfDocument
      * Output the current font.
      *
      * Do nothing if no page is added or if the current font is <code>null</code>.
-     *
-     * @throws PdfException if the document is closed or if called after end page
      */
-    protected function outCurrentFont(): static
+    protected function outCurrentFont(): self
     {
         if ($this->page > 0 && null !== $this->currentFont) {
             $this->outf('BT /F%d %.2F Tf ET', $this->currentFont['index'], $this->fontSizeInPoint);
@@ -2769,8 +2727,6 @@ class PdfDocument
 
     /**
      * Output a formatted string.
-     *
-     * @throws PdfException if the document is closed, no page has been added or if called after end page
      */
     protected function outf(string $format, string|int|float ...$values): void
     {
@@ -2795,13 +2751,10 @@ class PdfDocument
     /**
      * Parse the given GIF image.
      *
-     * @throws PdfException
-     *
      * @phpstan-return array<array-key, mixed>
      */
     protected function parseGif(string $file): array
     {
-        // Extract info from a GIF file (via PNG conversion)
         if (!\function_exists('imagepng')) {
             throw new PdfException('GD extension is required for GIF support.');
         }
@@ -2835,13 +2788,10 @@ class PdfDocument
     /**
      * Parse the given JPG image.
      *
-     * @throws PdfException
-     *
      * @phpstan-return array<array-key, mixed>
      */
     protected function parseJpg(string $file): array
     {
-        // Extract info from a JPEG file
         $size = \getimagesize($file);
         if (!\is_array($size)) {
             throw new PdfException(\sprintf('Missing or incorrect image file: %s.', $file));
@@ -2857,8 +2807,8 @@ class PdfDocument
         } else {
             $color_space = 'DeviceGray';
         }
-        /** @var int $bpc */
-        $bpc = $size['bits'] ?? 8;
+        /** @phpstan-var int $bitsPerComponent */
+        $bitsPerComponent = $size['bits'] ?? 8;
         $data = \file_get_contents($file);
         if (false === $data) {
             throw new PdfException(\sprintf('Unable get image file content: %s.', $file));
@@ -2868,7 +2818,7 @@ class PdfDocument
             'width' => $size[0],
             'height' => $size[1],
             'color_space' => $color_space,
-            'bits_per_component' => $bpc,
+            'bits_per_component' => $bitsPerComponent,
             'filter' => 'DCTDecode',
             'data' => $data,
         ];
@@ -2877,13 +2827,10 @@ class PdfDocument
     /**
      * Parse the given PNG image.
      *
-     * @throws PdfException
-     *
      * @phpstan-return array<array-key, mixed>
      */
     protected function parsePng(string $file): array
     {
-        // Extract info from a PNG file
         $stream = \fopen($file, 'r');
         if (!\is_resource($stream)) {
             throw new PdfException(\sprintf('Can not open image file: %s.', $file));
@@ -2901,45 +2848,40 @@ class PdfDocument
      *
      * @param resource $stream
      *
-     * @throws PdfException if an error occurs while reading stream or if end of stream is reached
-     *
      * @phpstan-return array<string, mixed>
      */
     protected function parsePngStream($stream, string $file): array
     {
-        // Check signature
-        // [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
+        // check header signature
         $header = \chr(137) . 'PNG' . \chr(13) . \chr(10) . \chr(26) . \chr(10);
-        if ($this->readStream($stream, 8) !== $header) {
+        if ($this->readStream($stream, \strlen($header)) !== $header) {
             throw new PdfException(\sprintf('File is not a PNG image: %s.', $file));
         }
-        // Read header chunk
+        // read header chunk
         $this->readStream($stream, 4);
         if ('IHDR' !== $this->readStream($stream, 4)) {
             throw new PdfException(\sprintf('Incorrect PNG file: %s.', $file));
         }
         $width = $this->readInt($stream);
         $height = $this->readInt($stream);
-        $bitsPerComponent = \ord($this->readStream($stream, 1));
+        $bitsPerComponent = $this->readByte($stream);
         if ($bitsPerComponent > 8) {
             throw new PdfException(\sprintf('16-bit depth not supported: %s.', $file));
         }
-        $ct = \ord($this->readStream($stream, 1));
-        $colorSpace = match ($ct) {
+        $colorType = $this->readByte($stream);
+        $colorSpace = match ($colorType) {
             0, 4 => 'DeviceGray',
             2, 6 => 'DeviceRGB',
             3 => 'Indexed',
             default => throw new PdfException(\sprintf('Unknown color type: %s.', $file)),
         };
-        if (0 !== \ord($this->readStream($stream, 1))) {
+        if (0 !== $this->readByte($stream)) {
             throw new PdfException(\sprintf('Unknown compression method: %s.', $file));
         }
-        // @phpstan-ignore-next-line
-        if (0 !== \ord($this->readStream($stream, 1))) {
+        if (0 !== $this->readByte($stream)) { // @phpstan-ignore-line
             throw new PdfException(\sprintf('Unknown filter method: %s.', $file));
         }
-        // @phpstan-ignore-next-line
-        if (0 !== \ord($this->readStream($stream, 1))) {
+        if (0 !== $this->readByte($stream)) { // @phpstan-ignore-line
             throw new PdfException(\sprintf('Interlacing not supported: %s.', $file));
         }
         $this->readStream($stream, 4);
@@ -2950,25 +2892,24 @@ class PdfDocument
             $width
         );
 
-        // Scan chunks looking for the palette, transparency and image data
+        // scan chunks looking for the palette, transparency and image data
         $data = '';
         $palette = '';
         $transparencies = '';
         do {
             $length = $this->readInt($stream);
+            /** @phpstan-var 'PLTE'|'tRNS'|'IDAT'|'IEND' $type */
             $type = $this->readStream($stream, 4);
             switch ($type) {
-                case 'PLTE': // @phpstan-ignore-line
-                    // Read palette
+                case 'PLTE': // palette
                     $palette = $this->readStream($stream, $length);
                     $this->readStream($stream, 4);
                     break;
-                case 'tRNS': // @phpstan-ignore-line
-                    // Read transparency info
+                case 'tRNS': // transparency
                     $t = $this->readStream($stream, $length);
-                    if (0 === $ct) {
+                    if (0 === $colorType) {
                         $transparencies = [\ord(\substr($t, 1, 1))];
-                    } elseif (2 === $ct) {
+                    } elseif (2 === $colorType) {
                         $transparencies = [\ord(\substr($t, 1, 1)), \ord(\substr($t, 3, 1)), \ord(\substr($t, 5, 1))];
                     } else {
                         $pos = \strpos($t, \chr(0));
@@ -2978,12 +2919,11 @@ class PdfDocument
                     }
                     $this->readStream($stream, 4);
                     break;
-                case 'IDAT': // @phpstan-ignore-line
-                    // Read image data block
+                case 'IDAT': // image data
                     $data .= $this->readStream($stream, $length);
                     $this->readStream($stream, 4);
                     break;
-                default:
+                default: // skip
                     $this->readStream($stream, $length + 4);
                     break;
             }
@@ -3002,8 +2942,8 @@ class PdfDocument
             'palette' => $palette,
             'transparencies' => $transparencies,
         ];
-        if ($ct >= 4) {
-            // Extract alpha channel
+        if ($colorType >= 4) {
+            // extract alpha channel
             if (!\function_exists('gzuncompress')) {
                 throw new PdfException(\sprintf('Zlib not available, can not handle alpha channel: %s.', $file));
             }
@@ -3011,8 +2951,8 @@ class PdfDocument
             $data = \gzuncompress($data);
             $color = '';
             $alpha = '';
-            if (4 === $ct) {
-                // Gray image
+            if (4 === $colorType) {
+                // gray image
                 $len = 2 * $width;
                 for ($i = 0; $i < $height; ++$i) {
                     $pos = (1 + $len) * $i;
@@ -3095,6 +3035,16 @@ class PdfDocument
     }
 
     /**
+     * Put the end object to this buffer.
+     *
+     * @see PdfDocument::putNewObj()
+     */
+    protected function putEndObj(): void
+    {
+        $this->put('endobj');
+    }
+
+    /**
      * Put a formatted string to this buffer.
      */
     protected function putf(string $format, string|int|float ...$values): void
@@ -3104,14 +3054,12 @@ class PdfDocument
 
     /**
      * Put fonts to this buffer.
-     *
-     * @throws PdfException if the font file not found
      */
     protected function putFonts(): void
     {
+        // embedding font file
         foreach ($this->fontFiles as $file => $info) {
-            // Font file embedding
-            $this->newObj();
+            $this->putNewObj();
             $this->fontFiles[$file]['number'] = $this->objectNumber;
             $content = \file_get_contents($file);
             if (false === $content) {
@@ -3133,17 +3081,18 @@ class PdfDocument
             }
             $this->put('>>');
             $this->putStream($content);
-            $this->endObj();
+            $this->putEndObj();
         }
 
+        // fonts
         foreach ($this->fonts as $key => $font) {
-            // Encoding
+            // encoding
             if (isset($font['diff'])) {
                 $enc = $font['enc'] ?? '';
                 if (!isset($this->encodings[$enc])) {
-                    $this->newObj();
+                    $this->putNewObj();
                     $this->putf('<</Type /Encoding /BaseEncoding /WinAnsiEncoding /Differences [%s]>>', $font['diff']);
-                    $this->endObj();
+                    $this->putEndObj();
                     $this->encodings[$enc] = $this->objectNumber;
                 }
             }
@@ -3158,15 +3107,15 @@ class PdfDocument
                     $this->charMaps[$mapKey] = $this->objectNumber;
                 }
             }
-            // Font object
+            // font object
             $this->fonts[$key]['number'] = $this->objectNumber + 1;
             if ($font['subsetted']) {
                 $name = 'AAAAAA+' . $name;
             }
             $type = $font['type'];
             if ('Core' === $type) {
-                // Core font
-                $this->newObj();
+                // core font
+                $this->putNewObj();
                 $this->put('<</Type /Font');
                 $this->putf('/BaseFont /%s', $name);
                 $this->put('/Subtype /Type1');
@@ -3177,10 +3126,10 @@ class PdfDocument
                     $this->putf('/ToUnicode %d 0 R', $this->charMaps[$mapKey]);
                 }
                 $this->put('>>');
-                $this->endObj();
+                $this->putEndObj();
             } elseif ('Type1' === $type || 'TrueType' === $type) {
-                // Additional Type1 or TrueType/OpenType font
-                $this->newObj();
+                // additional Type1 or TrueType/OpenType font
+                $this->putNewObj();
                 $this->put('<</Type /Font');
                 $this->putf('/BaseFont /%s', $name);
                 $this->putf('/Subtype /%s', $type);
@@ -3196,9 +3145,9 @@ class PdfDocument
                     $this->putf('/ToUnicode %d 0 R', $this->charMaps[$mapKey]);
                 }
                 $this->put('>>');
-                $this->endObj();
-                // Widths
-                $this->newObj();
+                $this->putEndObj();
+                // widths
+                $this->putNewObj();
                 $charWidths = $font['cw'];
                 $output = \array_reduce(
                     \range(\chr(32), \chr(255)),
@@ -3206,9 +3155,9 @@ class PdfDocument
                     ''
                 );
                 $this->putf('[%s]', $output);
-                $this->endObj();
-                // Descriptor
-                $this->newObj();
+                $this->putEndObj();
+                // descriptor
+                $this->putNewObj();
                 $output = \sprintf('<</Type /FontDescriptor /FontName /%s', $name);
                 foreach ($font['desc'] as $descKey => $descValue) {
                     $output .= \sprintf(' /%s %s', $descKey, $descValue);
@@ -3219,9 +3168,9 @@ class PdfDocument
                 }
                 $output .= '>>';
                 $this->put($output);
-                $this->endObj();
+                $this->putEndObj();
             } else {
-                // Allow for additional types
+                // allow for additional types
                 $method = 'put' . \ucfirst(\strtolower($type));
                 if (!\method_exists($this, $method)) {
                     throw new PdfException(\sprintf('Unsupported font type: %s.', $type));
@@ -3241,13 +3190,13 @@ class PdfDocument
     }
 
     /**
-     * Put image to this buffer.
+     * Put an image to this buffer.
      *
      * @phpstan-param ImageType $image
      */
     protected function putImage(array &$image): void
     {
-        $this->newObj();
+        $this->putNewObj();
         $image['number'] = $this->objectNumber;
         $this->put('<</Type /XObject');
         $this->put('/Subtype /Image');
@@ -3287,8 +3236,8 @@ class PdfDocument
             $this->putf('/Length %d>>', \strlen($image['data']));
             $this->putStream($image['data']);
         }
-        $this->endObj();
-        // Soft mask
+        $this->putEndObj();
+        // soft mask
         if (isset($image['soft_mask'])) {
             $decodeParms = \sprintf('/Predictor 15 /Colors 1 /BitsPerComponent 8 /Columns %.2f', $image['width']);
             /** @phpstan-var ImageType $soft_image */
@@ -3303,7 +3252,7 @@ class PdfDocument
             ];
             $this->putImage($soft_image);
         }
-        // Palette
+        // palette
         if ('Indexed' === $image['color_space']) {
             $this->putStreamObject($image['palette']);
         }
@@ -3322,7 +3271,7 @@ class PdfDocument
     }
 
     /**
-     * Put medata to this buffer.
+     * Put date and meta-data to this buffer.
      */
     protected function putInfo(): void
     {
@@ -3340,7 +3289,7 @@ class PdfDocument
     protected function putLinks(int $n): void
     {
         foreach ($this->pageLinks[$n] as $pageLink) {
-            $this->newObj();
+            $this->putNewObj();
             $rect = \sprintf(
                 '%.2F %.2F %.2F %.2F',
                 $pageLink[0],
@@ -3369,28 +3318,44 @@ class PdfDocument
                 );
             }
             $this->put($output);
-            $this->endObj();
+            $this->putEndObj();
         }
     }
 
     /**
-     * Put page to this buffer.
+     * Put a new object to this buffer.
+     *
+     * @see PdfDocument::putEndObj()
      */
-    protected function putPage(int $n): void
+    protected function putNewObj(?int $index = null): void
     {
-        $this->newObj();
+        $index ??= ++$this->objectNumber;
+        $this->offsets[$index] = $this->getOffset();
+        $this->putf('%d 0 obj', $index);
+    }
+
+    /**
+     * Put a page to this buffer.
+     */
+    protected function putPage(int $number): void
+    {
+        $this->putNewObj();
         $this->put('<</Type /Page');
         $this->put('/Parent 1 0 R');
-        if (isset($this->pageInfos[$n]['size'])) {
-            $this->putf('/MediaBox [0 0 %.2F %.2F]', $this->pageInfos[$n]['size'][0], $this->pageInfos[$n]['size'][1]);
+        if (isset($this->pageInfos[$number]['size'])) {
+            $this->putf(
+                '/MediaBox [0 0 %.2F %.2F]',
+                $this->pageInfos[$number]['size'][0],
+                $this->pageInfos[$number]['size'][1]
+            );
         }
-        if (isset($this->pageInfos[$n]['rotation'])) {
-            $this->putf('/Rotate %d', $this->pageInfos[$n]['rotation']->value);
+        if (isset($this->pageInfos[$number]['rotation'])) {
+            $this->putf('/Rotate %d', $this->pageInfos[$number]['rotation']->value);
         }
         $this->put('/Resources 2 0 R');
-        if ([] !== $this->pageLinks[$n]) {
+        if ([] !== $this->pageLinks[$number]) {
             $output = '/Annots [';
-            foreach ($this->pageLinks[$n] as $pageLink) {
+            foreach ($this->pageLinks[$number] as $pageLink) {
                 $output .= \sprintf('%d 0 R ', $pageLink[5]);
             }
             $output .= ']';
@@ -3400,14 +3365,14 @@ class PdfDocument
             $this->put('/Group <</Type /Group /S /Transparency /CS /DeviceRGB>>');
         }
         $this->putf('/Contents %d 0 R>>', $this->objectNumber + 1);
-        $this->endObj();
-        // Page content
+        $this->putEndObj();
+        // page content
         if ('' !== $this->aliasNumberPages) {
-            $this->pages[$n] = \str_replace($this->aliasNumberPages, (string) $this->page, $this->pages[$n]);
+            $this->pages[$number] = \str_replace($this->aliasNumberPages, (string) $this->page, $this->pages[$number]);
         }
-        $this->putStreamObject($this->pages[$n]);
-        // Link annotations
-        $this->putLinks($n);
+        $this->putStreamObject($this->pages[$number]);
+        // link annotations
+        $this->putLinks($number);
     }
 
     /**
@@ -3418,19 +3383,19 @@ class PdfDocument
     protected function putPages(): void
     {
         $page = $this->page;
-        $n = $this->objectNumber;
+        $number = $this->objectNumber;
         for ($i = 1; $i <= $page; ++$i) {
-            $this->pageInfos[$i]['number'] = ++$n;
-            ++$n;
+            $this->pageInfos[$i]['number'] = ++$number;
+            ++$number;
             foreach ($this->pageLinks[$i] as &$pageLink) {
-                $pageLink[5] = ++$n;
+                $pageLink[5] = ++$number;
             }
         }
         for ($i = 1; $i <= $page; ++$i) {
             $this->putPage($i);
         }
-        // Pages root
-        $this->newObj(1);
+        // pages root
+        $this->putNewObj(1);
         $this->put('<</Type /Pages');
         $kids = '/Kids [';
         for ($i = 1; $i <= $page; ++$i) {
@@ -3448,7 +3413,7 @@ class PdfDocument
         }
         $this->putf('/MediaBox [0 0 %.2F %.2F]', $width * $this->scaleFactor, $height * $this->scaleFactor);
         $this->put('>>');
-        $this->endObj();
+        $this->putEndObj();
     }
 
     /**
@@ -3456,32 +3421,35 @@ class PdfDocument
      */
     protected function putResourceDictionary(): void
     {
+        // fonts
         $this->put('/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]');
         $this->put('/Font <<');
         foreach ($this->fonts as $font) {
             $this->putf('/F%d %d 0 R', $font['index'], $font['number']);
         }
         $this->put('>>');
+
+        // images
         $this->put('/XObject <<');
-        $this->putXObjectDictionary();
+        foreach ($this->images as $image) {
+            $this->putf('/I%d %d 0 R', $image['index'], $image['number']);
+        }
         $this->put('>>');
     }
 
     /**
      * Put resources dictionary to this buffer.
-     *
-     * @throws PdfException if a font file not found
      */
     protected function putResources(): void
     {
         $this->putFonts();
         $this->putImages();
-        // Resource dictionary
-        $this->newObj(2);
+        // resource dictionary
+        $this->putNewObj(2);
         $this->put('<<');
         $this->putResourceDictionary();
         $this->put('>>');
-        $this->endObj();
+        $this->putEndObj();
     }
 
     /**
@@ -3505,10 +3473,10 @@ class PdfDocument
             $data = (string) \gzcompress($data);
         }
         $entries .= \sprintf('/Length %d', \strlen($data));
-        $this->newObj();
+        $this->putNewObj();
         $this->putf('<<%s>>', $entries);
         $this->putStream($data);
-        $this->endObj();
+        $this->putEndObj();
     }
 
     /**
@@ -3522,21 +3490,19 @@ class PdfDocument
     }
 
     /**
-     * Put X object dictionary images to this buffer.
+     * Read a single character and convert to a value between 0 and 255.
+     *
+     * @param resource $stream the stream to read value from
      */
-    protected function putXObjectDictionary(): void
+    protected function readByte($stream): int
     {
-        foreach ($this->images as $image) {
-            $this->putf('/I%d %d 0 R', $image['index'], $image['number']);
-        }
+        return \ord($this->readStream($stream, 1));
     }
 
     /**
      * Read a 4-byte integer from the given stream.
      *
      * @param resource $stream the stream to read integer from
-     *
-     * @throws PdfException if an error occurs while reading stream or if end of stream is reached
      */
     protected function readInt($stream): int
     {
@@ -3551,12 +3517,9 @@ class PdfDocument
      *
      * @param resource $stream the stream to read string from
      * @param int      $len    the number of bytes read
-     *
-     * @throws PdfException if an error occurs while reading stream or if end of stream is reached
      */
     protected function readStream($stream, int $len): string
     {
-        // Read n bytes from stream
         $result = '';
         while ($len > 0 && !\feof($stream)) {
             $str = \fread($stream, $len);
@@ -3578,7 +3541,6 @@ class PdfDocument
      */
     protected function textString(string $str): string
     {
-        // Format a text string
         if (!$this->isAscii($str)) {
             $str = $this->convertUtf8ToUtf16($str);
         }
