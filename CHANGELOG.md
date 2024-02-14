@@ -1,35 +1,39 @@
 # Change log
 
-## Unreleased
+## 1.8.4 - 2024-02-14
 
 - Replaced static by self as return value. Added clean text function.
 - Corrected put image.
-- Corrected image soft mask.
+- Corrected the image soft mask.
 - Initialize properties. Added left and right margins.
 - Replaced self by static. Added test for PdfFontStyle.
-- Removed replace entries in composer.
-- Added CHANGELOG file. Added tests.
+- Removed replace entries in the `composer.json`.
+
+### 1.8.4-alpha-6 - 2024-02-13
+
+- Update `.styleci.yml`.
+- Added `CHANGELOG` file. Added tests.
 - Added isLink function.
 - Added new line constant.
 - Updated PHP doc.
 
-### 1.8.4-alpha-5
+### 1.8.4-alpha-5 - 2024-02-11
 
 - Updated PHP-Stan to level 9.
 - Added page rotation enumeration.
 - Added tests.
 
-### 1.8.4-alpha-4
+### 1.8.4-alpha-4 - 2024-02-08
 
 - Updated font directory for tests.
 - Replaced border integer by boolean.
 
-### 1.8.4-alpha-3
+### 1.8.4-alpha-3 - 2024-02-06
 
 - Added tests.
 - Minor corrections for output.
 
-### 1.8.4-alpha-2
+### 1.8.4-alpha-2 - 2024-02-05
 
 - Added rector.
 - Added GitHub actions.
@@ -39,7 +43,7 @@
 - Added license.
 - Added rectangle style and text alignment.
 
-### 1.8.4-alpha
+### 1.8.4-alpha - 2024-02-04
 
 - Initial release.
 
