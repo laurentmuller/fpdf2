@@ -70,22 +70,19 @@ namespace fpdf;
 class PdfDocument
 {
     /**
+     * The default line height in mm.
+     */
+    final public const LINE_HEIGHT = 5.0;
+
+    /**
      * The FPDF version.
      */
-    public const VERSION = '1.86';
+    final public const VERSION = '1.86';
 
     // the empty color
     private const EMPTY_COLOR = '0 G';
     // the new line separator
     private const NEW_LINE = "\n";
-    // the document is closed
-    private const STATE_CLOSED = 3;
-    // the end page has been called
-    private const STATE_END_PAGE = 1;
-    // the document has no page (not started)
-    private const STATE_NO_PAGE = 0;
-    // the start page has been called
-    private const STATE_PAGE_STARTED = 2;
 
     /**
      * The alias for total number of pages.
@@ -96,7 +93,7 @@ class PdfDocument
      */
     protected bool $autoPageBreak = false;
     /**
-     * The bottom margin (page break margin).
+     * The bottom margin in user unit (page break margin).
      */
     protected float $bottomMargin = 0.0;
     /**
@@ -104,7 +101,7 @@ class PdfDocument
      */
     protected string $buffer = '';
     /**
-     * The cell margin.
+     * The cell margin in user unit.
      */
     protected float $cellMargin = 0.0;
     /**
@@ -232,9 +229,17 @@ class PdfDocument
      */
     protected PdfLayout $layout = PdfLayout::DEFAULT;
     /**
-     * The left margin.
+     * The left margin in user unit.
      */
     protected float $leftMargin = 0.0;
+    /**
+     * The line cap.
+     */
+    protected PdfLineCap $lineCap = PdfLineCap::SQUARE;
+    /**
+     * The line join.
+     */
+    protected PdfLineJoin $lineJoin = PdfLineJoin::MITER;
     /**
      * The line width in user unit.
      */
@@ -292,7 +297,7 @@ class PdfDocument
      */
     protected string $pdfVersion = '1.3';
     /**
-     * The right margin.
+     * The right margin in user unit.
      */
     protected float $rightMargin = 0.0;
     /**
@@ -302,7 +307,7 @@ class PdfDocument
     /**
      * The current document state.
      */
-    protected int $state = self::STATE_NO_PAGE;
+    protected PdfState $state = PdfState::NO_PAGE;
     /**
      * The commands for text color.
      */
@@ -312,7 +317,7 @@ class PdfDocument
      */
     protected string $title = '';
     /**
-     * The top margin.
+     * The top margin in user unit.
      */
     protected float $topMargin = 0.0;
     /**
@@ -516,7 +521,7 @@ class PdfDocument
         PdfPageSize|array|null $size = null,
         ?PdfRotation $rotation = null
     ): self {
-        if (self::STATE_CLOSED === $this->state) {
+        if (PdfState::CLOSED === $this->state) {
             throw new PdfException('The document is closed.');
         }
         // save context
@@ -538,8 +543,12 @@ class PdfDocument
         }
         // start new page
         $this->beginPage($orientation, $size, $rotation);
-        // set line cap style to square
-        $this->out('2 J');
+
+        // set line cap and line join
+        $this->outLineCap();
+        if (PdfLineJoin::MITER !== $this->lineJoin) {
+            $this->outLineJoin();
+        }
 
         // restore context
         $this->lineWidth = $lineWidth;
@@ -588,26 +597,11 @@ class PdfDocument
     /**
      * Prints a cell (rectangular area) with optional borders, background color and character string.
      *
-     * @param float            $width  the cell width. If 0.0, the cell extends up to the right margin.
+     * @param float            $width  the cell width. If <code>0.0</code>, the cell extends up to the right margin.
      * @param float            $height the cell height
      * @param string           $text   the cell text
-     * @param string|bool      $border indicates if borders must be drawn around the cell. The value can be either:
-     *                                 <ul>
-     *                                 <li>A boolean:
-     *                                 <ul>
-     *                                 <li><code>false</code>: No border (default value).</li>
-     *                                 <li><code>true</code>: Draw a frame.</li>
-     *                                 </ul>
-     *                                 </li>
-     *                                 <li>A string containing some or all of the following characters (in any order):
-     *                                 <ul>
-     *                                 <li><code>'L'</code>: Left border.</li>
-     *                                 <li><code>'T'</code>: Top border.</li>
-     *                                 <li><code>'R'</code>: Right border.</li>
-     *                                 <li><code>'B'</code>: Bottom border.</li>
-     *                                 </ul>
-     *                                 </li>
-     *                                 </ul>
+     * @param ?PdfBorder       $border indicates how borders must be drawn around the cell. If <code>null</code>,
+     *                                 no border is draw.
      * @param PdfMove          $move   indicates where the current position should go after the call
      * @param PdfTextAlignment $align  the text alignment
      * @param bool             $fill   indicates if the cell background must be painted (<code>true</code>) or
@@ -618,9 +612,9 @@ class PdfDocument
      */
     public function cell(
         float $width = 0.0,
-        float $height = 0.0,
+        float $height = self::LINE_HEIGHT,
         string $text = '',
-        string|bool $border = false,
+        ?PdfBorder $border = null,
         PdfMove $move = PdfMove::RIGHT,
         PdfTextAlignment $align = PdfTextAlignment::LEFT,
         bool $fill = false,
@@ -642,13 +636,15 @@ class PdfDocument
                 $this->outf('%.3F Tw', $wordSpacing * $scaleFactor);
             }
         }
+
+        $output = '';
         if (0.0 === $width) {
             $width = $this->getRemainingWidth();
         }
-        $output = '';
-        if ($fill || true === $border) {
+        $border ??= PdfBorder::none();
+        if ($fill || $border->isAll()) {
             if ($fill) {
-                $op = (true === $border) ? 'B' : 'f';
+                $op = $border->isAll() ? 'B' : 'f';
             } else {
                 $op = 'S';
             }
@@ -661,46 +657,8 @@ class PdfDocument
                 $op
             );
         }
-        if (\is_string($border) && '' !== $border) {
-            $x = $this->x;
-            $y = $this->y;
-            $border = \strtoupper($border);
-            if (\str_contains($border, 'L')) {
-                $output .= \sprintf(
-                    '%.2F %.2F m %.2F %.2F l S ',
-                    $x * $scaleFactor,
-                    ($this->height - $y) * $scaleFactor,
-                    $x * $scaleFactor,
-                    ($this->height - ($y + $height)) * $scaleFactor
-                );
-            }
-            if (\str_contains($border, 'T')) {
-                $output .= \sprintf(
-                    '%.2F %.2F m %.2F %.2F l S ',
-                    $x * $scaleFactor,
-                    ($this->height - $y) * $scaleFactor,
-                    ($x + $width) * $scaleFactor,
-                    ($this->height - $y) * $scaleFactor
-                );
-            }
-            if (\str_contains($border, 'R')) {
-                $output .= \sprintf(
-                    '%.2F %.2F m %.2F %.2F l S ',
-                    ($x + $width) * $scaleFactor,
-                    ($this->height - $y) * $scaleFactor,
-                    ($x + $width) * $scaleFactor,
-                    ($this->height - ($y + $height)) * $scaleFactor
-                );
-            }
-            if (\str_contains($border, 'B')) {
-                $output .= \sprintf(
-                    '%.2F %.2F m %.2F %.2F l S ',
-                    $x * $scaleFactor,
-                    ($this->height - ($y + $height)) * $scaleFactor,
-                    ($x + $width) * $scaleFactor,
-                    ($this->height - ($y + $height)) * $scaleFactor
-                );
-            }
+        if ('' === $output && !$border->isNone()) {
+            $output = $this->formatBorders($this->x, $this->y, $width, $height, $border);
         }
         $text = $this->cleanText($text);
         if ('' !== $text) {
@@ -769,7 +727,7 @@ class PdfDocument
      */
     public function close(): self
     {
-        if (self::STATE_CLOSED === $this->state) {
+        if (PdfState::CLOSED === $this->state) {
             return $this;
         }
         if (0 === $this->page) {
@@ -823,7 +781,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the bottom margin.
+     * Gets the bottom margin in user unit.
      *
      * The default value is 10 mm.
      */
@@ -833,7 +791,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the cell margin.
+     * Gets the cell margin in user unit.
      *
      * The default value is 1 mm.
      */
@@ -861,13 +819,33 @@ class PdfDocument
     }
 
     /**
-     * Gets the left margin.
+     * Gets the left margin in user unit.
      *
      * The default value is 10 mm.
      */
     public function getLeftMargin(): float
     {
         return $this->leftMargin;
+    }
+
+    /**
+     * Gets the line cap.
+     *
+     * The default value is <code>PdfLineCap::SQUARE</code>.
+     */
+    public function getLineCap(): PdfLineCap
+    {
+        return $this->lineCap;
+    }
+
+    /**
+     * Gets the line join.
+     *
+     *  The default value is <code>PdfLineJoin::MITER</code>.
+     */
+    public function getLineJoin(): PdfLineJoin
+    {
+        return $this->lineJoin;
     }
 
     /**
@@ -950,7 +928,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the current page height.
+     * Gets the current page height in user unit.
      */
     public function getPageHeight(): float
     {
@@ -958,7 +936,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the current page width.
+     * Gets the current page width in user unit.
      */
     public function getPageWidth(): float
     {
@@ -966,7 +944,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the printable width.
+     * Gets the printable width in user unit.
      *
      * @return float the page width minus the left and right margins
      */
@@ -976,7 +954,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the remaining printable width.
+     * Gets the remaining printable width in user unit.
      *
      * @return float the value from the current abscissa (x) to the right margin
      */
@@ -986,13 +964,21 @@ class PdfDocument
     }
 
     /**
-     * Gets the right margin.
+     * Gets the right margin in user unit.
      *
      * The default value is 10 mm.
      */
     public function getRightMargin(): float
     {
         return $this->rightMargin;
+    }
+
+    /**
+     * Gets the document state.
+     */
+    public function getState(): PdfState
+    {
+        return $this->state;
     }
 
     /**
@@ -1030,7 +1016,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the top margin.
+     * Gets the top margin in user unit.
      *
      * The default value is 10 mm.
      */
@@ -1040,7 +1026,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the abscissa of the current position.
+     * Gets the abscissa of the current position in user unit.
      *
      * @see PdfDocument::setX()
      * @see PdfDocument::getY()
@@ -1051,7 +1037,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the current X and Y position.
+     * Gets the current X and Y position in user unit.
      *
      * @return float[] the X and Y position
      *
@@ -1066,7 +1052,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the ordinate of the current position.
+     * Gets the ordinate of the current position in user unit.
      *
      * @see PdfDocument::setY()
      * @see PdfDocument::getX()
@@ -1384,40 +1370,25 @@ class PdfDocument
     /**
      * This method allows printing text with line breaks.
      *
-     *  They can be automatic (as soon as the text reaches the right border of the cell) or explicit
-     *  (via the \n character). As many cells as necessary are output, one below the other. Text can be aligned,
-     *  centered or justified. The cell block can be framed and the background painted.
+     * They can be automatic, as soon as the text reaches the right border of the cell, or explicit via the line
+     * feed character ("\n"). As many cells as necessary are output, one below the other. Text can be aligned, centered
+     * or justified. The cell block can be framed and the background painted.
      *
-     * @param float            $width  the cell width. If 0.0, the cell extends up to the right margin.
+     * @param float            $width  the cell width. If <code>0.0</code>, the cell extends up to the right margin.
      * @param float            $height the cell height
      * @param string           $text   the cell text
-     * @param string|bool      $border indicates if borders must be drawn around the cell. The value can be either:
-     *                                 <ul>
-     *                                 <li>A boolean:
-     *                                 <ul>
-     *                                 <li><code>false</code>: No border (default value).</li>
-     *                                 <li><code>true</code>: Draw a frame.</li>
-     *                                 </ul>
-     *                                 </li>
-     *                                 <li>A string containing some or all of the following characters (in any order):
-     *                                 <ul>
-     *                                 <li><code>'L'</code>: Left border.</li>
-     *                                 <li><code>'T'</code>: Top border.</li>
-     *                                 <li><code>'R'</code>: Right border.</li>
-     *                                 <li><code>'B'</code>: Bottom border.</li>
-     *                                 </ul>
-     *                                 </li>
-     *                                 </ul>
+     * @param ?PdfBorder       $border indicates how borders must be drawn around the cell. If <code>null</code>,
+     *                                 no border is draw.
      * @param PdfTextAlignment $align  the text alignment
      * @param bool             $fill   indicates if the cell background must be painted (true) or transparent (false)
      *
      * @see PdfDocument::cell()
      */
     public function multiCell(
-        float $width,
-        float $height,
-        string $text,
-        string|bool $border = false,
+        float $width = 0.0,
+        float $height = self::LINE_HEIGHT,
+        string $text = '',
+        ?PdfBorder $border = null,
         PdfTextAlignment $align = PdfTextAlignment::JUSTIFIED,
         bool $fill = false
     ): self {
@@ -1431,21 +1402,16 @@ class PdfDocument
         }
         $widthMax = ($width - 2.0 * $this->cellMargin) * 1000.0 / $this->fontSize;
 
-        $border1 = false;
-        $border2 = '';
-        if (true === $border) {
-            $border = 'LTRB';
-            $border1 = 'LRT';
-            $border2 = 'LR';
-        } elseif (\is_string($border) && '' !== $border) {
-            $border = \strtoupper($border);
-            if (\str_contains($border, 'L')) {
-                $border2 .= 'L';
+        $border1 = null;
+        $border2 = null;
+        if ($border instanceof PdfBorder) {
+            if ($border->isAll()) {
+                $border1 = new PdfBorder(true, true, true, false);
+                $border2 = new PdfBorder(true, false, true, false);
+            } else {
+                $border1 = new PdfBorder($border->isLeft(), $border->isTop(), $border->isRight(), false);
+                $border2 = new PdfBorder($border->isLeft(), false, $border->isRight(), false);
             }
-            if (\str_contains($border, 'R')) {
-                $border2 .= 'R';
-            }
-            $border1 = (\str_contains($border, 'T')) ? $border2 . 'T' : $border2;
         }
 
         $text = $this->cleanText($text);
@@ -1481,7 +1447,7 @@ class PdfDocument
                 $currentWidth = 0.0;
                 $newSeparator = 0;
                 ++$newLine;
-                if (\is_string($border) && 2 === $newLine) {
+                if ($border instanceof PdfBorder && 2 === $newLine) {
                     $border1 = $border2;
                 }
                 continue;
@@ -1534,7 +1500,7 @@ class PdfDocument
                 $currentWidth = 0.0;
                 $newSeparator = 0;
                 ++$newLine;
-                if (\is_string($border) && 2 === $newLine) {
+                if ($border instanceof PdfBorder && 2 === $newLine) {
                     $border1 = $border2;
                 }
             } else {
@@ -1546,8 +1512,9 @@ class PdfDocument
             $this->wordSpacing = 0.0;
             $this->out('0 Tw');
         }
-        if (\is_string($border) && \str_contains($border, 'B') && \is_string($border1)) {
-            $border1 .= 'B';
+        if ($border instanceof PdfBorder && $border->isBottom()) {
+            $border1 = new PdfBorder($border->isLeft(), $border->isTop(), $border->isRight(), true);
+            // $border1 .= 'B';
         }
         $this->cell(
             $width,
@@ -1673,23 +1640,32 @@ class PdfDocument
     /**
      * Outputs a rectangle.
      *
-     * It can be drawn (border only), filled (with no border) or both.
+     * Do nothing if the style is a border instance without at least one border set.
      */
     public function rect(
         float $x,
         float $y,
         float $width,
         float $height,
-        PdfRectangleStyle $style = PdfRectangleStyle::BORDER
-    ): self {
-        $this->outf(
-            '%.2F %.2F %.2F %.2F re %s',
-            $x * $this->scaleFactor,
-            ($this->height - $y) * $this->scaleFactor,
-            $width * $this->scaleFactor,
-            -$height * $this->scaleFactor,
-            $style->value
-        );
+        PdfRectangleStyle|PdfBorder $style = PdfRectangleStyle::BORDER
+    ): static {
+        if ($style instanceof PdfRectangleStyle) {
+            $scaleFactor = $this->scaleFactor;
+            $this->outf(
+                '%.2F %.2F %.2F %.2F re %s',
+                $x * $scaleFactor,
+                ($this->height - $y) * $scaleFactor,
+                $width * $scaleFactor,
+                -$height * $scaleFactor,
+                $style->value
+            );
+
+            return $this;
+        }
+
+        if (!$style->isNone()) {
+            $this->out($this->formatBorders($x, $y, $width, $height, $style));
+        }
 
         return $this;
     }
@@ -1984,6 +1960,36 @@ class PdfDocument
     }
 
     /**
+     * Sets the line cap.
+     *
+     * The method can be called before the first page is created and the value is retained from page to page.
+     */
+    public function setLineCap(PdfLineCap $lineCap): self
+    {
+        if ($this->lineCap !== $lineCap) {
+            $this->lineCap = $lineCap;
+            $this->outLineCap();
+        }
+
+        return $this;
+    }
+
+    /**
+     * Sets the line join.
+     *
+     * The method can be called before the first page is created and the value is retained from page to page.
+     */
+    public function setLineJoin(PdfLineJoin $lineJoin): self
+    {
+        if ($this->lineJoin !== $lineJoin) {
+            $this->lineJoin = $lineJoin;
+            $this->outLineJoin();
+        }
+
+        return $this;
+    }
+
+    /**
      * Defines the line width.
      *
      * By default, the value equals 0.2 mm. The method can be called before the first page is created and the value is
@@ -2257,9 +2263,9 @@ class PdfDocument
     /**
      * This method prints text from the current position.
      *
-     * When the right margin is reached (or the \n character is met) a line break occurs and text continues from the
-     * left margin. Upon method exit, the current position is left just at the end of the text. It is possible to put
-     * a link on the text.
+     * When the right margin is reached, or the line feed character ("\n") is met, a line break occurs and text
+     * continues from the left margin. Upon method exit, the current position is left just at the end of the text.
+     * It is possible to put a link on the text.
      *
      * Do nothing if the text is empty.
      *
@@ -2289,6 +2295,7 @@ class PdfDocument
         $sepIndex = -1;
         $currentIndex = 0;
         $currentWidth = 0.0;
+        $border = PdfBorder::none();
         while ($index < $len) {
             $ch = $text[$index];
             if (self::NEW_LINE === $ch) {
@@ -2297,7 +2304,7 @@ class PdfDocument
                     $width,
                     $height,
                     \substr($text, $currentIndex, $index - $currentIndex),
-                    false,
+                    $border,
                     PdfMove::BELOW,
                     PdfTextAlignment::LEFT,
                     false,
@@ -2339,7 +2346,7 @@ class PdfDocument
                         $width,
                         $height,
                         \substr($text, $currentIndex, $index - $currentIndex),
-                        false,
+                        $border,
                         PdfMove::BELOW,
                         PdfTextAlignment::LEFT,
                         false,
@@ -2350,7 +2357,7 @@ class PdfDocument
                         $width,
                         $height,
                         \substr($text, $currentIndex, $sepIndex - $currentIndex),
-                        false,
+                        $border,
                         PdfMove::BELOW,
                         PdfTextAlignment::LEFT,
                         false,
@@ -2377,7 +2384,7 @@ class PdfDocument
                 $currentWidth / 1000.0 * $this->fontSize,
                 $height,
                 \substr($text, $currentIndex),
-                false,
+                $border,
                 PdfMove::RIGHT,
                 PdfTextAlignment::LEFT,
                 false,
@@ -2417,7 +2424,7 @@ class PdfDocument
         ++$this->page;
         $this->pages[$this->page] = '';
         $this->pageLinks[$this->page] = [];
-        $this->state = self::STATE_PAGE_STARTED;
+        $this->state = PdfState::PAGE_STARTED;
         $this->x = $this->leftMargin;
         $this->y = $this->topMargin;
         $this->fontFamily = '';
@@ -2561,7 +2568,7 @@ class PdfDocument
         $this->put('startxref');
         $this->put($offset);
         $this->put('%%EOF');
-        $this->state = self::STATE_CLOSED;
+        $this->state = PdfState::CLOSED;
     }
 
     /**
@@ -2569,7 +2576,7 @@ class PdfDocument
      */
     protected function endPage(): void
     {
-        $this->state = self::STATE_END_PAGE;
+        $this->state = PdfState::END_PAGE;
     }
 
     /**
@@ -2587,6 +2594,62 @@ class PdfDocument
         }
 
         return $str;
+    }
+
+    /**
+     * Format the rectangle border output.
+     */
+    protected function formatBorders(
+        float $x,
+        float $y,
+        float $width,
+        float $height,
+        PdfBorder $border
+    ): string {
+        if ($border->isNone()) {
+            return '';
+        }
+
+        $output = '';
+        $scaleFactor = $this->scaleFactor;
+        if ($border->isLeft()) {
+            $output .= \sprintf(
+                '%.2F %.2F m %.2F %.2F l S ',
+                $x * $scaleFactor,
+                ($this->height - $y) * $scaleFactor,
+                $x * $scaleFactor,
+                ($this->height - ($y + $height)) * $scaleFactor
+            );
+        }
+        if ($border->isTop()) {
+            $output .= \sprintf(
+                '%.2F %.2F m %.2F %.2F l S ',
+                $x * $scaleFactor,
+                ($this->height - $y) * $scaleFactor,
+                ($x + $width) * $scaleFactor,
+                ($this->height - $y) * $scaleFactor
+            );
+        }
+        if ($border->isRight()) {
+            $output .= \sprintf(
+                '%.2F %.2F m %.2F %.2F l S ',
+                ($x + $width) * $scaleFactor,
+                ($this->height - $y) * $scaleFactor,
+                ($x + $width) * $scaleFactor,
+                ($this->height - ($y + $height)) * $scaleFactor
+            );
+        }
+        if ($border->isBottom()) {
+            $output .= \sprintf(
+                '%.2F %.2F m %.2F %.2F l S ',
+                $x * $scaleFactor,
+                ($this->height - ($y + $height)) * $scaleFactor,
+                ($x + $width) * $scaleFactor,
+                ($this->height - ($y + $height)) * $scaleFactor
+            );
+        }
+
+        return $output;
     }
 
     /**
@@ -2699,13 +2762,13 @@ class PdfDocument
     protected function out(string $output): void
     {
         switch ($this->state) {
-            case self::STATE_NO_PAGE:
+            case PdfState::NO_PAGE:
                 throw new PdfException('No page has been added yet.');
-            case self::STATE_END_PAGE:
+            case PdfState::END_PAGE:
                 throw new PdfException('Invalid call (end page).');
-            case self::STATE_CLOSED:
+            case PdfState::CLOSED:
                 throw new PdfException('The document is closed.');
-            case self::STATE_PAGE_STARTED:
+            case PdfState::PAGE_STARTED:
                 $this->pages[$this->page] .= $output . self::NEW_LINE;
                 break;
         }
@@ -2716,13 +2779,11 @@ class PdfDocument
      *
      * Do nothing if no page is added or if the current font is <code>null</code>.
      */
-    protected function outCurrentFont(): self
+    protected function outCurrentFont(): void
     {
         if ($this->page > 0 && null !== $this->currentFont) {
             $this->outf('BT /F%d %.2F Tf ET', $this->currentFont['index'], $this->fontSizeInPoint);
         }
-
-        return $this;
     }
 
     /**
@@ -2731,6 +2792,30 @@ class PdfDocument
     protected function outf(string $format, string|int|float ...$values): void
     {
         $this->out(\sprintf($format, ...$values));
+    }
+
+    /**
+     * Output the current line cap.
+     *
+     * Do nothing if no page is added.
+     */
+    protected function outLineCap(): void
+    {
+        if ($this->page > 0) {
+            $this->outf('%s J', $this->lineCap->value);
+        }
+    }
+
+    /**
+     * Output the current line join.
+     *
+     * Do nothing if no page is added.
+     */
+    protected function outLineJoin(): void
+    {
+        if ($this->page > 0) {
+            $this->outf('%s j', $this->lineJoin->value);
+        }
     }
 
     /**
@@ -2906,16 +2991,24 @@ class PdfDocument
                     $this->readStream($stream, 4);
                     break;
                 case 'tRNS': // transparency
-                    $t = $this->readStream($stream, $length);
-                    if (0 === $colorType) {
-                        $transparencies = [\ord(\substr($t, 1, 1))];
-                    } elseif (2 === $colorType) {
-                        $transparencies = [\ord(\substr($t, 1, 1)), \ord(\substr($t, 3, 1)), \ord(\substr($t, 5, 1))];
-                    } else {
-                        $pos = \strpos($t, \chr(0));
-                        if (false !== $pos) {
-                            $transparencies = [$pos];
-                        }
+                    $transparency = $this->readStream($stream, $length);
+                    switch ($colorType) {
+                        case 0:
+                            $transparencies = [\ord(\substr($transparency, 1, 1))];
+                            break;
+                        case 2:
+                            $transparencies = [
+                                \ord(\substr($transparency, 1, 1)),
+                                \ord(\substr($transparency, 3, 1)),
+                                \ord(\substr($transparency, 5, 1)),
+                            ];
+                            break;
+                        default:
+                            $pos = \strpos($transparency, \chr(0));
+                            if (false !== $pos) {
+                                $transparencies = [$pos];
+                            }
+                            break;
                     }
                     $this->readStream($stream, 4);
                     break;
@@ -2930,7 +3023,7 @@ class PdfDocument
         } while ($length);
 
         if ('Indexed' === $colorSpace && '' === $palette) {
-            throw new PdfException(\sprintf('Missing palette in %s.', $file));
+            throw new PdfException(\sprintf('Missing palette: %s.', $file));
         }
         $info = [
             'width' => $width,
@@ -3001,6 +3094,7 @@ class PdfDocument
         $number = $this->pageInfos[1]['number'];
         $this->put('/Type /Catalog');
         $this->put('/Pages 1 0 R');
+
         if ($this->zoom instanceof PdfZoom) {
             switch ($this->zoom) {
                 case PdfZoom::FULL_PAGE:
@@ -3011,8 +3105,6 @@ class PdfDocument
                     break;
                 case PdfZoom::REAL:
                     $this->putf('/OpenAction [%d 0 R /XYZ null null 1]', $number);
-                    break;
-                default:
                     break;
             }
         } else {
@@ -3028,8 +3120,6 @@ class PdfDocument
                 break;
             case PdfLayout::TWO_PAGES:
                 $this->put('/PageLayout /TwoColumnLeft');
-                break;
-            default:
                 break;
         }
     }

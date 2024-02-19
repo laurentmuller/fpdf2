@@ -19,29 +19,32 @@ class BorderTest extends AbstractTestCase
      */
     protected function updateNewDocument(PdfDocument $doc): void
     {
-        $doc->cell(0.0, 5.0, 'None Border', false, PdfMove::BELOW);
-        $doc->cell(0.0, 5.0, 'All Border', true, PdfMove::BELOW);
+        $width = 0.0;
+        $height = 5.0;
+        $move = PdfMove::BELOW;
+        $doc->cell($width, $height, 'None Border', PdfBorder::none(), $move);
+        $doc->cell($width, $height, 'All Border', PdfBorder::all(), $move);
 
-        $doc->cell(0.0, 5.0, 'Left Border', 'L', PdfMove::BELOW);
-        $doc->cell(0.0, 5.0, 'Right Border', 'R', PdfMove::BELOW);
-        $doc->cell(0.0, 5.0, 'Top Border', 'T', PdfMove::BELOW);
-        $doc->cell(0.0, 5.0, 'Bottom Border', 'B', PdfMove::BELOW);
+        $doc->cell($width, $height, 'Left Border', PdfBorder::left(), $move);
+        $doc->cell($width, $height, 'Right Border', PdfBorder::right(), $move);
+        $doc->cell($width, $height, 'Top Border', PdfBorder::top(), $move);
+        $doc->cell($width, $height, 'Bottom Border', PdfBorder::bottom(), $move);
 
-        $doc->cell(0.0, 5.0, 'All Border', 'LRTB', PdfMove::BELOW);
-        $doc->cell(0.0, 5.0, 'Left/Right Border', 'LR', PdfMove::BELOW);
+        $doc->cell($width, $height, 'Left/Right Border', PdfBorder::leftRight(), $move);
     }
 
     protected function updateOldDocument(FPDF $doc): void
     {
-        $doc->Cell(0.0, 5.0, 'None Border', 0, 1);
-        $doc->Cell(0.0, 5.0, 'All Border', 1, 1);
+        $width = 0.0;
+        $height = 5.0;
+        $doc->Cell($width, $height, 'None Border', 0, 1);
+        $doc->Cell($width, $height, 'All Border', 1, 1);
 
-        $doc->Cell(0.0, 5.0, 'Left Border', 'L', 1);
-        $doc->Cell(0.0, 5.0, 'Right Border', 'R', 1);
-        $doc->Cell(0.0, 5.0, 'Top Border', 'T', 1);
-        $doc->Cell(0.0, 5.0, 'Bottom Border', 'B', 1);
+        $doc->Cell($width, $height, 'Left Border', 'L', 1);
+        $doc->Cell($width, $height, 'Right Border', 'R', 1);
+        $doc->Cell($width, $height, 'Top Border', 'T', 1);
+        $doc->Cell($width, $height, 'Bottom Border', 'B', 1);
 
-        $doc->Cell(0.0, 5.0, 'All Border', 'LRTB', 1);
-        $doc->Cell(0.0, 5.0, 'Left/Right Border', 'LR', 1);
+        $doc->Cell($width, $height, 'Left/Right Border', 'LR', 1);
     }
 }

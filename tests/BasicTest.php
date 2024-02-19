@@ -79,7 +79,7 @@ class BasicTest extends AbstractTestCase
         $doc->write(5.0, 'Write', 1);
 
         $doc->addPage();
-        $doc->cell(0.0, 5.0, 'Greek: Γειά σου κόσμος', true, PdfMove::RIGHT, PdfTextAlignment::RIGHT, true);
+        $doc->cell(0.0, 5.0, 'Greek: Γειά σου κόσμος', PdfBorder::all(), PdfMove::RIGHT, PdfTextAlignment::RIGHT, true);
 
         $doc->setDisplayMode(PdfZoom::FULL_PAGE, PdfLayout::SINGLE);
 

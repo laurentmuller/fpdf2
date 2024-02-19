@@ -21,7 +21,14 @@ class HeaderFooterTest extends AbstractTestCase
             {
                 $this->setFont('Arial', PdfFontStyle::BOLD, 15);
                 $this->cell(80);
-                $this->cell(30, 10, 'Title', true, PdfMove::RIGHT, PdfTextAlignment::CENTER);
+                $this->cell(
+                    30,
+                    10,
+                    'Title',
+                    PdfBorder::all(),
+                    PdfMove::RIGHT,
+                    PdfTextAlignment::CENTER
+                );
                 $this->lineBreak(20);
             }
 
@@ -29,7 +36,14 @@ class HeaderFooterTest extends AbstractTestCase
             {
                 $this->setY(-15);
                 $this->setFont('Arial', PdfFontStyle::ITALIC, 8);
-                $this->cell(0, 10, \sprintf('Page %d', $this->getPage()), false, PdfMove::RIGHT, PdfTextAlignment::CENTER);
+                $this->cell(
+                    0,
+                    10,
+                    \sprintf('Page %d', $this->getPage()),
+                    PdfBorder::none(),
+                    PdfMove::RIGHT,
+                    PdfTextAlignment::CENTER
+                );
             }
         };
         $doc->setFont(PdfFontName::ARIAL, PdfFontStyle::REGULAR, 9.0);

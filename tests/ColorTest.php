@@ -25,11 +25,11 @@ class ColorTest extends AbstractTestCase
         $doc->setTextColor(100);
         $doc->setTextColor(50, 100, 200);
 
-        $doc->cell(0.0, 5.0, 'Test Color', true, PdfMove::BELOW, PdfTextAlignment::RIGHT);
-        $doc->cell(0.0, 5.0, 'Test Color', true, PdfMove::BELOW, PdfTextAlignment::CENTER, true);
+        $doc->cell(0.0, 5.0, 'Test Color', PdfBorder::all(), PdfMove::BELOW, PdfTextAlignment::RIGHT);
+        $doc->cell(0.0, 5.0, 'Test Color', PdfBorder::all(), PdfMove::BELOW, PdfTextAlignment::CENTER, true);
 
-        $doc->cell(0.0, 5.0, 'Test Color', false, PdfMove::BELOW, PdfTextAlignment::RIGHT);
-        $doc->cell(0.0, 5.0, 'Test Color', false, PdfMove::BELOW, PdfTextAlignment::CENTER, true);
+        $doc->cell(0.0, 5.0, 'Test Color', PdfBorder::none(), PdfMove::BELOW, PdfTextAlignment::RIGHT);
+        $doc->cell(0.0, 5.0, 'Test Color', PdfBorder::none(), PdfMove::BELOW, PdfTextAlignment::CENTER, true);
     }
 
     protected function updateOldDocument(FPDF $doc): void

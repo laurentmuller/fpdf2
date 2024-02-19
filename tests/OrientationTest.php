@@ -21,7 +21,7 @@ class OrientationTest extends AbstractTestCase
         $doc->addPage(PdfOrientation::LANDSCAPE);
         $doc->cell(0.0, 0.0, 'Landscape');
 
-        $doc->addPage(PdfOrientation::PORTRAIT, PdfPageSize::A5);
+        $doc->addPage(PdfOrientation::PORTRAIT, PdfPageSize::A3);
         $doc->cell(0.0, 0.0, 'Portrait');
 
         $doc->addPage(PdfOrientation::PORTRAIT, [100, 100]);
@@ -47,7 +47,7 @@ class OrientationTest extends AbstractTestCase
         $doc->AddPage('L');
         $doc->Cell(0.0, 0.0, 'Landscape');
 
-        $doc->AddPage('P', 'A5');
+        $doc->AddPage('P', 'A3');
         $doc->Cell(0.0, 0.0, 'Portrait');
 
         $doc->AddPage('P', [100, 100]);

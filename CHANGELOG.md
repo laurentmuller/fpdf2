@@ -1,15 +1,26 @@
 # Change log
 
+## 1.8.4.1 - 2024-02-18
+
+- Updated `PdfDocument` with default line height for `cell()`
+  and `multiCell()` functions.
+- Updated list of `PdfPageSize`.
+- Added `PdfLineJoin` enumeration.
+- Added `PdfLineCap` enumeration.
+- Added `PDFBorder` enumeration.
+- Added `PDFState` enumeration.
+- Updated Rector to version 1.0.
+
 ## 1.8.4 - 2024-02-14
 
 - Replaced static by self as return value. Added clean text function.
 - Corrected put image.
 - Corrected the image soft mask.
 - Initialize properties. Added left and right margins.
-- Replaced self by static. Added test for PdfFontStyle.
+- Replaced self by static. Added test for `PdfFontStyle`.
 - Removed replace entries in the `composer.json`.
 
-### 1.8.4-alpha-6 - 2024-02-13
+## 1.8.4-alpha-6 - 2024-02-13
 
 - Update `.styleci.yml`.
 - Added `CHANGELOG` file. Added tests.
@@ -17,43 +28,43 @@
 - Added new line constant.
 - Updated PHP doc.
 
-### 1.8.4-alpha-5 - 2024-02-11
+## 1.8.4-alpha-5 - 2024-02-11
 
 - Updated PHP-Stan to level 9.
-- Added page rotation enumeration.
+- Added `PdfRotation` enumeration.
 - Added tests.
 
-### 1.8.4-alpha-4 - 2024-02-08
+## 1.8.4-alpha-4 - 2024-02-08
 
 - Updated font directory for tests.
 - Replaced border integer by boolean.
 
-### 1.8.4-alpha-3 - 2024-02-06
+## 1.8.4-alpha-3 - 2024-02-06
 
 - Added tests.
 - Minor corrections for output.
 
-### 1.8.4-alpha-2 - 2024-02-05
+## 1.8.4-alpha-2 - 2024-02-05
 
-- Added rector.
+- Added Rector.
 - Added GitHub actions.
-- Update README.md
+- Update `README.md`
 - Added badges.
 - Configure Style CI.
 - Added license.
 - Added rectangle style and text alignment.
 
-### 1.8.4-alpha - 2024-02-04
+## 1.8.4-alpha - 2024-02-04
 
 - Initial release.
 
-### 1.86.0 - 2023-06-25
+## 1.86.0 - 2023-06-25
 
 - Added a parameter to AddFont() to specify the directory where to load the
   font definition file.
 - Fixed a bug related to the PDF creation date.
 
-### 1.85 - 2022-11-10
+## 1.85 - 2022-11-10
 
 - Removed deprecation notices on PHP 8.2.
 - Removed notices when passing null values instead of strings.
@@ -61,24 +72,24 @@
 - The creation date of the PDF now includes the timezone.
 - The content-type is now always application/pdf, even for downloads.
 
-### 1.84 - 2021-08-28
+## 1.84 - 2021-08-28
 
 - Fixed an issue related to annotations.
 
-### 1.83 - 2021-04-18
+## 1.83 - 2021-04-18
 
 - Fixed an issue related to annotations.
 
-### 1.82 - 2019-12-07
+## 1.82 - 2019-12-07
 
 - Removed a deprecation notice on PHP 7.4.
 
-### 1.81 - 2015-12-20
+## 1.81 - 2015-12-20
 
 - Added GetPageWidth() and GetPageHeight().
 - Fixed a bug in SetXY().
 
-### 1.8 - 2015-11-29
+## 1.8 - 2015-11-29
 
 - PHP 5.1.0 or higher is now required.
 - The MakeFont utility now subsets fonts, which can greatly reduce font sizes.
@@ -95,7 +106,7 @@
   error.
 - Outputting text with no font selected now raises an error.
 
-### 1.7 - 2011-06-18
+## 1.7 - 2011-06-18
 
 - The MakeFont utility has been completely rewritten and doesn't depend on
   ttf2pt1 anymore.
@@ -117,7 +128,7 @@
 - The Content-Length header was removed because it caused an issue when the
   HTTP server applies compression.
 
-### 1.6 - 2008-08-03
+## 1.6 - 2008-08-03
 
 - PHP 4.3.10 or higher is now required.
 - GIF image support.
@@ -131,9 +142,9 @@
 - Removed some warning messages appearing with recent PHP versions.
 - Added HTTP headers to reduce problems with IE.
 
-### 1.53 - 2004-12-31
+## 1.53 - 2004-12-31
 
-- When the font subdirectory is in the same directory as fpdf.php, it's no
+- When the font subdirectory is in the same directory as fpdf.php, it is no
   longer necessary to define the FPDF_FONTPATH constant.
 - The array $HTTP_SERVER_VARS is no longer used. It could cause trouble on
   PHP5-based configurations with the register_long_arrays option disabled.
@@ -143,7 +154,7 @@
 - The Cell() method could not print the number 0 (you had to pass the
   string '0').
 
-### 1.52 - 2003-12-30
+## 1.52 - 2003-12-30
 
 - Image() now displays the image at 72 dpi if no dimension is given.
 - Output() takes a string as second parameter to indicate destination.
@@ -158,7 +169,7 @@
 - The underlining was going too far for text containing characters \, ( or ).
 - $HTTP_ENV_VARS has been replaced by $HTTP_SERVER_VARS.
 
-### 1.51 - 2002-08-03
+## 1.51 - 2002-08-03
 
 - Type1 font support.
 - Added Baltic encoding.
@@ -177,7 +188,7 @@
 - Adding new fonts now works correctly even with the magic_quotes_runtime
   option set to on.
 
-### 1.5 - 2002-05-28
+## 1.5 - 2002-05-28
 
 - TrueType font (AddFont()) and encoding support (Western and Eastern Europe,
   Cyrillic and Greek).
@@ -190,12 +201,12 @@
 - When a document contains no page, Close() now calls AddPage() instead of
   causing a fatal error.
 
-### 1.41 - 2002-03-13
+## 1.41 - 2002-03-13
 
 - Fixed SetDisplayMode() which no longer worked (the PDF viewer used its
   default display).
 
-### 1.4 - 2002-03-02
+## 1.4 - 2002-03-02
 
 - PHP3 is no longer supported.
 - Page compression (SetCompression()).
@@ -209,14 +220,14 @@
 - Fixed a bug: when a justified line triggered a page break, the footer
   inherited the corresponding word spacing.
 
-### 1.31 - 2002-01-12
+## 1.31 - 2002-01-12
 
 - Fixed a bug in drawing frame with MultiCell(): the last line always started
   from the left margin.
 - Removed Expires HTTP header (gives trouble in some situations).
 - Added Content-disposition HTTP header (seems to help in some situations).
 
-### 1.3 - 2001-12-03
+## 1.3 - 2001-12-03
 
 - Line break and text justification support (MultiCell()).
 - Color support (SetDrawColor(), SetFillColor(), SetTextColor()). Possibility
@@ -227,34 +238,34 @@
 - Added SetXY() method.
 - Fixed a passing by reference done in a deprecated manner for PHP4.
 
-### 1.2 - 2001-11-11
+## 1.2 - 2001-11-11
 
 - Added font metric files and GetStringWidth() method.
 - Centering and right-aligning text in cells.
 - Display mode control (SetDisplayMode()).
 - Added methods to set document properties (SetAuthor(), SetCreator(),
   SetKeywords(), SetSubject(), SetTitle()).
-- Possibility to force PDF download by browser.
+- Possibility to force PDF download by the browser.
 - Added SetX() and GetX() methods.
 - During automatic page break, current abscissa is now retained.
 
-### 1.11 - 2001-10-20
+## 1.11 - 2001-10-20
 
 - PNG support doesn't require PHP4/zlib any more. Data are now put directly
   into PDF without any decompression/recompression stage.
 - Image insertion now works correctly even with magic_quotes_runtime option
   set to on.
 
-### 1.1 - 2001-10-07
+## 1.1 - 2001-10-07
 
 - JPEG and PNG image support.
 
-### 1.01 - 2001-10-03
+## 1.01 - 2001-10-03
 
 - Fixed a bug involving page break: in case when Header() doesn't specify a
   font, the one from previous page was not restored and produced an incorrect
   document.
 
-### 1.0 - 2001-09-17
+## 1.0 - 2001-09-17
 
 - First version.

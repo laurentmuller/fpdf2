@@ -28,7 +28,9 @@ return RectorConfig::configure()
         AddSeeTestAnnotationRector::class,
         PreferPHPUnitThisCallRector::class,
         DisallowedEmptyRuleFixerRector::class,
+        __DIR__ . '/src/font',
         __DIR__ . '/tests/FPDF.php',
+        __DIR__ . '/tests/font',
     ])->withSets([
         // global
         SetList::PHP_81,
