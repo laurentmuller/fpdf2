@@ -31,145 +31,77 @@ enum PdfPageSize: string
     case A4 = 'A4';
     /** A5 (148 x 210 mm). */
     case A5 = 'A5';
-    /**
-     * A6 (105 x 148 mm).
-     */
+    /** A6 (105 x 148 mm). */
     case A6 = 'A6';
-    /**
-     * A7 (74 x 105 mm).
-     */
+    /** A7 (74 x 105 mm). */
     case A7 = 'A7';
-    /**
-     * A8 (52 x 74 mm).
-     */
+    /** A8 (52 x 74 mm). */
     case A8 = 'A8';
-    /**
-     * A9 (37 x 52 mm).
-     */
+    /** A9 (37 x 52 mm). */
     case A9 = 'A9';
-    /**
-     * ANSI C (17 x 22 inch).
-     */
+    /** ANSI C (17 x 22 inch). */
     case ANSI_C = 'ANSI_C';
-    /**
-     * ANSI D (22 x 34 inch).
-     */
+    /** ANSI D (22 x 34 inch). */
     case ANSI_D = 'ANSI_D';
-    /**
-     * ANSI E (34 x 44 inch).
-     */
+    /** ANSI E (34 x 44 inch). */
     case ANSI_E = 'ANSI_E';
-    /**
-     * B0 (1000 x 1414 mm).
-     */
+    /** B0 (1000 x 1414 mm). */
     case B0 = 'B0';
-    /**
-     * B1 (707 x 1000 mm).
-     */
+    /** B1 (707 x 1000 mm). */
     case B1 = 'B1';
-    /**
-     * B10 (31 x 44 mm).
-     */
+    /** B10 (31 x 44 mm). */
     case B10 = 'B10';
-    /**
-     * B2 (500 x 707 mm).
-     */
+    /** B2 (500 x 707 mm). */
     case B2 = 'B2';
-    /**
-     * B3 (353 x 500 mm).
-     */
+    /** B3 (353 x 500 mm). */
     case B3 = 'B3';
-    /**
-     *B4 (250 x 353 mm).
-     */
+    /** B4 (250 x 353 mm). */
     case B4 = 'B4';
-    /**
-     *B5 (176 x 250 mm).
-     */
+    /** B5 (176 x 250 mm). */
     case B5 = 'B5';
-    /**
-     *B6 (125 x 176 mm).
-     */
+    /** B6 (125 x 176 mm). */
     case B6 = 'B6';
-    /**
-     *B7 (88 x 125 mm).
-     */
+    /** B7 (88 x 125 mm). */
     case B7 = 'B7';
-    /**
-     *B8 (62 x 88 mm).
-     */
+    /** B8 (62 x 88 mm). */
     case B8 = 'B8';
-    /**
-     *B9 (44 x 62 mm).
-     */
+    /** B9 (44 x 62 mm). */
     case B9 = 'B9';
-    /**
-     *C0 (917 x 1297 mm).
-     */
+    /** C0 (917 x 1297 mm). */
     case C0 = 'C0';
-    /**
-     *C1 (648 x 917 mm).
-     */
+    /**C1 (648 x 917 mm). */
     case C1 = 'C1';
-    /**
-     *C10 (38 x 40 mm).
-     */
+    /** C10 (38 x 40 mm). */
     case C10 = 'C10';
-    /**
-     *C2 (458 x 648 mm).
-     */
+    /** C2 (458 x 648 mm). */
     case C2 = 'C2';
-    /**
-     *C3 (324 x 458 mm).
-     */
+    /** C3 (324 x 458 mm). */
     case C3 = 'C3';
-    /**
-     *C4 (229 x 324 mm).
-     */
+    /** C4 (229 x 324 mm). */
     case C4 = 'C4';
-    /**
-     *C5 (162 x 229 mm).
-     */
+    /** C5 (162 x 229 mm). */
     case C5 = 'C5';
-    /**
-     *C6 (114 x 162 mm).
-     */
+    /** C6 (114 x 162 mm). */
     case C6 = 'C6';
-    /**
-     *C7 (81 x 114 mm).
-     */
+    /** C7 (81 x 114 mm). */
     case C7 = 'C7';
-    /**
-     *C8 (57 x 81 mm).
-     */
+    /** C8 (57 x 81 mm). */
     case C8 = 'C8';
-    /**
-     *C9 (40 x 57 mm).
-     */
+    /** C9 (40 x 57 mm). */
     case C9 = 'C9';
-    /**
-     *EXECUTIVE (7.5 x 10 inch).
-     */
+    /** EXECUTIVE (7.5 x 10 inch). */
     case EXECUTIVE = 'EXECUTIVE';
-    /**
-     *LEDGER (11 x 17 inch).
-     */
+    /** LEDGER (11 x 17 inch). */
     case LEDGER = 'LEDGER';
-    /**
-     *LEGAL (8.5 x 14 inch).
-     */
+    /** LEGAL (8.5 x 14 inch). */
     case LEGAL = 'LEGAL';
-    /**
-     *LETTER (8.5 x 11 inch).
-     */
+    /** LETTER (8.5 x 11 inch). */
     case LETTER = 'LETTER';
 
     /**
      * Gets the document size in point.
-     *
-     * @return array{0: float, 1: float}
      */
-    public function getSize(): array
+    public function getSize(): PdfSize
     {
         return match ($this) {
             self::A0 => $this->computeSize(841, 1189),
@@ -270,16 +202,12 @@ enum PdfPageSize: string
         };
     }
 
-    /**
-     * @return array{0: float, 1: float}
-     */
-    private function computeSize(float $width, float $height): array
+    private function computeSize(float $width, float $height): PdfSize
     {
         $scaleFactor = $this->getUnit()->getScaleFactor();
+        $width = \round($width * $scaleFactor, 2);
+        $height = \round($height * $scaleFactor, 2);
 
-        return [
-            \round($width * $scaleFactor, 2),
-            \round($height * $scaleFactor, 2),
-        ];
+        return PdfSize::instance($width, $height);
     }
 }

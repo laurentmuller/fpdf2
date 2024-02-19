@@ -24,7 +24,7 @@ class OrientationTest extends AbstractTestCase
         $doc->addPage(PdfOrientation::PORTRAIT, PdfPageSize::A3);
         $doc->cell(0.0, 0.0, 'Portrait');
 
-        $doc->addPage(PdfOrientation::PORTRAIT, [100, 100]);
+        $doc->addPage(PdfOrientation::PORTRAIT, PdfSize::instance(100, 100));
         $doc->cell(0.0, 0.0, 'Custom');
 
         $doc->addPage(PdfOrientation::PORTRAIT, PdfPageSize::A4, PdfRotation::CLOCKWISE_90);

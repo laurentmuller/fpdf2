@@ -31,7 +31,7 @@ class PdfFontStyleTest extends TestCase
         yield ['Z', PdfFontStyle::REGULAR, true];
     }
 
-    public static function getFromStyle(): \Iterator
+    public static function getFromString(): \Iterator
     {
         yield ['b', PdfFontStyle::BOLD];
         yield ['B', PdfFontStyle::BOLD];
@@ -67,10 +67,10 @@ class PdfFontStyleTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('getFromStyle')]
-    public function testFromStyle(?string $style, PdfFontStyle $expected): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('getFromString')]
+    public function testFromString(?string $str, PdfFontStyle $expected): void
     {
-        $actual = PdfFontStyle::fromStyle($style);
+        $actual = PdfFontStyle::fromString($str);
         self::assertSame($expected, $actual);
     }
 }

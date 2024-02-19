@@ -32,7 +32,7 @@ enum PdfRotation: int
      */
     case CLOCKWISE_90 = 90;
     /**
-     * 0 degree clockwise (default).
+     * 0 degree clockwise.
      */
     case DEFAULT = 0;
 }

@@ -30,7 +30,7 @@ enum PdfLayout
     case DEFAULT;
 
     /**
-     * Displays one page at once (default).
+     * Displays one page at once.
      */
     case SINGLE;
 

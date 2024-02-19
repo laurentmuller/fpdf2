@@ -22,8 +22,6 @@ enum PdfFontName: string
 {
     /**
      * The Arial font name (synonymous: sans serif).
-     *
-     * This is the default font.
      */
     case ARIAL = 'Arial';
 
@@ -57,9 +55,9 @@ enum PdfFontName: string
      *
      * @param string $family the font family to search font name for
      *
-     * @return PdfFontName|null the font name, if found; <code>null</code> otherwise
+     * @return ?PdfFontName the font name, if found; <code>null</code> otherwise
      */
-    public static function tryFromIgnoreCase(string $family): ?PdfFontName
+    public static function tryFromFamily(string $family): ?PdfFontName
     {
         foreach (self::cases() as $fontName) {
             if (0 === \strcasecmp($family, $fontName->value)) {

@@ -31,7 +31,7 @@ enum PdfTextAlignment
     case JUSTIFIED;
 
     /**
-     * Left alignment (default).
+     * Left alignment.
      */
     case LEFT;
 

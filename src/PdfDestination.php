@@ -30,7 +30,7 @@ enum PdfDestination
     case FILE;
 
     /**
-     * Send the file inline to the browser (default).
+     * Send the file inline to the browser.
      *
      * The PDF viewer is used if available.
      */

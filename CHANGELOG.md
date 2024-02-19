@@ -1,5 +1,19 @@
 # Change log
 
+## 1.8.4.2 - 2024-02-19
+
+- Added the `PdfPoint` class.
+- Added the `PdfSize` class.
+- Added the `PdfRectangle` class.
+- Modified the `PdfDocument` class:
+  - Updated class constructor by replacing `float[]` parameter by `PdfSize`.
+  - Updated `addPage()` function by replacing `float[]` parameter by `PdfSize`.
+  - Added `rectangle()` function.
+  - Added `linePoints()` function.
+  - Replaced width and height in point members by `PdfSize`.
+- Modified the `PdfFontStyle` class: 
+  - Renamed `fromStyle()` to `fromString()` function.
+
 ## 1.8.4.1 - 2024-02-18
 
 - Updated `PdfDocument` with default line height for `cell()`

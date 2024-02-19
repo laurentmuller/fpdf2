@@ -63,7 +63,7 @@ enum PdfFontStyle: string
     case ITALIC_UNDERLINE = 'iu';
 
     /**
-     * Regular (default).
+     * Regular.
      */
     case REGULAR = '';
 
@@ -77,16 +77,16 @@ enum PdfFontStyle: string
      *
      * If no match, the <code>PdfFontStyle::REGULAR</code> is returned.
      */
-    public static function fromStyle(?string $style): self
+    public static function fromString(?string $str): self
     {
-        if (null === $style || '' === $style) {
+        if (null === $str || '' === $str) {
             return self::REGULAR;
         }
 
         $result = '';
         $enums = [self::BOLD, self::ITALIC, self::UNDERLINE];
         foreach ($enums as $enum) {
-            if (false !== \stripos($style, $enum->value)) {
+            if (false !== \stripos($str, $enum->value)) {
                 $result .= $enum->value;
             }
         }

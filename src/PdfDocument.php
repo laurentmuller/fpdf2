@@ -17,7 +17,6 @@ namespace fpdf;
  *
  * @phpstan-type ColorType = int<0, 255>
  * @phpstan-type UvType = array<int, int|int[]>
- * @phpstan-type PageSizeType = array{0: float, 1: float}
  * @phpstan-type FontType = array{
  *     index: int,
  *     number: int,
@@ -45,7 +44,7 @@ namespace fpdf;
  * @phpstan-type PageInfoType = array{
  *     number: int,
  *     rotation: PdfRotation,
- *     size?: PageSizeType}
+ *     size?: PdfSize}
  * @phpstan-type ImageType = array{
  *     index: int,
  *     number: int,
@@ -84,25 +83,15 @@ class PdfDocument
     // the new line separator
     private const NEW_LINE = "\n";
 
-    /**
-     * The alias for total number of pages.
-     */
+    /** The alias for total number of pages. */
     protected string $aliasNumberPages = '{nb}';
-    /**
-     * The automatic page breaking.
-     */
+    /** The automatic page breaking. */
     protected bool $autoPageBreak = false;
-    /**
-     * The bottom margin in user unit (page break margin).
-     */
+    /** The bottom margin in user unit (page break margin). */
     protected float $bottomMargin = 0.0;
-    /**
-     * The buffer holding in-memory PDF.
-     */
+    /** The buffer holding in-memory PDF. */
     protected string $buffer = '';
-    /**
-     * The cell margin in user unit.
-     */
+    /** The cell margin in user unit. */
     protected float $cellMargin = 0.0;
     /**
      * The map character codes to character glyphs.
@@ -110,17 +99,11 @@ class PdfDocument
      * @phpstan-var array<string, int>
      */
     protected array $charMaps = [];
-    /**
-     * Indicates whether fill and text colors are different.
-     */
+    /** Indicates whether fill and text colors are different. */
     protected bool $colorFlag = false;
-    /**
-     * The compression flag.
-     */
+    /** The compression flag. */
     protected bool $compression = false;
-    /**
-     * The document creation date.
-     */
+    /** The document creation date. */
     protected int $creationDate = 0;
     /**
      * The current font info.
@@ -128,33 +111,19 @@ class PdfDocument
      * @phpstan-var FontType|null array
      */
     protected ?array $currentFont = null;
-    /**
-     * The current orientation.
-     */
+    /** The current orientation. */
     protected PdfOrientation $currentOrientation = PdfOrientation::PORTRAIT;
-    /**
-     * The current page size.
-     *
-     * @phpstan-var PageSizeType
-     */
-    protected array $currentPageSize = [0, 0];
-    /**
-     * The current page rotation.
-     */
+    /** The current page size. */
+    protected PdfSize $currentPageSize;
+    /** The current page size in point. */
+    protected PdfSize $currentPagSizeInPoint;
+    /** The current page rotation. */
     protected PdfRotation $currentRotation = PdfRotation::DEFAULT;
-    /**
-     * The default orientation.
-     */
+    /** The default orientation. */
     protected PdfOrientation $defaultOrientation = PdfOrientation::PORTRAIT;
-    /**
-     * The default page size.
-     *
-     * @phpstan-var PageSizeType
-     */
-    protected array $defaultPageSize = [0, 0];
-    /**
-     * The commands for drawing color.
-     */
+    /** The default page size.  */
+    protected PdfSize $defaultPageSize;
+    /** The commands for drawing color. */
     protected string $drawColor = self::EMPTY_COLOR;
     /**
      * The encodings.
@@ -162,13 +131,9 @@ class PdfDocument
      * @phpstan-var array<string, int>
      */
     protected array $encodings = [];
-    /**
-     * The commands for filling color.
-     */
+    /** The commands for filling color. */
     protected string $fillColor = self::EMPTY_COLOR;
-    /**
-     * The current font family.
-     */
+    /** The current font family. */
     protected string $fontFamily = '';
     /**
      * The font files.
@@ -176,9 +141,7 @@ class PdfDocument
      * @phpstan-var array<string, FontFileType>
      */
     protected array $fontFiles = [];
-    /**
-     * The directory containing fonts.
-     */
+    /** The directory containing fonts. */
     protected string $fontPath = '';
     /**
      * The used fonts.
@@ -186,63 +149,35 @@ class PdfDocument
      * @phpstan-var array<string, FontType>
      */
     protected array $fonts = [];
-    /**
-     * The current font size in user unit.
-     */
+    /** The current font size in user unit. */
     protected float $fontSize = 0.0;
-    /**
-     * The current font size in points.
-     */
+    /** The current font size in points. */
     protected float $fontSizeInPoint = 9.0;
-    /**
-     * The current font style.
-     */
+    /** The current font style. */
     protected PdfFontStyle $fontStyle = PdfFontStyle::REGULAR;
-    /**
-     * The current page height in user unit.
-     */
+    /** The current page height in user unit. */
     protected float $height = 0.0;
-    /**
-     * The current page height in points.
-     */
-    protected float $heightInPoint = 0.0;
     /**
      * The used images.
      *
      * @phpstan-var array<string, ImageType>
      */
     protected array $images = [];
-    /**
-     * The flag set when processing footer.
-     */
+    /** The flag set when processing footer. */
     protected bool $inFooter = false;
-    /**
-     * The flag set when processing header.
-     */
+    /**The flag set when processing header. */
     protected bool $inHeader = false;
-    /**
-     * The height of last printed cell.
-     */
+    /** The height of last printed cell. */
     protected float $lastHeight = 0.0;
-    /**
-     * The layout display mode.
-     */
+    /** The layout display mode. */
     protected PdfLayout $layout = PdfLayout::DEFAULT;
-    /**
-     * The left margin in user unit.
-     */
+    /** The left margin in user unit. */
     protected float $leftMargin = 0.0;
-    /**
-     * The line cap.
-     */
+    /** The line cap. */
     protected PdfLineCap $lineCap = PdfLineCap::SQUARE;
-    /**
-     * The line join.
-     */
+    /** The line join. */
     protected PdfLineJoin $lineJoin = PdfLineJoin::MITER;
-    /**
-     * The line width in user unit.
-     */
+    /** The line width in user unit. */
     protected float $lineWidth = 0.0;
     /**
      * The internal links.
@@ -256,9 +191,7 @@ class PdfDocument
      * @phpstan-var array<string, string>
      */
     protected array $metadata = [];
-    /**
-     * The current object number.
-     */
+    /** The current object number. */
     protected int $objectNumber = 2;
     /**
      * The object offsets.
@@ -266,13 +199,9 @@ class PdfDocument
      * @phpstan-var array<int, int>
      */
     protected array $offsets = [];
-    /**
-     * The current page number.
-     */
+    /** The current page number. */
     protected int $page = 0;
-    /**
-     * The threshold used to trigger page breaks.
-     */
+    /** The threshold used to trigger page breaks. */
     protected float $pageBreakTrigger = 0.0;
     /**
      * The page-related data.
@@ -292,65 +221,33 @@ class PdfDocument
      * @phpstan-var array<int, string>
      */
     protected array $pages = [];
-    /**
-     * The PDF version number.
-     */
+    /** The PDF version number. */
     protected string $pdfVersion = '1.3';
-    /**
-     * The right margin in user unit.
-     */
+    /** The right margin in user unit. */
     protected float $rightMargin = 0.0;
-    /**
-     * The scale factor (number of points in user unit).
-     */
+    /** The scale factor (number of points in user unit). */
     protected float $scaleFactor = 1.0;
-    /**
-     * The current document state.
-     */
+    /** The current document state. */
     protected PdfState $state = PdfState::NO_PAGE;
-    /**
-     * The commands for text color.
-     */
+    /** The commands for text color. */
     protected string $textColor = self::EMPTY_COLOR;
-    /**
-     * The document title.
-     */
+    /** The document title. */
     protected string $title = '';
-    /**
-     * The top margin in user unit.
-     */
+    /** The top margin in user unit. */
     protected float $topMargin = 0.0;
-    /**
-     * The underlining flag.
-     */
+    /** The underlining flag. */
     protected bool $underline = false;
-    /**
-     * The current page width in user unit.
-     */
+    /** The current page width in user unit. */
     protected float $width = 0.0;
-    /**
-     * The current page width in point.
-     */
-    protected float $widthInPoint = 0.0;
-    /**
-     * Indicates whether alpha channel is used.
-     */
+    /** Indicates whether alpha channel is used. */
     protected bool $withAlpha = false;
-    /**
-     * The word spacing.
-     */
+    /** The word spacing. */
     protected float $wordSpacing = 0.0;
-    /**
-     * The current x position in user unit.
-     */
+    /** The current x position in user unit. */
     protected float $x = 0.0;
-    /**
-     * The current y position in user unit.
-     */
+    /** The current y position in user unit. */
     protected float $y = 0.0;
-    /**
-     * The zoom display mode.
-     */
+    /** The zoom display mode. */
     protected PdfZoom|int $zoom = PdfZoom::DEFAULT;
 
     /**
@@ -361,14 +258,12 @@ class PdfDocument
      *
      * @param PdfOrientation      $orientation the page orientation
      * @param PdfUnit             $unit        the document unit to use
-     * @param PdfPageSize|float[] $size        the page size
-     *
-     * @phpstan-param PdfPageSize|PageSizeType $size
+     * @param PdfPageSize|PdfSize $size        the page size
      */
     public function __construct(
         PdfOrientation $orientation = PdfOrientation::PORTRAIT,
         PdfUnit $unit = PdfUnit::MILLIMETER,
-        PdfPageSize|array $size = PdfPageSize::A4
+        PdfPageSize|PdfSize $size = PdfPageSize::A4
     ) {
         // scale factor
         $this->scaleFactor = $unit->getScaleFactor();
@@ -381,17 +276,16 @@ class PdfDocument
         $this->currentOrientation = $orientation;
         // page size
         $size = $this->getPageSize($size);
-        $this->defaultPageSize = $size;
-        $this->currentPageSize = $size;
+        $this->defaultPageSize = clone $size;
+        $this->currentPageSize = clone $size;
         if (PdfOrientation::PORTRAIT === $orientation) {
-            $this->width = $size[0];
-            $this->height = $size[1];
+            $this->width = $size->width;
+            $this->height = $size->height;
         } else {
-            $this->width = $size[1];
-            $this->height = $size[0];
+            $this->width = $size->height;
+            $this->height = $size->width;
         }
-        $this->widthInPoint = $this->width * $this->scaleFactor;
-        $this->heightInPoint = $this->height * $this->scaleFactor;
+        $this->currentPagSizeInPoint = PdfSize::instance($this->width, $this->height)->scale($this->scaleFactor);
         // page margins (1 cm)
         $margin = 28.35 / $this->scaleFactor;
         $this->setMargins($margin, $margin);
@@ -510,15 +404,13 @@ class PdfDocument
      *
      * @param ?PdfOrientation          $orientation the page orientation or <code>null</code> to use the current
      *                                              orientation
-     * @param PdfPageSize|float[]|null $size        the page size or <code>null</code> to use the current size
+     * @param PdfPageSize|PdfSize|null $size        the page size or <code>null</code> to use the current size
      * @param ?PdfRotation             $rotation    the rotation by which to rotate the page or <code>null</code> to
      *                                              use the current rotation
-     *
-     * @phpstan-param PdfPageSize|PageSizeType|null $size
      */
     public function addPage(
         ?PdfOrientation $orientation = null,
-        PdfPageSize|array|null $size = null,
+        PdfPageSize|PdfSize|null $size = null,
         ?PdfRotation $rotation = null
     ): self {
         if (PdfState::CLOSED === $this->state) {
@@ -886,8 +778,8 @@ class PdfDocument
 
         while ($index < $len) {
             $ch = $text[$index];
-            // new line?
             if (self::NEW_LINE === $ch) {
+                // explicit line break
                 ++$index;
                 $sepIndex = -1;
                 $lastIndex = $index;
@@ -900,6 +792,7 @@ class PdfDocument
             }
             $currentWidth += (float) $charWidths[$ch];
             if ($currentWidth > $maxWidth) {
+                // automatic line break
                 if (-1 === $sepIndex) {
                     if ($index === $lastIndex) {
                         ++$index;
@@ -1027,9 +920,6 @@ class PdfDocument
 
     /**
      * Gets the abscissa of the current position in user unit.
-     *
-     * @see PdfDocument::setX()
-     * @see PdfDocument::getY()
      */
     public function getX(): float
     {
@@ -1042,9 +932,6 @@ class PdfDocument
      * @return float[] the X and Y position
      *
      * @phpstan-return array{0: float, 1: float}
-     *
-     * @see PdfDocument::getX()
-     * @see PdfDocument::getY()
      */
     public function getXY(): array
     {
@@ -1053,9 +940,6 @@ class PdfDocument
 
     /**
      * Gets the ordinate of the current position in user unit.
-     *
-     * @see PdfDocument::setY()
-     * @see PdfDocument::getX()
      */
     public function getY(): float
     {
@@ -1287,9 +1171,15 @@ class PdfDocument
 
     /**
      * Draws a line between two points.
+     *
+     * Do nothing if points are equal.
      */
     public function line(float $x1, float $y1, float $x2, float $y2): self
     {
+        if ($x1 === $x2 && $y1 === $y2) {
+            return $this;
+        }
+
         $this->outf(
             '%.2F %.2F m %.2F %.2F l S',
             $x1 * $this->scaleFactor,
@@ -1322,6 +1212,16 @@ class PdfDocument
     }
 
     /**
+     * Draws a line between two points.
+     *
+     * Do nothing if points are equal.
+     */
+    public function linePoints(PdfPoint $start, PdfPoint $end): self
+    {
+        return $this->line($start->x, $start->y, $end->x, $end->y);
+    }
+
+    /**
      * Puts a link on a rectangular area of the page.
      *
      * Text or image links are generally put via <code>cell()</code>, <code>write()</code> or <code>image()</code>, but
@@ -1338,9 +1238,10 @@ class PdfDocument
      */
     public function link(float $x, float $y, float $width, float $height, string|int $link): self
     {
+        $heightInPoint = $this->currentPagSizeInPoint->height;
         $this->pageLinks[$this->page][] = [
             $x * $this->scaleFactor,
-            $this->heightInPoint - $y * $this->scaleFactor,
+            $heightInPoint - $y * $this->scaleFactor,
             $width * $this->scaleFactor,
             $height * $this->scaleFactor,
             $link,
@@ -1514,7 +1415,6 @@ class PdfDocument
         }
         if ($border instanceof PdfBorder && $border->isBottom()) {
             $border1 = new PdfBorder($border->isLeft(), $border->isTop(), $border->isRight(), true);
-            // $border1 .= 'B';
         }
         $this->cell(
             $width,
@@ -1639,8 +1539,6 @@ class PdfDocument
 
     /**
      * Outputs a rectangle.
-     *
-     * Do nothing if the style is a border instance without at least one border set.
      */
     public function rect(
         float $x,
@@ -1668,6 +1566,22 @@ class PdfDocument
         }
 
         return $this;
+    }
+
+    /**
+     * Outputs a rectangle.
+     */
+    public function rectangle(
+        PdfRectangle $rectangle,
+        PdfRectangleStyle|PdfBorder $style = PdfRectangleStyle::BORDER
+    ): static {
+        return $this->rect(
+            $rectangle->x,
+            $rectangle->y,
+            $rectangle->width,
+            $rectangle->height,
+            $style
+        );
     }
 
     /**
@@ -1893,7 +1807,7 @@ class PdfDocument
             if ('arial' === $family) {
                 $family = 'helvetica';
             }
-            $name = PdfFontName::tryFromIgnoreCase($family);
+            $name = PdfFontName::tryFromFamily($family);
             if (!$name instanceof PdfFontName) {
                 throw new PdfException(\sprintf('Undefined font: %s %s.' . $family, $style->value));
             }
@@ -2137,10 +2051,6 @@ class PdfDocument
      *
      * @param float $x the value of the abscissa. If the passed value is negative, it is relative to the right of the
      *                 page.
-     *
-     * @see PdfDocument::getX()
-     * @see PdfDocument::setXY()
-     * @see PdfDocument::setY()
      */
     public function setX(float $x): self
     {
@@ -2153,14 +2063,6 @@ class PdfDocument
      * Defines the abscissa and ordinate of the current position.
      *
      * If the passed values are negative, they are relative respectively to the right and bottom of the page.
-     *
-     * @param float $x the value of the abscissa
-     * @param float $y the value of the ordinate
-     *
-     * @see PdfDocument::setX()
-     * @see PdfDocument::setY()
-     * @see PdfDocument::getX()
-     * @see PdfDocument::getY()
      */
     public function setXY(float $x, float $y): self
     {
@@ -2174,10 +2076,6 @@ class PdfDocument
      * @param float $y      the value of the ordinate. If the value is negative, it is relative to the bottom of the
      *                      page.
      * @param bool  $resetX if <code>true</code>, the abscissa is reset to the left margin
-     *
-     * @see PdfDocument::getY()
-     * @see PdfDocument::setX()
-     * @see PdfDocument::setXY()
      */
     public function setY(float $y, bool $resetX = true): self
     {
@@ -2413,12 +2311,10 @@ class PdfDocument
 
     /**
      * Begin a new page.
-     *
-     * @phpstan-param PdfPageSize|PageSizeType|null $size
      */
     protected function beginPage(
         ?PdfOrientation $orientation = null,
-        PdfPageSize|array|null $size = null,
+        PdfPageSize|PdfSize|null $size = null,
         ?PdfRotation $rotation = null
     ): void {
         ++$this->page;
@@ -2433,27 +2329,22 @@ class PdfDocument
             $orientation = $this->defaultOrientation;
         }
         $size = null === $size ? $this->defaultPageSize : $this->getPageSize($size);
-        if ($orientation !== $this->currentOrientation
-            || $size[0] !== $this->currentPageSize[0]
-            || $size[1] !== $this->currentPageSize[1]) {
+        if ($orientation !== $this->currentOrientation || !$size->equals($this->currentPageSize)) {
             // new size or orientation
             if (PdfOrientation::PORTRAIT === $orientation) {
-                $this->width = $size[0];
-                $this->height = $size[1];
+                $this->width = $size->width;
+                $this->height = $size->height;
             } else {
-                $this->width = $size[1];
-                $this->height = $size[0];
+                $this->width = $size->height;
+                $this->height = $size->width;
             }
-            $this->widthInPoint = $this->width * $this->scaleFactor;
-            $this->heightInPoint = $this->height * $this->scaleFactor;
+            $this->currentPagSizeInPoint = PdfSize::instance($this->width, $this->height)->scale($this->scaleFactor);
             $this->pageBreakTrigger = $this->height - $this->bottomMargin;
             $this->currentOrientation = $orientation;
-            $this->currentPageSize = $size;
+            $this->currentPageSize = clone $size;
         }
-        if ($orientation !== $this->defaultOrientation
-            || $size[0] !== $this->defaultPageSize[0]
-            || $size[1] !== $this->defaultPageSize[1]) {
-            $this->pageInfos[$this->page]['size'] = [$this->widthInPoint, $this->heightInPoint];
+        if ($orientation !== $this->defaultOrientation || !$size->equals($this->defaultPageSize)) {
+            $this->pageInfos[$this->page]['size'] = clone $this->currentPagSizeInPoint;
         }
         if ($rotation instanceof PdfRotation) {
             $this->currentRotation = $rotation;
@@ -2662,20 +2553,15 @@ class PdfDocument
 
     /**
      * Gets the page size.
-     *
-     * @phpstan-param PdfPageSize|PageSizeType $size
-     *
-     * @phpstan-return PageSizeType
      */
-    protected function getPageSize(PdfPageSize|array $size): array
+    protected function getPageSize(PdfPageSize|PdfSize $size): PdfSize
     {
         if ($size instanceof PdfPageSize) {
-            $size = $size->getSize();
-
-            return [$size[0] / $this->scaleFactor, $size[1] / $this->scaleFactor];
+            return $size->getSize()->scale(1.0 / $this->scaleFactor);
         }
-        if ($size[0] > $size[1]) {
-            return [$size[1], $size[0]];
+
+        if ($size->width > $size->height) {
+            return $size->swap();
         }
 
         return $size;
@@ -2686,7 +2572,6 @@ class PdfDocument
      */
     protected function httpEncode(string $name, string $value, bool $isUTF8): string
     {
-        // encode HTTP header field parameter
         if ($this->isAscii($value)) {
             return \sprintf('%s="%s"', $name, $value);
         }
@@ -3395,11 +3280,11 @@ class PdfDocument
                 $index = (int) $link[0];
                 $pageInfo = $this->pageInfos[$index] ?? [];
                 if (isset($pageInfo['size'])) {
-                    $height = $pageInfo['size'][1];
+                    $height = $pageInfo['size']->width;
                 } else {
                     $height = (PdfOrientation::PORTRAIT === $this->defaultOrientation)
-                        ? $this->defaultPageSize[1] * $this->scaleFactor
-                        : $this->defaultPageSize[0] * $this->scaleFactor;
+                        ? $this->defaultPageSize->height * $this->scaleFactor
+                        : $this->defaultPageSize->width * $this->scaleFactor;
                 }
                 $output .= \sprintf(
                     '/Dest [%d 0 R /XYZ 0 %.2F null]>>',
@@ -3435,8 +3320,8 @@ class PdfDocument
         if (isset($this->pageInfos[$number]['size'])) {
             $this->putf(
                 '/MediaBox [0 0 %.2F %.2F]',
-                $this->pageInfos[$number]['size'][0],
-                $this->pageInfos[$number]['size'][1]
+                $this->pageInfos[$number]['size']->width,
+                $this->pageInfos[$number]['size']->height
             );
         }
         if (isset($this->pageInfos[$number]['rotation'])) {
@@ -3495,11 +3380,11 @@ class PdfDocument
         $this->put($kids);
         $this->putf('/Count %d', $page);
         if (PdfOrientation::PORTRAIT === $this->defaultOrientation) {
-            $width = $this->defaultPageSize[0];
-            $height = $this->defaultPageSize[1];
+            $width = $this->defaultPageSize->width;
+            $height = $this->defaultPageSize->height;
         } else {
-            $width = $this->defaultPageSize[1];
-            $height = $this->defaultPageSize[0];
+            $width = $this->defaultPageSize->height;
+            $height = $this->defaultPageSize->width;
         }
         $this->putf('/MediaBox [0 0 %.2F %.2F]', $width * $this->scaleFactor, $height * $this->scaleFactor);
         $this->put('>>');

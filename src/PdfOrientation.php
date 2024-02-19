@@ -23,7 +23,7 @@ enum PdfOrientation
     case LANDSCAPE;
 
     /**
-     * Portrait orientation (default).
+     * Portrait orientation.
      */
     case PORTRAIT;
 }
