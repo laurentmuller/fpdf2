@@ -78,12 +78,8 @@ class PdfRectangle
      */
     public function equals(self $other): bool
     {
-        if ($this === $other) {
-            return true;
-        }
-
-        return $this->x === $other->x && $this->y === $other->y
-            && $this->width === $other->width && $this->height === $other->height;
+        return ($this === $other) || ($this->x === $other->x && $this->y === $other->y
+            && $this->width === $other->width && $this->height === $other->height);
     }
 
     /**

@@ -42,11 +42,7 @@ class PdfSize
      */
     public function equals(self $other): bool
     {
-        if ($this === $other) {
-            return true;
-        }
-
-        return $this->width === $other->width && $this->height === $other->height;
+        return ($this === $other) || ($this->width === $other->width && $this->height === $other->height);
     }
 
     /**

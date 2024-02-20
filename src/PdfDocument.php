@@ -43,7 +43,7 @@ namespace fpdf;
  *     length2?: int}
  * @phpstan-type PageInfoType = array{
  *     number: int,
- *     rotation: PdfRotation,
+ *     rotation?: PdfRotation,
  *     size?: PdfSize}
  * @phpstan-type ImageType = array{
  *     index: int,
@@ -57,7 +57,7 @@ namespace fpdf;
  *     decode_parms?: string,
  *     soft_mask?: string,
  *     palette: string,
- *     transparencies?: string|array<int, string>}
+ *     transparencies?: int[]|string}
  * @phpstan-type PageLinkType = array{
  *     0: float,
  *     1: float,
@@ -65,6 +65,9 @@ namespace fpdf;
  *     3: float,
  *     4: int|string,
  *     5: int}
+ * @phpstan-type LinkType = array{
+ *     0: int,
+ *     1: float}
  */
 class PdfDocument
 {
@@ -116,7 +119,7 @@ class PdfDocument
     /** The current page size. */
     protected PdfSize $currentPageSize;
     /** The current page size in point. */
-    protected PdfSize $currentPagSizeInPoint;
+    protected PdfSize $currentPageSizeInPoint;
     /** The current page rotation. */
     protected PdfRotation $currentRotation = PdfRotation::DEFAULT;
     /** The default orientation. */
@@ -182,7 +185,7 @@ class PdfDocument
     /**
      * The internal links.
      *
-     * @phpstan-var array<int, array<int|float>>
+     * @phpstan-var array<int, LinkType>
      */
     protected array $links = [];
     /**
@@ -285,7 +288,7 @@ class PdfDocument
             $this->width = $size->height;
             $this->height = $size->width;
         }
-        $this->currentPagSizeInPoint = PdfSize::instance($this->width, $this->height)->scale($this->scaleFactor);
+        $this->currentPageSizeInPoint = PdfSize::instance($this->width, $this->height)->scale($this->scaleFactor);
         // page margins (1 cm)
         $margin = 28.35 / $this->scaleFactor;
         $this->setMargins($margin, $margin);
@@ -382,6 +385,7 @@ class PdfDocument
      *
      * @see PdfDocument::link()
      * @see PdfDocument::setLink()
+     * @see PdfDocument::createLink()
      */
     public function addLink(): int
     {
@@ -518,14 +522,12 @@ class PdfDocument
             $x = $this->x;
             $wordSpacing = $this->wordSpacing;
             if ($wordSpacing > 0) {
-                $this->wordSpacing = 0;
-                $this->out('0 Tw');
+                $this->updateWordSpacing();
             }
             $this->addPage($this->currentOrientation, $this->currentPageSize, $this->currentRotation);
             $this->x = $x;
             if ($wordSpacing > 0) {
-                $this->wordSpacing = $wordSpacing;
-                $this->outf('%.3F Tw', $wordSpacing * $scaleFactor);
+                $this->updateWordSpacing($wordSpacing);
             }
         }
 
@@ -641,15 +643,16 @@ class PdfDocument
      *
      * This is a combination of the <code>addLink()</code> and the <code>setLink()</code> functions.
      *
-     * @param float|int $y    the ordinate of the target position; -1 means the current position. 0 means top of page.
-     * @param int       $page the target page; -1 indicates the current page
+     * @param float    $y    the ordinate of target position; a negative value indicates the current position. The
+     *                       default value is 0 (top of page).
+     * @param int|null $page the target page or <code>null</code> to use the current page
      *
      * @return int the link identifier
      *
      * @see PdfDocument::addLink()
      * @see PdfDocument::setLink()
      */
-    public function createLink(float|int $y = -1, int $page = -1): int
+    public function createLink(float $y = 0, ?int $page = null): int
     {
         $id = $this->addLink();
         $this->setLink($id, $y, $page);
@@ -1074,19 +1077,17 @@ class PdfDocument
                 }
             }
             $type = \strtolower($type);
-
-            /** @phpstan-var ImageType $info */
-            $info = match ($type) {
+            $image = match ($type) {
                 'jpeg',
                 'jpg' => $this->parseJpg($file),
                 'gif' => $this->parseGif($file),
                 'png' => $this->parsePng($file),
                 default => throw new PdfException(\sprintf('Unsupported image type: %s.', $type)),
             };
-            $info['index'] = \count($this->images) + 1;
-            $this->images[$file] = $info;
+            $image['index'] = \count($this->images) + 1;
+            $this->images[$file] = $image;
         } else {
-            $info = $this->images[$file];
+            $image = $this->images[$file];
         }
 
         // automatic width and height calculation if needed
@@ -1096,8 +1097,8 @@ class PdfDocument
             $height = -96.0;
         }
 
-        $infoWidth = (float) $info['width'];
-        $infoHeight = (float) $info['height'];
+        $infoWidth = (float) $image['width'];
+        $infoHeight = (float) $image['height'];
         if ($width < 0.0) {
             $width = -$infoWidth * 72.0 / $width / $this->scaleFactor;
         }
@@ -1130,7 +1131,7 @@ class PdfDocument
             $height * $this->scaleFactor,
             $x * $this->scaleFactor,
             ($this->height - $y - $height) * $this->scaleFactor,
-            $info['index']
+            $image['index']
         );
         if ($this->isLink($link)) {
             $this->link($x, $y, $width, $height, $link);
@@ -1235,10 +1236,11 @@ class PdfDocument
      *
      * @see PdfDocument::addLink()
      * @see PdfDocument::setLink()
+     * @see PdfDocument::createLink()
      */
     public function link(float $x, float $y, float $width, float $height, string|int $link): self
     {
-        $heightInPoint = $this->currentPagSizeInPoint->height;
+        $heightInPoint = $this->currentPageSizeInPoint->height;
         $this->pageLinks[$this->page][] = [
             $x * $this->scaleFactor,
             $heightInPoint - $y * $this->scaleFactor,
@@ -1303,12 +1305,12 @@ class PdfDocument
         }
         $widthMax = ($width - 2.0 * $this->cellMargin) * 1000.0 / $this->fontSize;
 
-        $border1 = null;
-        $border2 = null;
+        $border1 = PdfBorder::none();
+        $border2 = PdfBorder::none();
         if ($border instanceof PdfBorder) {
             if ($border->isAll()) {
-                $border1 = new PdfBorder(true, true, true, false);
-                $border2 = new PdfBorder(true, false, true, false);
+                $border1 = PdfBorder::all()->setBottom(false);
+                $border2 = PdfBorder::leftRight();
             } else {
                 $border1 = new PdfBorder($border->isLeft(), $border->isTop(), $border->isRight(), false);
                 $border2 = new PdfBorder($border->isLeft(), false, $border->isRight(), false);
@@ -1330,8 +1332,7 @@ class PdfDocument
             if (self::NEW_LINE === $ch) {
                 // explicit line break
                 if ($this->wordSpacing > 0) {
-                    $this->wordSpacing = 0;
-                    $this->out('0 Tw');
+                    $this->updateWordSpacing();
                 }
                 $this->cell(
                     $width,
@@ -1349,7 +1350,7 @@ class PdfDocument
                 $newSeparator = 0;
                 ++$newLine;
                 if ($border instanceof PdfBorder && 2 === $newLine) {
-                    $border1 = $border2;
+                    $border1 = clone $border2;
                 }
                 continue;
             }
@@ -1366,8 +1367,7 @@ class PdfDocument
                         ++$index;
                     }
                     if ($this->wordSpacing > 0) {
-                        $this->wordSpacing = 0;
-                        $this->out('0 Tw');
+                        $this->updateWordSpacing();
                     }
                     $this->cell(
                         $width,
@@ -1380,10 +1380,10 @@ class PdfDocument
                     );
                 } else {
                     if (PdfTextAlignment::JUSTIFIED === $align) {
-                        $this->wordSpacing = ($newSeparator > 1)
+                        $wordSpacing = ($newSeparator > 1)
                             ? ($widthMax - $lineSpace) / 1000.0 * $this->fontSize / (float) ($newSeparator - 1)
-                            : 0.0;
-                        $this->outf('%.3F Tw', $this->wordSpacing * $this->scaleFactor);
+                            : 0;
+                        $this->updateWordSpacing($wordSpacing, true);
                     }
                     $this->cell(
                         $width,
@@ -1402,30 +1402,28 @@ class PdfDocument
                 $newSeparator = 0;
                 ++$newLine;
                 if ($border instanceof PdfBorder && 2 === $newLine) {
-                    $border1 = $border2;
+                    $border1 = clone $border2;
                 }
             } else {
                 ++$index;
             }
         }
         // last chunk
-        if ($this->wordSpacing > 0.0) {
-            $this->wordSpacing = 0.0;
-            $this->out('0 Tw');
+        if ($this->wordSpacing > 0) {
+            $this->updateWordSpacing();
         }
         if ($border instanceof PdfBorder && $border->isBottom()) {
-            $border1 = new PdfBorder($border->isLeft(), $border->isTop(), $border->isRight(), true);
+            $border1->setBottom();
         }
         $this->cell(
             $width,
             $height,
             \substr($text, $lastIndex, $index - $lastIndex),
             $border1,
-            PdfMove::BELOW,
+            PdfMove::NEW_LINE,
             $align,
             $fill
         );
-        $this->x = $this->leftMargin;
 
         return $this;
     }
@@ -1922,22 +1920,21 @@ class PdfDocument
     /**
      * Defines the page and position a link points to.
      *
-     * @param int       $link the link identifier returned by <code>addLink()</code>
-     * @param int|float $y    the ordinate of target position; -1 indicates the current position. The default value is
-     *                        0 (top of page).
-     * @param int       $page the target page; -1 indicates the current page. This is the default value.
+     * @param int      $link the link identifier returned by <code>addLink()</code>
+     * @param float    $y    the ordinate of target position; a negative value indicates the current position. The
+     *                       default value is 0 (top of page).
+     * @param int|null $page the target page or <code>null</code> to use the current page
      *
      * @see PdfDocument::addLink()
      * @see PdfDocument::link()
+     * @see PdfDocument::createLink()
      */
-    public function setLink(int $link, int|float $y = 0, int $page = -1): self
+    public function setLink(int $link, float $y = 0, ?int $page = null): self
     {
-        if (-1 === $y) {
+        if ($y < 0) {
             $y = $this->y;
         }
-        if (-1 === $page) {
-            $page = $this->page;
-        }
+        $page ??= $this->page;
         $this->links[$link] = [$page, $y];
 
         return $this;
@@ -2338,13 +2335,13 @@ class PdfDocument
                 $this->width = $size->height;
                 $this->height = $size->width;
             }
-            $this->currentPagSizeInPoint = PdfSize::instance($this->width, $this->height)->scale($this->scaleFactor);
+            $this->currentPageSizeInPoint = PdfSize::instance($this->width, $this->height)->scale($this->scaleFactor);
             $this->pageBreakTrigger = $this->height - $this->bottomMargin;
             $this->currentOrientation = $orientation;
             $this->currentPageSize = clone $size;
         }
         if ($orientation !== $this->defaultOrientation || !$size->equals($this->defaultPageSize)) {
-            $this->pageInfos[$this->page]['size'] = clone $this->currentPagSizeInPoint;
+            $this->pageInfos[$this->page]['size'] = clone $this->currentPageSizeInPoint;
         }
         if ($rotation instanceof PdfRotation) {
             $this->currentRotation = $rotation;
@@ -2375,12 +2372,11 @@ class PdfDocument
     }
 
     /**
-     * Remove the carriage return characters and strip whitespace (and other characters) from the end of the
-     * given string.
+     * Remove the carriage return characters and strip new line characters from the end of the given string.
      */
     protected function cleanText(string $str): string
     {
-        return '' === $str ? $str : \rtrim(\str_replace("\r", '', $str));
+        return '' === $str ? $str : \rtrim(\str_replace("\r", '', $str), self::NEW_LINE);
     }
 
     /**
@@ -2603,7 +2599,7 @@ class PdfDocument
      */
     protected function isLink(string|int $link): bool
     {
-        return (\is_string($link) && '' !== $link) || (\is_int($link) && 0 !== $link);
+        return (\is_string($link) && '' !== $link) || (\is_int($link) && $link > 0);
     }
 
     /**
@@ -2721,7 +2717,7 @@ class PdfDocument
     /**
      * Parse the given GIF image.
      *
-     * @phpstan-return array<array-key, mixed>
+     * @phpstan-return ImageType
      */
     protected function parseGif(string $file): array
     {
@@ -2758,46 +2754,48 @@ class PdfDocument
     /**
      * Parse the given JPG image.
      *
-     * @phpstan-return array<array-key, mixed>
+     * @phpstan-return ImageType
      */
     protected function parseJpg(string $file): array
     {
+        /* @phpstan-var array{0: int, 1: int, 2: int, channels?: int, bits?: int}|false $size */
         $size = \getimagesize($file);
         if (!\is_array($size)) {
             throw new PdfException(\sprintf('Missing or incorrect image file: %s.', $file));
         }
-        if (2 !== $size[2]) {
+        if (\IMG_JPG !== $size[2]) {
             throw new PdfException(\sprintf('The file is not a JPEG image: %s.', $file));
         }
-        /** @phpstan-var array{0: int, 1: int, channels?: int, bits?: int, ...} $size */
-        if (!isset($size['channels']) || 3 === $size['channels']) {
-            $color_space = 'DeviceRGB';
-        } elseif (4 === $size['channels']) {
-            $color_space = 'DeviceCMYK';
-        } else {
-            $color_space = 'DeviceGray';
-        }
-        /** @phpstan-var int $bitsPerComponent */
-        $bitsPerComponent = $size['bits'] ?? 8;
         $data = \file_get_contents($file);
         if (false === $data) {
             throw new PdfException(\sprintf('Unable get image file content: %s.', $file));
         }
+        /** @phpstan-var int<3,5> $channels */
+        $channels = $size['channels'] ?? 3;
+        $color_space = match ($channels) {
+            3 => 'DeviceRGB',
+            4 => 'DeviceCMYK',
+            default => 'DeviceGray'
+        };
+        $bitsPerComponent = $size['bits'] ?? 8;
 
         return [
+            'index' => 0,
+            'number' => 0,
             'width' => $size[0],
             'height' => $size[1],
             'color_space' => $color_space,
             'bits_per_component' => $bitsPerComponent,
             'filter' => 'DCTDecode',
             'data' => $data,
+            'palette' => '',
         ];
     }
 
     /**
      * Parse the given PNG image.
      *
-     * @phpstan-return array<array-key, mixed>
+     * @phpstan-return ImageType
      */
     protected function parsePng(string $file): array
     {
@@ -2818,41 +2816,50 @@ class PdfDocument
      *
      * @param resource $stream
      *
-     * @phpstan-return array<string, mixed>
+     * @phpstan-return ImageType
      */
     protected function parsePngStream($stream, string $file): array
     {
         // check header signature
-        $header = \chr(137) . 'PNG' . \chr(13) . \chr(10) . \chr(26) . \chr(10);
-        if ($this->readStream($stream, \strlen($header)) !== $header) {
-            throw new PdfException(\sprintf('File is not a PNG image: %s.', $file));
+        /** @phpstan-var string|null $signature */
+        static $signature = null;
+        if (null === $signature) {
+            $signature = \chr(0x89) . \chr(0x50) . \chr(0x4E) . \chr(0x47)
+                . \chr(0x0D) . \chr(0x0A) . \chr(0x1A) . \chr(0x0A);
         }
+        if ($this->readStream($stream, \strlen($signature)) !== $signature) {
+            throw new PdfException(\sprintf('Incorrect PNG header signature: %s.', $file));
+        }
+
         // read header chunk
         $this->readStream($stream, 4);
         if ('IHDR' !== $this->readStream($stream, 4)) {
-            throw new PdfException(\sprintf('Incorrect PNG file: %s.', $file));
+            throw new PdfException(\sprintf('Incorrect PNG header chunk: %s.', $file));
         }
         $width = $this->readInt($stream);
         $height = $this->readInt($stream);
         $bitsPerComponent = $this->readByte($stream);
         if ($bitsPerComponent > 8) {
-            throw new PdfException(\sprintf('16-bit depth not supported: %s.', $file));
+            throw new PdfException(\sprintf('Bit depth %d not supported: %s.', $bitsPerComponent, $file));
         }
         $colorType = $this->readByte($stream);
         $colorSpace = match ($colorType) {
             0, 4 => 'DeviceGray',
             2, 6 => 'DeviceRGB',
             3 => 'Indexed',
-            default => throw new PdfException(\sprintf('Unknown color type: %s.', $file)),
+            default => throw new PdfException(\sprintf('Unknown color type %d: %s.', $colorType, $file)),
         };
-        if (0 !== $this->readByte($stream)) {
-            throw new PdfException(\sprintf('Unknown compression method: %s.', $file));
+        $value = $this->readByte($stream);
+        if (0 !== $value) {
+            throw new PdfException(\sprintf('Unknown compression method %d: %s.', $value, $file));
         }
-        if (0 !== $this->readByte($stream)) { // @phpstan-ignore-line
-            throw new PdfException(\sprintf('Unknown filter method: %s.', $file));
+        $value = $this->readByte($stream);
+        if (0 !== $value) {
+            throw new PdfException(\sprintf('Unknown filter method %d: %s.', $value, $file));
         }
-        if (0 !== $this->readByte($stream)) { // @phpstan-ignore-line
-            throw new PdfException(\sprintf('Interlacing not supported: %s.', $file));
+        $value = $this->readByte($stream);
+        if (0 !== $value) {
+            throw new PdfException(\sprintf('Interlacing %d not supported: %s.', $value, $file));
         }
         $this->readStream($stream, 4);
         $decodeParams = \sprintf(
@@ -2910,7 +2917,9 @@ class PdfDocument
         if ('Indexed' === $colorSpace && '' === $palette) {
             throw new PdfException(\sprintf('Missing palette: %s.', $file));
         }
-        $info = [
+        $image = [
+            'index' => 0,
+            'number' => 0,
             'width' => $width,
             'height' => $height,
             'color_space' => $colorSpace,
@@ -2953,14 +2962,14 @@ class PdfDocument
                 }
             }
             unset($data);
-            $data = \gzcompress($color);
-            $info['soft_mask'] = \gzcompress($alpha);
+            $data = (string) \gzcompress($color);
+            $image['soft_mask'] = (string) \gzcompress($alpha);
             $this->updateVersion('1.4');
             $this->withAlpha = true;
         }
-        $info['data'] = $data;
+        $image['data'] = $data;
 
-        return $info;
+        return $image;
     }
 
     /**
@@ -3199,7 +3208,7 @@ class PdfDocument
         if (isset($image['transparencies']) && \is_array($image['transparencies'])) {
             $transparencies = \array_reduce(
                 $image['transparencies'],
-                fn (string $carry, string $value): string => $carry . \sprintf('%1$s %1$s ', $value),
+                fn (string $carry, int $value): string => $carry . \sprintf('%1$d %1$d ', $value),
                 ''
             );
             $this->putf('/Mask [%s]', $transparencies);
@@ -3215,8 +3224,9 @@ class PdfDocument
         // soft mask
         if (isset($image['soft_mask'])) {
             $decodeParms = \sprintf('/Predictor 15 /Colors 1 /BitsPerComponent 8 /Columns %.2f', $image['width']);
-            /** @phpstan-var ImageType $soft_image */
             $soft_image = [
+                'index' => 0,
+                'number' => 0,
                 'width' => $image['width'],
                 'height' => $image['height'],
                 'color_space' => 'DeviceGray',
@@ -3224,6 +3234,7 @@ class PdfDocument
                 'filter' => $image['filter'] ?? '',
                 'decode_parms' => $decodeParms,
                 'data' => $image['soft_mask'],
+                'palette' => '',
             ];
             $this->putImage($soft_image);
         }
@@ -3261,9 +3272,9 @@ class PdfDocument
     /**
      * Put links to this buffer.
      */
-    protected function putLinks(int $n): void
+    protected function putLinks(int $number): void
     {
-        foreach ($this->pageLinks[$n] as $pageLink) {
+        foreach ($this->pageLinks[$number] as $pageLink) {
             $this->putNewObj();
             $rect = \sprintf(
                 '%.2F %.2F %.2F %.2F',
@@ -3277,7 +3288,7 @@ class PdfDocument
                 $output .= \sprintf('/A <</S /URI /URI %s>>>>', $this->textString($pageLink[4]));
             } else {
                 $link = $this->links[$pageLink[4]];
-                $index = (int) $link[0];
+                $index = $link[0];
                 $pageInfo = $this->pageInfos[$index] ?? [];
                 if (isset($pageInfo['size'])) {
                     $height = $pageInfo['size']->width;
@@ -3289,7 +3300,7 @@ class PdfDocument
                 $output .= \sprintf(
                     '/Dest [%d 0 R /XYZ 0 %.2F null]>>',
                     $pageInfo['number'] ?? 0,
-                    $height - (float) $link[1] * $this->scaleFactor
+                    $height - $link[1] * $this->scaleFactor
                 );
             }
             $this->put($output);
@@ -3352,8 +3363,6 @@ class PdfDocument
 
     /**
      * Put pages to this buffer.
-     *
-     * @psalm-suppress InvalidPropertyAssignmentValue
      */
     protected function putPages(): void
     {
@@ -3468,6 +3477,8 @@ class PdfDocument
      * Read a single character and convert to a value between 0 and 255.
      *
      * @param resource $stream the stream to read value from
+     *
+     * @phpstan-return int<0, 255>
      */
     protected function readByte($stream): int
     {
@@ -3569,5 +3580,21 @@ class PdfDocument
         $output .= 'end' . self::NEW_LINE;
 
         return $output . 'end';
+    }
+
+    /**
+     * Update and output the word spacing.
+     *
+     * @param float $value  the word spacing value to set
+     * @param bool  $format <code>true</code> to output formatted word spacing value, even if equal to 0
+     */
+    protected function updateWordSpacing(float $value = 0.0, bool $format = false): void
+    {
+        $this->wordSpacing = $value;
+        if ($format || 0.0 !== $this->wordSpacing) {
+            $this->outf('%.3F Tw', $this->wordSpacing * $this->scaleFactor);
+        } else {
+            $this->out('0 Tw');
+        }
     }
 }

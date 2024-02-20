@@ -22,10 +22,6 @@ class PdfRectangleTest extends TestCase
     {
         $actual = PdfRectangle::instance(10, 20, 30, 40)->asArray();
         self::assertCount(4, $actual);
-        self::assertArrayHasKey(0, $actual);
-        self::assertArrayHasKey(1, $actual);
-        self::assertArrayHasKey(2, $actual);
-        self::assertArrayHasKey(3, $actual);
         self::assertSame([10.0, 20.0, 30.0, 40.0], $actual);
     }
 

@@ -20,8 +20,6 @@ class PdfSizeTest extends TestCase
     {
         $actual = PdfSize::instance(10, 15)->asArray();
         self::assertCount(2, $actual);
-        self::assertArrayHasKey(0, $actual);
-        self::assertArrayHasKey(1, $actual);
         self::assertSame([10.0, 15.0], $actual);
     }
 

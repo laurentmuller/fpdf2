@@ -42,11 +42,7 @@ class PdfPoint
      */
     public function equals(self $other): bool
     {
-        if ($this === $other) {
-            return true;
-        }
-
-        return $this->x === $other->x && $this->y === $other->y;
+        return ($this === $other) || ($this->x === $other->x && $this->y === $other->y);
     }
 
     /**

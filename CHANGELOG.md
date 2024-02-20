@@ -1,5 +1,16 @@
 # Change log
 
+## 1.8.4.3 - 2024-02-20
+
+- Modified the `PdfDocument` class:
+  - Added `updateWordSpacing()` function.
+  - Corrected `multiCell()` function to handle correctly borders.
+  - Updated `cleanText()` function to trim line feed character only at the end.
+  - Updated `parsePngStream()` function.
+  - Updated `setLink()` and `createLink()` functions signature.
+- Removed `tutorial` directory.
+- Removed `doc` directory.
+
 ## 1.8.4.2 - 2024-02-19
 
 - Added the `PdfPoint` class.
@@ -11,7 +22,7 @@
   - Added `rectangle()` function.
   - Added `linePoints()` function.
   - Replaced width and height in point members by `PdfSize`.
-- Modified the `PdfFontStyle` class: 
+- Modified the `PdfFontStyle` class:
   - Renamed `fromStyle()` to `fromString()` function.
 
 ## 1.8.4.1 - 2024-02-18
@@ -21,23 +32,26 @@
 - Updated list of `PdfPageSize`.
 - Added `PdfLineJoin` enumeration.
 - Added `PdfLineCap` enumeration.
-- Added `PDFBorder` enumeration.
+- Added `PDFBorder` class.
 - Added `PDFState` enumeration.
 - Updated Rector to version 1.0.
 
 ## 1.8.4 - 2024-02-14
 
-- Replaced static by self as return value. Added clean text function.
+- Replaced static by self as return value.
+- Added clean text function.
 - Corrected put image.
 - Corrected the image soft mask.
 - Initialize properties. Added left and right margins.
-- Replaced self by static. Added test for `PdfFontStyle`.
+- Replaced self by static.
+- Added test for `PdfFontStyle`.
 - Removed replace entries in the `composer.json`.
 
 ## 1.8.4-alpha-6 - 2024-02-13
 
 - Update `.styleci.yml`.
-- Added `CHANGELOG` file. Added tests.
+- Added `CHANGELOG` file.
+- Added tests.
 - Added isLink function.
 - Added new line constant.
 - Updated PHP doc.
