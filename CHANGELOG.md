@@ -1,5 +1,9 @@
 # Change log
 
+## 1.8.4.4 - 2024-02-27
+
+- Updated license.
+
 ## 1.8.4.3 - 2024-02-20
 
 - Modified the `PdfDocument` class:
