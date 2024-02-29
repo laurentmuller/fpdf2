@@ -840,6 +840,14 @@ class PdfDocument
     }
 
     /**
+     * Gets the current X and Y position in user unit.
+     */
+    public function getPosition(): PdfPoint
+    {
+        return new PdfPoint($this->x, $this->y);
+    }
+
+    /**
      * Gets the printable width in user unit.
      *
      * @return float the page width minus the left and right margins
@@ -927,18 +935,6 @@ class PdfDocument
     public function getX(): float
     {
         return $this->x;
-    }
-
-    /**
-     * Gets the current X and Y position in user unit.
-     *
-     * @return float[] the X and Y position
-     *
-     * @phpstan-return array{0: float, 1: float}
-     */
-    public function getXY(): array
-    {
-        return [$this->x, $this->y];
     }
 
     /**
@@ -1959,6 +1955,16 @@ class PdfDocument
     }
 
     /**
+     * Defines the abscissa and ordinate of the current position.
+     *
+     * If the passed values are negative, they are relative respectively to the right (x) and bottom (y) of the page.
+     */
+    public function setPosition(PdfPoint $position): void
+    {
+        $this->setXY($position->x, $position->y);
+    }
+
+    /**
      * Defines the producer of the document.
      *
      * @param string $producer the producer
@@ -2059,7 +2065,7 @@ class PdfDocument
     /**
      * Defines the abscissa and ordinate of the current position.
      *
-     * If the passed values are negative, they are relative respectively to the right and bottom of the page.
+     * If the passed values are negative, they are relative respectively to the right (x) and bottom (y) of the page.
      */
     public function setXY(float $x, float $y): self
     {

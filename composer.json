@@ -37,6 +37,7 @@
         "ext-iconv": "*"
     },
     "require-dev": {
+        "elao/enum": "^2.0",
         "friendsofphp/php-cs-fixer": "^3.0",
         "orklah/psalm-insane-comparison": "^2.0",
         "orklah/psalm-not-empty": "^1.0",
