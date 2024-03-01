@@ -15,6 +15,8 @@ use fpdf\FPDF;
 use fpdf\PdfBorder;
 use fpdf\PdfDocument;
 
+#[PHPUnit\Framework\Attributes\CoversClass(FPDF::class)]
+#[PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
 class MultiCellTest extends AbstractTestCase
 {
     private const CONTENT = <<<_TEXT

@@ -2,8 +2,11 @@
 
 ## [Unreleased]
 
-- Added CI action.
+- Added CI action and removed all other actions.
 - Updated return value of the `setPosition()` function.
+- Updated cover class attributes.
+- Updated `AbstractTestCase` class by removing date creation when compare
+  content.
 
 ## 1.8.4.5 - 2024-02-29
 

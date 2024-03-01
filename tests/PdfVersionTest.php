@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+#[\PHPUnit\Framework\Attributes\CoversClass(FPDF::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
 class PdfVersionTest extends AbstractTestCase
 {
     public const PDF_VERSION = '1.6';

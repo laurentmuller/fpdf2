@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+#[\PHPUnit\Framework\Attributes\CoversClass(FPDF::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
 class HeaderFooterTest extends AbstractTestCase
 {
     protected function createNewDocument(): PdfDocument

@@ -53,8 +53,9 @@ jobs:
                 uses: codecov/codecov-action@v4.0.1
                 with:
                     token: ${{ secrets.CODECOV_TOKEN }}
-                    slug: laurentmuller/fpdf2
-                    files: ./clover.xml
+                    slug: ${{ GITHUB_REPOSITORY }}
+                    disable_search: true
+                    file: ./clover.xml
 
             -   name: Lint Markdown
                 uses: DavidAnson/markdownlint-cli2-action@v15
