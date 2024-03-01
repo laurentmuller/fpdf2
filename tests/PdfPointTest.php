@@ -14,7 +14,7 @@ namespace fpdf;
 
 use PHPUnit\Framework\TestCase;
 
-#[PHPUnit\Framework\Attributes\CoversClass(PdfPoint::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(PdfPoint::class)]
 class PdfPointTest extends TestCase
 {
     public function testAsArray(): void

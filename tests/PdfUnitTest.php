@@ -16,7 +16,7 @@ namespace fpdf;
 
 use PHPUnit\Framework\TestCase;
 
-#[PHPUnit\Framework\Attributes\CoversClass(PdfUnit::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(PdfUnit::class)]
 class PdfUnitTest extends TestCase
 {
     public function testScaleFactor(): void

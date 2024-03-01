@@ -14,7 +14,7 @@ namespace fpdf;
 
 use PHPUnit\Framework\TestCase;
 
-#[PHPUnit\Framework\Attributes\CoversClass(PdfSize::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(PdfSize::class)]
 class PdfSizeTest extends TestCase
 {
     public function testAsArray(): void

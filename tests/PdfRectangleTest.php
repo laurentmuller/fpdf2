@@ -14,7 +14,7 @@ namespace fpdf;
 
 use PHPUnit\Framework\TestCase;
 
-#[PHPUnit\Framework\Attributes\CoversClass(PdfRectangle::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(PdfRectangle::class)]
 class PdfRectangleTest extends TestCase
 {
     public function testAsArray(): void

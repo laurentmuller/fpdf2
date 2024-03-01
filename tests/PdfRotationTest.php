@@ -14,7 +14,7 @@ namespace fpdf;
 
 use PHPUnit\Framework\TestCase;
 
-#[PHPUnit\Framework\Attributes\CoversClass(PdfRotation::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(PdfRotation::class)]
 class PdfRotationTest extends TestCase
 {
     public function testValues(): void
