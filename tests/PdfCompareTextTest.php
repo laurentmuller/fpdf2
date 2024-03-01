@@ -14,23 +14,15 @@ namespace fpdf;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(FPDF::class)]
 #[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
-class MarginsTest extends AbstractTestCase
+class PdfCompareTextTest extends AbstractCompareTestCase
 {
     protected function updateNewDocument(PdfDocument $doc): void
     {
-        $doc->setLeftMargin(20);
-        $doc->setTopMargin(20);
-        $doc->setRightMargin(20);
-        $doc->addPage();
-        $doc->setMargins(10, 10);
+        $doc->text(5.0, 15.0, "This is a text test.\nWith multi-lines.");
     }
 
     protected function updateOldDocument(FPDF $doc): void
     {
-        $doc->SetLeftMargin(20);
-        $doc->SetTopMargin(20);
-        $doc->SetRightMargin(20);
-        $doc->AddPage();
-        $doc->SetMargins(10, 10);
+        $doc->Text(5.0, 15.0, "This is a text test.\nWith multi-lines.");
     }
 }

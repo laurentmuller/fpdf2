@@ -15,7 +15,7 @@ namespace fpdf;
 use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
 
-abstract class AbstractTestCase extends TestCase
+abstract class AbstractCompareTestCase extends TestCase
 {
     protected bool $unlink = true;
 

@@ -14,17 +14,19 @@ namespace fpdf;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(FPDF::class)]
 #[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
-class LinkTest extends AbstractTestCase
+class PdfCompareLineWidthTest extends AbstractCompareTestCase
 {
     protected function updateNewDocument(PdfDocument $doc): void
     {
-        $doc->link(10, 10, 100, 5, 'https://wwww.bibi.nu');
-        $doc->addLink();
+        $doc->setLineWidth(1);
+        $doc->addPage();
+        $doc->setLineWidth(2);
     }
 
     protected function updateOldDocument(FPDF $doc): void
     {
-        $doc->Link(10, 10, 100, 5, 'https://wwww.bibi.nu');
-        $doc->AddLink();
+        $doc->SetLineWidth(1);
+        $doc->AddPage();
+        $doc->SetLineWidth(2);
     }
 }

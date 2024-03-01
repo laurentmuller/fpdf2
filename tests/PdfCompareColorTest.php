@@ -14,7 +14,7 @@ namespace fpdf;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(FPDF::class)]
 #[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
-class ColorTest extends AbstractTestCase
+class PdfCompareColorTest extends AbstractCompareTestCase
 {
     protected function updateNewDocument(PdfDocument $doc): void
     {

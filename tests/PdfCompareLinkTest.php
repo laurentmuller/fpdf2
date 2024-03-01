@@ -14,15 +14,17 @@ namespace fpdf;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(FPDF::class)]
 #[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
-class TextTest extends AbstractTestCase
+class PdfCompareLinkTest extends AbstractCompareTestCase
 {
     protected function updateNewDocument(PdfDocument $doc): void
     {
-        $doc->text(5.0, 15.0, "This is a text test.\nWith multi-lines.");
+        $doc->link(10, 10, 100, 5, 'https://wwww.bibi.nu');
+        $doc->addLink();
     }
 
     protected function updateOldDocument(FPDF $doc): void
     {
-        $doc->Text(5.0, 15.0, "This is a text test.\nWith multi-lines.");
+        $doc->Link(10, 10, 100, 5, 'https://wwww.bibi.nu');
+        $doc->AddLink();
     }
 }

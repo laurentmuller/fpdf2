@@ -14,7 +14,7 @@ namespace fpdf;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(FPDF::class)]
 #[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
-class PdfVersionTest extends AbstractTestCase
+class PdfCompareVersionTest extends AbstractCompareTestCase
 {
     public const PDF_VERSION = '1.6';
 
@@ -23,7 +23,7 @@ class PdfVersionTest extends AbstractTestCase
         $doc = new class() extends FPDF {
             public function _enddoc(): void
             {
-                $this->PDFVersion = PdfVersionTest::PDF_VERSION;
+                $this->PDFVersion = PdfCompareVersionTest::PDF_VERSION;
                 parent::_enddoc();
             }
         };

@@ -1,5 +1,11 @@
 # Change log
 
+## [Unreleased]
+
+- Added `outLineWidth()` function to `PdfDocument` class.
+- Added tests for `PDfDocument` properties.
+- Renamed tests classes.
+
 ## [1.8.4.6 - 2024-03-01]
 
 - Added tests.

@@ -448,7 +448,7 @@ class PdfDocument
 
         // restore context
         $this->lineWidth = $lineWidth;
-        $this->outf('%.2F w', $lineWidth * $this->scaleFactor);
+        $this->outLineWidth();
         if ('' !== $fontFamily) {
             $this->setFont($fontFamily, $fontStyle, $fontSizeInPoint);
         }
@@ -471,7 +471,7 @@ class PdfDocument
         // restore context
         if ($this->lineWidth !== $lineWidth) {
             $this->lineWidth = $lineWidth;
-            $this->outf('%.2F w', $lineWidth * $this->scaleFactor);
+            $this->outLineWidth();
         }
         if ('' !== $fontFamily) {
             $this->setFont($fontFamily, $fontStyle, $fontSizeInPoint);
@@ -1819,7 +1819,7 @@ class PdfDocument
             }
             $name = PdfFontName::tryFromFamily($family);
             if (!$name instanceof PdfFontName) {
-                throw new PdfException(\sprintf('Undefined font: %s %s.' . $family, $style->value));
+                throw new PdfException(\sprintf('Undefined font: %s %s.', $family, $style->value));
             }
             if (PdfFontName::SYMBOL === $name || PdfFontName::ZAPFDINGBATS === $name) {
                 $style = PdfFontStyle::REGULAR;
@@ -1922,9 +1922,7 @@ class PdfDocument
     public function setLineWidth(float $lineWidth): self
     {
         $this->lineWidth = $lineWidth;
-        if ($this->page > 0) {
-            $this->outf('%.2F w', $this->lineWidth * $this->scaleFactor);
-        }
+        $this->outLineWidth();
 
         return $this;
     }
@@ -2718,6 +2716,18 @@ class PdfDocument
     {
         if ($this->page > 0) {
             $this->outf('%s j', $this->lineJoin->value);
+        }
+    }
+
+    /**
+     * Output the line width.
+     *
+     * Do nothing if no page is added.
+     */
+    protected function outLineWidth(): void
+    {
+        if ($this->page > 0) {
+            $this->outf('%.2F w', $this->lineWidth * $this->scaleFactor);
         }
     }
 

@@ -14,7 +14,7 @@ namespace fpdf;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(FPDF::class)]
 #[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
-class MultiCellTest extends AbstractTestCase
+class PdfCompareMultiCellTest extends AbstractCompareTestCase
 {
     private const CONTENT = <<<_TEXT
         First Line with a big text to be sure that a new line is reached.

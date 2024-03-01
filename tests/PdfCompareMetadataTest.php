@@ -14,19 +14,23 @@ namespace fpdf;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(FPDF::class)]
 #[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
-class LineTest extends AbstractTestCase
+class PdfCompareMetadataTest extends AbstractCompareTestCase
 {
     protected function updateNewDocument(PdfDocument $doc): void
     {
-        $doc->line(10, 10, 100, 100);
-        $doc->setLineWidth(1.0);
-        $doc->line(10, 20, 100, 100);
+        $doc->setTitle('Title æ', true);
+        $doc->setSubject('Subject');
+        $doc->setAuthor('Author');
+        $doc->setCreator('Creator');
+        $doc->setKeywords('Keys words');
     }
 
     protected function updateOldDocument(FPDF $doc): void
     {
-        $doc->Line(10, 10, 100, 100);
-        $doc->SetLineWidth(1.0);
-        $doc->Line(10, 20, 100, 100);
+        $doc->SetTitle('Title æ', true);
+        $doc->SetSubject('Subject');
+        $doc->SetAuthor('Author');
+        $doc->SetCreator('Creator');
+        $doc->SetKeywords('Keys words');
     }
 }

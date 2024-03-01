@@ -14,23 +14,19 @@ namespace fpdf;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(FPDF::class)]
 #[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
-class ImageTest extends AbstractTestCase
+class PdfCompareLineTest extends AbstractCompareTestCase
 {
     protected function updateNewDocument(PdfDocument $doc): void
     {
-        $doc->image(__DIR__ . '/images/image.png');
-        $doc->lineBreak(5.0);
-        $doc->image(__DIR__ . '/images/image.jpg');
-        $doc->lineBreak(5.0);
-        $doc->image(__DIR__ . '/images/image.gif');
+        $doc->line(10, 10, 100, 100);
+        $doc->setLineWidth(1.0);
+        $doc->line(10, 20, 100, 100);
     }
 
     protected function updateOldDocument(FPDF $doc): void
     {
-        $doc->Image(__DIR__ . '/images/image.png');
-        $doc->Ln(5.0);
-        $doc->Image(__DIR__ . '/images/image.jpg');
-        $doc->Ln(5.0);
-        $doc->Image(__DIR__ . '/images/image.gif');
+        $doc->Line(10, 10, 100, 100);
+        $doc->SetLineWidth(1.0);
+        $doc->Line(10, 20, 100, 100);
     }
 }

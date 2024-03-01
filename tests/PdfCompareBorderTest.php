@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace fpdf;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(PdfBorder::class)]
-class BorderTest extends AbstractTestCase
+class PdfCompareBorderTest extends AbstractCompareTestCase
 {
     /**
      * @throws PdfException

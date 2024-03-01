@@ -14,7 +14,7 @@ namespace fpdf;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(FPDF::class)]
 #[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
-class OrientationTest extends AbstractTestCase
+class PdfCompareOrientationTest extends AbstractCompareTestCase
 {
     public function testLandscape(): void
     {
