@@ -1959,9 +1959,9 @@ class PdfDocument
      *
      * If the passed values are negative, they are relative respectively to the right (x) and bottom (y) of the page.
      */
-    public function setPosition(PdfPoint $position): void
+    public function setPosition(PdfPoint $position): self
     {
-        $this->setXY($position->x, $position->y);
+        return $this->setXY($position->x, $position->y);
     }
 
     /**

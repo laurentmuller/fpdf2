@@ -1,12 +1,17 @@
 # Change log
 
+## [Unreleased]
+
+- Added CI action.
+- Updated return value of the `setPosition()` function.
+
 ## 1.8.4.5 - 2024-02-29
 
 - Added `elao/enum` dependency.
 - Use `EnumCase` attribute for `PdfPageSize` class.
 - Modified the `PdfDocument` class:
   - Removed the `getXY()` function.
-  - Added the `getPosition()` and `setPosition()` functions. 
+  - Added the `getPosition()` and `setPosition()` functions.
 - Updated license.
 
 ## 1.8.4.4 - 2024-02-27

@@ -72,12 +72,14 @@
         "phpstan": "vendor/bin/phpstan analyse --configuration phpstan.neon --memory-limit 2G",
         "rector": "vendor/bin/rector process --dry-run --config rector.php",
         "tests": "vendor/bin/phpunit",
+        "markdown": "markdownlint-cli2 *.md",
         "all": [
             "@fixer",
             "@psalm",
             "@phpstan",
             "@rector",
-            "@tests"
+            "@tests",
+            "@markdown"
         ]
     }
 }

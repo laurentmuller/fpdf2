@@ -1,0 +1,65 @@
+name: CI
+
+on: [ push, pull_request ]
+
+env:
+    PHP_CS_FIXER_IGNORE_ENV: 1
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
+
+            -   name: Install PHP with extensions
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: '8.2'
+                    coverage: xdebug
+                    tools: composer, symfony-cli
+
+            -   name: Determine composer cache directory
+                id: composer-cache
+                run: echo "directory=$(composer config cache-dir)" >> $GITHUB_OUTPUT
+
+            -   name: Cache dependencies installed with composer
+                uses: actions/cache@v4
+                with:
+                    path: ${{ steps.composer-cache.outputs.directory }}
+                    key: composer-${{ runner.os }}-${{ hashFiles('composer.*') }}
+                    restore-keys: composer-${{ runner.os }}-composer-
+
+            -   name: Install dependencies
+                run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+            -   name: Run PHP CS Fixer
+                run: vendor/bin/php-cs-fixer fix --diff --dry-run --show-progress=none
+
+            -   name: Run PHPStan
+                run: vendor/bin/phpstan analyze --no-progress
+
+            -   name: Run Psalm
+                run: vendor/bin/psalm --config=psalm.xml --no-progress
+
+            -   name: Run Rector
+                run: vendor/bin/rector process --dry-run --no-progress-bar
+
+            -   name: Run PHPUnit
+                run: vendor/bin/phpunit --no-progress --coverage-clover ./clover.xml
+
+            -   name: Upload coverage to Codecov
+                uses: codecov/codecov-action@v4.0.1
+                with:
+                    token: ${{ secrets.CODECOV_TOKEN }}
+                    slug: laurentmuller/fpdf2
+                    files: ./clover.xml
+
+            -   name: Lint Markdown
+                uses: DavidAnson/markdownlint-cli2-action@v15
+                with:
+                    globs: '*.md'
+
+            -   name: Composer validate
+                run: composer validate --strict
