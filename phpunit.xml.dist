@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.4/phpunit.xsd"
-         displayDetailsOnTestsThatTriggerWarnings="true"
-         requireCoverageMetadata="false"
+         requireCoverageMetadata="true"
          colors="true">
 
     <php>
@@ -12,10 +11,16 @@
     </php>
 
     <testsuites>
-        <testsuite name="Fpdf Test Suite">
+        <testsuite name="FPDF2 Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
 
-    <coverage/>
+    <source>
+        <include>
+            <directory suffix=".php">./src</directory>
+        </include>
+    </source>
+
+    <coverage />
 </phpunit>
