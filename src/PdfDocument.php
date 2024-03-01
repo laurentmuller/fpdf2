@@ -325,7 +325,7 @@ class PdfDocument
      *                                   directory will be used.
      *
      * @see PdfDocument::setFont()
-     * @see PdfDocument::setFontSize()
+     * @see PdfDocument::setFontSizeInPoint()
      */
     public function addFont(
         PdfFontName|string $family,
@@ -704,6 +704,14 @@ class PdfDocument
     }
 
     /**
+     * Gets the current font size in points.
+     */
+    public function getFontSizeInPoint(): float
+    {
+        return $this->fontSizeInPoint;
+    }
+
+    /**
      * Gets the height of last printed cell.
      *
      * @return float the height or 0.0 if no printed cell
@@ -813,6 +821,14 @@ class PdfDocument
         }
 
         return $linesCount;
+    }
+
+    /**
+     * Gets the line width.
+     */
+    public function getLineWidth(): float
+    {
+        return $this->lineWidth;
     }
 
     /**
@@ -1750,44 +1766,44 @@ class PdfDocument
      *
      * The method can be called before the first page is created and the font is kept from page to page.
      *
-     * If you just wish to change the current font size, it is simpler to call <code>setFontSize()</code>.
+     * If you just wish to change the current font size, it is simpler to call <code>setFontSizeInPoint()</code>.
      *
-     * @param PdfFontName|string|null $family The font family. It can be either a font name enumeration, a name defined
-     *                                        by <code>addFont()</code> or one of the standard families
-     *                                        (case-insensitive):
-     *                                        <ul>
-     *                                        <li><code>'Courier'</code>: Fixed-width.</li>
-     *                                        <li><code>'Helvetica'</code> or <code>Arial</code>: Synonymous: sans
-     *                                        serif.</li>
-     *                                        <li><code>'Symbol'</code>: Symbolic.</li>
-     *                                        <li><code>'ZapfDingbats'</code>: Symbolic.</li>
-     *                                        </ul>
-     *                                        It is also possible to pass <code>null</code>. In that case, the current
-     *                                        family is kept.
-     * @param ?PdfFontStyle           $style  The font style or <code>null</code> to use the current style. If no style
-     *                                        has been specified since the beginning of the document, the value is
-     *                                        <code>PdfFontStyle::REGULAR</code>.
-     * @param ?float                  $size   The font size in points or <code>null</code> to use the current size. If
-     *                                        no size has been specified since the beginning of the document, the value
-     *                                        is 9.0.
+     * @param PdfFontName|string|null $family          The font family. It can be either a font name enumeration, a name defined
+     *                                                 by <code>addFont()</code> or one of the standard families
+     *                                                 (case-insensitive):
+     *                                                 <ul>
+     *                                                 <li><code>'Courier'</code>: Fixed-width.</li>
+     *                                                 <li><code>'Helvetica'</code> or <code>Arial</code>: Synonymous: sans
+     *                                                 serif.</li>
+     *                                                 <li><code>'Symbol'</code>: Symbolic.</li>
+     *                                                 <li><code>'ZapfDingbats'</code>: Symbolic.</li>
+     *                                                 </ul>
+     *                                                 It is also possible to pass <code>null</code>. In that case, the current
+     *                                                 family is kept.
+     * @param ?PdfFontStyle           $style           The font style or <code>null</code> to use the current style. If no style
+     *                                                 has been specified since the beginning of the document, the value is
+     *                                                 <code>PdfFontStyle::REGULAR</code>.
+     * @param ?float                  $fontSizeInPoint The font size in points or <code>null</code> to use the current size. If
+     *                                                 no size has been specified since the beginning of the document, the value
+     *                                                 is 9.0.
      *
      * @see PdfDocument::addFont()
-     * @see PdfDocument::setFontSize()
+     * @see PdfDocument::setFontSizeInPoint()
      */
     public function setFont(
         PdfFontName|string|null $family = null,
         ?PdfFontStyle $style = null,
-        ?float $size = null
+        ?float $fontSizeInPoint = null
     ): self {
         if ($family instanceof PdfFontName) {
             $family = $family->value;
         }
         $family = null === $family ? $this->fontFamily : \strtolower($family);
         $style ??= $this->fontStyle;
-        $size ??= $this->fontSizeInPoint;
+        $fontSizeInPoint ??= $this->fontSizeInPoint;
         $this->underline = $style->isUnderLine();
         // test if font is already selected
-        if ($this->fontFamily === $family && $this->fontStyle === $style && $this->fontSizeInPoint === $size) {
+        if ($this->fontFamily === $family && $this->fontStyle === $style && $this->fontSizeInPoint === $fontSizeInPoint) {
             return $this;
         }
         // remove underline style
@@ -1816,8 +1832,8 @@ class PdfDocument
         // select it
         $this->fontFamily = $family;
         $this->fontStyle = $style;
-        $this->fontSizeInPoint = $size;
-        $this->fontSize = $size / $this->scaleFactor;
+        $this->fontSizeInPoint = $fontSizeInPoint;
+        $this->fontSize = $fontSizeInPoint / $this->scaleFactor;
         $this->currentFont = $this->fonts[$fontKey];
         $this->outCurrentFont();
 
@@ -1825,11 +1841,11 @@ class PdfDocument
     }
 
     /**
-     * Defines the size (in points) of the current font.
+     * Defines the size in points of the current font.
      *
      * @see PdfDocument::setFont()
      */
-    public function setFontSize(float $size): self
+    public function setFontSizeInPoint(float $size): self
     {
         if ($this->fontSizeInPoint === $size) {
             return $this;

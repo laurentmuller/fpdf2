@@ -16,6 +16,13 @@ namespace fpdf;
 #[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
 class OrientationTest extends AbstractTestCase
 {
+    public function testLandscape(): void
+    {
+        $doc = new PdfDocument(PdfOrientation::LANDSCAPE);
+        self::assertEqualsWithDelta(297.0, $doc->getPageWidth(), 0.1);
+        self::assertEqualsWithDelta(210.0, $doc->getPageHeight(), 0.1);
+    }
+
     protected function updateNewDocument(PdfDocument $doc): void
     {
         $doc->cell(0.0, 0.0, 'Portrait');

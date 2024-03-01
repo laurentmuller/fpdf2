@@ -25,6 +25,215 @@ class BasicTest extends AbstractTestCase
         @author bibi.nu <bibi@bibi.nu>
         COMMENT;
 
+    public function testAddPageClosed(): void
+    {
+        self::expectException(PdfException::class);
+        $doc = new PdfDocument();
+        $doc->close();
+        $doc->addPage();
+        self::fail('A PDF exception must be raised.');
+    }
+
+    public function testAliasNumberPages(): void
+    {
+        $doc = new PdfDocument();
+        $doc->setAliasNumberPages();
+        $doc->addPage();
+        self::assertSame(1, $doc->getPage());
+    }
+
+    public function testCellWithoutFont(): void
+    {
+        self::expectException(PdfException::class);
+        $doc = new PdfDocument();
+        $doc->addPage();
+        $doc->cell(text: 'fake');
+        self::fail('A PDF exception must be raised.');
+    }
+
+    public function testColorFlag(): void
+    {
+        $doc = new PdfDocument();
+        $doc->setFillColor(255, 255, 255);
+        $doc->setTextColor(0, 0, 0);
+        $doc->addPage();
+        $doc->setFont(PdfFontName::ARIAL);
+        $doc->cell(text: 'fake');
+        $doc->text(25, 25, 'fake');
+        self::assertSame(1, $doc->getPage());
+    }
+
+    public function testFields(): void
+    {
+        $doc = new PdfDocument();
+        $doc->addPage();
+        $doc->setFont(PdfFontName::ARIAL);
+
+        $doc->setLineWidth(2.0);
+        self::assertSame(2.0, $doc->getLineWidth());
+        $doc->setLineCap(PdfLineCap::ROUND);
+        self::assertSame(PdfLineCap::ROUND, $doc->getLineCap());
+        $doc->setLineJoin(PdfLineJoin::BEVEL);
+        self::assertSame(PdfLineJoin::BEVEL, $doc->getLineJoin());
+
+        $actual = $doc->getPosition();
+        $doc->setPosition($actual);
+        self::assertEqualsCanonicalizing($doc->getPosition(), $actual);
+    }
+
+    public function testFontSize(): void
+    {
+        $doc = new PdfDocument();
+        $doc->addPage();
+        $doc->setFont(PdfFontName::ARIAL);
+        $expected = $doc->getFontSizeInPoint();
+        $doc->setFontSizeInPoint($expected);
+        self::assertSame($expected, $doc->getFontSizeInPoint());
+    }
+
+    public function testLineJoin(): void
+    {
+        $doc = new PdfDocument();
+        $doc->setLineJoin(PdfLineJoin::BEVEL);
+        $doc->addPage();
+        self::assertSame(1, $doc->getPage());
+    }
+
+    public function testOutputDownload(): void
+    {
+        self::expectException(PdfException::class);
+        $doc = new PdfDocument();
+        $doc->setFont(PdfFontName::COURIER);
+        echo 'fake';
+        $doc->output(PdfDestination::DOWNLOAD);
+        self::fail('A PDF exception must be raised.');
+    }
+
+    public function testOutputDownloadValid(): void
+    {
+        $doc = new PdfDocument();
+        $doc->setFont(PdfFontName::COURIER);
+        $doc->output(PdfDestination::DOWNLOAD);
+        self::assertSame(1, $doc->getPage());
+    }
+
+    public function testOutputInlineError(): void
+    {
+        self::expectException(PdfException::class);
+        $doc = new PdfDocument();
+        $doc->setFont(PdfFontName::COURIER);
+        echo 'fake';
+        $doc->output();
+        self::fail('A PDF exception must be raised.');
+    }
+
+    public function testOutputInlineValid(): void
+    {
+        $doc = new PdfDocument();
+        $doc->setFont(PdfFontName::COURIER);
+        $doc->output();
+        self::assertSame(1, $doc->getPage());
+    }
+
+    public function testPixels2mm(): void
+    {
+        $doc = new PdfDocument(unit: PdfUnit::INCH);
+        $actual = $doc->pixels2mm(10.0, 0.0);
+        self::assertSame(10.0, $actual);
+        $actual = $doc->pixels2mm(1.0);
+        self::assertEqualsWithDelta(0.35, $actual, 0.1);
+    }
+
+    public function testPixels2UserUnit(): void
+    {
+        $doc = new PdfDocument(unit: PdfUnit::POINT);
+        $actual = $doc->pixels2UserUnit(1.0);
+        self::assertEqualsWithDelta(0.75, $actual, 0.1);
+    }
+
+    public function testPoints2UserUnit(): void
+    {
+        $doc = new PdfDocument(unit: PdfUnit::POINT);
+        $actual = $doc->points2UserUnit(10.0);
+        self::assertEqualsWithDelta(10.0, $actual, 0.1);
+    }
+
+    public function testRect(): void
+    {
+        $doc = new PdfDocument();
+        $doc->addPage();
+        $doc->rect(10, 10, 100, 20);
+        $doc->rect(10, 20, 100, 20, PdfRectangleStyle::BOTH);
+        $doc->rect(10, 30, 100, 20, PdfRectangleStyle::FILL);
+        $doc->rect(10, 10, 100, 20, PdfBorder::all());
+
+        self::assertSame(1, $doc->getPage());
+    }
+
+    public function testRectangle(): void
+    {
+        $doc = new PdfDocument();
+        $doc->addPage();
+        $rect = PdfRectangle::instance(10, 10, 100, 20);
+        $doc->rectangle($rect);
+        self::assertSame(1, $doc->getPage());
+    }
+
+    public function testSetLink(): void
+    {
+        $doc = new PdfDocument();
+        $doc->addPage();
+        $doc->setFont(PdfFontName::ARIAL);
+        $doc->setLink(1);
+        $doc->setLink(2, -1);
+        $doc->setLink(3, 10, 1);
+        self::assertSame(1, $doc->getPage());
+    }
+
+    public function testTextWithoutFont(): void
+    {
+        self::expectException(PdfException::class);
+        $doc = new PdfDocument();
+        $doc->addPage();
+        $doc->text(25, 25, 'fake');
+        self::fail('A PDF exception must be raised.');
+    }
+
+    public function testUnderline(): void
+    {
+        $doc = new PdfDocument();
+        $doc->addPage();
+        $doc->setFont(PdfFontName::ARIAL, PdfFontStyle::BOLD_UNDERLINE);
+        $doc->cell(text: 'fake');
+        $doc->text(25, 25, '');
+        $doc->text(25, 25, 'fake');
+        $doc->write(5.0, '');
+        $doc->write(5.0, 'fake');
+        self::assertSame(1, $doc->getPage());
+    }
+
+    public function testUseMargin(): void
+    {
+        $doc = new PdfDocument();
+        $doc->addPage();
+        $doc->setFont(PdfFontName::ARIAL);
+        $oldMargin = $doc->getCellMargin();
+        $doc->useCellMargin(function () use ($doc): void {
+            self::assertSame(0.0, $doc->getCellMargin());
+        });
+        $newMargin = $doc->getCellMargin();
+        self::assertSame($oldMargin, $newMargin);
+    }
+
+    public function testWriteWithoutFont(): void
+    {
+        self::expectException(PdfException::class);
+        $doc = new PdfDocument();
+        $doc->addPage();
+        $doc->write(5.0, 'fake');
+        self::fail('A PDF exception must be raised.');
+    }
+
     /**
      * @throws PdfException
      */
@@ -75,7 +284,7 @@ class BasicTest extends AbstractTestCase
         $doc->setDrawColor(255);
         $doc->setFillColor(255);
         $doc->setTextColor(255);
-        $doc->setFontSize(9.5);
+        $doc->setFontSizeInPoint(9.5);
 
         $doc->text($doc->getX(), $doc->getY(), 'Text');
         $doc->write(5.0, 'Write', 1);

@@ -18,6 +18,31 @@ class FontTest extends AbstractTestCase
 {
     private const FONTS_DIR = __DIR__ . '/fonts/';
 
+    public function testAddDirectoryFontName(): void
+    {
+        $doc = new PdfDocument();
+        $dir = __DIR__ . '/../src/font';
+        $doc->addFont(PdfFontName::COURIER, file: 'courier.php', dir: $dir);
+        self::assertTrue($doc->isAutoPageBreak());
+    }
+
+    public function testAddFontName(): void
+    {
+        $doc = new PdfDocument();
+        $doc->addFont(PdfFontName::COURIER);
+        self::assertTrue($doc->isAutoPageBreak());
+        $doc->addFont(PdfFontName::COURIER);
+        self::assertTrue($doc->isAutoPageBreak());
+    }
+
+    public function testInvalidFontName(): void
+    {
+        self::expectException(PdfException::class);
+        $doc = new PdfDocument();
+        $doc->addFont('Fake', file: 'Invalid character/');
+        self::fail('A PDF exception must be raised.');
+    }
+
     /**
      * @throws PdfException
      */

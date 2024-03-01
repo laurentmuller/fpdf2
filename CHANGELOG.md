@@ -1,12 +1,17 @@
 # Change log
 
-## [Unreleased]
+## [1.8.4.6 - 2024-03-01]
 
-- Added CI action and removed all other actions.
-- Updated return value of the `setPosition()` function.
-- Updated cover class attributes.
-- Updated `AbstractTestCase` class by removing date creation when compare
+- Added tests.
+- Added unique CI action and removed all other actions.
+- Updated cover class attributes for tests.
+- Updated `AbstractTestCase` class by removing date creation when comparing
   content.
+- Modified the `PdfDocument` class:
+  - Updated return value of the `setPosition()` function.
+  - Renamed `getFontSize()` function by `getFontSizeInPoint()`.
+  - Renamed `setFontSize()` function by `setFontSizeInPoint()`.
+  - Added `getLineWidth()` function.
 
 ## 1.8.4.5 - 2024-02-29
 
