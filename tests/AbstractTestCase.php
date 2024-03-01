@@ -52,6 +52,12 @@ abstract class AbstractTestCase extends TestCase
 
         self::assertIsString($old_content);
         self::assertIsString($new_content);
+
+        // remove dates
+        $pattern = '/\/CreationDate.*\)/mi';
+        $old_content = \preg_replace($pattern, '', $old_content);
+        $new_content = \preg_replace($pattern, '', $new_content);
+
         self::assertSame($old_content, $new_content);
     }
 
