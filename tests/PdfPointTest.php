@@ -10,7 +10,8 @@
 
 declare(strict_types=1);
 
-use fpdf\PdfPoint;
+namespace fpdf;
+
 use PHPUnit\Framework\TestCase;
 
 #[PHPUnit\Framework\Attributes\CoversClass(PdfPoint::class)]

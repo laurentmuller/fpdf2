@@ -73,4 +73,26 @@ class PdfFontStyleTest extends TestCase
         $actual = PdfFontStyle::fromString($str);
         self::assertSame($expected, $actual);
     }
+
+    public function testIsUnderline(): void
+    {
+        self::assertFalse(PdfFontStyle::BOLD->isUnderLine());
+        self::assertFalse(PdfFontStyle::BOLD_ITALIC->isUnderLine());
+        self::assertTrue(PdfFontStyle::BOLD_ITALIC_UNDERLINE->isUnderLine());
+        self::assertTrue(PdfFontStyle::BOLD_UNDERLINE->isUnderLine());
+        self::assertFalse(PdfFontStyle::ITALIC->isUnderLine());
+        self::assertTrue(PdfFontStyle::ITALIC_UNDERLINE->isUnderLine());
+        self::assertFalse(PdfFontStyle::REGULAR->isUnderLine());
+    }
+
+    public function testRemovUnderline(): void
+    {
+        self::assertSame(PdfFontStyle::BOLD, PdfFontStyle::BOLD->removeUnderLine());
+        self::assertSame(PdfFontStyle::BOLD_ITALIC, PdfFontStyle::BOLD_ITALIC->removeUnderLine());
+        self::assertSame(PdfFontStyle::BOLD_ITALIC, PdfFontStyle::BOLD_ITALIC_UNDERLINE->removeUnderLine());
+        self::assertSame(PdfFontStyle::BOLD, PdfFontStyle::BOLD_UNDERLINE->removeUnderLine());
+        self::assertSame(PdfFontStyle::ITALIC, PdfFontStyle::ITALIC->removeUnderLine());
+        self::assertSame(PdfFontStyle::ITALIC, PdfFontStyle::ITALIC_UNDERLINE->removeUnderLine());
+        self::assertSame(PdfFontStyle::REGULAR, PdfFontStyle::REGULAR->removeUnderLine());
+    }
 }

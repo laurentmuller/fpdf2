@@ -10,10 +10,7 @@
 
 declare(strict_types=1);
 
-use fpdf\AbstractTestCase;
-use fpdf\FPDF;
-use fpdf\PdfBorder;
-use fpdf\PdfDocument;
+namespace fpdf;
 
 #[PHPUnit\Framework\Attributes\CoversClass(FPDF::class)]
 #[PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]

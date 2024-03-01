@@ -10,7 +10,8 @@
 
 declare(strict_types=1);
 
-use fpdf\PdfSize;
+namespace fpdf;
+
 use PHPUnit\Framework\TestCase;
 
 #[PHPUnit\Framework\Attributes\CoversClass(PdfSize::class)]
