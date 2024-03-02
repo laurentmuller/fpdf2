@@ -1,6 +1,6 @@
 # Change log
 
-## [Unreleased]
+## [1.8.4.7 - 2024-03-02]
 
 - Modified the `PdfDocument` class:
   - Added `outLineWidth()` function.
