@@ -40,6 +40,16 @@ class PdfDocMultiCellTest extends AbstractPdfDocTestCase
         self::assertSame(1, $doc->getPage());
     }
 
+    public function testJustify(): void
+    {
+        $doc = $this->createDocument();
+        $text = \str_repeat('This is a very long text to use for multi lines.', 5);
+        for ($i = 0; $i < 100; ++$i) {
+            $doc->multiCell(text: $text);
+        }
+        self::assertSame(4, $doc->getPage());
+    }
+
     public function testLineCount(): void
     {
         $doc = $this->createDocument();

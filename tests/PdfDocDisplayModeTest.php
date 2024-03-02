@@ -13,14 +13,14 @@ declare(strict_types=1);
 namespace fpdf;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
-class PdfDocDisplayMode extends AbstractPdfDocTestCase
+class PdfDocDisplayModeTest extends AbstractPdfDocTestCase
 {
     public function testDisplayContinuous(): void
     {
         $doc = $this->createDocument();
         $doc->setDisplayMode(layout: PdfLayout::CONTINUOUS);
         $actual = $doc->output(PdfDestination::STRING);
-        self::assertStringContainsString($actual, '/PageLayout');
+        self::assertStringContainsString('/PageLayout', $actual);
     }
 
     public function testDisplaySingle(): void
@@ -28,7 +28,7 @@ class PdfDocDisplayMode extends AbstractPdfDocTestCase
         $doc = $this->createDocument();
         $doc->setDisplayMode(layout: PdfLayout::SINGLE);
         $actual = $doc->output(PdfDestination::STRING);
-        self::assertStringContainsString($actual, '/PageLayout');
+        self::assertStringContainsString('/PageLayout', $actual);
     }
 
     public function testDisplayTwoPages(): void
@@ -36,7 +36,7 @@ class PdfDocDisplayMode extends AbstractPdfDocTestCase
         $doc = $this->createDocument();
         $doc->setDisplayMode(layout: PdfLayout::TWO_PAGES);
         $actual = $doc->output(PdfDestination::STRING);
-        self::assertStringContainsString($actual, '/PageLayout');
+        self::assertStringContainsString('/PageLayout', $actual);
     }
 
     public function testZoomFullPage(): void
@@ -44,7 +44,7 @@ class PdfDocDisplayMode extends AbstractPdfDocTestCase
         $doc = $this->createDocument();
         $doc->setDisplayMode(PdfZoom::FULL_PAGE);
         $actual = $doc->output(PdfDestination::STRING);
-        self::assertStringContainsString($actual, '/OpenAction');
+        self::assertStringContainsString('/OpenAction', $actual);
     }
 
     public function testZoomFullWidth(): void
@@ -52,7 +52,7 @@ class PdfDocDisplayMode extends AbstractPdfDocTestCase
         $doc = $this->createDocument();
         $doc->setDisplayMode(PdfZoom::FULL_WIDTH);
         $actual = $doc->output(PdfDestination::STRING);
-        self::assertStringContainsString($actual, '/OpenAction');
+        self::assertStringContainsString('/OpenAction', $actual);
     }
 
     public function testZoomReal(): void
@@ -60,7 +60,7 @@ class PdfDocDisplayMode extends AbstractPdfDocTestCase
         $doc = $this->createDocument();
         $doc->setDisplayMode(PdfZoom::REAL);
         $actual = $doc->output(PdfDestination::STRING);
-        self::assertStringContainsString($actual, '/OpenAction');
+        self::assertStringContainsString('/OpenAction', $actual);
     }
 
     public function testZoomValue(): void
@@ -68,6 +68,6 @@ class PdfDocDisplayMode extends AbstractPdfDocTestCase
         $doc = $this->createDocument();
         $doc->setDisplayMode(80);
         $actual = $doc->output(PdfDestination::STRING);
-        self::assertStringContainsString($actual, '/OpenAction');
+        self::assertStringContainsString('/OpenAction', $actual);
     }
 }

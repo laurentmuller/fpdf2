@@ -60,6 +60,7 @@ $rules = [
 $finder = Finder::create()
     ->in(__DIR__ . '/src')
     ->in(__DIR__ . '/tests')
+    ->notPath('tests/resources')
     ->notPath('font')
     ->notName('FPDF.php');
 

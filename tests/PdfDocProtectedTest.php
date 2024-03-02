@@ -48,6 +48,7 @@ class PdfDocProtectedTest extends TestCase
             }
         };
         $doc->addPage();
+        self::assertSame(1, $doc->getPage());
     }
 
     public function testOutEndPage(): void
@@ -65,6 +66,7 @@ class PdfDocProtectedTest extends TestCase
             }
         };
         $doc->addPage();
+        self::assertSame(1, $doc->getPage());
     }
 
     public function testOutNoPage(): void
@@ -81,6 +83,50 @@ class PdfDocProtectedTest extends TestCase
             }
         };
         $doc->addPage();
+        self::assertSame(1, $doc->getPage());
+    }
+
+    public function testReadStreamClosed(): void
+    {
+        self::expectException(PdfException::class);
+        $doc = new class() extends PdfDocument {
+            public function __construct(
+                PdfOrientation $orientation = PdfOrientation::PORTRAIT,
+                PdfUnit $unit = PdfUnit::MILLIMETER,
+                PdfSize|PdfPageSize $size = PdfPageSize::A4
+            ) {
+                parent::__construct($orientation, $unit, $size);
+                $stream = \fopen(__FILE__, 'r');
+                if (\is_resource($stream)) {
+                    \fclose($stream);
+                    $this->readStream($stream, 5);
+                }
+            }
+        };
+        $doc->addPage();
+        self::assertSame(1, $doc->getPage());
+    }
+
+    public function testReadStreamEmpty(): void
+    {
+        self::expectException(PdfException::class);
+        $doc = new class() extends PdfDocument {
+            public function __construct(
+                PdfOrientation $orientation = PdfOrientation::PORTRAIT,
+                PdfUnit $unit = PdfUnit::MILLIMETER,
+                PdfSize|PdfPageSize $size = PdfPageSize::A4
+            ) {
+                parent::__construct($orientation, $unit, $size);
+                $file = __DIR__ . '/resources/empty.txt';
+                $stream = \fopen($file, 'r');
+                if (\is_resource($stream)) {
+                    $this->readStream($stream, 5);
+                    \fclose($stream);
+                }
+            }
+        };
+        $doc->addPage();
+        self::assertSame(1, $doc->getPage());
     }
 
     public function testUTF8(): void

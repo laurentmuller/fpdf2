@@ -5,6 +5,7 @@
 - Modified the `PdfDocument` class:
   - Added `outLineWidth()` function.
   - Added `headers()` function.
+  - Added `setFontSize()` function.
 - Added tests for `PDfDocument` properties.
 - Renamed tests classes.
 - Added `instance()` function to `PdfException` class.

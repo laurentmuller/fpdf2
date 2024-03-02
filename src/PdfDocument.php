@@ -1834,17 +1834,25 @@ class PdfDocument
     }
 
     /**
-     * Defines the size in points of the current font.
+     * Defines the size, in user unit, of the current font.
+     */
+    public function setFontSize(float $fontSize): self
+    {
+        return $this->setFontSizeInPoint($fontSize * $this->scaleFactor);
+    }
+
+    /**
+     * Defines the size, in points, of the current font.
      *
      * @see PdfDocument::setFont()
      */
-    public function setFontSizeInPoint(float $size): self
+    public function setFontSizeInPoint(float $fonsSizeInPoint): self
     {
-        if ($this->fontSizeInPoint === $size) {
+        if ($this->fontSizeInPoint === $fonsSizeInPoint) {
             return $this;
         }
-        $this->fontSizeInPoint = $size;
-        $this->fontSize = $size / $this->scaleFactor;
+        $this->fontSizeInPoint = $fonsSizeInPoint;
+        $this->fontSize = $fonsSizeInPoint / $this->scaleFactor;
         $this->outCurrentFont();
 
         return $this;
@@ -2877,7 +2885,7 @@ class PdfDocument
         // read header chunk
         $this->readStream($stream, 4);
         if ('IHDR' !== $this->readStream($stream, 4)) {
-            throw PdfException::instance('Incorrect PNG header chunk: %s.', $file);
+            throw PdfException::instance('Incorrect PNG header chunk (IHDR): %s.', $file);
         }
         $width = $this->readInt($stream);
         $height = $this->readInt($stream);
@@ -2890,15 +2898,15 @@ class PdfDocument
             0, 4 => 'DeviceGray',
             2, 6 => 'DeviceRGB',
             3 => 'Indexed',
-            default => throw PdfException::instance('Unknown color type %d: %s.', $colorType, $file),
+            default => throw PdfException::instance('Color type %d not supported: %s.', $colorType, $file),
         };
         $value = $this->readByte($stream);
         if (0 !== $value) {
-            throw PdfException::instance('Unknown compression method %d: %s.', $value, $file);
+            throw PdfException::instance('Compression method %d not supported: %s.', $value, $file);
         }
         $value = $this->readByte($stream);
         if (0 !== $value) {
-            throw PdfException::instance('Unknown filter method %d: %s.', $value, $file);
+            throw PdfException::instance('Filter method %d not supported: %s.', $value, $file);
         }
         $value = $this->readByte($stream);
         if (0 !== $value) {
@@ -2974,9 +2982,6 @@ class PdfDocument
         ];
         if ($colorType >= 4) {
             // extract alpha channel
-            if (!\function_exists('gzuncompress')) {
-                throw PdfException::instance('Zlib not available, can not handle alpha channel: %s.', $file);
-            }
             /** @phpstan-var non-empty-string $data */
             $data = \gzuncompress($data);
             $color = '';
@@ -3532,10 +3537,12 @@ class PdfDocument
      * Read a 4-byte integer from the given stream.
      *
      * @param resource $stream the stream to read integer from
+     *
+     * @phpstan-return int<0, max>
      */
     protected function readInt($stream): int
     {
-        /** @phpstan-var array{i: int} $unpack */
+        /** @phpstan-var array{i: int<0, max>} $unpack */
         $unpack = \unpack('Ni', $this->readStream($stream, 4));
 
         return $unpack['i'];
@@ -3546,19 +3553,18 @@ class PdfDocument
      *
      * @param resource $stream the stream to read string from
      * @param int      $len    the number of bytes read
+     *
+     * @phpstan-param resource|closed-resource $stream
+     * @phpstan-param int<0, max> $len
      */
-    protected function readStream($stream, int $len): string
+    protected function readStream(mixed $stream, int $len): string
     {
-        $result = '';
-        while ($len > 0 && !\feof($stream)) {
-            $str = \fread($stream, $len);
-            if (!\is_string($str)) {
-                throw PdfException::instance('Error while reading stream.');
-            }
-            $len -= \strlen($str);
-            $result .= $str;
+        // @phpstan-ignore-next-line
+        if (!\is_resource($stream)) {
+            throw PdfException::instance('The stream is closed.');
         }
-        if ($len > 0) {
+        $result = \fread($stream, $len);
+        if (!\is_string($result) || $len !== \strlen($result)) {
             throw PdfException::instance('Unexpected end of stream.');
         }
 

@@ -81,17 +81,27 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
     public function testFontSize(): void
     {
         $doc = $this->createDocument();
-        $expected = $doc->getFontSizeInPoint();
-        $doc->setFontSizeInPoint($expected);
-        self::assertSame($expected, $doc->getFontSizeInPoint());
+        // default
+        $scale = PdfUnit::MILLIMETER->getScaleFactor();
+        $expected = 9.0 / $scale;
+        self::assertSame($expected, $doc->getFontSize());
+
+        $expected = 12.0 / $scale;
+        $doc->setFontSize($expected);
+        self::assertSame($expected, $doc->getFontSize());
     }
 
     public function testFontSizeInPoint(): void
     {
         $doc = $this->createDocument();
+        // default
+        self::assertSame(9.0, $doc->getFontSizeInPoint());
+        // just for code coverage
         $doc->setFontSizeInPoint(9.0);
-        $actual = $doc->getFontSize();
-        self::assertSame(3.175, $actual);
+
+        $expected = 10.5;
+        $doc->setFontSizeInPoint($expected);
+        self::assertSame($expected, $doc->getFontSizeInPoint());
     }
 
     public function testGetStringWidth(): void
