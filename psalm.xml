@@ -18,6 +18,7 @@
             <directory name="src/font"/>
             <directory name="tests/fonts"/>
             <file name="tests/FPDF.php"/>
+            <file name="tests/resources/font_test.php"/>
             <directory name="vendor"/>
         </ignoreFiles>
     </projectFiles>

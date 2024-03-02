@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+#[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
 class PdfDocFileFontTest extends AbstractPdfDocTestCase
 {
     private const FONTS_DIR = __DIR__ . '/resources/';

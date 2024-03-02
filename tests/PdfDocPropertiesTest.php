@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace fpdf;
 
-#[\PHPUnit\Framework\Attributes\CoversClass(FPDF::class)]
 #[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
 class PdfDocPropertiesTest extends AbstractPdfDocTestCase
 {

@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+#[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
 class PdfDocImage extends AbstractPdfDocTestCase
 {
     public function testAlpha(): void

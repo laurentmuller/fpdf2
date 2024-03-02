@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+#[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
 class PdfDocDisplayMode extends AbstractPdfDocTestCase
 {
     public function testDisplayContinuous(): void

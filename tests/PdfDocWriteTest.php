@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+#[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
 class PdfDocWriteTest extends AbstractPdfDocTestCase
 {
     public function testMultiLine(): void

@@ -12,7 +12,8 @@ declare(strict_types=1);
 
 namespace fpdf;
 
-class pdfDocPutPagesTest extends AbstractPdfDocTestCase
+#[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
+class PdfDocPutPagesTest extends AbstractPdfDocTestCase
 {
     public function testPutPages(): void
     {
