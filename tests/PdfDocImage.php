@@ -14,7 +14,14 @@ namespace fpdf;
 
 class PdfDocImage extends AbstractPdfDocTestCase
 {
-    public function testImageEmpty(): void
+    public function testAlpha(): void
+    {
+        $doc = $this->createDocument();
+        $doc->image(__DIR__ . '/images/alpha_image.png');
+        self::assertSame(1, $doc->getPage());
+    }
+
+    public function testEmpty(): void
     {
         self::expectException(PdfException::class);
         $doc = $this->createDocument(false, false);
@@ -22,7 +29,7 @@ class PdfDocImage extends AbstractPdfDocTestCase
         self::fail('A PDF exception must be raised.');
     }
 
-    public function testImageEmptyType(): void
+    public function testEmptyType(): void
     {
         self::expectException(PdfException::class);
         $doc = $this->createDocument(false, false);
@@ -30,21 +37,28 @@ class PdfDocImage extends AbstractPdfDocTestCase
         self::fail('A PDF exception must be raised.');
     }
 
-    public function testImageHeightLessZero(): void
+    public function testGrey(): void
+    {
+        $doc = $this->createDocument();
+        $doc->image(__DIR__ . '/images/grey_image.png');
+        self::assertSame(1, $doc->getPage());
+    }
+
+    public function testHeightLessZero(): void
     {
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/images/image.png', height: -10.0);
         self::assertSame(1, $doc->getPage());
     }
 
-    public function testImageWidthLessZero(): void
+    public function testWidthLessZero(): void
     {
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/images/image.png', width: -10.0);
         self::assertSame(1, $doc->getPage());
     }
 
-    public function testImageWrong(): void
+    public function testWrong(): void
     {
         self::expectException(PdfException::class);
         $doc = $this->createDocument(false, false);
@@ -52,7 +66,7 @@ class PdfDocImage extends AbstractPdfDocTestCase
         self::fail('A PDF exception must be raised.');
     }
 
-    public function testImageWrongGif(): void
+    public function testWrongGif(): void
     {
         self::expectException(PdfException::class);
         $doc = $this->createDocument();
@@ -60,7 +74,7 @@ class PdfDocImage extends AbstractPdfDocTestCase
         self::fail('A PDF exception must be raised.');
     }
 
-    public function testImageWrongJpeg(): void
+    public function testWrongJpeg(): void
     {
         self::expectException(PdfException::class);
         $doc = $this->createDocument();
@@ -68,7 +82,7 @@ class PdfDocImage extends AbstractPdfDocTestCase
         self::fail('A PDF exception must be raised.');
     }
 
-    public function testImageWrongPng(): void
+    public function testWrongPng(): void
     {
         self::expectException(PdfException::class);
         $doc = $this->createDocument();

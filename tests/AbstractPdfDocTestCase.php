@@ -16,9 +16,14 @@ use PHPUnit\Framework\TestCase;
 
 abstract class AbstractPdfDocTestCase extends TestCase
 {
-    protected function createDocument(bool $addPage = true, bool $addFont = true): PdfDocument
-    {
-        $doc = new PdfDocument();
+    protected function createDocument(
+        bool $addPage = true,
+        bool $addFont = true,
+        PdfOrientation $orientation = PdfOrientation::PORTRAIT,
+        PdfUnit $unit = PdfUnit::MILLIMETER,
+        PdfPageSize|PdfSize $size = PdfPageSize::A4
+    ): PdfDocument {
+        $doc = new PdfDocument($orientation, $unit, $size);
         if ($addPage) {
             $doc->addPage();
         }
