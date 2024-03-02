@@ -17,4 +17,21 @@ namespace fpdf;
  */
 class PdfException extends \RuntimeException
 {
+    /**
+     * Create a new instance for the given message or format and values.
+     *
+     * @param string           $message   the format string, if values are provided, the message otherwise
+     * @param float|int|string ...$values the values
+     */
+    public static function instance(string $message, float|int|string ...$values): self
+    {
+        if ([] !== $values) {
+            try {
+                return new self(\sprintf($message, ...$values));
+            } catch (\Error) {
+            }
+        }
+
+        return new self($message);
+    }
 }

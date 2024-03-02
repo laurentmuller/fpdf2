@@ -12,11 +12,9 @@ declare(strict_types=1);
 
 namespace fpdf;
 
-use PHPUnit\Framework\TestCase;
-
 #[\PHPUnit\Framework\Attributes\CoversClass(FPDF::class)]
 #[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
-class PdfDocPropertiesTest extends TestCase
+class PdfDocPropertiesTest extends AbstractPdfDocTestCase
 {
     public function testAddPageClosed(): void
     {
@@ -45,14 +43,6 @@ class PdfDocPropertiesTest extends TestCase
         self::assertTrue($doc->isAutoPageBreak());
     }
 
-    public function testBottomMargin(): void
-    {
-        $doc = $this->createDocument();
-        $expected = $doc->getBottomMargin();
-        $doc->setAutoPageBreak(true, $expected);
-        self::assertSame($expected, $doc->getBottomMargin());
-    }
-
     public function testCellWithoutFont(): void
     {
         self::expectException(PdfException::class);
@@ -79,7 +69,6 @@ class PdfDocPropertiesTest extends TestCase
         $doc->addPage();
         $doc->setFont(PdfFontName::ARIAL);
         $doc->cell(text: 'fake');
-        $doc->text(25, 25, 'fake');
         self::assertSame(1, $doc->getPage());
     }
 
@@ -130,28 +119,11 @@ class PdfDocPropertiesTest extends TestCase
         self::assertSame($y + 3.0, $doc->getY());
     }
 
-    public function testImageEmpty(): void
+    public function testHttpEncode(): void
     {
-        self::expectException(PdfException::class);
-        $doc = $this->createDocument(false, false);
-        $doc->image('');
-        self::fail('A PDF exception must be raised.');
-    }
-
-    public function testImageEmptyType(): void
-    {
-        self::expectException(PdfException::class);
-        $doc = $this->createDocument(false, false);
-        $doc->image(__DIR__);
-        self::fail('A PDF exception must be raised.');
-    }
-
-    public function testImageWrong(): void
-    {
-        self::expectException(PdfException::class);
-        $doc = $this->createDocument(false, false);
-        $doc->image(__FILE__);
-        self::fail('A PDF exception must be raised.');
+        $this->expectOutputRegex('/CreationDate/');
+        $doc = $this->createDocument();
+        $doc->output(PdfDestination::DOWNLOAD, '¢FAKE¢');
     }
 
     public function testLastHeight(): void
@@ -226,38 +198,6 @@ class PdfDocPropertiesTest extends TestCase
         self::assertSame($y + 10.0, $doc->getY());
     }
 
-    public function testOutputDownload(): void
-    {
-        self::expectException(PdfException::class);
-        $doc = $this->createDocument(false);
-        echo 'fake';
-        $doc->output(PdfDestination::DOWNLOAD);
-        self::fail('A PDF exception must be raised.');
-    }
-
-    public function testOutputDownloadValid(): void
-    {
-        $doc = $this->createDocument(false);
-        $doc->output(PdfDestination::DOWNLOAD);
-        self::assertSame(1, $doc->getPage());
-    }
-
-    public function testOutputInlineError(): void
-    {
-        self::expectException(PdfException::class);
-        $doc = $this->createDocument(false);
-        echo 'fake';
-        $doc->output();
-        self::fail('A PDF exception must be raised.');
-    }
-
-    public function testOutputInlineValid(): void
-    {
-        $doc = $this->createDocument(false);
-        $doc->output();
-        self::assertSame(1, $doc->getPage());
-    }
-
     public function testPixels2mm(): void
     {
         $doc = new PdfDocument(unit: PdfUnit::INCH);
@@ -318,14 +258,6 @@ class PdfDocPropertiesTest extends TestCase
     {
         $doc = $this->createDocument();
         self::assertEqualsWithDelta(190.0, $doc->getRemainingWidth(), 0.01);
-    }
-
-    public function testRightMargin(): void
-    {
-        $doc = $this->createDocument();
-        self::assertEqualsWithDelta(10.0, $doc->getRightMargin(), 0.01);
-        $doc->setRightMargin(45.0);
-        self::assertEqualsWithDelta(45.0, $doc->getRightMargin(), 0.01);
     }
 
     public function testSetFontInvalid(): void
@@ -394,14 +326,6 @@ class PdfDocPropertiesTest extends TestCase
         self::assertSame($size->width, $doc->getPageHeight());
     }
 
-    public function testTextWithoutFont(): void
-    {
-        self::expectException(PdfException::class);
-        $doc = $this->createDocument(true, false);
-        $doc->text(25, 25, 'fake');
-        self::fail('A PDF exception must be raised.');
-    }
-
     public function testTitle(): void
     {
         $doc = $this->createDocument();
@@ -410,54 +334,11 @@ class PdfDocPropertiesTest extends TestCase
         self::assertSame('Title', $doc->getTitle());
     }
 
-    public function testTopMargin(): void
-    {
-        $doc = $this->createDocument();
-        self::assertEqualsWithDelta(10.0, $doc->getTopMargin(), 0.01);
-        $doc->setTopMargin(20.0);
-        self::assertSame(20.0, $doc->getTopMargin());
-    }
-
     public function testUnderline(): void
     {
         $doc = $this->createDocument();
+        $doc->setFont(PdfFontName::ARIAL, PdfFontStyle::UNDERLINE);
         $doc->cell(text: 'fake');
-        $doc->text(25, 25, '');
-        $doc->text(25, 25, 'fake');
-        $doc->write(5.0, '');
-        $doc->write(5.0, 'fake');
         self::assertSame(1, $doc->getPage());
-    }
-
-    public function testUseMargin(): void
-    {
-        $doc = $this->createDocument();
-        $oldMargin = $doc->getCellMargin();
-        $doc->useCellMargin(function () use ($doc): void {
-            self::assertSame(0.0, $doc->getCellMargin());
-        });
-        $newMargin = $doc->getCellMargin();
-        self::assertSame($oldMargin, $newMargin);
-    }
-
-    public function testWriteWithoutFont(): void
-    {
-        self::expectException(PdfException::class);
-        $doc = $this->createDocument(true, false);
-        $doc->write(5.0, 'fake');
-        self::fail('A PDF exception must be raised.');
-    }
-
-    private function createDocument(bool $addPage = true, bool $addFont = true): PdfDocument
-    {
-        $doc = new PdfDocument();
-        if ($addPage) {
-            $doc->addPage();
-        }
-        if ($addFont) {
-            $doc->setFont(PdfFontName::ARIAL, PdfFontStyle::REGULAR);
-        }
-
-        return $doc;
     }
 }

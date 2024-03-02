@@ -343,7 +343,7 @@ class PdfDocument
             return $this;
         }
         if (\str_contains($file, '/') || \str_contains($file, '\\')) {
-            throw new PdfException(\sprintf('Incorrect font definition file name: %s.', $file));
+            throw PdfException::instance('Incorrect font definition file name: %s.', $file);
         }
         $dir ??= $this->fontPath;
         if (!\str_ends_with($dir, '/') && !\str_ends_with($dir, '\\')) {
@@ -418,7 +418,7 @@ class PdfDocument
         ?PdfRotation $rotation = null
     ): self {
         if (PdfState::CLOSED === $this->state) {
-            throw new PdfException('The document is closed.');
+            throw PdfException::instance('The document is closed.');
         }
         // save context
         $fontFamily = $this->fontFamily;
@@ -557,7 +557,7 @@ class PdfDocument
         $text = $this->cleanText($text);
         if ('' !== $text) {
             if (null === $this->currentFont) {
-                throw new PdfException('No font has been set.');
+                throw PdfException::instance('No font has been set.');
             }
             $dx = match ($align) {
                 PdfTextAlignment::RIGHT => $width - $this->cellMargin - $this->getStringWidth($text),
@@ -774,7 +774,7 @@ class PdfDocument
         }
 
         if (null === $this->currentFont) {
-            throw new PdfException('No font has been set.');
+            throw PdfException::instance('No font has been set.');
         }
 
         $index = 0;
@@ -1078,14 +1078,14 @@ class PdfDocument
         string|int $link = ''
     ): self {
         if ('' === $file) {
-            throw new PdfException('Image file name is empty.');
+            throw PdfException::instance('Image file name is empty.');
         }
         if (!isset($this->images[$file])) {
             // first use of this image, get info
             if ('' === $type) {
                 $type = \pathinfo($file, \PATHINFO_EXTENSION);
                 if ('' === $type) {
-                    throw new PdfException(\sprintf('Image file has no extension and no type was specified: %s.', $file));
+                    throw PdfException::instance('Image file has no extension and no type was specified: %s.', $file);
                 }
             }
             $type = \strtolower($type);
@@ -1094,7 +1094,7 @@ class PdfDocument
                 'jpg' => $this->parseJpg($file),
                 'gif' => $this->parseGif($file),
                 'png' => $this->parsePng($file),
-                default => throw new PdfException(\sprintf('Unsupported image type: %s.', $type)),
+                default => throw PdfException::instance('Unsupported image type: %s.', $type),
             };
             $image['index'] = \count($this->images) + 1;
             $this->images[$file] = $image;
@@ -1308,7 +1308,7 @@ class PdfDocument
         bool $fill = false
     ): self {
         if (null === $this->currentFont) {
-            throw new PdfException('No font has been set.');
+            throw PdfException::instance('No font has been set.');
         }
 
         $charWidths = $this->currentFont['cw'];
@@ -1467,25 +1467,18 @@ class PdfDocument
             case PdfDestination::INLINE:
                 $this->checkOutput();
                 if (\PHP_SAPI !== 'cli') {
-                    // We send to a browser
-                    \header('Content-Type: application/pdf');
-                    \header('Content-Disposition: inline; ' . $this->httpEncode('filename', $name, $isUTF8));
-                    \header('Cache-Control: private, max-age=0, must-revalidate');
-                    \header('Pragma: public');
+                    $this->headers($name, $isUTF8, true);
                 }
                 echo $this->buffer;
                 break;
             case PdfDestination::DOWNLOAD:
                 $this->checkOutput();
-                \header('Content-Type: application/pdf');
-                \header('Content-Disposition: attachment; ' . $this->httpEncode('filename', $name, $isUTF8));
-                \header('Cache-Control: private, max-age=0, must-revalidate');
-                \header('Pragma: public');
+                $this->headers($name, $isUTF8, false);
                 echo $this->buffer;
                 break;
             case PdfDestination::FILE:
                 if (false === \file_put_contents($name, $this->buffer)) {
-                    throw new PdfException(\sprintf('Unable to create output file: %s.', $name));
+                    throw PdfException::instance('Unable to create output file: %s.', $name);
                 }
                 break;
             case PdfDestination::STRING:
@@ -1819,7 +1812,7 @@ class PdfDocument
             }
             $name = PdfFontName::tryFromFamily($family);
             if (!$name instanceof PdfFontName) {
-                throw new PdfException(\sprintf('Undefined font: %s %s.', $family, $style->value));
+                throw PdfException::instance('Undefined font: %s %s.', $family, $style->value);
             }
             if (PdfFontName::SYMBOL === $name || PdfFontName::ZAPFDINGBATS === $name) {
                 $style = PdfFontStyle::REGULAR;
@@ -2126,7 +2119,7 @@ class PdfDocument
             return $this;
         }
         if (null === $this->currentFont) {
-            throw new PdfException('No font has been set.');
+            throw PdfException::instance('No font has been set.');
         }
         $output = \sprintf(
             'BT %.2F %.2F Td (%s) Tj ET',
@@ -2197,7 +2190,7 @@ class PdfDocument
             return $this;
         }
         if (null === $this->currentFont) {
-            throw new PdfException('No font has been set.');
+            throw PdfException::instance('No font has been set.');
         }
 
         $len = \strlen($text);
@@ -2377,7 +2370,7 @@ class PdfDocument
     protected function checkOutput(): void
     {
         if (\PHP_SAPI !== 'cli' && \headers_sent($file, $line)) {
-            throw new PdfException(\sprintf('Some data has already been output, can not send PDF file (output started at %s:%s).', $file, $line));
+            throw PdfException::instance('Some data has already been output, can not send PDF file (output started at %s:%s).', $file, $line);
         }
         if (false !== \ob_get_length()) {
             // the output buffer is not empty
@@ -2386,7 +2379,7 @@ class PdfDocument
                 // it contains only a UTF-8 BOM and/or whitespace, let's clean it
                 \ob_clean();
             } else {
-                throw new PdfException('Some data has already been output, can not send PDF file.');
+                throw PdfException::instance('Some data has already been output, can not send PDF file.');
             }
         }
     }
@@ -2421,7 +2414,7 @@ class PdfDocument
     protected function doUnderline(float $x, float $y, string $str): string
     {
         if (null === $this->currentFont) {
-            throw new PdfException('No font has been set.');
+            throw PdfException::instance('No font has been set.');
         }
 
         // underline text
@@ -2584,6 +2577,24 @@ class PdfDocument
     }
 
     /**
+     * Send raw HTTP headers.
+     *
+     * @param string $name   the name of the file
+     * @param bool   $isUTF8 indicates if the name is encoded in ISO-8859-1 (false) or UTF-8 (true)
+     * @param bool   $inline <code>true</code> for inline disposition, <code>false</code> for attachement disposition
+     */
+    protected function headers(string $name, bool $isUTF8, bool $inline): void
+    {
+        $disposition = $inline ? 'inline' : 'attachment';
+        $encoded = $this->httpEncode('filename', $name, $isUTF8);
+
+        \header('Pragma: public');
+        \header('Content-Type: application/pdf');
+        \header('Cache-Control: private, max-age=0, must-revalidate');
+        \header(\sprintf('Content-Disposition: %s; %s', $disposition, $encoded));
+    }
+
+    /**
      * Encode the given name/value pair parameter.
      */
     protected function httpEncode(string $name, string $value, bool $isUTF8): string
@@ -2645,7 +2656,7 @@ class PdfDocument
     {
         include $path;
         if (!isset($name)) {
-            throw new PdfException(\sprintf('Could not include font definition file: %s.', $path));
+            throw PdfException::instance('Could not include font definition file: %s.', $path);
         }
         if (isset($enc)) {
             $enc = \strtolower((string) $enc);
@@ -2664,11 +2675,11 @@ class PdfDocument
     {
         switch ($this->state) {
             case PdfState::NO_PAGE:
-                throw new PdfException('No page has been added yet.');
+                throw PdfException::instance('No page has been added yet.');
             case PdfState::END_PAGE:
-                throw new PdfException('Invalid call (end page).');
+                throw PdfException::instance('Invalid call (end page).');
             case PdfState::CLOSED:
-                throw new PdfException('The document is closed.');
+                throw PdfException::instance('The document is closed.');
             case PdfState::PAGE_STARTED:
                 $this->pages[$this->page] .= $output . self::NEW_LINE;
                 break;
@@ -2754,14 +2765,14 @@ class PdfDocument
     protected function parseGif(string $file): array
     {
         if (!\function_exists('imagepng')) {
-            throw new PdfException('GD extension is required for GIF support.');
+            throw PdfException::instance('GD extension is required for GIF support.');
         }
         if (!\function_exists('imagecreatefromgif')) {
-            throw new PdfException('GD has no GIF read support.');
+            throw PdfException::instance('GD has no GIF read support.');
         }
         $image = \imagecreatefromgif($file);
         if (!$image instanceof \GdImage) {
-            throw new PdfException(\sprintf('Missing or incorrect image file: %s.', $file));
+            throw PdfException::instance('Missing or incorrect image file: %s.', $file);
         }
         \imageinterlace($image, false);
         \ob_start();
@@ -2770,7 +2781,7 @@ class PdfDocument
         \imagedestroy($image);
         $stream = \fopen('php://temp', 'rb+');
         if (!\is_resource($stream)) {
-            throw new PdfException('Unable to create memory stream.');
+            throw PdfException::instance('Unable to create memory stream.');
         }
 
         try {
@@ -2793,14 +2804,14 @@ class PdfDocument
         /* @phpstan-var array{0: int, 1: int, 2: int, channels?: int, bits?: int}|false $size */
         $size = \getimagesize($file);
         if (!\is_array($size)) {
-            throw new PdfException(\sprintf('Missing or incorrect image file: %s.', $file));
+            throw PdfException::instance('Missing or incorrect image file: %s.', $file);
         }
         if (\IMG_JPG !== $size[2]) {
-            throw new PdfException(\sprintf('The file is not a JPEG image: %s.', $file));
+            throw PdfException::instance('The file is not a JPEG image: %s.', $file);
         }
         $data = \file_get_contents($file);
         if (false === $data) {
-            throw new PdfException(\sprintf('Unable get image file content: %s.', $file));
+            throw PdfException::instance('Unable get image file content: %s.', $file);
         }
         /** @phpstan-var int<3,5> $channels */
         $channels = $size['channels'] ?? 3;
@@ -2833,7 +2844,7 @@ class PdfDocument
     {
         $stream = \fopen($file, 'r');
         if (!\is_resource($stream)) {
-            throw new PdfException(\sprintf('Can not open image file: %s.', $file));
+            throw PdfException::instance('Can not open image file: %s.', $file);
         }
 
         try {
@@ -2860,38 +2871,38 @@ class PdfDocument
                 . \chr(0x0D) . \chr(0x0A) . \chr(0x1A) . \chr(0x0A);
         }
         if ($this->readStream($stream, \strlen($signature)) !== $signature) {
-            throw new PdfException(\sprintf('Incorrect PNG header signature: %s.', $file));
+            throw PdfException::instance('Incorrect PNG header signature: %s.', $file);
         }
 
         // read header chunk
         $this->readStream($stream, 4);
         if ('IHDR' !== $this->readStream($stream, 4)) {
-            throw new PdfException(\sprintf('Incorrect PNG header chunk: %s.', $file));
+            throw PdfException::instance('Incorrect PNG header chunk: %s.', $file);
         }
         $width = $this->readInt($stream);
         $height = $this->readInt($stream);
         $bitsPerComponent = $this->readByte($stream);
         if ($bitsPerComponent > 8) {
-            throw new PdfException(\sprintf('Bit depth %d not supported: %s.', $bitsPerComponent, $file));
+            throw PdfException::instance('Bit depth %d not supported: %s.', $bitsPerComponent, $file);
         }
         $colorType = $this->readByte($stream);
         $colorSpace = match ($colorType) {
             0, 4 => 'DeviceGray',
             2, 6 => 'DeviceRGB',
             3 => 'Indexed',
-            default => throw new PdfException(\sprintf('Unknown color type %d: %s.', $colorType, $file)),
+            default => throw PdfException::instance('Unknown color type %d: %s.', $colorType, $file),
         };
         $value = $this->readByte($stream);
         if (0 !== $value) {
-            throw new PdfException(\sprintf('Unknown compression method %d: %s.', $value, $file));
+            throw PdfException::instance('Unknown compression method %d: %s.', $value, $file);
         }
         $value = $this->readByte($stream);
         if (0 !== $value) {
-            throw new PdfException(\sprintf('Unknown filter method %d: %s.', $value, $file));
+            throw PdfException::instance('Unknown filter method %d: %s.', $value, $file);
         }
         $value = $this->readByte($stream);
         if (0 !== $value) {
-            throw new PdfException(\sprintf('Interlacing %d not supported: %s.', $value, $file));
+            throw PdfException::instance('Interlacing %d not supported: %s.', $value, $file);
         }
         $this->readStream($stream, 4);
         $decodeParams = \sprintf(
@@ -2947,7 +2958,7 @@ class PdfDocument
         } while ($length);
 
         if ('Indexed' === $colorSpace && '' === $palette) {
-            throw new PdfException(\sprintf('Missing palette: %s.', $file));
+            throw PdfException::instance('Missing palette: %s.', $file);
         }
         $image = [
             'index' => 0,
@@ -2964,7 +2975,7 @@ class PdfDocument
         if ($colorType >= 4) {
             // extract alpha channel
             if (!\function_exists('gzuncompress')) {
-                throw new PdfException(\sprintf('Zlib not available, can not handle alpha channel: %s.', $file));
+                throw PdfException::instance('Zlib not available, can not handle alpha channel: %s.', $file);
             }
             /** @phpstan-var non-empty-string $data */
             $data = \gzuncompress($data);
@@ -3079,7 +3090,7 @@ class PdfDocument
             $this->fontFiles[$file]['number'] = $this->objectNumber;
             $content = \file_get_contents($file);
             if (false === $content) {
-                throw new PdfException(\sprintf('Font file not found: %s.', $file));
+                throw PdfException::instance('Font file not found: %s.', $file);
             }
             $compressed = \str_ends_with($file, '.z');
             if (!$compressed && isset($info['length2'])) {
@@ -3189,7 +3200,7 @@ class PdfDocument
                 // allow for additional types
                 $method = 'put' . \ucfirst(\strtolower($type));
                 if (!\method_exists($this, $method)) {
-                    throw new PdfException(\sprintf('Unsupported font type: %s.', $type));
+                    throw PdfException::instance('Unsupported font type: %s.', $type);
                 }
                 // @phpstan-ignore-next-line
                 $this->$method($font);
@@ -3542,13 +3553,13 @@ class PdfDocument
         while ($len > 0 && !\feof($stream)) {
             $str = \fread($stream, $len);
             if (!\is_string($str)) {
-                throw new PdfException('Error while reading stream.');
+                throw PdfException::instance('Error while reading stream.');
             }
             $len -= \strlen($str);
             $result .= $str;
         }
         if ($len > 0) {
-            throw new PdfException('Unexpected end of stream.');
+            throw PdfException::instance('Unexpected end of stream.');
         }
 
         return $result;

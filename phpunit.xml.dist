@@ -20,9 +20,6 @@
         <include>
             <directory suffix=".php">./src</directory>
         </include>
-        <exclude>
-            <directory suffix=".php">./src/font</directory>
-        </exclude>
     </source>
 
     <coverage />

@@ -2,9 +2,13 @@
 
 ## [Unreleased]
 
-- Added `outLineWidth()` function to `PdfDocument` class.
+- Modified the `PdfDocument` class:
+  - Added `outLineWidth()` function.
+  - Added `headers()` function.
 - Added tests for `PDfDocument` properties.
 - Renamed tests classes.
+- Added `instance()` function to `PdfException` class.
+- Added `font` directory to tests.
 
 ## [1.8.4.6 - 2024-03-01]
 
