@@ -8,7 +8,7 @@ parameters:
         - src/font
         - tests/fonts
         - tests/FPDF.php
-        - tests/resources/font_test.php
+        - tests/resources/*.php
         - vendor
 
     reportUnmatchedIgnoredErrors: true
