@@ -14,6 +14,7 @@ namespace fpdf;
 
 use PHPUnit\Framework\TestCase;
 
+#[\PHPUnit\Framework\Attributes\CoversClass(PdfException::class)]
 class PdfExceptionTest extends TestCase
 {
     public function testFormat(): void
