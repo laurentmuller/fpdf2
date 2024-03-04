@@ -27,6 +27,11 @@ Or you can include the following in your `composer.json` file:
 
 ## Actions
 
-[![CI](https://github.com/laurentmuller/fpdf2/actions/workflows/ci.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/ci.yaml)
+[![PHP-CS-Fixer](https://github.com/laurentmuller/fpdf2/actions/workflows/php-cs-fixer.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/php-cs-fixer.yaml)
+[![PHPStan](https://github.com/laurentmuller/fpdf2/actions/workflows/php_stan.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/php_stan.yaml)
+[![PHPUnit](https://github.com/laurentmuller/fpdf2/actions/workflows/php_unit.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/php_unit.yaml)
+[![Psalm](https://github.com/laurentmuller/fpdf2/actions/workflows/pslam.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/pslam.yaml)
+[![Rector](https://github.com/laurentmuller/fpdf2/actions/workflows/rector.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/rector.yaml)
+[![Lint](https://github.com/laurentmuller/fpdf2/actions/workflows/lint.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/lint.yaml)
 [![StyleCI](https://github.styleci.io/repos/752676081/shield?branch=main)](https://github.styleci.io/repos/752676081?branch=main)
 [![codecov](https://codecov.io/gh/laurentmuller/fpdf2/graph/badge.svg?token=16I8LCYRRS)](https://codecov.io/gh/laurentmuller/fpdf2)
