@@ -66,20 +66,20 @@
         }
     },
     "scripts": {
-        "fixer-fix": "vendor/bin/php-cs-fixer fix --diff",
-        "fixer": "vendor/bin/php-cs-fixer fix --diff --dry-run",
-        "psalm": "vendor/bin/psalm --config psalm.xml",
-        "phpstan": "vendor/bin/phpstan analyse --configuration phpstan.neon --memory-limit 2G",
-        "rector": "vendor/bin/rector process --dry-run --config rector.php",
-        "tests": "vendor/bin/phpunit",
-        "markdown": "markdownlint-cli2 *.md",
-        "all": [
-            "@fixer",
-            "@psalm",
-            "@phpstan",
-            "@rector",
-            "@tests",
-            "@markdown"
+        "app-fixer-fix": "vendor/bin/php-cs-fixer fix --diff",
+        "app-fixer": "vendor/bin/php-cs-fixer fix --diff --dry-run",
+        "app-psalm": "vendor/bin/psalm --config psalm.xml",
+        "app-phpstan": "vendor/bin/phpstan analyse --configuration phpstan.neon --memory-limit 2G",
+        "app-rector": "vendor/bin/rector process --dry-run --config rector.php",
+        "app-tests": "vendor/bin/phpunit",
+        "app-markdown": "markdownlint-cli2 *.md",
+        "app-all": [
+            "@app-fixer",
+            "@app-psalm",
+            "@app-phpstan",
+            "@app-rector",
+            "@app-tests",
+            "@app-markdown"
         ]
     }
 }

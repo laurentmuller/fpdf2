@@ -10,6 +10,7 @@
 - Renamed tests classes.
 - Added `instance()` function to `PdfException` class.
 - Added `font` directory to tests.
+- Split CI actions.
 
 ## [1.8.4.6 - 2024-03-01]
 
