@@ -17,6 +17,30 @@ use PHPUnit\Framework\TestCase;
 #[\PHPUnit\Framework\Attributes\CoversClass(PdfPngParser::class)]
 class PdfPngParserTest extends TestCase
 {
+    public function testColorType0(): void
+    {
+        $parent = new PdfDocument();
+        $parser = new PdfPngParser();
+        $file = __DIR__ . '/images/image_color_type_0.png';
+        $image = $parser->parse($parent, $file);
+        self::assertArrayHasKey('width', $image);
+        self::assertArrayHasKey('height', $image);
+        self::assertSame(124, $image['width']);
+        self::assertSame(147, $image['height']);
+    }
+
+    public function testColorType2(): void
+    {
+        $parent = new PdfDocument();
+        $parser = new PdfPngParser();
+        $file = __DIR__ . '/images/image_color_type_2.png';
+        $image = $parser->parse($parent, $file);
+        self::assertArrayHasKey('width', $image);
+        self::assertArrayHasKey('height', $image);
+        self::assertSame(124, $image['width']);
+        self::assertSame(147, $image['height']);
+    }
+
     public function testEndOfStream(): void
     {
         self::expectException(PdfException::class);
@@ -57,6 +81,15 @@ class PdfPngParserTest extends TestCase
         $parent = new PdfDocument();
         $parser = new PdfPngParser();
         $file = __DIR__ . '/images/invalid_color_type.png';
+        $parser->parse($parent, $file);
+    }
+
+    public function testInvalidColorTypeWithPalette(): void
+    {
+        self::expectException(PdfException::class);
+        $parent = new PdfDocument();
+        $parser = new PdfPngParser();
+        $file = __DIR__ . '/images/invalid_color_type_with_palette.png';
         $parser->parse($parent, $file);
     }
 
@@ -102,6 +135,23 @@ class PdfPngParserTest extends TestCase
         $parent = new PdfDocument();
         $parser = new PdfPngParser();
         $file = __DIR__ . '/images/invalid_signature.png';
+        $parser->parse($parent, $file);
+    }
+
+    public function testStreamClosed(): void
+    {
+        self::expectException(PdfException::class);
+        $parent = new PdfDocument();
+        $parser = new class() extends PdfPngParser {
+            public function parse(PdfDocument $parent, string $file): array
+            {
+                /** @phpstan-var resource $stream */
+                $stream = null;
+
+                return $this->parseStream($parent, $stream, $file);
+            }
+        };
+        $file = __DIR__ . '/images/image.png';
         $parser->parse($parent, $file);
     }
 

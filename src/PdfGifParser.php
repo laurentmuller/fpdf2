@@ -25,15 +25,15 @@ class PdfGifParser extends PdfPngParser
         if (!$image instanceof \GdImage) {
             throw PdfException::instance('Missing or incorrect image file: %s.', $file);
         }
-        $data = $this->toPngImage($image);
-        \imagedestroy($image);
 
+        $data = $this->toPngImage($image);
         $stream = $this->openStream($data);
 
         try {
             return $this->parseStream($parent, $stream, $file);
         } finally {
-            \fclose($stream);
+            $this->closeStream($stream);
+            \imagedestroy($image);
         }
     }
 

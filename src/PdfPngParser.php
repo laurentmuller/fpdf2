@@ -19,19 +19,28 @@ namespace fpdf;
  */
 class PdfPngParser implements PdfImageParserInterface
 {
+    private string $signature = '';
+
     /**
      * @phpstan-return ImageType
      */
     public function parse(PdfDocument $parent, string $file): array
     {
-        $stream = \fopen($file, 'r');
-        if (!\is_resource($stream)) {
-            throw PdfException::instance('Can not open image file: %s.', $file);
-        }
+        $stream = $this->openStream($file);
 
         try {
             return $this->parseStream($parent, $stream, $file);
         } finally {
+            $this->closeStream($stream);
+        }
+    }
+
+    /**
+     * Close the given stream.
+     */
+    protected function closeStream(mixed $stream): void
+    {
+        if (\is_resource($stream)) {
             \fclose($stream);
         }
     }
@@ -49,6 +58,7 @@ class PdfPngParser implements PdfImageParserInterface
     {
         // check header signature
         $this->checkSignature($stream, $file);
+
         // read header chunk
         $this->checkHeader($stream, $file);
 
@@ -203,13 +213,11 @@ class PdfPngParser implements PdfImageParserInterface
      */
     private function checkSignature(mixed $stream, string $file): void
     {
-        /** @phpstan-var string $signature */
-        static $signature = '';
-        if ('' === $signature) {
-            $signature = \chr(0x89) . \chr(0x50) . \chr(0x4E) . \chr(0x47)
+        if ('' === $this->signature) {
+            $this->signature = \chr(0x89) . \chr(0x50) . \chr(0x4E) . \chr(0x47)
                 . \chr(0x0D) . \chr(0x0A) . \chr(0x1A) . \chr(0x0A);
         }
-        if ($this->readStream($stream, \strlen($signature)) !== $signature) {
+        if ($this->readStream($stream, \strlen($this->signature)) !== $this->signature) {
             throw PdfException::instance('Incorrect PNG header signature: %s.', $file);
         }
     }
@@ -219,32 +227,20 @@ class PdfPngParser implements PdfImageParserInterface
      */
     private function extractAlphaChannel(int $width, int $height, int $colorType, string $data): array
     {
-        /** @phpstan-var non-empty-string $data */
-        $data = \gzuncompress($data);
+        $data = (string) \gzuncompress($data);
+        $len = 4 === $colorType ? 2 * $width : 4 * $width;
+        $pattern1 = 4 === $colorType ? '/(.)./s' : '/(.{3})./s';
+        $pattern2 = 4 === $colorType ? '/.(.)/s' : '/.{3}(.)/s';
+
         $color = '';
         $alpha = '';
-        if (4 === $colorType) {
-            // gray image
-            $len = 2 * $width;
-            for ($i = 0; $i < $height; ++$i) {
-                $pos = (1 + $len) * $i;
-                $color .= $data[$pos];
-                $alpha .= $data[$pos];
-                $line = \substr($data, $pos + 1, $len);
-                $color .= \preg_replace('/(.)./s', '$1', $line);
-                $alpha .= \preg_replace('/.(.)/s', '$1', $line);
-            }
-        } else {
-            // RGB image
-            $len = 4 * $width;
-            for ($i = 0; $i < $height; ++$i) {
-                $pos = (1 + $len) * $i;
-                $color .= $data[$pos];
-                $alpha .= $data[$pos];
-                $line = \substr($data, $pos + 1, $len);
-                $color .= \preg_replace('/(.{3})./s', '$1', $line);
-                $alpha .= \preg_replace('/.{3}(.)/s', '$1', $line);
-            }
+        for ($i = 0; $i < $height; ++$i) {
+            $pos = (1 + $len) * $i;
+            $color .= $data[$pos];
+            $alpha .= $data[$pos];
+            $line = \substr($data, $pos + 1, $len);
+            $color .= \preg_replace($pattern1, '$1', $line);
+            $alpha .= \preg_replace($pattern2, '$1', $line);
         }
         $data = (string) \gzcompress($color);
         $mask = (string) \gzcompress($alpha);
@@ -304,6 +300,19 @@ class PdfPngParser implements PdfImageParserInterface
     }
 
     /**
+     * @return resource
+     */
+    private function openStream(string $file)
+    {
+        $stream = \fopen($file, 'r');
+        if (!\is_resource($stream)) {
+            throw PdfException::instance('Can not open image file: %s.', $file);
+        }
+
+        return $stream;
+    }
+
+    /**
      * Read a single character and convert to a value between 0 and 255.
      *
      * @param resource $stream the stream to read value from
@@ -340,12 +349,12 @@ class PdfPngParser implements PdfImageParserInterface
      * @param resource $stream the stream to read string from
      * @param int      $len    the number of bytes read
      *
-     * @throws PdfException if the stream is closed or if the end of stream is reached
+     * @throws PdfException if the end of stream is reached
      *
      * @phpstan-param resource|closed-resource $stream
      * @phpstan-param int<0, max> $len
      */
-    private function readStream(mixed $stream, int $len): string
+    private function readStream($stream, int $len): string
     {
         // @phpstan-ignore-next-line
         if (!\is_resource($stream)) {
