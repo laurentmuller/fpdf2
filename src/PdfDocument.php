@@ -856,6 +856,14 @@ class PdfDocument
     }
 
     /**
+     * Gets the PDF version.
+     */
+    public function getPdfVersion(): string
+    {
+        return $this->pdfVersion;
+    }
+
+    /**
      * Gets the current X and Y position in user unit.
      */
     public function getPosition(): PdfPoint
@@ -1089,13 +1097,11 @@ class PdfDocument
                 }
             }
             $type = \strtolower($type);
-            $image = match ($type) {
-                'jpeg',
-                'jpg' => $this->parseJpg($file),
-                'gif' => $this->parseGif($file),
-                'png' => $this->parsePng($file),
-                default => throw PdfException::instance('Unsupported image type: %s.', $type),
-            };
+            $parser = $this->getImageParser($type);
+            if (!$parser instanceof PdfImageParserInterface) {
+                throw PdfException::instance('Unsupported image type: %s.', $type);
+            }
+            $image = $parser->parse($this, $file);
             $image['index'] = \count($this->images) + 1;
             $this->images[$file] = $image;
         } else {
@@ -2065,6 +2071,16 @@ class PdfDocument
     }
 
     /**
+     * Sets a value indicating if the alpha channel is used.
+     */
+    public function setWithAlpha(bool $withAlpha): self
+    {
+        $this->withAlpha = $withAlpha;
+
+        return $this;
+    }
+
+    /**
      * Defines the abscissa of the current position.
      *
      * @param float $x the value of the abscissa. If the passed value is negative, it is relative to the right of the
@@ -2561,6 +2577,24 @@ class PdfDocument
     }
 
     /**
+     * Gets the image parser for the given type.
+     *
+     * @param string $type the image type (file extension)
+     *
+     * @return ?PdfImageParserInterface the image parser, if any; <code>null</code> otherwise
+     */
+    protected function getImageParser(string $type): ?PdfImageParserInterface
+    {
+        return match ($type) {
+            'jpeg',
+            'jpg' => new PdfJpgParser(),
+            'gif' => new PdfGifParser(),
+            'png' => new PdfPngParser(),
+            default => null,
+        };
+    }
+
+    /**
      * Gets the buffer offset.
      */
     protected function getOffset(): int
@@ -2763,261 +2797,6 @@ class PdfDocument
         $suffix = $upper ? 'RG' : 'rg';
 
         return \sprintf('%.3F %.3F %.3F %s', (float) $r / 255.0, (float) $g / 255.0, (float) $b / 255.0, $suffix);
-    }
-
-    /**
-     * Parse the given GIF image.
-     *
-     * @phpstan-return ImageType
-     */
-    protected function parseGif(string $file): array
-    {
-        if (!\function_exists('imagepng')) {
-            throw PdfException::instance('GD extension is required for GIF support.');
-        }
-        if (!\function_exists('imagecreatefromgif')) {
-            throw PdfException::instance('GD has no GIF read support.');
-        }
-        $image = \imagecreatefromgif($file);
-        if (!$image instanceof \GdImage) {
-            throw PdfException::instance('Missing or incorrect image file: %s.', $file);
-        }
-        \imageinterlace($image, false);
-        \ob_start();
-        \imagepng($image);
-        $data = (string) \ob_get_clean();
-        \imagedestroy($image);
-        $stream = \fopen('php://temp', 'rb+');
-        if (!\is_resource($stream)) {
-            throw PdfException::instance('Unable to create memory stream.');
-        }
-
-        try {
-            \fwrite($stream, $data);
-            \rewind($stream);
-
-            return $this->parsePngStream($stream, $file);
-        } finally {
-            \fclose($stream);
-        }
-    }
-
-    /**
-     * Parse the given JPG image.
-     *
-     * @phpstan-return ImageType
-     */
-    protected function parseJpg(string $file): array
-    {
-        /* @phpstan-var array{0: int, 1: int, 2: int, channels?: int, bits?: int}|false $size */
-        $size = \getimagesize($file);
-        if (!\is_array($size)) {
-            throw PdfException::instance('Missing or incorrect image file: %s.', $file);
-        }
-        if (\IMG_JPG !== $size[2]) {
-            throw PdfException::instance('The file is not a JPEG image: %s.', $file);
-        }
-        $data = \file_get_contents($file);
-        if (false === $data) {
-            throw PdfException::instance('Unable get image file content: %s.', $file);
-        }
-        /** @phpstan-var int<3,5> $channels */
-        $channels = $size['channels'] ?? 3;
-        $color_space = match ($channels) {
-            3 => 'DeviceRGB',
-            4 => 'DeviceCMYK',
-            default => 'DeviceGray'
-        };
-        $bitsPerComponent = $size['bits'] ?? 8;
-
-        return [
-            'index' => 0,
-            'number' => 0,
-            'width' => $size[0],
-            'height' => $size[1],
-            'color_space' => $color_space,
-            'bits_per_component' => $bitsPerComponent,
-            'filter' => 'DCTDecode',
-            'data' => $data,
-            'palette' => '',
-        ];
-    }
-
-    /**
-     * Parse the given PNG image.
-     *
-     * @phpstan-return ImageType
-     */
-    protected function parsePng(string $file): array
-    {
-        $stream = \fopen($file, 'r');
-        if (!\is_resource($stream)) {
-            throw PdfException::instance('Can not open image file: %s.', $file);
-        }
-
-        try {
-            return $this->parsePngStream($stream, $file);
-        } finally {
-            \fclose($stream);
-        }
-    }
-
-    /**
-     * Parse the given PNG stream.
-     *
-     * @param resource $stream
-     *
-     * @phpstan-return ImageType
-     */
-    protected function parsePngStream($stream, string $file): array
-    {
-        // check header signature
-        /** @phpstan-var string|null $signature */
-        static $signature = null;
-        if (null === $signature) {
-            $signature = \chr(0x89) . \chr(0x50) . \chr(0x4E) . \chr(0x47)
-                . \chr(0x0D) . \chr(0x0A) . \chr(0x1A) . \chr(0x0A);
-        }
-        if ($this->readStream($stream, \strlen($signature)) !== $signature) {
-            throw PdfException::instance('Incorrect PNG header signature: %s.', $file);
-        }
-
-        // read header chunk
-        $this->readStream($stream, 4);
-        if ('IHDR' !== $this->readStream($stream, 4)) {
-            throw PdfException::instance('Incorrect PNG header chunk (IHDR): %s.', $file);
-        }
-        $width = $this->readInt($stream);
-        $height = $this->readInt($stream);
-        $bitsPerComponent = $this->readByte($stream);
-        if ($bitsPerComponent > 8) {
-            throw PdfException::instance('Bit depth %d not supported: %s.', $bitsPerComponent, $file);
-        }
-        $colorType = $this->readByte($stream);
-        $colorSpace = match ($colorType) {
-            0, 4 => 'DeviceGray',
-            2, 6 => 'DeviceRGB',
-            3 => 'Indexed',
-            default => throw PdfException::instance('Color type %d not supported: %s.', $colorType, $file),
-        };
-        $value = $this->readByte($stream);
-        if (0 !== $value) {
-            throw PdfException::instance('Compression method %d not supported: %s.', $value, $file);
-        }
-        $value = $this->readByte($stream);
-        if (0 !== $value) {
-            throw PdfException::instance('Filter method %d not supported: %s.', $value, $file);
-        }
-        $value = $this->readByte($stream);
-        if (0 !== $value) {
-            throw PdfException::instance('Interlacing %d not supported: %s.', $value, $file);
-        }
-        $this->readStream($stream, 4);
-        $decodeParams = \sprintf(
-            '/Predictor 15 /Colors %d /BitsPerComponent %d /Columns %d',
-            'DeviceRGB' === $colorSpace ? 3 : 1,
-            $bitsPerComponent,
-            $width
-        );
-
-        // scan chunks looking for the palette, transparency and image data
-        $data = '';
-        $palette = '';
-        $transparencies = '';
-        do {
-            $length = $this->readInt($stream);
-            /** @phpstan-var 'PLTE'|'tRNS'|'IDAT'|'IEND' $type */
-            $type = $this->readStream($stream, 4);
-            switch ($type) {
-                case 'PLTE': // palette
-                    $palette = $this->readStream($stream, $length);
-                    $this->readStream($stream, 4);
-                    break;
-                case 'tRNS': // transparency
-                    $transparency = $this->readStream($stream, $length);
-                    switch ($colorType) {
-                        case 0:
-                            $transparencies = [\ord(\substr($transparency, 1, 1))];
-                            break;
-                        case 2:
-                            $transparencies = [
-                                \ord(\substr($transparency, 1, 1)),
-                                \ord(\substr($transparency, 3, 1)),
-                                \ord(\substr($transparency, 5, 1)),
-                            ];
-                            break;
-                        default:
-                            $pos = \strpos($transparency, \chr(0));
-                            if (false !== $pos) {
-                                $transparencies = [$pos];
-                            }
-                            break;
-                    }
-                    $this->readStream($stream, 4);
-                    break;
-                case 'IDAT': // image data
-                    $data .= $this->readStream($stream, $length);
-                    $this->readStream($stream, 4);
-                    break;
-                default: // skip
-                    $this->readStream($stream, $length + 4);
-                    break;
-            }
-        } while ($length);
-
-        if ('Indexed' === $colorSpace && '' === $palette) {
-            throw PdfException::instance('Missing palette: %s.', $file);
-        }
-        $image = [
-            'index' => 0,
-            'number' => 0,
-            'width' => $width,
-            'height' => $height,
-            'color_space' => $colorSpace,
-            'bits_per_component' => $bitsPerComponent,
-            'filter' => 'FlateDecode',
-            'decode_parms' => $decodeParams,
-            'palette' => $palette,
-            'transparencies' => $transparencies,
-        ];
-        if ($colorType >= 4) {
-            // extract alpha channel
-            /** @phpstan-var non-empty-string $data */
-            $data = \gzuncompress($data);
-            $color = '';
-            $alpha = '';
-            if (4 === $colorType) {
-                // gray image
-                $len = 2 * $width;
-                for ($i = 0; $i < $height; ++$i) {
-                    $pos = (1 + $len) * $i;
-                    $color .= $data[$pos];
-                    $alpha .= $data[$pos];
-                    $line = \substr($data, $pos + 1, $len);
-                    $color .= \preg_replace('/(.)./s', '$1', $line);
-                    $alpha .= \preg_replace('/.(.)/s', '$1', $line);
-                }
-            } else {
-                // RGB image
-                $len = 4 * $width;
-                for ($i = 0; $i < $height; ++$i) {
-                    $pos = (1 + $len) * $i;
-                    $color .= $data[$pos];
-                    $alpha .= $data[$pos];
-                    $line = \substr($data, $pos + 1, $len);
-                    $color .= \preg_replace('/(.{3})./s', '$1', $line);
-                    $alpha .= \preg_replace('/.{3}(.)/s', '$1', $line);
-                }
-            }
-            unset($data);
-            $data = (string) \gzcompress($color);
-            $image['soft_mask'] = (string) \gzcompress($alpha);
-            $this->updateVersion('1.4');
-            $this->withAlpha = true;
-        }
-        $image['data'] = $data;
-
-        return $image;
     }
 
     /**
@@ -3519,56 +3298,6 @@ class PdfDocument
         $this->putf('/Size %d', $this->objectNumber + 1);
         $this->putf('/Root %d 0 R', $this->objectNumber);
         $this->putf('/Info %d 0 R', $this->objectNumber - 1);
-    }
-
-    /**
-     * Read a single character and convert to a value between 0 and 255.
-     *
-     * @param resource $stream the stream to read value from
-     *
-     * @phpstan-return int<0, 255>
-     */
-    protected function readByte($stream): int
-    {
-        return \ord($this->readStream($stream, 1));
-    }
-
-    /**
-     * Read a 4-byte integer from the given stream.
-     *
-     * @param resource $stream the stream to read integer from
-     *
-     * @phpstan-return int<0, max>
-     */
-    protected function readInt($stream): int
-    {
-        /** @phpstan-var array{i: int<0, max>} $unpack */
-        $unpack = \unpack('Ni', $this->readStream($stream, 4));
-
-        return $unpack['i'];
-    }
-
-    /**
-     * Read a string from the given stream.
-     *
-     * @param resource $stream the stream to read string from
-     * @param int      $len    the number of bytes read
-     *
-     * @phpstan-param resource|closed-resource $stream
-     * @phpstan-param int<0, max> $len
-     */
-    protected function readStream(mixed $stream, int $len): string
-    {
-        // @phpstan-ignore-next-line
-        if (!\is_resource($stream)) {
-            throw PdfException::instance('The stream is closed.');
-        }
-        $result = \fread($stream, $len);
-        if (!\is_string($result) || $len !== \strlen($result)) {
-            throw PdfException::instance('Unexpected end of stream.');
-        }
-
-        return $result;
     }
 
     /**
