@@ -57,7 +57,7 @@ namespace fpdf;
  *     decode_parms?: string,
  *     soft_mask?: string,
  *     palette: string,
- *     transparencies?: int[]|string}
+ *     transparencies?: int[]}
  * @phpstan-type PageLinkType = array{
  *     0: float,
  *     1: float,
@@ -3032,7 +3032,7 @@ class PdfDocument
         if (isset($image['decode_parms'])) {
             $this->putf('/DecodeParms <<%s>>', $image['decode_parms']);
         }
-        if (isset($image['transparencies']) && \is_array($image['transparencies'])) {
+        if (isset($image['transparencies']) && [] !== $image['transparencies']) {
             $transparencies = \array_reduce(
                 $image['transparencies'],
                 fn (string $carry, int $value): string => $carry . \sprintf('%1$d %1$d ', $value),

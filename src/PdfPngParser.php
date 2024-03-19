@@ -91,7 +91,7 @@ class PdfPngParser implements PdfImageParserInterface
         // scan chunks looking for the palette, transparency and image data
         $data = '';
         $palette = '';
-        $transparencies = '';
+        $transparencies = [];
         do {
             $length = $this->readInt($stream);
             /** @phpstan-var 'PLTE'|'tRNS'|'IDAT'|'IEND' $type */
@@ -227,13 +227,14 @@ class PdfPngParser implements PdfImageParserInterface
      */
     private function extractAlphaChannel(int $width, int $height, int $colorType, string $data): array
     {
-        $data = (string) \gzuncompress($data);
-        $len = 4 === $colorType ? 2 * $width : 4 * $width;
-        $pattern1 = 4 === $colorType ? '/(.)./s' : '/(.{3})./s';
-        $pattern2 = 4 === $colorType ? '/.(.)/s' : '/.{3}(.)/s';
+        $isAlpha = 4 === $colorType;
+        $len = $isAlpha ? 2 * $width : 4 * $width;
+        $pattern1 = $isAlpha ? '/(.)./s' : '/(.{3})./s';
+        $pattern2 = $isAlpha ? '/.(.)/s' : '/.{3}(.)/s';
 
         $color = '';
         $alpha = '';
+        $data = (string) \gzuncompress($data);
         for ($i = 0; $i < $height; ++$i) {
             $pos = (1 + $len) * $i;
             $color .= $data[$pos];

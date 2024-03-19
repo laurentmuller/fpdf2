@@ -31,6 +31,15 @@ class PdfDocWriteTest extends AbstractPdfDocTestCase
         self::assertSame(1, $doc->getPage());
     }
 
+    public function testMultiLineWithX(): void
+    {
+        $doc = $this->createDocument();
+        $text = \str_repeat('Thisisaverylongtexttouseformultilines', 20);
+        $doc->setX(100);
+        $doc->write(5.0, $text);
+        self::assertSame(1, $doc->getPage());
+    }
+
     public function testUnderline(): void
     {
         $doc = $this->createDocument();

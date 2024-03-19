@@ -1,9 +1,10 @@
 # Change log
 
-## [Unreleased]
+## [1.8.4.8 - 2024-03-19]
 
 - Added `PdfImageParserInterface` interface.
-- Moved parsing images from `PDfDocument` to dedicated classes.
+- Moved parsing images from `PdfDocument` to dedicated classes.
+- Updated tests.
 
 ## [1.8.4.7 - 2024-03-02]
 

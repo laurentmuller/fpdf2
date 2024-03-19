@@ -19,6 +19,7 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
     {
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/images/alpha_image.png');
+        $doc->close();
         self::assertSame(1, $doc->getPage());
     }
 
@@ -42,6 +43,7 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
     {
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/images/grey_image.png');
+        $doc->close();
         self::assertSame(1, $doc->getPage());
     }
 
@@ -49,6 +51,7 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
     {
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/images/image.png', height: -10.0);
+        $doc->close();
         self::assertSame(2, $doc->getPage());
     }
 
@@ -144,6 +147,7 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
     {
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/images/image.png', width: -10.0);
+        $doc->close();
         self::assertSame(2, $doc->getPage());
     }
 }
