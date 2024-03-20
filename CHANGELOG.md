@@ -1,5 +1,11 @@
 # Change log
 
+## [1.8.4.9 - 2024-03-20]
+
+- Moved `elao/enum` package dependency from `require-dev` to `require`.
+- Modified the `PdfDocument` class:
+  - Renamed function `updateVersion()` to `updatePdfVersion()`.
+
 ## [1.8.4.8 - 2024-03-19]
 
 - Added `PdfImageParserInterface` interface.
@@ -140,7 +146,7 @@
 
 - Removed deprecation notices on PHP 8.2.
 - Removed notices when passing null values instead of strings.
-- The FPDF_VERSION constant was replaced by a class constant.
+- The `FPDF_VERSION` constant was replaced by a class constant.
 - The creation date of the PDF now includes the timezone.
 - The content-type is now always application/pdf, even for downloads.
 
@@ -210,7 +216,7 @@
   specified in UTF-8.
 - Fixed a bug: when a PNG was inserted through a URL, an error sometimes
   occurred.
-- An automatic page break in Header() doesn't cause an infinite loop any more.
+- An automatic page break in Header() doesn't cause an infinite loop anymore.
 - Removed some warning messages appearing with recent PHP versions.
 - Added HTTP headers to reduce problems with IE.
 
@@ -220,7 +226,7 @@
   longer necessary to define the FPDF_FONTPATH constant.
 - The array $HTTP_SERVER_VARS is no longer used. It could cause trouble on
   PHP5-based configurations with the register_long_arrays option disabled.
-- Fixed a problem related to Type1 font embedding which caused trouble to some
+- Fixed a problem related to Type1 font embedding, which caused trouble to some
   PDF processors.
 - The file name sent to the browser could not contain a space character.
 - The Cell() method could not print the number 0 (you had to pass the
@@ -229,30 +235,30 @@
 ## 1.52 - 2003-12-30
 
 - Image() now displays the image at 72 dpi if no dimension is given.
-- Output() takes a string as second parameter to indicate destination.
+- Output() takes a string as second parameter to indicate the destination.
 - Open() is now called automatically by AddPage().
 - Inserting remote JPEG images doesn't generate an error any longer.
-- Decimal separator is forced to dot in the constructor.
+- The decimal separator is forced to dot in the constructor.
 - Added several encodings (Turkish, Thai, Hebrew, Ukrainian and Vietnamese).
 - The last line of a right-aligned MultiCell() was not correctly aligned if it
   was terminated by a carriage return.
 - No more error message about already sent headers when outputting the PDF to
   the standard output from the command line.
-- The underlining was going too far for text containing characters \, ( or ).
+- The underlining was going too far for text containing characters \, (or).
 - $HTTP_ENV_VARS has been replaced by $HTTP_SERVER_VARS.
 
 ## 1.51 - 2002-08-03
 
 - Type1 font support.
 - Added Baltic encoding.
-- The class now works internally in points with the origin at the bottom in
-  order to avoid two bugs occurring with Acrobat 5:*. The line thickness was too
+- The class now works internally in points with the origin at the bottom order
+  to avoid two bugs occurring with Acrobat 5:*. The line thickness was too
   large when printed on Windows 98 SE and ME TrueType fonts
   didn't appear immediately inside the plug-in (a substitution font was used),
   one had to cause a window refresh to make them show up.
-- It's no longer necessary to set the decimal separator as dot to produce valid
+- It is no longer necessary to set the decimal separator as dot to produce valid
   documents.
-- The clickable area in a cell was always on the left independently from the
+- The clickable area in a cell was always on the left independently of the
   text alignment.
 - JPEG images in CMYK mode appeared in inverted colors.
 - Transparent PNG images in grayscale or true color mode were incorrectly
@@ -269,7 +275,7 @@
 - Internal and external link support (AddLink(), SetLink(), Link()).
 - Added right margin management and methods SetRightMargin(), SetTopMargin().
 - Modification of SetDisplayMode() to select page layout.
-- The border parameter of MultiCell() now lets choose borders to draw as Cell().
+- The border parameter of MultiCell() now let's choose borders to draw as Cell().
 - When a document contains no page, Close() now calls AddPage() instead of
   causing a fatal error.
 
@@ -312,7 +318,7 @@
 
 ## 1.2 - 2001-11-11
 
-- Added font metric files and GetStringWidth() method.
+- Added the font metric files and GetStringWidth() method.
 - Centering and right-aligning text in cells.
 - Display mode control (SetDisplayMode()).
 - Added methods to set document properties (SetAuthor(), SetCreator(),
@@ -323,8 +329,8 @@
 
 ## 1.11 - 2001-10-20
 
-- PNG support doesn't require PHP4/zlib any more. Data are now put directly
-  into PDF without any decompression/recompression stage.
+- PNG support doesn't require PHP4/zlib anymore. Data are now put directly
+  into `PDF` without any decompression/recompression stage.
 - Image insertion now works correctly even with magic_quotes_runtime option
   set to on.
 

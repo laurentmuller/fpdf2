@@ -32,12 +32,12 @@
     },
     "require": {
         "php": "^8.2",
-        "ext-zlib": "*",
+        "ext-iconv": "*",
         "ext-gd": "*",
-        "ext-iconv": "*"
+        "ext-zlib": "*",
+        "elao/enum": "^2.0"
     },
     "require-dev": {
-        "elao/enum": "^2.0",
         "friendsofphp/php-cs-fixer": "^3.0",
         "orklah/psalm-insane-comparison": "^2.0",
         "orklah/psalm-not-empty": "^1.0",
@@ -53,13 +53,14 @@
     },
     "config": {
         "platform": {
-            "php": "8.2.13"
+            "php": "8.2.16"
         },
         "optimize-autoloader": true,
         "preferred-install": {
             "*": "dist"
         },
         "sort-packages": true,
+        "platform-check": true,
         "discard-changes": true,
         "allow-plugins": {
             "phpstan/extension-installer": true

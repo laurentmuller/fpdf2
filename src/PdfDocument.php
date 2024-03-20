@@ -2163,14 +2163,14 @@ class PdfDocument
     }
 
     /**
-     * Ensure that this version is equal to or greater than the given version.
+     * Ensure that this PDF version is equal to or greater than the given version.
      *
-     * @param string $version the minimum version to set
+     * @param string $pdfVersion the minimum version to set
      */
-    public function updateVersion(string $version): self
+    public function updatePdfVersion(string $pdfVersion): self
     {
-        if (\version_compare($this->pdfVersion, $version, '<')) {
-            $this->pdfVersion = $version;
+        if (\version_compare($this->pdfVersion, $pdfVersion, '<')) {
+            $this->pdfVersion = $pdfVersion;
         }
 
         return $this;

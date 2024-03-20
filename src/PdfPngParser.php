@@ -137,7 +137,7 @@ class PdfPngParser implements PdfImageParserInterface
             [$data, $soft_mask] = $this->extractAlphaChannel($width, $height, $colorType, $data);
             $image['soft_mask'] = $soft_mask;
             $parent->setWithAlpha(true);
-            $parent->updateVersion('1.4');
+            $parent->updatePdfVersion('1.4');
         }
         $image['data'] = $data;
 
@@ -268,7 +268,7 @@ class PdfPngParser implements PdfImageParserInterface
 
     /**
      * @phpstan-param resource $stream
-     * @phpstan-param int<0, max> $length
+     * @phpstan-param non-negative-int $length
      */
     private function getPalette($stream, int $length): string
     {
@@ -277,7 +277,7 @@ class PdfPngParser implements PdfImageParserInterface
 
     /**
      * @phpstan-param resource $stream
-     * @phpstan-param int<0, max> $length
+     * @phpstan-param non-negative-int $length
      *
      * @phpstan-return int[]
      */
@@ -334,11 +334,11 @@ class PdfPngParser implements PdfImageParserInterface
      *
      * @throws PdfException if the stream is closed or if the end of stream is reached
      *
-     * @phpstan-return int<0, max>
+     * @phpstan-return non-negative-int
      */
     private function readInt($stream): int
     {
-        /** @phpstan-var array{i: int<0, max>} $unpack */
+        /** @phpstan-var array{i: non-negative-int} $unpack */
         $unpack = \unpack('Ni', $this->readStream($stream, 4));
 
         return $unpack['i'];
@@ -350,10 +350,10 @@ class PdfPngParser implements PdfImageParserInterface
      * @param resource $stream the stream to read string from
      * @param int      $len    the number of bytes read
      *
-     * @throws PdfException if the end of stream is reached
+     * @throws PdfException if the stream is closed or if the end of stream is reached
      *
      * @phpstan-param resource|closed-resource $stream
-     * @phpstan-param int<0, max> $len
+     * @phpstan-param non-negative-int $len
      */
     private function readStream($stream, int $len): string
     {

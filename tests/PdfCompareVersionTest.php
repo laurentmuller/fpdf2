@@ -35,7 +35,7 @@ class PdfCompareVersionTest extends AbstractCompareTestCase
 
     protected function updateNewDocument(PdfDocument $doc): void
     {
-        $doc->updateVersion(self::PDF_VERSION);
+        $doc->updatePdfVersion(self::PDF_VERSION);
     }
 
     protected function updateOldDocument(FPDF $doc): void

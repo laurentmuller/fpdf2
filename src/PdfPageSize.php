@@ -173,7 +173,7 @@ enum PdfPageSize: string
      */
     public function getUnit(): PdfUnit
     {
-        /** @psalm-var string $unit */
+        /** @phpstan-var string $unit */
         $unit = $this->getExtra('unit', true);
 
         return PdfUnit::from($unit);

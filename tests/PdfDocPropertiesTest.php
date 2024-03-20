@@ -355,9 +355,9 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
     {
         $doc = $this->createDocument();
         self::assertSame('1.3', $doc->getPdfVersion());
-        $doc->updateVersion('1.2');
+        $doc->updatePdfVersion('1.2');
         self::assertSame('1.3', $doc->getPdfVersion());
-        $doc->updateVersion('1.4');
+        $doc->updatePdfVersion('1.4');
         self::assertSame('1.4', $doc->getPdfVersion());
     }
 }
