@@ -105,7 +105,7 @@ class PdfDocument
     /** Indicates whether fill and text colors are different. */
     protected bool $colorFlag = false;
     /** The compression flag. */
-    protected bool $compression = false;
+    protected bool $compression = true;
     /** The document creation date. */
     protected int $creationDate = 0;
     /**
@@ -298,8 +298,6 @@ class PdfDocument
         $this->lineWidth = .567 / $this->scaleFactor;
         // automatic page break
         $this->setAutoPageBreak(true, 2.0 * $margin);
-        // enable compression
-        $this->setCompression(true);
         // producer
         $this->setProducer('FPDF ' . self::VERSION);
     }
@@ -1192,6 +1190,11 @@ class PdfDocument
      * Draws a line between two points.
      *
      * Do nothing if points are equal.
+     *
+     * @param float $x1 the abscissa of first point
+     * @param float $y1 the ordinate of first point
+     * @param float $x2 the abscissa of second point
+     * @param float $y2 the ordinate of second point
      */
     public function line(float $x1, float $y1, float $x2, float $y2): self
     {
@@ -1234,6 +1237,9 @@ class PdfDocument
      * Draws a line between two points.
      *
      * Do nothing if points are equal.
+     *
+     * @param PdfPoint $start the abscissa and ordinate of first point
+     * @param PdfPoint $end   the abscissa and ordinate of second point
      */
     public function linePoints(PdfPoint $start, PdfPoint $end): self
     {
@@ -1548,13 +1554,21 @@ class PdfDocument
 
     /**
      * Outputs a rectangle.
+     *
+     * @param float                       $x      the abscissa of the upper-left corner of the rectangle
+     * @param float                       $y      the ordinate of the upper-left corner of the rectangle
+     * @param float                       $width  the width of the rectangle
+     * @param float                       $height the height of the rectangle
+     * @param PdfRectangleStyle|PdfBorder $style  the style of rendering
+     * @param string|int                  $link   an URL or identifier returned by <code>addLink()</code>
      */
     public function rect(
         float $x,
         float $y,
         float $width,
         float $height,
-        PdfRectangleStyle|PdfBorder $style = PdfRectangleStyle::BORDER
+        PdfRectangleStyle|PdfBorder $style = PdfRectangleStyle::BORDER,
+        string|int $link = ''
     ): static {
         if ($style instanceof PdfRectangleStyle) {
             $scaleFactor = $this->scaleFactor;
@@ -1566,6 +1580,9 @@ class PdfDocument
                 -$height * $scaleFactor,
                 $style->value
             );
+            if ($this->isLink($link)) {
+                $this->link($x, $y, $width, $height, $link);
+            }
 
             return $this;
         }
@@ -1573,23 +1590,32 @@ class PdfDocument
         if (!$style->isNone()) {
             $this->out($this->formatBorders($x, $y, $width, $height, $style));
         }
+        if ($this->isLink($link)) {
+            $this->link($x, $y, $width, $height, $link);
+        }
 
         return $this;
     }
 
     /**
      * Outputs a rectangle.
+     *
+     * @param PdfRectangle                $rectangle the rectangle to draw
+     * @param PdfRectangleStyle|PdfBorder $style     the style of rendering
+     * @param string|int                  $link      an URL or identifier returned by <code>addLink()</code>
      */
     public function rectangle(
         PdfRectangle $rectangle,
-        PdfRectangleStyle|PdfBorder $style = PdfRectangleStyle::BORDER
+        PdfRectangleStyle|PdfBorder $style = PdfRectangleStyle::BORDER,
+        string|int $link = ''
     ): static {
         return $this->rect(
             $rectangle->x,
             $rectangle->y,
             $rectangle->width,
             $rectangle->height,
-            $style
+            $style,
+            $link
         );
     }
 
@@ -1650,12 +1676,10 @@ class PdfDocument
      *
      * When activated, the internal representation of each page is compressed, which leads to a compression ratio of
      * about 2 for the resulting document. Compression is on by default.
-     *
-     * <b>Note:</b> the Zlib extension is required for this feature. If not present, compression will be turned off.
      */
     public function setCompression(bool $compression): self
     {
-        $this->compression = \function_exists('gzcompress') ? $compression : false;
+        $this->compression = $compression;
 
         return $this;
     }

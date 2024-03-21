@@ -1056,25 +1056,25 @@
         },
         {
             "name": "orklah/psalm-insane-comparison",
-            "version": "v2.2.0",
+            "version": "v2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/orklah/psalm-insane-comparison.git",
-                "reference": "f0e44bf31678d189c8ee4556598d0ad6e3f853c9"
+                "reference": "d9e608e787e5ae1c994ae07095eea26029d6d0bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/orklah/psalm-insane-comparison/zipball/f0e44bf31678d189c8ee4556598d0ad6e3f853c9",
-                "reference": "f0e44bf31678d189c8ee4556598d0ad6e3f853c9",
+                "url": "https://api.github.com/repos/orklah/psalm-insane-comparison/zipball/d9e608e787e5ae1c994ae07095eea26029d6d0bd",
+                "reference": "d9e608e787e5ae1c994ae07095eea26029d6d0bd",
                 "shasum": ""
             },
             "require": {
                 "ext-simplexml": "*",
-                "php": "^7.3|^8.0"
+                "php": "^7.3|^8.0",
+                "vimeo/psalm": "^4|^5|dev-master"
             },
             "require-dev": {
-                "nikic/php-parser": "^4.0",
-                "vimeo/psalm": "^4.0|^5"
+                "nikic/php-parser": "^4.0|^5"
             },
             "type": "psalm-plugin",
             "extra": {
@@ -1104,9 +1104,9 @@
             "description": "Detects possible insane comparison (\"string\" == 0) to help migrate to PHP8",
             "support": {
                 "issues": "https://github.com/orklah/psalm-insane-comparison/issues",
-                "source": "https://github.com/orklah/psalm-insane-comparison/tree/v2.2.0"
+                "source": "https://github.com/orklah/psalm-insane-comparison/tree/v2.3.0"
             },
-            "time": "2023-01-06T09:06:11+00:00"
+            "time": "2024-03-20T21:49:45+00:00"
         },
         {
             "name": "orklah/psalm-not-empty",
@@ -1594,16 +1594,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.63",
+            "version": "1.10.64",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "ad12836d9ca227301f5fb9960979574ed8628339"
+                "reference": "fb9f270daffedcb5ff46275dcafe92538b1bc4bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/ad12836d9ca227301f5fb9960979574ed8628339",
-                "reference": "ad12836d9ca227301f5fb9960979574ed8628339",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/fb9f270daffedcb5ff46275dcafe92538b1bc4bb",
+                "reference": "fb9f270daffedcb5ff46275dcafe92538b1bc4bb",
                 "shasum": ""
             },
             "require": {
@@ -1652,7 +1652,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-03-18T16:53:53+00:00"
+            "time": "2024-03-21T09:57:47+00:00"
         },
         {
             "name": "phpstan/phpstan-deprecation-rules",
@@ -2074,16 +2074,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "10.5.13",
+            "version": "10.5.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "20a63fc1c6db29b15da3bd02d4b6cf59900088a7"
+                "reference": "4cf8824bab39c2dd57b57b9f6332f7135e2a3a49"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/20a63fc1c6db29b15da3bd02d4b6cf59900088a7",
-                "reference": "20a63fc1c6db29b15da3bd02d4b6cf59900088a7",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/4cf8824bab39c2dd57b57b9f6332f7135e2a3a49",
+                "reference": "4cf8824bab39c2dd57b57b9f6332f7135e2a3a49",
                 "shasum": ""
             },
             "require": {
@@ -2155,7 +2155,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.5.13"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.5.14"
             },
             "funding": [
                 {
@@ -2171,7 +2171,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-03-12T15:37:41+00:00"
+            "time": "2024-03-21T07:31:09+00:00"
         },
         {
             "name": "psalm/plugin-phpunit",

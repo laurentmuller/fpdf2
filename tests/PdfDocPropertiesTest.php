@@ -247,10 +247,12 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
     public function testRect(): void
     {
         $doc = $this->createDocument();
-        $doc->rect(10, 10, 100, 20);
-        $doc->rect(10, 20, 100, 20, PdfRectangleStyle::BOTH);
-        $doc->rect(10, 30, 100, 20, PdfRectangleStyle::FILL);
-        $doc->rect(10, 10, 100, 20, PdfBorder::all());
+        $doc->rect(10, 10, 100, 10);
+        $doc->rect(10, 20, 100, 10, PdfRectangleStyle::BOTH);
+        $doc->rect(10, 30, 100, 10, PdfRectangleStyle::FILL);
+        $doc->rect(10, 40, 100, 10, PdfBorder::all());
+        $doc->rect(10, 50, 100, 10, PdfBorder::all(), 'https://www.example.com/');
+        $doc->rect(10, 60, 100, 10, PdfRectangleStyle::BOTH, 'https://www.example.com/');
 
         self::assertSame(1, $doc->getPage());
     }

@@ -1,18 +1,23 @@
 # Change log
 
-## [1.8.4.9 - 2024-03-20]
+## 1.8.4.10 - 2024-03-21
+
+- Modified the `PdfDocument` class:
+  - Added `$link` parameter to the `rect()` and `rectangle()` functions.
+
+## 1.8.4.9 - 2024-03-20
 
 - Moved `elao/enum` package dependency from `require-dev` to `require`.
 - Modified the `PdfDocument` class:
   - Renamed function `updateVersion()` to `updatePdfVersion()`.
 
-## [1.8.4.8 - 2024-03-19]
+## 1.8.4.8 - 2024-03-19
 
 - Added `PdfImageParserInterface` interface.
 - Moved parsing images from `PdfDocument` to dedicated classes.
 - Updated tests.
 
-## [1.8.4.7 - 2024-03-02]
+## 1.8.4.7 - 2024-03-02
 
 - Modified the `PdfDocument` class:
   - Added `outLineWidth()` function.
@@ -24,7 +29,7 @@
 - Added `font` directory to tests.
 - Split CI actions.
 
-## [1.8.4.6 - 2024-03-01]
+## 1.8.4.6 - 2024-03-01
 
 - Added tests.
 - Added unique CI action and removed all other actions.
