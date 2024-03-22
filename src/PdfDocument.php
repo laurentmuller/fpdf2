@@ -400,7 +400,7 @@ class PdfDocument
      * page is added, the current position set to the top-left corner according to the left and top margins, and
      * <code>header()</code> is called to display the header. The font, which was set before calling is automatically
      * restored. There is no need to call <code>setFont()</code> again if you want to continue with the same font. The
-     * same is true for colors and line width.
+     * same is <code>true</code> for colors and line width.
      *
      * The origin of the coordinate system is in the top-left corner and increasing ordinates go downwards.
      *
@@ -491,16 +491,18 @@ class PdfDocument
     /**
      * Prints a cell (rectangular area) with optional borders, background color and character string.
      *
+     * It is possible to put a link on the cell.
+     *
      * @param float            $width  the cell width. If <code>0.0</code>, the cell extends up to the right margin.
      * @param float            $height the cell height
      * @param string           $text   the cell text
      * @param ?PdfBorder       $border indicates how borders must be drawn around the cell. If <code>null</code>,
-     *                                 no border is draw.
+     *                                 or <code>none()</code>, no border is draw.
      * @param PdfMove          $move   indicates where the current position should go after the call
      * @param PdfTextAlignment $align  the text alignment
      * @param bool             $fill   indicates if the cell background must be painted (<code>true</code>) or
      *                                 transparent (<code>false</code>)
-     * @param string|int       $link   a URL or an identifier returned by <code>addLink()</code>
+     * @param string|int|null  $link   a URL or an identifier returned by <code>addLink()</code>
      *
      * @see PdfDocument::multiCell()
      */
@@ -512,7 +514,7 @@ class PdfDocument
         PdfMove $move = PdfMove::RIGHT,
         PdfTextAlignment $align = PdfTextAlignment::LEFT,
         bool $fill = false,
-        string|int $link = ''
+        string|int|null $link = null
     ): self {
         $scaleFactor = $this->scaleFactor;
         if (!$this->isPrintable($height) && !$this->inHeader && !$this->inFooter && $this->autoPageBreak) {
@@ -1046,33 +1048,35 @@ class PdfDocument
      * <li>It is possible to put a link on the image.</li>
      * </ul>
      *
+     * It is possible to put a link on the image.
+     *
      * <b>Remark: </b>If an image is used several times, only one copy is embedded in the file.
      *
-     * @param string     $file   the path or the URL of the image
-     * @param ?float     $x      the abscissa of the upper-left corner. If <code>null</code>, the current abscissa is
-     *                           used.
-     * @param ?float     $y      the ordinate of the upper-left corner. If <code>null</code>, the current
-     *                           ordinate is used; moreover, a page break is triggered first if necessary (in case
-     *                           automatic page breaking is enabled) and, after the call, the current ordinate
-     *                           is move to the bottom of the image.
-     * @param float      $width  the width of the image in the page. There are three cases:
-     *                           <ul>
-     *                           <li>If the value is positive, it represents the width in user unit.</li>
-     *                           <li>If the value is negative, the absolute value represents the horizontal resolution
-     *                           in dpi.</li>
-     *                           <li>If the value is not specified or equal to zero, it is automatically
-     *                           calculated.</li>
-     *                           </ul>
-     * @param float      $height the height of the image in the page. There are three cases:
-     *                           <ul>
-     *                           <li>If the value is positive, it represents the width in user unit.</li>
-     *                           <li>If the value is negative, the absolute value represents the horizontal resolution
-     *                           in dpi.</li>
-     *                           <li>If the value is not specified or equal to zero, it is automatically
-     *                           calculated.</li>
-     *                           </ul>
-     * @param string     $type   the image format. If not specified, the type is inferred from the file extension.
-     * @param string|int $link   the URL or an identifier returned by <code>addLink()</code>
+     * @param string          $file   the path or the URL of the image
+     * @param ?float          $x      the abscissa of the upper-left corner. If <code>null</code>, the current abscissa
+     *                                is used.
+     * @param ?float          $y      the ordinate of the upper-left corner. If <code>null</code>, the current
+     *                                ordinate is used; moreover, a page break is triggered first if necessary (in case
+     *                                automatic page breaking is enabled) and, after the call, the current ordinate
+     *                                is move to the bottom of the image.
+     * @param float           $width  the width of the image in the page. There are three cases:
+     *                                <ul>
+     *                                <li>If the value is positive, it represents the width in user unit.</li>
+     *                                <li>If the value is negative, the absolute value represents the horizontal
+     *                                resolution in dpi.</li>
+     *                                <li>If the value is not specified or equal to zero, it is automatically
+     *                                calculated.</li>
+     *                                </ul>
+     * @param float           $height the height of the image in the page. There are three cases:
+     *                                <ul>
+     *                                <li>If the value is positive, it represents the width in user unit.</li>
+     *                                <li>If the value is negative, the absolute value represents the horizontal
+     *                                resolution in dpi.</li>
+     *                                <li>If the value is not specified or equal to zero, it is automatically
+     *                                calculated.</li>
+     *                                </ul>
+     * @param string          $type   the image format. If not specified, the type is inferred from the file extension.
+     * @param string|int|null $link   an URL or an identifier returned by <code>addLink()</code>
      */
     public function image(
         string $file,
@@ -1081,7 +1085,7 @@ class PdfDocument
         float $width = 0.0,
         float $height = 0.0,
         string $type = '',
-        string|int $link = ''
+        string|int|null $link = null
     ): self {
         if ('' === $file) {
             throw PdfException::instance('Image file name is empty.');
@@ -1176,7 +1180,7 @@ class PdfDocument
      * @param float  $height the desired height
      * @param ?float $y      the ordinate position or <code>null</code> to use the current position
      *
-     * @return bool true if printable within the current page; false if a new page is
+     * @return bool <code>true</code> if printable within the current page; <code>false</code> if a new page is
      *              needed
      *
      * @see PdfDocument::addPage()
@@ -1256,11 +1260,13 @@ class PdfDocument
      * @param float      $y      the ordinate of the upper-left corner of the rectangle
      * @param float      $width  the width of the rectangle
      * @param float      $height the height of the rectangle
-     * @param string|int $link   an URL or identifier returned by <code>addLink()</code>
+     * @param string|int $link   an URL or an identifier returned by <code>addLink()</code>
      *
      * @see PdfDocument::addLink()
      * @see PdfDocument::setLink()
      * @see PdfDocument::createLink()
+     *
+     * @phpstan-param non-empty-string|positive-int $link
      */
     public function link(float $x, float $y, float $width, float $height, string|int $link): self
     {
@@ -1307,7 +1313,8 @@ class PdfDocument
      * @param ?PdfBorder       $border indicates how borders must be drawn around the cell. If <code>null</code>,
      *                                 no border is draw.
      * @param PdfTextAlignment $align  the text alignment
-     * @param bool             $fill   indicates if the cell background must be painted (true) or transparent (false)
+     * @param bool             $fill   indicates if the cell background must be painted (<code>true</code>) or
+     *                                 transparent (<code>false</code>)
      *
      * @see PdfDocument::cell()
      */
@@ -1462,9 +1469,9 @@ class PdfDocument
      * @param ?string        $name        The name of the file. It is ignored in case of
      *                                    destination <code>PdfDestination::STRING</code>. The default value
      *                                    is 'doc.pdf'.
-     * @param bool           $isUTF8      Indicates if name is encoded in ISO-8859-1 (false) or UTF-8 (true).
-     *                                    Only used for destinations <code>PdfDestination::INLINE</code> and
-     *                                    <code>PdfDestination::DOWNLOAD</code>.
+     * @param bool           $isUTF8      Indicates if name is encoded in ISO-8859-1 (<code>false</code>) or
+     *                                    UTF-8 (<code>true</code>). Only used for destinations
+     *                                    <code>PdfDestination::INLINE</code> and <code>PdfDestination::DOWNLOAD</code>.
      *
      * @return string the content if the output is <code>PdfDestination::STRING</code>, an empty string otherwise
      */
@@ -1555,12 +1562,14 @@ class PdfDocument
     /**
      * Outputs a rectangle.
      *
+     * It is possible to put a link on the rectangle.
+     *
      * @param float                       $x      the abscissa of the upper-left corner of the rectangle
      * @param float                       $y      the ordinate of the upper-left corner of the rectangle
      * @param float                       $width  the width of the rectangle
      * @param float                       $height the height of the rectangle
      * @param PdfRectangleStyle|PdfBorder $style  the style of rendering
-     * @param string|int                  $link   an URL or identifier returned by <code>addLink()</code>
+     * @param string|int|null             $link   an URL or identifier returned by <code>addLink()</code>
      */
     public function rect(
         float $x,
@@ -1568,7 +1577,7 @@ class PdfDocument
         float $width,
         float $height,
         PdfRectangleStyle|PdfBorder $style = PdfRectangleStyle::BORDER,
-        string|int $link = ''
+        string|int|null $link = null
     ): static {
         if ($style instanceof PdfRectangleStyle) {
             $scaleFactor = $this->scaleFactor;
@@ -1600,14 +1609,16 @@ class PdfDocument
     /**
      * Outputs a rectangle.
      *
+     * It is possible to put a link on the rectangle.
+     *
      * @param PdfRectangle                $rectangle the rectangle to draw
      * @param PdfRectangleStyle|PdfBorder $style     the style of rendering
-     * @param string|int                  $link      an URL or identifier returned by <code>addLink()</code>
+     * @param string|int|null             $link      an URL or identifier returned by <code>addLink()</code>
      */
     public function rectangle(
         PdfRectangle $rectangle,
         PdfRectangleStyle|PdfBorder $style = PdfRectangleStyle::BORDER,
-        string|int $link = ''
+        string|int|null $link = null
     ): static {
         return $this->rect(
             $rectangle->x,
@@ -1635,7 +1646,8 @@ class PdfDocument
      * Defines the author of the document.
      *
      * @param string $author the name of the author
-     * @param bool   $isUTF8 indicates if the string is encoded in ISO-8859-1 (false) or UTF-8 (true)
+     * @param bool   $isUTF8 indicates if the string is encoded in ISO-8859-1 (<code>false</code>) or
+     *                       UTF-8 (<code>true</code>)
      */
     public function setAuthor(string $author, bool $isUTF8 = false): self
     {
@@ -1690,7 +1702,8 @@ class PdfDocument
      * This is typically the name of the application that generates the PDF.
      *
      * @param string $creator the name of the creator
-     * @param bool   $isUTF8  indicates if the string is encoded in ISO-8859-1 (false) or UTF-8 (true)
+     * @param bool   $isUTF8  indicates if the string is encoded in ISO-8859-1 (<code>false</code>)
+     *                        or UTF-8 (<code>true</code>)
      */
     public function setCreator(string $creator, bool $isUTF8 = false): self
     {
@@ -1791,24 +1804,24 @@ class PdfDocument
      *
      * If you just wish to change the current font size, it is simpler to call <code>setFontSizeInPoint()</code>.
      *
-     * @param PdfFontName|string|null $family          The font family. It can be either a font name enumeration, a name defined
-     *                                                 by <code>addFont()</code> or one of the standard families
+     * @param PdfFontName|string|null $family          The font family. It can be either a font name enumeration, a name
+     *                                                 defined by <code>addFont()</code> or one of the standard families
      *                                                 (case-insensitive):
      *                                                 <ul>
      *                                                 <li><code>'Courier'</code>: Fixed-width.</li>
-     *                                                 <li><code>'Helvetica'</code> or <code>Arial</code>: Synonymous: sans
-     *                                                 serif.</li>
+     *                                                 <li><code>'Helvetica'</code> or <code>Arial</code>: Synonymous:
+     *                                                 sans serif.</li>
      *                                                 <li><code>'Symbol'</code>: Symbolic.</li>
      *                                                 <li><code>'ZapfDingbats'</code>: Symbolic.</li>
      *                                                 </ul>
-     *                                                 It is also possible to pass <code>null</code>. In that case, the current
-     *                                                 family is kept.
-     * @param ?PdfFontStyle           $style           The font style or <code>null</code> to use the current style. If no style
-     *                                                 has been specified since the beginning of the document, the value is
-     *                                                 <code>PdfFontStyle::REGULAR</code>.
-     * @param ?float                  $fontSizeInPoint The font size in points or <code>null</code> to use the current size. If
-     *                                                 no size has been specified since the beginning of the document, the value
-     *                                                 is 9.0.
+     *                                                 It is also possible to pass <code>null</code>. In that case, the
+     *                                                 current family is kept.
+     * @param ?PdfFontStyle           $style           The font style or <code>null</code> to use the current style.
+     *                                                 If no style has been specified since the beginning of the
+     *                                                 document, the value is <code>PdfFontStyle::REGULAR</code>.
+     * @param ?float                  $fontSizeInPoint The font size in points or <code>null</code> to use the current
+     *                                                 size. If no size has been specified since the beginning of the
+     *                                                 document, the value is 9.0.
      *
      * @see PdfDocument::addFont()
      * @see PdfDocument::setFontSizeInPoint()
@@ -1892,7 +1905,8 @@ class PdfDocument
      * Associates keywords with the document.
      *
      * @param string $keywords The list of keywords separated by space
-     * @param bool   $isUTF8   Indicates if the string is encoded in ISO-8859-1 (false) or UTF-8 (true)
+     * @param bool   $isUTF8   Indicates if the string is encoded in ISO-8859-1 (<code>false</code>)
+     *                         or UTF-8 (<code>true</code>)
      */
     public function setKeywords(string $keywords, bool $isUTF8 = false): self
     {
@@ -2013,7 +2027,8 @@ class PdfDocument
      * Defines the producer of the document.
      *
      * @param string $producer the producer
-     * @param bool   $isUTF8   Indicates if the string is encoded in ISO-8859-1 (false) or UTF-8 (true)
+     * @param bool   $isUTF8   Indicates if the string is encoded in ISO-8859-1 (<code>false</code>)
+     *                         or UTF-8 (<code>true</code>)
      */
     public function setProducer(string $producer, bool $isUTF8 = false): self
     {
@@ -2036,7 +2051,8 @@ class PdfDocument
      * Defines the subject of the document.
      *
      * @param string $subject the subject
-     * @param bool   $isUTF8  Indicates if the string is encoded in ISO-8859-1 (false) or UTF-8 (true)
+     * @param bool   $isUTF8  Indicates if the string is encoded in ISO-8859-1 (<code>false</code>)
+     *                        or UTF-8 (<code>true</code>)
      */
     public function setSubject(string $subject, bool $isUTF8 = false): self
     {
@@ -2073,7 +2089,8 @@ class PdfDocument
      * Defines the title of the document.
      *
      * @param string $title  the title
-     * @param bool   $isUTF8 Indicates if the string is encoded in ISO-8859-1 (false) or UTF-8 (true)
+     * @param bool   $isUTF8 Indicates if the string is encoded in ISO-8859-1 (<code>false</code>)
+     *                       or UTF-8 (<code>true</code>)
      */
     public function setTitle(string $title, bool $isUTF8 = false): self
     {
@@ -2225,13 +2242,13 @@ class PdfDocument
      *
      * Do nothing if the text is empty.
      *
-     * @param float      $height the line height
-     * @param string     $text   the string to print
-     * @param string|int $link   a URL or an identifier returned by <code>addLink()</code>
+     * @param float           $height the line height
+     * @param string          $text   the string to print
+     * @param string|int|null $link   a URL or an identifier returned by <code>addLink()</code>
      *
      * @see PdfDocument::text()
      */
-    public function write(float $height, string $text, string|int $link = ''): self
+    public function write(float $height, string $text, string|int|null $link = null): self
     {
         $text = $this->cleanText($text);
         if ('' === $text) {
@@ -2356,7 +2373,8 @@ class PdfDocument
      *
      * @param string $key    the meta-data key
      * @param string $value  the meta-data value
-     * @param bool   $isUTF8 indicates if the value is encoded in ISO-8859-1 (false) or UTF-8 (true)
+     * @param bool   $isUTF8 indicates if the value is encoded in ISO-8859-1 (<code>false</code>)
+     *                       or UTF-8 (<code>true</code>)
      *
      * @phpstan-param non-empty-string $key
      */
@@ -2646,7 +2664,8 @@ class PdfDocument
      * Send raw HTTP headers.
      *
      * @param string $name   the name of the file
-     * @param bool   $isUTF8 indicates if the name is encoded in ISO-8859-1 (false) or UTF-8 (true)
+     * @param bool   $isUTF8 indicates if the name is encoded in ISO-8859-1 (<code>false</code>)
+     *                       or UTF-8 (<code>true</code>)
      * @param bool   $inline <code>true</code> for inline disposition, <code>false</code> for attachement disposition
      */
     protected function headers(string $name, bool $isUTF8, bool $inline): void
@@ -2690,11 +2709,13 @@ class PdfDocument
      *
      * To be valid the link must be a non-empty string or a positive integer.
      *
-     * @param string|int $link the link to validate
+     * @param string|int|null $link the link to validate
      *
      * @return bool <code>true</code> if valid
+     *
+     * @phpstan-assert-if-true (non-empty-string|positive-int) $link
      */
-    protected function isLink(string|int $link): bool
+    protected function isLink(string|int|null $link): bool
     {
         return (\is_string($link) && '' !== $link) || (\is_int($link) && $link > 0);
     }

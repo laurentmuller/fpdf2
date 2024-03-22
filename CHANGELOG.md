@@ -1,5 +1,10 @@
 # Change log
 
+## 1.8.4.11 - 2024-03-22
+
+- Modified the `PdfDocument` class:
+  - Replaced empty string by `null` for `$link` parameter.
+
 ## 1.8.4.10 - 2024-03-21
 
 - Modified the `PdfDocument` class:
