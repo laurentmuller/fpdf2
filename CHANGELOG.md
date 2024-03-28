@@ -1,5 +1,10 @@
 # Change log
 
+## 1.8.4.12 - 2024-03-28
+
+- Modified the `PdfDocument` class:
+  - Make the `isLink()` function as static. 
+
 ## 1.8.4.11 - 2024-03-22
 
 - Modified the `PdfDocument` class:

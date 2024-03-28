@@ -63,7 +63,7 @@ namespace fpdf;
  *     1: float,
  *     2: float,
  *     3: float,
- *     4: int|string,
+ *     4: non-empty-string|positive-int,
  *     5: int}
  * @phpstan-type LinkType = array{
  *     0: int,
@@ -384,6 +384,8 @@ class PdfDocument
      * @see PdfDocument::link()
      * @see PdfDocument::setLink()
      * @see PdfDocument::createLink()
+     *
+     * @phpstan-return positive-int
      */
     public function addLink(): int
     {
@@ -505,6 +507,8 @@ class PdfDocument
      * @param string|int|null  $link   a URL or an identifier returned by <code>addLink()</code>
      *
      * @see PdfDocument::multiCell()
+     *
+     * @phpstan-param non-empty-string|positive-int|null $link
      */
     public function cell(
         float $width = 0.0,
@@ -583,7 +587,7 @@ class PdfDocument
             if ($this->colorFlag) {
                 $output .= ' Q';
             }
-            if ($this->isLink($link)) {
+            if (self::isLink($link)) {
                 $this->link(
                     $this->x + $dx,
                     $this->y + 0.5 * $height - 0.5 * $this->fontSize,
@@ -1077,6 +1081,8 @@ class PdfDocument
      *                                </ul>
      * @param string          $type   the image format. If not specified, the type is inferred from the file extension.
      * @param string|int|null $link   an URL or an identifier returned by <code>addLink()</code>
+     *
+     * @phpstan-param non-empty-string|positive-int|null $link
      */
     public function image(
         string $file,
@@ -1153,7 +1159,7 @@ class PdfDocument
             ($this->height - $y - $height) * $this->scaleFactor,
             $image['index']
         );
-        if ($this->isLink($link)) {
+        if (self::isLink($link)) {
             $this->link($x, $y, $width, $height, $link);
         }
 
@@ -1172,6 +1178,22 @@ class PdfDocument
     public function isAutoPageBreak(): bool
     {
         return $this->autoPageBreak;
+    }
+
+    /**
+     * Returns if the given link is valid.
+     *
+     * To be valid the link must be a non-empty string or a positive integer.
+     *
+     * @param string|int|null $link the link to validate
+     *
+     * @return bool <code>true</code> if valid
+     *
+     * @phpstan-assert-if-true (non-empty-string|positive-int) $link
+     */
+    public static function isLink(string|int|null $link): bool
+    {
+        return (\is_string($link) && '' !== $link) || (\is_int($link) && $link > 0);
     }
 
     /**
@@ -1570,6 +1592,8 @@ class PdfDocument
      * @param float                       $height the height of the rectangle
      * @param PdfRectangleStyle|PdfBorder $style  the style of rendering
      * @param string|int|null             $link   an URL or identifier returned by <code>addLink()</code>
+     *
+     * @phpstan-param non-empty-string|positive-int|null $link
      */
     public function rect(
         float $x,
@@ -1589,7 +1613,7 @@ class PdfDocument
                 -$height * $scaleFactor,
                 $style->value
             );
-            if ($this->isLink($link)) {
+            if (self::isLink($link)) {
                 $this->link($x, $y, $width, $height, $link);
             }
 
@@ -1599,7 +1623,7 @@ class PdfDocument
         if (!$style->isNone()) {
             $this->out($this->formatBorders($x, $y, $width, $height, $style));
         }
-        if ($this->isLink($link)) {
+        if (self::isLink($link)) {
             $this->link($x, $y, $width, $height, $link);
         }
 
@@ -1614,6 +1638,8 @@ class PdfDocument
      * @param PdfRectangle                $rectangle the rectangle to draw
      * @param PdfRectangleStyle|PdfBorder $style     the style of rendering
      * @param string|int|null             $link      an URL or identifier returned by <code>addLink()</code>
+     *
+     * @phpstan-param non-empty-string|positive-int|null $link
      */
     public function rectangle(
         PdfRectangle $rectangle,
@@ -1983,6 +2009,8 @@ class PdfDocument
      * @see PdfDocument::addLink()
      * @see PdfDocument::link()
      * @see PdfDocument::createLink()
+     *
+     * @phpstan-param positive-int $link
      */
     public function setLink(int $link, float $y = 0, ?int $page = null): self
     {
@@ -2247,6 +2275,8 @@ class PdfDocument
      * @param string|int|null $link   a URL or an identifier returned by <code>addLink()</code>
      *
      * @see PdfDocument::text()
+     *
+     * @phpstan-param non-empty-string|positive-int|null $link
      */
     public function write(float $height, string $text, string|int|null $link = null): self
     {
@@ -2702,22 +2732,6 @@ class PdfDocument
     protected function isAscii(string $str): bool
     {
         return \mb_check_encoding($str, 'ASCII');
-    }
-
-    /**
-     * Returns if the given link is valid.
-     *
-     * To be valid the link must be a non-empty string or a positive integer.
-     *
-     * @param string|int|null $link the link to validate
-     *
-     * @return bool <code>true</code> if valid
-     *
-     * @phpstan-assert-if-true (non-empty-string|positive-int) $link
-     */
-    protected function isLink(string|int|null $link): bool
-    {
-        return (\is_string($link) && '' !== $link) || (\is_int($link) && $link > 0);
     }
 
     /**
