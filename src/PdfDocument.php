@@ -2256,13 +2256,13 @@ class PdfDocument
      *
      * Do nothing if the text is empty.
      *
-     * @param float           $height the line height
      * @param string          $text   the string to print
+     * @param float           $height the line height
      * @param string|int|null $link   a URL or an identifier returned by <code>addLink()</code>
      *
      * @see PdfDocument::text()
      */
-    public function write(float $height, string $text, string|int|null $link = null): self
+    public function write(string $text, float $height = self::LINE_HEIGHT, string|int|null $link = null): self
     {
         $text = $this->cleanText($text);
         if ('' === $text) {

@@ -18,7 +18,7 @@ class PdfCompareWriteTest extends AbstractCompareTestCase
 {
     protected function updateNewDocument(PdfDocument $doc): void
     {
-        $doc->write(5.0, "This is a write test.\nWith multi-lines.");
+        $doc->write("This is a write test.\nWith multi-lines.");
     }
 
     protected function updateOldDocument(FPDF $doc): void

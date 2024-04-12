@@ -1,5 +1,10 @@
 # Change log
 
+## 1.8.4.14 - 2024-04-12
+
+- Modified the `PdfDocument` class:
+  - Updated `write()` function signature with default height value.
+
 ## 1.8.4.13 - 2024-03-28
 
 - Modified the `PdfDocument` class:

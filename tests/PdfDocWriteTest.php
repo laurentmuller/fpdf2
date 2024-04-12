@@ -19,7 +19,7 @@ class PdfDocWriteTest extends AbstractPdfDocTestCase
     {
         $doc = $this->createDocument();
         $text = \str_repeat('This is a very long text to use for multi lines. ', 20);
-        $doc->write(5.0, $text);
+        $doc->write($text);
         self::assertSame(1, $doc->getPage());
     }
 
@@ -27,7 +27,7 @@ class PdfDocWriteTest extends AbstractPdfDocTestCase
     {
         $doc = $this->createDocument();
         $text = \str_repeat('Thisisaverylongtexttouseformultilines', 20);
-        $doc->write(5.0, $text);
+        $doc->write($text);
         self::assertSame(1, $doc->getPage());
     }
 
@@ -36,7 +36,7 @@ class PdfDocWriteTest extends AbstractPdfDocTestCase
         $doc = $this->createDocument();
         $text = \str_repeat('Thisisaverylongtexttouseformultilines', 20);
         $doc->setX(100);
-        $doc->write(5.0, $text);
+        $doc->write($text);
         self::assertSame(1, $doc->getPage());
     }
 
@@ -44,8 +44,8 @@ class PdfDocWriteTest extends AbstractPdfDocTestCase
     {
         $doc = $this->createDocument();
         $doc->setFont(PdfFontName::ARIAL, PdfFontStyle::UNDERLINE);
-        $doc->write(5.0, '');
-        $doc->write(5.0, 'fake');
+        $doc->write('');
+        $doc->write('fake');
         self::assertSame(1, $doc->getPage());
     }
 
@@ -53,7 +53,7 @@ class PdfDocWriteTest extends AbstractPdfDocTestCase
     {
         self::expectException(PdfException::class);
         $doc = $this->createDocument(true, false);
-        $doc->write(5.0, 'fake');
+        $doc->write('fake');
         self::fail('A PDF exception must be raised.');
     }
 }

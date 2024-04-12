@@ -80,7 +80,7 @@ class PdfCompareBasicTest extends AbstractCompareTestCase
         $doc->setFontSizeInPoint(9.5);
 
         $doc->text($doc->getX(), $doc->getY(), 'Text');
-        $doc->write(5.0, 'Write', 1);
+        $doc->write('Write', 5.0, 1);
 
         $doc->addPage();
         $doc->cell(0.0, 5.0, 'Greek: Γειά σου κόσμος', PdfBorder::all(), PdfMove::RIGHT, PdfTextAlignment::RIGHT, true);
