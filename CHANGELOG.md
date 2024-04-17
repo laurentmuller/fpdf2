@@ -1,5 +1,11 @@
 # Change log
 
+## 1.8.4.15 - 2024-04-17
+
+- Modified the `PdfDocument` class:
+  - The `cleanText()` function no longer removes new line
+    characters (`"\n"`) at the end of string.
+
 ## 1.8.4.14 - 2024-04-12
 
 - Modified the `PdfDocument` class:

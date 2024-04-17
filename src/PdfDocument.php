@@ -2469,7 +2469,7 @@ class PdfDocument
      */
     protected function cleanText(string $str): string
     {
-        return '' === $str ? $str : \rtrim(\str_replace("\r", '', $str), self::NEW_LINE);
+        return '' === $str ? $str : \str_replace("\r", '', $str);
     }
 
     /**
