@@ -1,5 +1,10 @@
 # Change log
 
+## [Unreleased]
+
+- Removed `orklah/psalm-*` plugins.
+- Added tests.
+
 ## 1.8.4.15 - 2024-04-17
 
 - Modified the `PdfDocument` class:
