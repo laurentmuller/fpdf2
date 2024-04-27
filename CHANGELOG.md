@@ -6,6 +6,8 @@
 - Reworked the `rect()` function.
 - Updated PHP documentation.
 - Added tutorials.
+- Removed `orklah/psalm-*` plugins.
+- Added tests.
 
 ## 1.8.4.15 - 2024-04-17
 

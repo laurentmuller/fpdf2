@@ -24,10 +24,4 @@
     </projectFiles>
 
     <issueHandlers/>
-
-    <plugins>
-        <pluginClass class="Orklah\NotEmpty\Plugin"/>
-        <pluginClass class="Orklah\PsalmInsaneComparison\Plugin"/>
-        <pluginClass class="Orklah\StrictEquality\Plugin"/>
-    </plugins>
 </psalm>

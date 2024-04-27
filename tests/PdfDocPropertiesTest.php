@@ -71,6 +71,13 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
         self::assertSame(1, $doc->getPage());
     }
 
+    public function testCompression(): void
+    {
+        $doc = $this->createDocument();
+        $doc->setCompression(false);
+        self::assertSame(1, $doc->getPage());
+    }
+
     public function testCreateLink(): void
     {
         $doc = $this->createDocument();
@@ -189,6 +196,8 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
         $doc = $this->createDocument();
         self::assertSame(0, $doc->getLinesCount(null));
         self::assertSame(0, $doc->getLinesCount(''));
+        self::assertSame(0, $doc->getLinesCount("\r"));
+        self::assertSame(2, $doc->getLinesCount("\r\n"));
         self::assertSame(3, $doc->getLinesCount("\n\n"));
         self::assertSame(1, $doc->getLinesCount('fake'));
         self::assertSame(2, $doc->getLinesCount("Firs Line\nSecond Line"));
