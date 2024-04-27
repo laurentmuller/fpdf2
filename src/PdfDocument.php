@@ -170,7 +170,7 @@ class PdfDocument
     protected bool $inFooter = false;
     /**The flag set when processing header. */
     protected bool $inHeader = false;
-    /** The height of last printed cell. */
+    /** The height of the last printed cell. */
     protected float $lastHeight = 0.0;
     /** The layout display mode. */
     protected PdfLayout $layout = PdfLayout::DEFAULT;
@@ -242,7 +242,7 @@ class PdfDocument
     protected bool $underline = false;
     /** The current page width in user unit. */
     protected float $width = 0.0;
-    /** Indicates whether alpha channel is used. */
+    /** Indicates whether the alpha channel is used. */
     protected bool $withAlpha = false;
     /** The word spacing. */
     protected float $wordSpacing = 0.0;
@@ -256,7 +256,7 @@ class PdfDocument
     /**
      * Create a new instance.
      *
-     * It allows to set up the page orientation, the page size and the unit of measure used in all methods (except for
+     * It allows setting up the page orientation, the page size and the unit of measure used in all methods (except for
      * font sizes).
      *
      * @param PdfOrientation      $orientation the page orientation
@@ -321,6 +321,8 @@ class PdfDocument
      *                                   and style, in lower case with no space.
      * @param ?string            $dir    The directory where to load the definition file. If not specified, the default
      *                                   directory will be used.
+     *
+     * @throws PdfException if font definition is incorrect
      *
      * @see PdfDocument::setFont()
      * @see PdfDocument::setFontSizeInPoint()
@@ -398,7 +400,7 @@ class PdfDocument
      *
      * If a page is already present, the <code>footer()</code> method is called first to output the footer. Then the
      * page is added, the current position set to the top-left corner according to the left and top margins, and
-     * <code>header()</code> is called to display the header. The font, which was set before calling is automatically
+     * <code>header()</code> is called to display the header. The font, which was set before calling, is automatically
      * restored. There is no need to call <code>setFont()</code> again if you want to continue with the same font. The
      * same is <code>true</code> for colors and line width.
      *
@@ -409,6 +411,8 @@ class PdfDocument
      * @param PdfPageSize|PdfSize|null $size        the page size or <code>null</code> to use the current size
      * @param ?PdfRotation             $rotation    the rotation by which to rotate the page or <code>null</code> to
      *                                              use the current rotation
+     *
+     * @throws PdfException if the document is closed
      */
     public function addPage(
         ?PdfOrientation $orientation = null,
@@ -497,12 +501,14 @@ class PdfDocument
      * @param float            $height the cell height
      * @param string           $text   the cell text
      * @param ?PdfBorder       $border indicates how borders must be drawn around the cell. If <code>null</code>,
-     *                                 or <code>none()</code>, no border is draw.
+     *                                 or <code>none()</code>, no border is drawn.
      * @param PdfMove          $move   indicates where the current position should go after the call
      * @param PdfTextAlignment $align  the text alignment
      * @param bool             $fill   indicates if the cell background must be painted (<code>true</code>) or
      *                                 transparent (<code>false</code>)
      * @param string|int|null  $link   a URL or an identifier returned by <code>addLink()</code>
+     *
+     * @throws PdfException if the given text is not empty and no font is set
      *
      * @see PdfDocument::multiCell()
      */
@@ -643,8 +649,8 @@ class PdfDocument
      *
      * This is a combination of the <code>addLink()</code> and the <code>setLink()</code> functions.
      *
-     * @param float    $y    the ordinate of target position; a negative value indicates the current position. The
-     *                       default value is 0 (top of page).
+     * @param float    $y    the ordinate of target position; a negative value indicates the current position.
+     *                       The default value is 0 (top of page).
      * @param int|null $page the target page or <code>null</code> to use the current page
      *
      * @return int the link identifier
@@ -666,7 +672,7 @@ class PdfDocument
      * It is automatically called before <code>addPage()</code> and <code>close()</code> methods and should not be
      * called directly by the application.
      *
-     * The implementation is empty, so you have to subclass it and override the method if you want a specific
+     * The implementation is empty, so you have to subclass it and override the method if you want specific
      * processing.
      *
      * @see PdfDocument::header()
@@ -742,7 +748,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the line join.
+     * Gets the line join style.
      *
      *  The default value is <code>PdfLineJoin::MITER</code>.
      */
@@ -761,6 +767,8 @@ class PdfDocument
      * @param ?float  $cellMargin the desired cell margin or <code>null</code> to use current value
      *
      * @return int the number of lines
+     *
+     * @throws PdfException if the given text is not empty and no font is set
      */
     public function getLinesCount(?string $text, ?float $width = null, ?float $cellMargin = null): int
     {
@@ -975,7 +983,7 @@ class PdfDocument
      * It is automatically called after <code>addPage()</code> method and should not be called directly by the
      * application.
      *
-     * The implementation is empty, so you have to subclass it and override the method if you want a specific
+     * The implementation is empty, so you have to subclass it and override the method if you want specific
      * processing.
      *
      * @see PdfDocument::footer()
@@ -1015,28 +1023,28 @@ class PdfDocument
      * The size it will take on the page can be specified in different ways:
      * <ul>
      * <li>Explicit width and height (expressed in user unit or dpi).</li>
-     * <li>One explicit dimension, the other being calculated automatically in order to keep the original
+     * <li>One explicit dimension, the other being calculated automatically to keep the original
      * proportions.</li>
      * <li>No explicit dimension, in which case the image is put at 96 dpi.</li>
      * </ul>
      *
-     * Supported formats are JPEG, PNG and GIF. The GD extension is required for GIF.
+     * Supported formats are JPEG, PNG and GIF. The GD extension is required for the GIF format.
      *
-     * For JPEG, the following variants are allowed:
+     * For the JPEG format, the following variants are allowed:
      * <ul>
      * <li>Gray scales.</li>
      * <li>True colors (24 bits).</li>
      * <li>CMYK (32 bits).</li>
      * </ul>
      *
-     * For PNG, are allowed:
+     * For the PNG format, are allowed:
      * <ul>
      * <li>Gray scales on at most 8 bits (256 levels).</li>
      * <li>Indexed colors.</li>
      * <li>True colors (24 bits).</li>
      * </ul>
      *
-     * For GIF:
+     * For the GIF format:
      * <ul>
      * <li>In case of an animated GIF, only the first frame is displayed.</li>
      * </ul>
@@ -1077,6 +1085,8 @@ class PdfDocument
      *                                </ul>
      * @param string          $type   the image format. If not specified, the type is inferred from the file extension.
      * @param string|int|null $link   an URL or an identifier returned by <code>addLink()</code>
+     *
+     * @throws PdfException if the image file is empty, or if the image cannot be processed
      */
     public function image(
         string $file,
@@ -1177,7 +1187,7 @@ class PdfDocument
     /**
      * Returns if the given link is valid.
      *
-     * To be valid the link must be a non-empty string or a positive integer.
+     * To be valid, the link must be a non-empty string or a positive integer.
      *
      * @param string|int|null $link the link to validate
      *
@@ -1191,7 +1201,7 @@ class PdfDocument
     }
 
     /**
-     * Returns if the given height would not cause an overflow (new page).
+     * Returns if the given height does not cause an overflow (new page).
      *
      * @param float  $height the desired height
      * @param ?float $y      the ordinate position or <code>null</code> to use the current position
@@ -1211,10 +1221,10 @@ class PdfDocument
      *
      * Do nothing if points are equal.
      *
-     * @param float $x1 the abscissa of first point
-     * @param float $y1 the ordinate of first point
-     * @param float $x2 the abscissa of second point
-     * @param float $y2 the ordinate of second point
+     * @param float $x1 the abscissa of the first point
+     * @param float $y1 the ordinate of the first point
+     * @param float $x2 the abscissa of the second point
+     * @param float $y2 the ordinate of the second point
      */
     public function line(float $x1, float $y1, float $x2, float $y2): self
     {
@@ -1272,8 +1282,8 @@ class PdfDocument
      * Text or image links are generally put via <code>cell()</code>, <code>write()</code> or <code>image()</code>, but
      * this method can be useful for instance to define a clickable area inside an image.
      *
-     * @param float      $x      the abscissa of the upper-left corner of the rectangle
-     * @param float      $y      the ordinate of the upper-left corner of the rectangle
+     * @param float      $x      the abscissa of the rectangle
+     * @param float      $y      the ordinate of the rectangle
      * @param float      $width  the width of the rectangle
      * @param float      $height the height of the rectangle
      * @param string|int $link   an URL or an identifier returned by <code>addLink()</code>
@@ -1317,7 +1327,7 @@ class PdfDocument
     /**
      * This method allows printing text with line breaks.
      *
-     * They can be automatic, as soon as the text reaches the right border of the cell, or explicit via the line
+     * They can be automatic as soon as the text reaches the right border of the cell, or explicit via the line
      * feed character ("\n"). As many cells as necessary are output, one below the other. Text can be aligned, centered
      * or justified. The cell block can be framed and the background painted.
      *
@@ -1325,10 +1335,12 @@ class PdfDocument
      * @param float            $height the cell height
      * @param string           $text   the cell text
      * @param ?PdfBorder       $border indicates how borders must be drawn around the cell. If <code>null</code>,
-     *                                 no border is draw.
+     *                                 no border is drawn.
      * @param PdfTextAlignment $align  the text alignment
      * @param bool             $fill   indicates if the cell background must be painted (<code>true</code>) or
      *                                 transparent (<code>false</code>)
+     *
+     * @throws PdfException if the given text is not empty and no font is set
      *
      * @see PdfDocument::cell()
      */
@@ -1476,8 +1488,8 @@ class PdfDocument
     /**
      * Send the document to a given destination: browser, file or string.
      *
-     * In case of a browser, the PDF viewer may be used or a download may be forced. The method first calls
-     * <code>close()</code> if necessary to terminate the document.
+     * For a browser, the PDF viewer may be used or a download may be forced.
+     * The method first calls <code>close()</code> if necessary to terminate the document.
      *
      * @param PdfDestination $destination The destination where to send the document
      * @param ?string        $name        The name of the file. It is ignored in case of
@@ -1488,6 +1500,9 @@ class PdfDocument
      *                                    <code>PdfDestination::INLINE</code> and <code>PdfDestination::DOWNLOAD</code>.
      *
      * @return string the content if the output is <code>PdfDestination::STRING</code>, an empty string otherwise
+     *
+     * @throws PdfException if the destination is file and the content cannot be written or if some data has already
+     *                      been output
      */
     public function output(
         PdfDestination $destination = PdfDestination::INLINE,
@@ -1544,7 +1559,7 @@ class PdfDocument
     }
 
     /**
-     * Converts the given pixels to user unit using 72 dot per each (DPI).
+     * Converts the given pixels to user unit using 72 dots per each (DPI).
      *
      * @param float|int $pixels the pixels to convert
      *
@@ -1578,8 +1593,8 @@ class PdfDocument
      *
      * It is possible to put a link on the rectangle.
      *
-     * @param float                       $x      the abscissa of the upper-left corner of the rectangle
-     * @param float                       $y      the ordinate of the upper-left corner of the rectangle
+     * @param float                       $x      the abscissa of the upper-left corner
+     * @param float                       $y      the ordinate of the upper-left corner
      * @param float                       $width  the width of the rectangle
      * @param float                       $height the height of the rectangle
      * @param PdfRectangleStyle|PdfBorder $style  the style of rendering
@@ -1603,16 +1618,10 @@ class PdfDocument
                 -$height * $scaleFactor,
                 $style->value
             );
-            if (self::isLink($link)) {
-                $this->link($x, $y, $width, $height, $link);
-            }
-
-            return $this;
-        }
-
-        if (!$style->isNone()) {
+        } elseif (!$style->isNone()) {
             $this->out($this->formatBorders($x, $y, $width, $height, $style));
         }
+
         if (self::isLink($link)) {
             $this->link($x, $y, $width, $height, $link);
         }
@@ -1750,7 +1759,7 @@ class PdfDocument
     }
 
     /**
-     * Defines the color used for all drawing operations (lines, rectangles, and cell borders).
+     * Defines the color used for all drawing operations (lines, rectangles and cell borders).
      *
      * It can be expressed in RGB components or gray scale. The method can be called before the first page is created
      * and the value is retained from page to page.
@@ -1809,7 +1818,7 @@ class PdfDocument
     /**
      * Sets the font used to print character strings.
      *
-     * It is mandatory to call this method at least once before printing text.
+     * It is mandatory to call this method at least once before a printing text.
      *
      * The font can be either a standard one or a font added by the <code>addFont()</code> method. Standard fonts use
      * the Windows encoding cp1252 (Western Europe).
@@ -1836,6 +1845,8 @@ class PdfDocument
      * @param ?float                  $fontSizeInPoint The font size in points or <code>null</code> to use the current
      *                                                 size. If no size has been specified since the beginning of the
      *                                                 document, the value is 9.0.
+     *
+     * @throws PdfException if the font is undefined
      *
      * @see PdfDocument::addFont()
      * @see PdfDocument::setFontSizeInPoint()
@@ -1958,7 +1969,7 @@ class PdfDocument
     }
 
     /**
-     * Sets the line join.
+     * Sets the line join style.
      *
      * The method can be called before the first page is created and the value is retained from page to page.
      */
@@ -1990,8 +2001,8 @@ class PdfDocument
      * Defines the page and position a link points to.
      *
      * @param int      $link the link identifier returned by <code>addLink()</code>
-     * @param float    $y    the ordinate of target position; a negative value indicates the current position. The
-     *                       default value is 0 (top of page).
+     * @param float    $y    the ordinate of target position; a negative value indicates the current position.
+     *                       The default value is 0 (top of the page).
      * @param int|null $page the target page or <code>null</code> to use the current page
      *
      * @see PdfDocument::addLink()
@@ -2138,8 +2149,8 @@ class PdfDocument
     /**
      * Defines the abscissa of the current position.
      *
-     * @param float $x the value of the abscissa. If the passed value is negative, it is relative to the right of the
-     *                 page.
+     * @param float $x the value of the abscissa. If the passed value is negative, it is relative to the right of
+     *                 the page.
      */
     public function setX(float $x): self
     {
@@ -2162,8 +2173,8 @@ class PdfDocument
     /**
      * Sets the ordinate and optionally moves the current abscissa back to the left margin.
      *
-     * @param float $y      the value of the ordinate. If the value is negative, it is relative to the bottom of the
-     *                      page.
+     * @param float $y      the value of the ordinate. If the value is negative, it is relative to the bottom of
+     *                      the page.
      * @param bool  $resetX if <code>true</code>, the abscissa is reset to the left margin
      */
     public function setY(float $y, bool $resetX = true): self
@@ -2188,6 +2199,8 @@ class PdfDocument
      * @param float  $x    the abscissa of the origin
      * @param float  $y    the ordinate of the origin
      * @param string $text the string to print
+     *
+     * @throws PdfException if the given text is not empty and no font is set
      *
      * @see PdfDocument::write()
      */
@@ -2232,7 +2245,7 @@ class PdfDocument
     }
 
     /**
-     * Set the cell margins to the given value, call the given user function and reset margins to previous value.
+     * Set the cell margins to the given value, call the given user function and reset margins to the previous value.
      *
      * @param callable $callable the function to call
      * @param float    $margin   the cell margin to set. The minimum value allowed is 0.
@@ -2250,7 +2263,7 @@ class PdfDocument
     /**
      * This method prints text from the current position.
      *
-     * When the right margin is reached, or the line feed character ("\n") is met, a line break occurs and text
+     * When the right margin is reached, or the line feed character ("\n") is met, a line break occurs and the text
      * continues from the left margin. Upon method exit, the current position is left just at the end of the text.
      * It is possible to put a link on the text.
      *
@@ -2259,6 +2272,8 @@ class PdfDocument
      * @param string          $text   the string to print
      * @param float           $height the line height
      * @param string|int|null $link   a URL or an identifier returned by <code>addLink()</code>
+     *
+     * @throws PdfException if the given text is not empty and no font is set
      *
      * @see PdfDocument::text()
      */
@@ -2317,7 +2332,7 @@ class PdfDocument
                 // automatic line break
                 if (-1 === $sepIndex) {
                     if ($this->x > $this->leftMargin) {
-                        // Move to next line
+                        // Move to the next line
                         $this->x = $this->leftMargin;
                         $this->y += $height;
                         $width = $this->getRemainingWidth();
@@ -3271,7 +3286,7 @@ class PdfDocument
     }
 
     /**
-     * Put resource dictionary to this buffer.
+     * Put the resource dictionary to this buffer.
      */
     protected function putResourceDictionary(): void
     {
@@ -3292,7 +3307,7 @@ class PdfDocument
     }
 
     /**
-     * Put resources dictionary to this buffer.
+     * Put all resource's dictionary to this buffer.
      */
     protected function putResources(): void
     {
@@ -3317,7 +3332,7 @@ class PdfDocument
     }
 
     /**
-     * Put stream object to this buffer.
+     * Put the stream object to this buffer.
      */
     protected function putStreamObject(string $data): void
     {
@@ -3334,7 +3349,7 @@ class PdfDocument
     }
 
     /**
-     * Put trailer to this buffer.
+     * Put the trailer to this buffer.
      */
     protected function putTrailer(): void
     {
@@ -3356,7 +3371,7 @@ class PdfDocument
     }
 
     /**
-     * Convert the V type array to unicode character map.
+     * Convert the V type array to the unicode character map.
      *
      * @phpstan-param UvType $uv
      */
@@ -3407,7 +3422,7 @@ class PdfDocument
      * Update and output the word spacing.
      *
      * @param float $value  the word spacing value to set
-     * @param bool  $format <code>true</code> to output formatted word spacing value, even if equal to 0
+     * @param bool  $format <code>true</code> to output the formatted word spacing value, even if equal to 0
      */
     protected function updateWordSpacing(float $value = 0.0, bool $format = false): void
     {

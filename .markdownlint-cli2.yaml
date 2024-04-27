@@ -1,0 +1,6 @@
+config:
+    line-length: false
+
+globs:
+    - "*.md"
+    - "doc/*.md"

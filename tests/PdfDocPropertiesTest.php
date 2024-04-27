@@ -110,8 +110,11 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
         self::assertSame(0.0, $doc->getStringWidth(''));
         $doc->setFont(PdfFontName::ARIAL);
         self::assertSame(0.0, $doc->getStringWidth(''));
+        self::assertSame(0.0, $doc->getStringWidth("\r"));
+        self::assertSame(0.0, $doc->getStringWidth("\r\r"));
         self::assertEqualsWithDelta(0.88, $doc->getStringWidth("\n"), 0.01);
         self::assertEqualsWithDelta(0.88, $doc->getStringWidth(' '), 0.01);
+        self::assertEqualsWithDelta(0.88, $doc->getStringWidth("\r\n\r"), 0.01);
     }
 
     public function testHorizontalLine(): void

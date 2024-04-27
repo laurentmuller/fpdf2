@@ -1,5 +1,12 @@
 # Change log
 
+## 1.8.4.16 - 2024-04-27
+
+- Add more tests for `cleanText()` function.
+- Reworked the `rect()` function.
+- Updated PHP documentation.
+- Added tutorials.
+
 ## 1.8.4.15 - 2024-04-17
 
 - Modified the `PdfDocument` class:

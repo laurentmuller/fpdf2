@@ -25,6 +25,24 @@ Or you can include the following in your `composer.json` file:
 }
 ```
 
+**Usage:**
+
+```php
+$pdf = new PdfDocument();
+$pdf->addPage();
+$pdf->setFont(PdfFontName::ARIAL, PdfFontStyle::BOLD, 16);
+$pdf->cell(40, 10, 'Hello World!');
+$pdf->output();
+```
+
+**Tutorials:**
+
+- [Minimal example](doc/tuto_1.md)
+- [Header, footer, page break and image](doc/tuto_2.md)
+- [Line breaks and colors](doc/tuto_3.md)
+- [Multi-columns](doc/tuto_4.md)
+- [Tables](doc/tuto_5.md)
+
 ## Actions
 
 [![PHP-CS-Fixer](https://github.com/laurentmuller/fpdf2/actions/workflows/php-cs-fixer.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/php-cs-fixer.yaml)
