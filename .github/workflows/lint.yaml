@@ -21,8 +21,6 @@ jobs:
 
             -   name: Lint Markdown
                 uses: DavidAnson/markdownlint-cli2-action@v15
-                with:
-                    globs: '*.md'
 
             -   name: Validate Composer
                 run: composer validate --strict

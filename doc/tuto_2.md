@@ -3,42 +3,48 @@
 Here's a two-page example with a header, a footer and a logo:
 
 ```php
+use fpdf\PdfBorder;
+use fpdf\PdfDocument;
+use fpdf\PdfFontName;
+use fpdf\PdfFontStyle;
+use fpdf\PdfMove;
+
 class CustomDocument extends PdfDocument
 {
-    // Page header
-    function header(): void
+    // page header
+    public function header(): void
     {
-        // Logo
+        // logo
         $this->image('logo.png', 10, 6, 30);
-        // Arial bold 15
+        // Arial bold 15pt
         $this->setFont(PdfFontName::ARIAL, PdfFontStyle::BOLD, 15);
         // move to the right
         $this->cell(80);
         // title
-        $this->cell(30, 10, 'Title', PdfBorder::all(), PdfMove::RIGHT, PdfTextAlignment.CENTER);
+        $this->cell(30, 10, 'Title', PdfBorder::all(), PdfMove::RIGHT, PdfTextAlignment::CENTER);
         // line break
         $this->lineBreak(20);
     }
-    
-    // Page footer
-    function Footer()
+
+    // page footer
+    public function footer(): void
     {
-        // Position at 1.5 cm from bottom
+        // position at 1.5 cm from bottom
         $this->setY(-15);
-        // Arial italic 8
+        // Arial italic 8pt
         $this->setFont(PdfFontName::ARIAL, PdfFontStyle::ITALIC, 8);
-        // Page number
-        $this->cell(0, 10, 'Page ' . $this->PageNo() . '/{nb}', PdfBorder::none(), PdfMove::RIGHT, PdfTextAlignment.CENTER);
+        // page number
+        $this->cell(0, 10, \sprintf('Page %d/{nb}', $this->getPage()), PdfBorder::none(), PdfMove::RIGHT, PdfTextAlignment::CENTER);
     }
 }
 
-// Instanciation of inherited class
+// instanciation of inherited class
 $pdf = new CustomDocument();
-$pdf->setAliasNumberPages()
-    ->setFont(PdfFontName::TIMES, PdfFontStyle::REGULAR, 12)
-    ->addPage();
-for($i = 1; $i <= 40; $i++) {
-    $pdf->cell(0, 10, 'Printing line number ' . $i, PdfBorder::none(), PdfMove::NEW_LINE);
+$pdf->setFont(PdfFontName::TIMES, PdfFontStyle::REGULAR, 12);
+$pdf->setAliasNumberPages();
+$pdf->addPage();
+for ($i = 1; $i <= 40; ++$i) {
+    $pdf->cell(0, 10, \sprintf('Printing line number %d', $i), PdfBorder::none(), PdfMove::NEW_LINE);
 }
 $pdf->output();
 ```

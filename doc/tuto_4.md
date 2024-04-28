@@ -3,107 +3,114 @@
 This example is a variant of the previous one showing how to lay the text across multiple columns.
 
 ```php
+use fpdf\PdfBorder;
+use fpdf\PdfDocument;
+use fpdf\PdfFontName;
+use fpdf\PdfFontStyle;
+use fpdf\PdfMove;
+use fpdf\PdfTextAlignment;
+
 class CustomDocument extends PdfDocument
 {
-    // Current column
+    // current column
     private int $col = 0;
-    // Ordinate of column start
-    private float $y0 = 0.0;      
-    
-    function header(): void
+    // ordinate of column start
+    private float $currentY = 0.0;
+
+    public function header(): void
     {
-        // Page header
-        global $title = '';
-    
+        // page header
+        $title = $this->getTitle();
         $this->setFont(PdfFontName::ARIAL, PdfFontStyle::BOLD, 15);
-        $w = $this->getStringWidth($title) + 6;
-        $this->setX((210 - $w) / 2);
+        $width = $this->getStringWidth($title) + 6.0;
+        $this->setX((210.0 - $width) / 2);
         $this->setDrawColor(0, 80, 180);
         $this->setFillColor(230, 230, 0);
         $this->setTextColor(220, 50, 50);
         $this->setLineWidth(1);
-        $this->cell($w, 9, $title, PdfBorder::all(), PdfMove::NEW_LINE, PdfTextAlignment.CENTER, true);
+        $this->cell($width, 9, $title, PdfBorder::all(), PdfMove::NEW_LINE, PdfTextAlignment::CENTER, true);
         $this->lineBreak(10);
-        // Save ordinate
-        $this->y0 = $this->getY();
+        // save ordinate
+        $this->currentY = $this->getY();
     }
     
-    function footer(): void
+    public function footer(): void
     {
-        // Page footer
+        // page footer
         $this->setY(-15);
         $this->setFont(PdfFontName::ARIAL, PdfFontStyle::ITALIC, 8);
         $this->setTextColor(128);
-        $this->cell(0, 10, 'Page ' . $this->PageNo(), PdfBorder::NONE(), PdfMove::RIGHT, PdfTextAlignment.CENTER);
+        $this->cell(0, 10, \sprintf('Page %d', $this->getPage()), PdfBorder::none(), PdfMove::RIGHT, PdfTextAlignment::CENTER);
     }
-    
-    function setCol($col): void
+
+    public function setCol(int $col): void
     {
-        // Set position at a given column
+        // set position at a given column
         $this->col = $col;
-        $x = 10 + $col * 65;
+        $x = 10.0 + (float) $col * 65.0;
         $this->setLeftMargin($x);
         $this->setX($x);
     }
-    
-    function isAutoPageBreak(): bool
+
+    public function chapterBody(string $file): void
     {
-        // Method accepting or not automatic page break
-        if($this->col < 2)
-        {
-            // Go to next column
-            $this->setCol($this->col + 1);
-            // Set ordinate to top
-            $this->setY($this->y0);
-            // Keep on page
-            return false;
-        } else {
-            // Go back to first column
-            $this->setCol(0);
-            // Page break
-            return true;
-        }
-    }
-    
-    function chapterTitle(int $num, string $label): void
-    {
-        // Title
-        $this->setFont(PdfFontName::ARIAL, PdfFontStyle::REGULAR, 12);
-        $this->setFillColor(200, 220, 255);
-        $this->cell(0, 6, "Chapter $num : $label", PdfBorder::NONE(), PdfMove::NEW_LINE, PdfTextAlignment.LEFT, true);
-        $this->lineBreak(4);
-        // Save ordinate
-        $this->y0 = $this->getY();
-    }
-    
-    function chapterBody(string $file): void
-    {
-        // Read text file
-        $txt = \file_get_contents($file);
-        // Font
+        // read text file
+        $content = (string) \file_get_contents($file);
+        // font
         $this->setFont(PdfFontName::TIMES, PdfFontStyle::REGULAR, 12);
-        // Output text in a 6 cm width column
-        $this->multiCell(60, 5, $txt);
+        // output text in a 6 cm width column
+        $this->multiCell(60, 5, $content);
         $this->lineBreak();
-        // Mention
-        $this->setFont(null, PdfFontStyle::ITALIC);
-        $this->cell(0,5, '(end of excerpt)');
-        // Go back to first column
+        // mention
+        $this->setFont(style: PdfFontStyle::ITALIC);
+        $this->cell(0, 5, '(end of excerpt)');
+        // go back to first column
         $this->setCol(0);
     }
-    
-    function printChapter(int $num, string $title, string $file): void
+
+    public function chapterTitle(int $num, string $title): void
     {
-        // Add chapter
+        // title
+        $this->setFont(PdfFontName::ARIAL, PdfFontStyle::REGULAR, 12);
+        $this->setFillColor(200, 220, 255);
+        $this->cell(0, 6, \sprintf('Chapter %d. %s', $num, $title), PdfBorder::none(), PdfMove::NEW_LINE, PdfTextAlignment::LEFT, true);
+        $this->lineBreak(4);
+        // save ordinate
+        $this->currentY = $this->getY();
+    }
+
+    public function isAutoPageBreak(): bool
+    {
+        // method accepting or not automatic page break
+        if ($this->col < 2) {
+            // go to next column
+            $this->setCol($this->col + 1);
+            // set ordinate to top
+            $this->setY($this->currentY);
+
+            // keep on page
+            return false;
+        }
+
+        // go back to first column
+        $this->setCol(0);
+
+        // page break
+        return true;
+    }
+
+    public function printChapter(int $num, string $title, string $file): void
+    {
+        // add chapter
         $this->addPage();
-        $this->chapterTitle($num,$title);
+        $this->chapterTitle($num, $title);
         $this->chapterBody($file);
     }
 }
 
 $pdf = new CustomDocument();
-$pdf->setTitle('20000 Leagues Under the Seas');
 $pdf->setAuthor('Jules Verne');
+$pdf->setTitle('20000 Leagues Under the Seas');
 $pdf->printChapter(1, 'A RUNAWAY REEF', '20k_c1.txt');
 $pdf->printChapter(2, 'THE PROS AND CONS', '20k_c2.txt');
 $pdf->output();

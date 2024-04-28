@@ -1,5 +1,10 @@
 # Change log
 
+## Unreleased
+
+- Updated tutorials.
+- Updated lint action.
+
 ## 1.8.4.16 - 2024-04-27
 
 - Add more tests for `cleanText()` function.

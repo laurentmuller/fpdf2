@@ -4,69 +4,76 @@ Let's continue with an example, which prints justified paragraphs. It also
 illustrates the use of colors.
 
 ```php
+
+use fpdf\PdfBorder;
+use fpdf\PdfDocument;
+use fpdf\PdfFontName;
+use fpdf\PdfFontStyle;
+use fpdf\PdfMove;
+use fpdf\PdfTextAlignment;
+
 class CustomDocument extends PdfDocument
 {
-    function header(): void
+    public function header(): void
     {
-        global $title = '';
-    
-        // Arial bold 15
+        // Arial bold 15pt
         $this->setFont(PdfFontName::ARIAL, PdfFontStyle::BOLD, 15);
-        // Calculate width of title and position
-        $w = $this->getStringWidth($title) + 6;
-        $this->setX((210 - $w) / 2);
-        // Colors of frame, background and text
+        // calculate width of title and position
+        $title = $this->getTitle();
+        $width = $this->getStringWidth($title) + 6.0;
+        $this->setX((210.0 - $width) / 2.0);
+        // colors of frame, background and text
         $this->setDrawColor(0, 80, 180);
         $this->setFillColor(230, 230, 0);
         $this->setTextColor(220, 50, 50);
-        // Thickness of frame (1 mm)
+        // thickness of frame (1 mm)
         $this->setLineWidth(1);
-        // Title
-        $this->cell($w, 9, $title, PdfBorder::all(), PdfMove::NEW_LINE, PdfTextAlignment.CENTER, true);
-        // Line break
+        // title
+        $this->cell($width, 9, $title, PdfBorder::all(), PdfMove::NEW_LINE, PdfTextAlignment::CENTER, true);
+        // line break
         $this->lineBreak(10);
     }
-    
-    function footer(): void
+
+    public function footer(): void
     {
-        // Position at 1.5 cm from bottom
+        // position at 1.5 cm from bottom
         $this->setY(-15);
-        // Arial italic 8
+        // Arial italic 8pt
         $this->setFont(PdfFontName::ARIAL, PdfFontStyle::ITALIC, 8);
-        // Text color in gray
+        // text color in gray
         $this->setTextColor(128);
-        // Page number
-        $this->cell(0, 10, 'Page ' . $this->PageNo(), PdfBorder::NONE(), PdfMove::RIGHT, PdfTextAlignment.CENTER);
+        // page number
+        $this->cell(0, 10, \sprintf('Page %d', $this->getPage()), PdfBorder::none(), PdfMove::RIGHT, PdfTextAlignment::CENTER);
+    }
+    
+    public function chapterBody(string $file): void
+    {
+        // read text file
+        $content = (string) \file_get_contents($file);
+        // Times 12pt
+        $this->setFont(PdfFontName::TIMES, PdfFontStyle::REGULAR, 12);
+        // output justified text
+        $this->multiCell(0, 5, $content);
+        // line break
+        $this->lineBreak();
+        // mention in italics
+        $this->setFont(null, PdfFontStyle::ITALIC);
+        $this->cell(0, 5, '(end of excerpt)');
     }
 
-    function chapterTitle(int $num, string $label): void
+    public function chapterTitle(int $num, string $title): void
     {
-        // Arial 12
+        // Arial 12pt
         $this->setFont(PdfFontName::ARIAL, PdfFontStyle::REGULAR, 12);
-        // Background color
+        // background color
         $this->setFillColor(200, 220, 255);
-        // Title
-        $this->cell(0, 6, "Chapter $num : $label", PdfBorder::NONE(), PdfMove::NEW_LINE, PdfTextAlignment.LEFT, true);
-        // Line break
+        // title
+        $this->cell(0, 6, \sprintf('Chapter %d. %s', $num, $title), PdfBorder::none(), PdfMove::NEW_LINE, PdfTextAlignment::LEFT, true);
+        // line break
         $this->lineBreak(4);
     }
-    
-    function chapterBody(string $file): void
-    {
-        // Read text file
-        $txt = \file_get_contents($file);
-        // Times 12
-        $this->setFont(PdfFontName::TIMES, PdfFontStyle::REGULAR, 12);
-        // Output justified text
-        $this->multiCell(0, 5, $txt);
-        // Line break
-        $this->lineBreak();
-        // Mention in italics
-        $this->setFont(null, PdfFontStyle::ITALIC);
-        $this->cell(0,5,'(end of excerpt)');
-    }
-    
-    function printChapter(int $num, string $title, string $file): void
+
+    public function printChapter(int $num, string $title, string $file): void
     {
         $this->addPage();
         $this->chapterTitle($num, $title);

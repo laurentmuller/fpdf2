@@ -3,111 +3,118 @@
 This tutorial shows different ways to make tables.
 
 ```php
+
+use fpdf\PdfBorder;
+use fpdf\PdfDocument;
+use fpdf\PdfFontName;
+use fpdf\PdfFontStyle;
+use fpdf\PdfMove;
+use fpdf\PdfTextAlignment;
+
 class CustomDocument extends PdfDocument
 {
-    // Load data
-    function loadData(string $file): array
+
+    // load data
+    public function loadData(string $file): array
     {
-        // Read file lines
+        // read file lines
         $data = [];
-        $lines = file($file);
-        foreach($lines as $line) {
-            $data[] = explode(';',trim($line));
+        $lines = (array) \file($file);
+        foreach ($lines as $line) {
+            $data[] = \explode(';', \trim($line));
         }
-        
+
         return $data;
     }
-    
-    // Simple table
-    function basicTable(array $header, array $data): void
+
+    // simple table
+    public function basicTable(array $header, array $data): void
     {
-        // Header
-        foreach($header as $col) {
+        // header
+        foreach ($header as $col) {
             $this->cell(40, 7, $col, PdfBorder::all());
         }
         $this->lineBreak();
-        // Data
-        foreach($data as $row)
-        {
-            foreach($row as $col) {
+
+        // data
+        foreach ($data as $row) {
+            foreach ($row as $col) {
                 $this->cell(40, 6, $col, PdfBorder::all());
             }
             $this->lineBreak();
         }
     }
-    
-    // Better table
-    function improvedTable(array $header, array $data): void
+
+    // better table
+    public function improvedTable(array $header, array $data): void
     {
-        // Column widths
-        $w = [40, 35, 40, 45];
-        // Header
-        for($i = 0; $i < count($header); $i++) {
-            $this->cell($w[$i], 7, $header[$i], PdfBorder::all(), PdfMove::RIGHT, PdfTextAlignment::CENTER);
+        // column widths
+        $widths = [40.0, 35.0, 40.0, 45.0];
+        // header
+        for ($i = 0, $len = \count($header); $i < $len; ++$i) {
+            $this->cell($widths[$i], 7, $header[$i], PdfBorder::all(), align: PdfTextAlignment::CENTER);
         }
         $this->lineBreak();
-        // Data
+        // data
         $border = PdfBorder::leftRight();
-        foreach($data as $row)
-        {
-            $this->cell($w[0], 6, $row[0], $border);
-            $this->cell($w[1], 6, $row[1], $border);
-            $this->cell($w[2], 6, \number_format($row[2]), $border, PdfMove::RIGHT, PdfTextAlignment::RIGHT);
-            $this->cell($w[3], 6, \number_format($row[3]), $border, PdfMove::RIGHT, PdfTextAlignment::RIGHT);
+        foreach ($data as $row) {
+            $this->cell($widths[0], 6, $row[0], $border);
+            $this->cell($widths[1], 6, $row[1], $border);
+            $this->cell($widths[2], 6, \number_format($row[2]), $border, align: PdfTextAlignment::RIGHT);
+            $this->cell($widths[3], 6, \number_format($row[3]), $border, align: PdfTextAlignment::RIGHT);
             $this->lineBreak();
         }
-        // Closing line
-        $this->cell(array_sum($w), 0, '', PdfBorder::top());
+        // closing line
+        $this->cell(\array_sum($widths), 0, border: PdfBorder::top());
     }
-    
-    // Colored table
-    function fancyTable(array $header, array $data): void
+
+    // colored table
+    public function fancyTable(array $header, array $data): void
     {
-        // Colors, line width and bold font
+        // colors, line width and bold font
         $this->setFillColor(255, 0, 0);
         $this->setTextColor(255);
         $this->setDrawColor(128, 0, 0);
         $this->setLineWidth(0.3);
-        $this->setFont('', PdfFontStyle::BOLD);
-        // Header
-        $w = [40, 35, 40, 45];
-        for($i=0; $i < count($header); $i++) {
-            $this->cell($w[$i], 7, $header[$i], PdfBorder::all(), PdfMove::RIGHT, PdfTextAlignment::CENTER,true);
+        $this->setFont(style: PdfFontStyle::BOLD);
+        // header
+        $widths = [40.0, 35.0, 40.0, 45.0];
+        for ($i = 0, $len = \count($header); $i < $len; ++$i) {
+            $this->cell($widths[$i], 7, $header[$i], PdfBorder::all(), align: PdfTextAlignment::CENTER, fill: true);
         }
         $this->lineBreak();
-        // Color and font restoration
+        // color and font restoration
         $this->setFillColor(224, 235, 255);
         $this->setTextColor(0);
-        $this->setFont('');
-        // Data
+        $this->setFont(style: PdfFontStyle::REGULAR);
+        // data
         $fill = false;
         $border = PdfBorder::leftRight();
-        foreach($data as $row)
-        {
-            $this->cell($w[0], 6, $row[0], $border, PdfMove::RIGHT, PdfTextAlignment::LEFT, $fill);
-            $this->cell($w[1], 6, $row[1], $border, PdfMove::RIGHT, PdfTextAlignment::LEFT, $fill);
-            $this->cell($w[2], 6, \number_format($row[2]), $border, PdfMove::RIGHT, PdfTextAlignment::RIGHT, $fill);
-            $this->cell($w[3], 6, \number_format($row[3]), $border, PdfMove::RIGHT, PdfTextAlignment::RIGHT, $fill);
+        foreach ($data as $row) {
+            $this->cell($widths[0], 6, $row[0], $border, PdfMove::RIGHT, PdfTextAlignment::LEFT, $fill);
+            $this->cell($widths[1], 6, $row[1], $border, PdfMove::RIGHT, PdfTextAlignment::LEFT, $fill);
+            $this->cell($widths[2], 6, \number_format($row[2]), $border, PdfMove::RIGHT, PdfTextAlignment::RIGHT, $fill);
+            $this->cell($widths[3], 6, \number_format($row[3]), $border, PdfMove::RIGHT, PdfTextAlignment::RIGHT, $fill);
             $this->lineBreak();
             $fill = !$fill;
         }
-        // Closing line
-        $this->Cell(array_sum($w), 0, '', 'T');
+        // closing line
+        $this->cell(\array_sum($widths), 0, border: PdfBorder::top());
     }
 }
 
 $pdf = new CustomDocument();
-// Column headings
+// column headings
 $header = ['Country', 'Capital', 'Area (sq km)', 'Pop. (thousands)'];
-// Data loading
+// data loading
 $data = $pdf->loadData('countries.txt');
 $pdf->setFont(PdfFontName::ARIAL, PdfFontStyle::REGULAR, 14);
 $pdf->addPage();
-$pdf->basicTable($header,$data);
+$pdf->basicTable($header, $data);
 $pdf->addPage();
-$pdf->improvedTable($header,$data);
+$pdf->improvedTable($header, $data);
 $pdf->addPage();
-$pdf->fancyTable($header,$data);
+$pdf->fancyTable($header, $data);
 $pdf->output();
 ```
 

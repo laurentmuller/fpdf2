@@ -3,6 +3,10 @@
 Let's start with the classic example:
 
 ```php
+use fpdf\PdfDocument;
+use fpdf\PdfFontName;
+use fpdf\PdfFontStyle;
+
 $pdf = new PdfDocument();
 $pdf->addPage();
 $pdf->setFont(PdfFontName::ARIAL, PdfFontStyle::BOLD, 16);
@@ -10,13 +14,13 @@ $pdf->cell(40, 10, 'Hello World!');
 $pdf->output();
 ```
 
-After including the library file, we create an PdfDocument object. The
+After including the library files, we create an PdfDocument object. The
 constructor is used here with the default values: pages are in A4 portrait,
 and the unit of measure is millimeter. It could have been specified explicitly
 with:
 
 ```php
-$pdf = new PdfDocument();
+$pdf = new PdfDocument(PdfOrientation::::, PdfUnit::MILLIMETER, PdfPageSize::A4);
 ```
 
 It is possible to use landscape, other page sizes (such as Letter and Legal)
@@ -53,20 +57,25 @@ To add a new cell next to it with centered text and go to the next line,
 we would do:
 
 ```php
-$pdf->cell(60, 10, 'Powered by FPDF.', PdfBorder::none(), PdfMove::RIGHT, PdfTextAlignment.CENTER);
+$pdf->cell(60, 10, 'Powered by FPDF2.', PdfBorder::none(), PdfMove::NEW_LINE, PdfTextAlignment.CENTER);
 ```
 
-**Remark:** the line break can also be done with `lineBreak()`. This method
+**Remark:** The line break can also be done with `lineBreak()`. This method
 additionally allows specifying the height of the break.
 
 Finally, the document is closed and sent to the browser with `output()`. We
 could have saved it to a file by passing the appropriate parameters.
 
-**Caution:** in case when the PDF is sent to the browser, nothing else must be
+**Caution:** In case when the PDF is sent to the browser, nothing else must be
 output by the script, neither before nor after (no HTML, not even a space or a
 carriage return). If you send something before, you will get the error
-message: "Some data has already been output, can't send PDF file". If you send
-something after, the document might not display.
+message:
+
+```yaml
+"Some data has already been output, can't send PDF file"
+```
+
+If you send something after, the document might not display.
 
 **See also:**
 
