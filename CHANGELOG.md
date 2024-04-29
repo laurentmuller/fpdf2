@@ -1,9 +1,16 @@
 # Change log
 
-## Unreleased
+## 1.9.0.0 - 2024-04-29
 
 - Updated tutorials.
-- Updated lint action.
+- Updated the lint action.
+- Updated the used version in the `README.md` file.
+- **Breakdown !** Modified the `PdfDocument` class:
+  - Updated `cell()` function by replacing default `$width` argument value
+    `0.0` with `null`.
+  - Updated `multiCell()` function by replacing default `$width` argument value
+    `0.0` with `null`.
+  - Updated tests accordingly.
 
 ## 1.8.4.16 - 2024-04-27
 

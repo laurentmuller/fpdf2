@@ -40,7 +40,7 @@ class CustomDocument extends PdfDocument
         $this->setY(-15);
         $this->setFont(PdfFontName::ARIAL, PdfFontStyle::ITALIC, 8);
         $this->setTextColor(128);
-        $this->cell(0, 10, \sprintf('Page %d', $this->getPage()), PdfBorder::none(), PdfMove::RIGHT, PdfTextAlignment::CENTER);
+        $this->cell(null, 10, \sprintf('Page %d', $this->getPage()), PdfBorder::none(), PdfMove::RIGHT, PdfTextAlignment::CENTER);
     }
 
     public function setCol(int $col): void
@@ -63,7 +63,7 @@ class CustomDocument extends PdfDocument
         $this->lineBreak();
         // mention
         $this->setFont(style: PdfFontStyle::ITALIC);
-        $this->cell(0, 5, '(end of excerpt)');
+        $this->cell(null, 5, '(end of excerpt)');
         // go back to first column
         $this->setCol(0);
     }
@@ -73,7 +73,7 @@ class CustomDocument extends PdfDocument
         // title
         $this->setFont(PdfFontName::ARIAL, PdfFontStyle::REGULAR, 12);
         $this->setFillColor(200, 220, 255);
-        $this->cell(0, 6, \sprintf('Chapter %d. %s', $num, $title), PdfBorder::none(), PdfMove::NEW_LINE, PdfTextAlignment::LEFT, true);
+        $this->cell(null, 6, \sprintf('Chapter %d. %s', $num, $title), PdfBorder::none(), PdfMove::NEW_LINE, PdfTextAlignment::LEFT, true);
         $this->lineBreak(4);
         // save ordinate
         $this->currentY = $this->getY();
@@ -87,7 +87,6 @@ class CustomDocument extends PdfDocument
             $this->setCol($this->col + 1);
             // set ordinate to top
             $this->setY($this->currentY);
-
             // keep on page
             return false;
         }

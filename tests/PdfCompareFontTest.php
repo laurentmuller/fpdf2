@@ -62,7 +62,7 @@ class PdfCompareFontTest extends AbstractCompareTestCase
             foreach (\range(10.0, 24.0, 2.0) as $size) {
                 $doc->setFont($file_name, $style, $size);
                 $doc->cell(
-                    0.0,
+                    null,
                     $size,
                     \sprintf('Font name "%s" with size: "%.0f".', $file_name, $size),
                     move: PdfMove::BELOW

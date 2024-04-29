@@ -20,7 +20,7 @@ and the unit of measure is millimeter. It could have been specified explicitly
 with:
 
 ```php
-$pdf = new PdfDocument(PdfOrientation::::, PdfUnit::MILLIMETER, PdfPageSize::A4);
+$pdf = new PdfDocument(PdfOrientation::PORTRAIT, PdfUnit::MILLIMETER, PdfPageSize::A4);
 ```
 
 It is possible to use landscape, other page sizes (such as Letter and Legal)

@@ -497,7 +497,7 @@ class PdfDocument
      *
      * It is possible to put a link on the cell.
      *
-     * @param float            $width  the cell width. If <code>0.0</code>, the cell extends up to the right margin.
+     * @param ?float           $width  the cell width. If <code>null</code>, the cell extends up to the right margin.
      * @param float            $height the cell height
      * @param string           $text   the cell text
      * @param ?PdfBorder       $border indicates how borders must be drawn around the cell. If <code>null</code>,
@@ -513,7 +513,7 @@ class PdfDocument
      * @see PdfDocument::multiCell()
      */
     public function cell(
-        float $width = 0.0,
+        ?float $width = null,
         float $height = self::LINE_HEIGHT,
         string $text = '',
         ?PdfBorder $border = null,
@@ -538,9 +538,7 @@ class PdfDocument
         }
 
         $output = '';
-        if (0.0 === $width) {
-            $width = $this->getRemainingWidth();
-        }
+        $width ??= $this->getRemainingWidth();
         $border ??= PdfBorder::none();
         if ($fill || $border->isAll()) {
             if ($fill) {
@@ -1331,7 +1329,7 @@ class PdfDocument
      * feed character ("\n"). As many cells as necessary are output, one below the other. Text can be aligned, centered
      * or justified. The cell block can be framed and the background painted.
      *
-     * @param float            $width  the cell width. If <code>0.0</code>, the cell extends up to the right margin.
+     * @param ?float           $width  the cell width. If <code>null</code>, the cell extends up to the right margin.
      * @param float            $height the cell height
      * @param string           $text   the cell text
      * @param ?PdfBorder       $border indicates how borders must be drawn around the cell. If <code>null</code>,
@@ -1345,7 +1343,7 @@ class PdfDocument
      * @see PdfDocument::cell()
      */
     public function multiCell(
-        float $width = 0.0,
+        ?float $width = null,
         float $height = self::LINE_HEIGHT,
         string $text = '',
         ?PdfBorder $border = null,
@@ -1357,9 +1355,7 @@ class PdfDocument
         }
 
         $charWidths = $this->currentFont['cw'];
-        if (0.0 === $width) {
-            $width = $this->getRemainingWidth();
-        }
+        $width ??= $this->getRemainingWidth();
         $widthMax = ($width - 2.0 * $this->cellMargin) * 1000.0 / $this->fontSize;
 
         $border1 = PdfBorder::none();

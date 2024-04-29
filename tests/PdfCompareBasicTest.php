@@ -31,10 +31,10 @@ class PdfCompareBasicTest extends AbstractCompareTestCase
     protected function updateNewDocument(PdfDocument $doc): void
     {
         $doc->setFont('Arial', PdfFontStyle::BOLD, 16);
-        $doc->cell(0.0, 5.0, 'This is  test 3456.', move: PdfMove::BELOW);
+        $doc->cell(text: 'This is  test 3456.', move: PdfMove::BELOW);
         $doc->setFont('ZapfDingbats', PdfFontStyle::BOLD, 12);
-        $doc->cell(0.0, 5.0, 'This is  test 3456.', move: PdfMove::BELOW);
-        $doc->multiCell(0.0, 5.0, "This is multi cells\nNew Line");
+        $doc->cell(text: 'This is  test 3456.', move: PdfMove::BELOW);
+        $doc->multiCell(null, 5.0, "This is multi cells\nNew Line");
 
         $doc->lineBreak();
         $doc->image(__DIR__ . '/images/image.png');
@@ -60,7 +60,7 @@ class PdfCompareBasicTest extends AbstractCompareTestCase
         $doc->setTitle('Title');
 
         $doc->addPage(PdfOrientation::LANDSCAPE);
-        $doc->cell(0.0, 5.0, 'This is  test 3456.', move: PdfMove::BELOW);
+        $doc->cell(text: 'This is  test 3456.', move: PdfMove::BELOW);
 
         $doc->setDrawColor(255, 0, 0);
         $x = $doc->getX();
@@ -83,11 +83,11 @@ class PdfCompareBasicTest extends AbstractCompareTestCase
         $doc->write('Write', 5.0, 1);
 
         $doc->addPage();
-        $doc->cell(0.0, 5.0, 'Greek: Γειά σου κόσμος', PdfBorder::all(), PdfMove::RIGHT, PdfTextAlignment::RIGHT, true);
+        $doc->cell(null, 5.0, 'Greek: Γειά σου κόσμος', PdfBorder::all(), PdfMove::RIGHT, PdfTextAlignment::RIGHT, true);
 
         $doc->setDisplayMode(PdfZoom::FULL_PAGE, PdfLayout::SINGLE);
 
-        $doc->multiCell(0.0, 5.0, self::COMMENT);
+        $doc->multiCell(text: self::COMMENT);
     }
 
     protected function updateOldDocument(FPDF $doc): void

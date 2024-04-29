@@ -39,7 +39,7 @@ class PdfCompareHeaderFooterTest extends AbstractCompareTestCase
                 $this->setY(-15);
                 $this->setFont('Arial', PdfFontStyle::ITALIC, 8);
                 $this->cell(
-                    0,
+                    null,
                     10,
                     \sprintf('Page %d', $this->getPage()),
                     PdfBorder::none(),

@@ -34,7 +34,7 @@ class CustomDocument extends PdfDocument
         // Arial italic 8pt
         $this->setFont(PdfFontName::ARIAL, PdfFontStyle::ITALIC, 8);
         // page number
-        $this->cell(0, 10, \sprintf('Page %d/{nb}', $this->getPage()), PdfBorder::none(), PdfMove::RIGHT, PdfTextAlignment::CENTER);
+        $this->cell(null, 10, \sprintf('Page %d/{nb}', $this->getPage()), PdfBorder::none(), PdfMove::RIGHT, PdfTextAlignment::CENTER);
     }
 }
 
@@ -44,7 +44,7 @@ $pdf->setFont(PdfFontName::TIMES, PdfFontStyle::REGULAR, 12);
 $pdf->setAliasNumberPages();
 $pdf->addPage();
 for ($i = 1; $i <= 40; ++$i) {
-    $pdf->cell(0, 10, \sprintf('Printing line number %d', $i), PdfBorder::none(), PdfMove::NEW_LINE);
+    $pdf->cell(null, 10, \sprintf('Printing line number %d', $i), PdfBorder::none(), PdfMove::NEW_LINE);
 }
 $pdf->output();
 ```

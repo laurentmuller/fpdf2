@@ -43,7 +43,7 @@ class CustomDocument extends PdfDocument
         // text color in gray
         $this->setTextColor(128);
         // page number
-        $this->cell(0, 10, \sprintf('Page %d', $this->getPage()), PdfBorder::none(), PdfMove::RIGHT, PdfTextAlignment::CENTER);
+        $this->cell(null, 10, \sprintf('Page %d', $this->getPage()), PdfBorder::none(), PdfMove::RIGHT, PdfTextAlignment::CENTER);
     }
     
     public function chapterBody(string $file): void
@@ -53,12 +53,12 @@ class CustomDocument extends PdfDocument
         // Times 12pt
         $this->setFont(PdfFontName::TIMES, PdfFontStyle::REGULAR, 12);
         // output justified text
-        $this->multiCell(0, 5, $content);
+        $this->multiCell(null, 5, $content);
         // line break
         $this->lineBreak();
         // mention in italics
         $this->setFont(null, PdfFontStyle::ITALIC);
-        $this->cell(0, 5, '(end of excerpt)');
+        $this->cell(null, 5, '(end of excerpt)');
     }
 
     public function chapterTitle(int $num, string $title): void
@@ -68,7 +68,7 @@ class CustomDocument extends PdfDocument
         // background color
         $this->setFillColor(200, 220, 255);
         // title
-        $this->cell(0, 6, \sprintf('Chapter %d. %s', $num, $title), PdfBorder::none(), PdfMove::NEW_LINE, PdfTextAlignment::LEFT, true);
+        $this->cell(null, 6, \sprintf('Chapter %d. %s', $num, $title), PdfBorder::none(), PdfMove::NEW_LINE, PdfTextAlignment::LEFT, true);
         // line break
         $this->lineBreak(4);
     }

@@ -12,7 +12,7 @@ modify it to suit your needs.
 If you're using Composer to manage dependencies, you can use
 
 ```powershell
-composer require laurentmuller/fpdf2:^1.8
+composer require laurentmuller/fpdf2:^1.9
 ```
 
 Or you can include the following in your `composer.json` file:
@@ -20,7 +20,7 @@ Or you can include the following in your `composer.json` file:
 ```json
 {
     "require": {
-        "laurentmuller/fpdf2": "^1.8"
+        "laurentmuller/fpdf2": "^1.9"
     }
 }
 ```

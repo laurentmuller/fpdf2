@@ -22,7 +22,7 @@ class PdfCompareBorderTest extends AbstractCompareTestCase
      */
     protected function updateNewDocument(PdfDocument $doc): void
     {
-        $width = 0.0;
+        $width = null;
         $height = 5.0;
         $move = PdfMove::BELOW;
         $doc->cell($width, $height, 'None Border', PdfBorder::none(), $move);
