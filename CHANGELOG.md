@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- Updated rector configuration.
+
 ## 1.9.0.0 - 2024-04-29
 
 - Updated tutorials.

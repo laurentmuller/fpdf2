@@ -18,9 +18,8 @@ use Rector\Set\ValueObject\SetList;
 use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
 
 return RectorConfig::configure()
-    ->withBootstrapFiles([
-        __DIR__ . '/vendor/autoload.php',
-    ])->withPaths([
+    ->withRootFiles()
+    ->withPaths([
         __DIR__ . '/src',
         __DIR__ . '/tests',
         __DIR__ . '/rector.php',
@@ -33,8 +32,11 @@ return RectorConfig::configure()
         __DIR__ . '/tests/font',
     ])->withSets([
         // global
-        SetList::PHP_81,
+        SetList::PHP_82,
         SetList::CODE_QUALITY,
+        SetList::PRIVATIZATION,
+        SetList::INSTANCEOF,
+        SetList::STRICT_BOOLEANS,
         // PHP-Unit
         PHPUnitSetList::PHPUNIT_100,
         PHPUnitSetList::PHPUNIT_CODE_QUALITY,

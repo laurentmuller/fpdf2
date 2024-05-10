@@ -500,8 +500,8 @@ class PdfDocument
      * @param ?float           $width  the cell width. If <code>null</code>, the cell extends up to the right margin.
      * @param float            $height the cell height
      * @param string           $text   the cell text
-     * @param ?PdfBorder       $border indicates how borders must be drawn around the cell. If <code>null</code>,
-     *                                 or <code>none()</code>, no border is drawn.
+     * @param ?PdfBorder       $border indicates how borders must be drawn around the cell. If <code>null</code>, or
+     *                                 <code>none()</code>, no border is drawn.
      * @param PdfMove          $move   indicates where the current position should go after the call
      * @param PdfTextAlignment $align  the text alignment
      * @param bool             $fill   indicates if the cell background must be painted (<code>true</code>) or
@@ -1332,8 +1332,8 @@ class PdfDocument
      * @param ?float           $width  the cell width. If <code>null</code>, the cell extends up to the right margin.
      * @param float            $height the cell height
      * @param string           $text   the cell text
-     * @param ?PdfBorder       $border indicates how borders must be drawn around the cell. If <code>null</code>,
-     *                                 no border is drawn.
+     * @param ?PdfBorder       $border indicates how borders must be drawn around the cell. If <code>null</code>, no
+     *                                 border is drawn.
      * @param PdfTextAlignment $align  the text alignment
      * @param bool             $fill   indicates if the cell background must be painted (<code>true</code>) or
      *                                 transparent (<code>false</code>)
@@ -2476,7 +2476,7 @@ class PdfDocument
     }
 
     /**
-     * Remove the carriage return characters and strip new line characters from the end of the given string.
+     * Remove carriage return characters.
      */
     protected function cleanText(string $str): string
     {
