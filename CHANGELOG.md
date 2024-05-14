@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Updated rector configuration.
+- Updated `psalm/plugin-phpunit` plugin version.
 
 ## 1.9.0.0 - 2024-04-29
 
