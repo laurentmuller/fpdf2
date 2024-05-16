@@ -1,9 +1,11 @@
 # Change log
 
-## Unreleased
+## 1.9.0.1 - 2024-05-16
 
 - Updated rector configuration.
 - Updated `psalm/plugin-phpunit` plugin version.
+- Updated `PhpCsFixer` configuration.
+- Updated `.gitattributes` to exclude non-essential files from distribution.
 
 ## 1.9.0.0 - 2024-04-29
 

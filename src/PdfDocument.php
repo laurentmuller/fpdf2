@@ -3040,7 +3040,7 @@ class PdfDocument
                 if (!\method_exists($this, $method)) {
                     throw PdfException::instance('Unsupported font type: %s.', $type);
                 }
-                // @phpstan-ignore-next-line
+                /* @phpstan-ignore-next-line */
                 $this->$method($font);
             }
         }

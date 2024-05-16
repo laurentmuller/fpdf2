@@ -51,7 +51,7 @@ enum PdfFontName: string
     case ZAPFDINGBATS = 'ZapfDingbats';
 
     /**
-     * Try to find a font name for the given family; ignore case consideration.
+     * Try to find a font name for the given family; ignoring case consideration.
      *
      * @param string $family the font family to search font name for
      *
