@@ -129,8 +129,14 @@ have been removed. This is done by means of the border parameter of the
 `cell()` method, which specifies which sides of the cell must be drawn. Here we
 want the left and right ones. It remains the problem of the horizontal line to
 finish the table. There are two possibilities: either check for the last line
-in the loop, in which case we use LRB for the border parameter; or, as done
-here, add the line once the loop is over.
+in the loop, in which case we use left, right and bottom for the border
+parameter:
+
+```php
+new PdfBorder(true, false, true, true)
+```
+
+Or, as done here, add the line once the loop is over.
 
 The third table is similar to the second one but uses colors. Fill, text and
 line colors are simply specified. Alternate coloring for rows is obtained by

@@ -903,16 +903,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v3.57.1",
+            "version": "v3.57.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "3f7efe667a8c9818aacceee478add7c0fc24cb21"
+                "reference": "22f7f3145606df92b02fb1bd22c30abfce956d3c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/3f7efe667a8c9818aacceee478add7c0fc24cb21",
-                "reference": "3f7efe667a8c9818aacceee478add7c0fc24cb21",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/22f7f3145606df92b02fb1bd22c30abfce956d3c",
+                "reference": "22f7f3145606df92b02fb1bd22c30abfce956d3c",
                 "shasum": ""
             },
             "require": {
@@ -991,7 +991,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues",
-                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.57.1"
+                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.57.2"
             },
             "funding": [
                 {
@@ -999,7 +999,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-05-15T22:01:07+00:00"
+            "time": "2024-05-20T20:41:57+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -2872,21 +2872,21 @@
         },
         {
             "name": "rector/rector",
-            "version": "1.0.5",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rectorphp/rector.git",
-                "reference": "73eb63e4f9011dba6b7c66c3262543014e352f34"
+                "reference": "556509e2dcf527369892b7d411379c4a02f31859"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rectorphp/rector/zipball/73eb63e4f9011dba6b7c66c3262543014e352f34",
-                "reference": "73eb63e4f9011dba6b7c66c3262543014e352f34",
+                "url": "https://api.github.com/repos/rectorphp/rector/zipball/556509e2dcf527369892b7d411379c4a02f31859",
+                "reference": "556509e2dcf527369892b7d411379c4a02f31859",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.2|^8.0",
-                "phpstan/phpstan": "^1.10.57"
+                "phpstan/phpstan": "^1.11"
             },
             "conflict": {
                 "rector/rector-doctrine": "*",
@@ -2919,7 +2919,7 @@
             ],
             "support": {
                 "issues": "https://github.com/rectorphp/rector/issues",
-                "source": "https://github.com/rectorphp/rector/tree/1.0.5"
+                "source": "https://github.com/rectorphp/rector/tree/1.1.0"
             },
             "funding": [
                 {
@@ -2927,7 +2927,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-05-10T05:31:15+00:00"
+            "time": "2024-05-18T09:40:27+00:00"
         },
         {
             "name": "sebastian/cli-parser",

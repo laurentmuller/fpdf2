@@ -1,6 +1,7 @@
 * text=auto eol=lf
 *.{png,jpg,jpeg,gif,webp,woff,woff2,pdf} binary
 
+/.github                 export-ignore
 /doc                     export-ignore
 /makefont                export-ignore
 /tests                   export-ignore

@@ -1,5 +1,11 @@
 # Change log
 
+## 1.9.0.2 - 2024-05-21
+
+- Updated tutorials.
+- Updated markdown lint configuration.
+- Updated `.gitattributes` to exclude `.github` folder.
+
 ## 1.9.0.1 - 2024-05-16
 
 - Updated rector configuration.

@@ -1,6 +1,7 @@
 # Multi-columns
 
-This example is a variant of the previous one showing how to lay the text across multiple columns.
+This example is a variant of the previous one showing how to lay the text across
+multiple columns.
 
 ```php
 use fpdf\PdfBorder;
