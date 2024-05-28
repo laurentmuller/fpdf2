@@ -23,7 +23,7 @@ class PdfGifParser extends PdfPngParser
     {
         $image = \imagecreatefromgif($file);
         if (!$image instanceof \GdImage) {
-            throw PdfException::instance('Missing or incorrect image file: %s.', $file);
+            throw PdfException::format('Missing or incorrect image file: %s.', $file);
         }
 
         $data = $this->toPngImage($image);

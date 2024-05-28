@@ -18,20 +18,29 @@ namespace fpdf;
 class PdfException extends \RuntimeException
 {
     /**
-     * Create a new instance for the given message or format and values.
+     * Create a new instance for the given string format and values.
      *
-     * @param string           $message   the format string, if values are provided, the message otherwise
+     * @param string           $format    the string format
      * @param float|int|string ...$values the values
+     *
+     * @see https://www.php.net/manual/en/function.sprintf.php sprintf
      */
-    public static function instance(string $message, float|int|string ...$values): self
+    public static function format(string $format, float|int|string ...$values): self
     {
-        if ([] !== $values) {
-            try {
-                return new self(\sprintf($message, ...$values));
-            } catch (\Error) {
-            }
+        try {
+            return new self(\sprintf($format, ...$values));
+        } catch (\Error) {
+            return new self($format);
         }
+    }
 
+    /**
+     * Create a new instance for the given message.
+     *
+     * @param string $message the message to throw
+     */
+    public static function instance(string $message): self
+    {
         return new self($message);
     }
 }

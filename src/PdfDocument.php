@@ -343,7 +343,7 @@ class PdfDocument
             return $this;
         }
         if (\str_contains($file, '/') || \str_contains($file, '\\')) {
-            throw PdfException::instance('Incorrect font definition file name: %s.', $file);
+            throw PdfException::format('Incorrect font definition file name: %s.', $file);
         }
         $dir ??= $this->fontPath;
         if (!\str_ends_with($dir, '/') && !\str_ends_with($dir, '\\')) {
@@ -1103,13 +1103,13 @@ class PdfDocument
             if ('' === $type) {
                 $type = \pathinfo($file, \PATHINFO_EXTENSION);
                 if ('' === $type) {
-                    throw PdfException::instance('Image file has no extension and no type was specified: %s.', $file);
+                    throw PdfException::format('Image file has no extension and no type was specified: %s.', $file);
                 }
             }
             $type = \strtolower($type);
             $parser = $this->getImageParser($type);
             if (!$parser instanceof PdfImageParserInterface) {
-                throw PdfException::instance('Unsupported image type: %s.', $type);
+                throw PdfException::format('Unsupported image type: %s.', $type);
             }
             $image = $parser->parse($this, $file);
             $image['index'] = \count($this->images) + 1;
@@ -1522,7 +1522,7 @@ class PdfDocument
                 break;
             case PdfDestination::FILE:
                 if (false === \file_put_contents($name, $this->buffer)) {
-                    throw PdfException::instance('Unable to create output file: %s.', $name);
+                    throw PdfException::format('Unable to create output file: %s.', $name);
                 }
                 break;
             case PdfDestination::STRING:
@@ -1876,7 +1876,7 @@ class PdfDocument
             }
             $name = PdfFontName::tryFromFamily($family);
             if (!$name instanceof PdfFontName) {
-                throw PdfException::instance('Undefined font: %s %s.', $family, $style->value);
+                throw PdfException::format('Undefined font: %s %s.', $family, $style->value);
             }
             if (PdfFontName::SYMBOL === $name || PdfFontName::ZAPFDINGBATS === $name) {
                 $style = PdfFontStyle::REGULAR;
@@ -2461,7 +2461,7 @@ class PdfDocument
     protected function checkOutput(): void
     {
         if (\PHP_SAPI !== 'cli' && \headers_sent($file, $line)) {
-            throw PdfException::instance('Some data has already been output, can not send PDF file (output started at %s:%s).', $file, $line);
+            throw PdfException::format('Some data has already been output, can not send PDF file (output started at %s:%s).', $file, $line);
         }
         if (false !== \ob_get_length()) {
             // the output buffer is not empty
@@ -2752,7 +2752,7 @@ class PdfDocument
     {
         include $path;
         if (!isset($name)) {
-            throw PdfException::instance('Could not include font definition file: %s.', $path);
+            throw PdfException::format('Could not include font definition file: %s.', $path);
         }
         if (isset($enc)) {
             $enc = \strtolower((string) $enc);
@@ -2928,7 +2928,7 @@ class PdfDocument
             $this->fontFiles[$file]['number'] = $this->objectNumber;
             $content = \file_get_contents($file);
             if (false === $content) {
-                throw PdfException::instance('Font file not found: %s.', $file);
+                throw PdfException::format('Font file not found: %s.', $file);
             }
             $compressed = \str_ends_with($file, '.z');
             if (!$compressed && isset($info['length2'])) {
@@ -3038,7 +3038,7 @@ class PdfDocument
                 // allow for additional types
                 $method = 'put' . \ucfirst(\strtolower($type));
                 if (!\method_exists($this, $method)) {
-                    throw PdfException::instance('Unsupported font type: %s.', $type);
+                    throw PdfException::format('Unsupported font type: %s.', $type);
                 }
                 /* @phpstan-ignore-next-line */
                 $this->$method($font);

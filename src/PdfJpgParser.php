@@ -27,16 +27,16 @@ class PdfJpgParser implements PdfImageParserInterface
         /* @phpstan-var array{0: int, 1: int, 2: int, channels?: int, bits?: int}|false $size */
         $size = \getimagesize($file);
         if (!\is_array($size)) {
-            throw PdfException::instance('Missing or incorrect image file: %s.', $file);
+            throw PdfException::format('Missing or incorrect image file: %s.', $file);
         }
 
         if (\IMG_JPG !== $size[2]) {
-            throw PdfException::instance('The file is not a JPEG image: %s.', $file);
+            throw PdfException::format('The file is not a JPEG image: %s.', $file);
         }
 
         $data = \file_get_contents($file);
         if (!\is_string($data)) {
-            throw PdfException::instance('Unable get image file content: %s.', $file);
+            throw PdfException::format('Unable get image file content: %s.', $file);
         }
 
         /** @phpstan-var int<3,5> $channels */

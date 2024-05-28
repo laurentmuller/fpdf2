@@ -1,5 +1,10 @@
 # Change log
 
+## 1.9.0.3 - 2024-05-28
+
+- **Breakdown !** Modified `PdfException` class:
+  - Split single `instance` function to `instance` and `format` functions.
+
 ## 1.9.0.2 - 2024-05-21
 
 - Updated tutorials.

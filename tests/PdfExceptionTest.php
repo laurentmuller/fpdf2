@@ -22,7 +22,7 @@ class PdfExceptionTest extends TestCase
         $values = [0.00, 1, 'fake'];
         $format = 'Float: %0.2f, Integer: %d, String: %s';
         $expected = \sprintf($format, ...$values);
-        $exception = PdfException::instance($format, ...$values);
+        $exception = PdfException::format($format, ...$values);
         self::assertSame($expected, $exception->getMessage());
     }
 
@@ -37,7 +37,7 @@ class PdfExceptionTest extends TestCase
     {
         $values = [0.00, 1];
         $format = 'Float: %0.2f, Integer: %d, String: %s';
-        $exception = PdfException::instance($format, ...$values);
+        $exception = PdfException::format($format, ...$values);
         self::assertSame($format, $exception->getMessage());
     }
 }

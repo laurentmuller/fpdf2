@@ -72,7 +72,7 @@ class PdfPngParser implements PdfImageParserInterface
             0, 4 => 'DeviceGray',
             2, 6 => 'DeviceRGB',
             3 => 'Indexed',
-            default => throw PdfException::instance('Color type %d not supported: %s.', $colorType, $file),
+            default => throw PdfException::format('Color type %d not supported: %s.', $colorType, $file),
         };
 
         // check other values
@@ -116,7 +116,7 @@ class PdfPngParser implements PdfImageParserInterface
         } while ($length);
 
         if ('Indexed' === $colorSpace && '' === $palette) {
-            throw PdfException::instance('Missing palette: %s.', $file);
+            throw PdfException::format('Missing palette: %s.', $file);
         }
 
         $image = [
@@ -155,7 +155,7 @@ class PdfPngParser implements PdfImageParserInterface
     {
         $value = $this->readByte($stream);
         if (0 !== $value) {
-            throw PdfException::instance('Compression method %d not supported: %s.', $value, $file);
+            throw PdfException::format('Compression method %d not supported: %s.', $value, $file);
         }
     }
 
@@ -170,12 +170,12 @@ class PdfPngParser implements PdfImageParserInterface
     {
         $value = $this->readByte($stream);
         if (0 !== $value) {
-            throw PdfException::instance('Filter method %d not supported: %s.', $value, $file);
+            throw PdfException::format('Filter method %d not supported: %s.', $value, $file);
         }
     }
 
     /**
-     * Check first block header.
+     * Check the first block header.
      *
      * @param resource $stream
      *
@@ -185,7 +185,7 @@ class PdfPngParser implements PdfImageParserInterface
     {
         $this->readStream($stream, 4);
         if ('IHDR' !== $this->readStream($stream, 4)) {
-            throw PdfException::instance('Incorrect PNG header chunk (IHDR): %s.', $file);
+            throw PdfException::format('Incorrect PNG header chunk (IHDR): %s.', $file);
         }
     }
 
@@ -200,7 +200,7 @@ class PdfPngParser implements PdfImageParserInterface
     {
         $value = $this->readByte($stream);
         if (0 !== $value) {
-            throw PdfException::instance('Interlacing %d not supported: %s.', $value, $file);
+            throw PdfException::format('Interlacing %d not supported: %s.', $value, $file);
         }
     }
 
@@ -218,7 +218,7 @@ class PdfPngParser implements PdfImageParserInterface
                 . \chr(0x0D) . \chr(0x0A) . \chr(0x1A) . \chr(0x0A);
         }
         if ($this->readStream($stream, \strlen($this->signature)) !== $this->signature) {
-            throw PdfException::instance('Incorrect PNG header signature: %s.', $file);
+            throw PdfException::format('Incorrect PNG header signature: %s.', $file);
         }
     }
 
@@ -260,7 +260,7 @@ class PdfPngParser implements PdfImageParserInterface
     {
         $bcp = $this->readByte($stream);
         if ($bcp > 8) {
-            throw PdfException::instance('Bits per component %d not supported: %s.', $bcp, $file);
+            throw PdfException::format('Bits per component %d not supported: %s.', $bcp, $file);
         }
 
         return $bcp;
@@ -307,7 +307,7 @@ class PdfPngParser implements PdfImageParserInterface
     {
         $stream = \fopen($file, 'r');
         if (!\is_resource($stream)) {
-            throw PdfException::instance('Can not open image file: %s.', $file);
+            throw PdfException::format('Can not open image file: %s.', $file);
         }
 
         return $stream;
