@@ -12,9 +12,10 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-#[\PHPUnit\Framework\Attributes\CoversClass(PdfRectangle::class)]
+#[CoversClass(PdfRectangle::class)]
 class PdfRectangleTest extends TestCase
 {
     public function testAsArray(): void

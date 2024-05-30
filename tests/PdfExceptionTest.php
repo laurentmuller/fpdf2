@@ -12,9 +12,10 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-#[\PHPUnit\Framework\Attributes\CoversClass(PdfException::class)]
+#[CoversClass(PdfException::class)]
 class PdfExceptionTest extends TestCase
 {
     public function testFormat(): void
@@ -22,22 +23,32 @@ class PdfExceptionTest extends TestCase
         $values = [0.00, 1, 'fake'];
         $format = 'Float: %0.2f, Integer: %d, String: %s';
         $expected = \sprintf($format, ...$values);
-        $exception = PdfException::format($format, ...$values);
-        self::assertSame($expected, $exception->getMessage());
+        $actual = PdfException::format($format, ...$values);
+        self::assertSame($expected, $actual->getMessage());
     }
 
     public function testInstance(): void
     {
         $expected = 'The message';
-        $exception = PdfException::instance($expected);
-        self::assertSame($expected, $exception->getMessage());
+        $actual = PdfException::instance($expected);
+        self::assertSame($expected, $actual->getMessage());
+        self::assertNull($actual->getPrevious());
+    }
+
+    public function testInstanceWithPrevious(): void
+    {
+        $message = 'The message';
+        $previous = new \InvalidArgumentException();
+        $actual = PdfException::instance($message, $previous);
+        self::assertSame($message, $actual->getMessage());
+        self::assertSame($previous, $actual->getPrevious());
     }
 
     public function testInvalidFormat(): void
     {
         $values = [0.00, 1];
         $format = 'Float: %0.2f, Integer: %d, String: %s';
-        $exception = PdfException::format($format, ...$values);
-        self::assertSame($format, $exception->getMessage());
+        $actual = PdfException::format($format, ...$values);
+        self::assertSame($format, $actual->getMessage());
     }
 }

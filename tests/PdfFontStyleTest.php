@@ -12,9 +12,10 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-#[\PHPUnit\Framework\Attributes\CoversClass(PdfFontStyle::class)]
+#[CoversClass(PdfFontStyle::class)]
 class PdfFontStyleTest extends TestCase
 {
     public static function getFrom(): \Iterator

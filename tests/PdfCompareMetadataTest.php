@@ -12,8 +12,10 @@ declare(strict_types=1);
 
 namespace fpdf;
 
-#[\PHPUnit\Framework\Attributes\CoversClass(FPDF::class)]
-#[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
+use PHPUnit\Framework\Attributes\CoversClass;
+
+#[CoversClass(FPDF::class)]
+#[CoversClass(PdfDocument::class)]
 class PdfCompareMetadataTest extends AbstractCompareTestCase
 {
     protected function updateNewDocument(PdfDocument $doc): void

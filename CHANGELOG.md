@@ -1,5 +1,10 @@
 # Change log
 
+## 1.9.0.4 - 2024-05-30
+
+- Added `previous` parameter to `PdfException::instance()` function.
+- Imported `CoversClass` to unit tests.
+
 ## 1.9.0.3 - 2024-05-28
 
 - **Breakdown !** Modified `PdfException` class:

@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 namespace fpdf;
 
-#[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
+use PHPUnit\Framework\Attributes\CoversClass;
+
+#[CoversClass(PdfDocument::class)]
 class PdfDocTextTest extends AbstractPdfDocTestCase
 {
     public function testColorFlag(): void

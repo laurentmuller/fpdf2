@@ -12,9 +12,10 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-#[\PHPUnit\Framework\Attributes\CoversClass(PdfLineCap::class)]
+#[CoversClass(PdfLineCap::class)]
 class PdfLineCapTest extends TestCase
 {
     public function testValue(): void

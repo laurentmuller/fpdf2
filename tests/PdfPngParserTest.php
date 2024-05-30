@@ -12,9 +12,10 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-#[\PHPUnit\Framework\Attributes\CoversClass(PdfPngParser::class)]
+#[CoversClass(PdfPngParser::class)]
 class PdfPngParserTest extends TestCase
 {
     public function testColorType0(): void

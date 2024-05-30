@@ -37,10 +37,11 @@ class PdfException extends \RuntimeException
     /**
      * Create a new instance for the given message.
      *
-     * @param string $message the message to throw
+     * @param string      $message  the message to throw
+     * @param ?\Throwable $previous the previous throwable used for the exception chaining
      */
-    public static function instance(string $message): self
+    public static function instance(string $message, ?\Throwable $previous = null): self
     {
-        return new self($message);
+        return new self($message, previous: $previous);
     }
 }

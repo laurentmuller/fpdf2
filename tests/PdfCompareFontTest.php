@@ -12,8 +12,10 @@ declare(strict_types=1);
 
 namespace fpdf;
 
-#[\PHPUnit\Framework\Attributes\CoversClass(FPDF::class)]
-#[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
+use PHPUnit\Framework\Attributes\CoversClass;
+
+#[CoversClass(FPDF::class)]
+#[CoversClass(PdfDocument::class)]
 class PdfCompareFontTest extends AbstractCompareTestCase
 {
     private const FONTS_DIR = __DIR__ . '/fonts/';

@@ -12,9 +12,10 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-#[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
+#[CoversClass(PdfDocument::class)]
 class PdfDocHeaderFooterTest extends TestCase
 {
     public function testHeader(): void

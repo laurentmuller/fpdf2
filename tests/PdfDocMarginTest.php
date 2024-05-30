@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 namespace fpdf;
 
-#[\PHPUnit\Framework\Attributes\CoversClass(PdfDocument::class)]
+use PHPUnit\Framework\Attributes\CoversClass;
+
+#[CoversClass(PdfDocument::class)]
 class PdfDocMarginTest extends AbstractPdfDocTestCase
 {
     public function testBottomMargin(): void
