@@ -254,7 +254,7 @@ class PdfPngParser implements PdfImageParserInterface
      *
      * @param resource $stream
      *
-     * @throws PdfException if the bits per component is greater than 8
+     * @throws PdfException if the bits per component are greater than 8
      */
     private function getBitsPerComponent(mixed $stream, string $file): int
     {
@@ -318,7 +318,7 @@ class PdfPngParser implements PdfImageParserInterface
      *
      * @param resource $stream the stream to read value from
      *
-     * @throws PdfException if the stream is closed or if the end of stream is reached
+     * @throws PdfException if the stream is closed or if the end of the stream is reached
      *
      * @phpstan-return int<0, 255>
      */
@@ -332,7 +332,7 @@ class PdfPngParser implements PdfImageParserInterface
      *
      * @param resource $stream the stream to read integer from
      *
-     * @throws PdfException if the stream is closed or if the end of stream is reached
+     * @throws PdfException if the stream is closed or if the end of the stream is reached
      *
      * @phpstan-return non-negative-int
      */
@@ -350,7 +350,7 @@ class PdfPngParser implements PdfImageParserInterface
      * @param resource $stream the stream to read string from
      * @param int      $len    the number of bytes read
      *
-     * @throws PdfException if the stream is closed or if the end of stream is reached
+     * @throws PdfException if the stream is closed or if the end of the stream is reached
      *
      * @phpstan-param resource|closed-resource $stream
      * @phpstan-param non-negative-int $len

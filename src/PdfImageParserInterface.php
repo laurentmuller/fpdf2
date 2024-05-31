@@ -27,7 +27,7 @@ interface PdfImageParserInterface
      *
      * @return array the parsed image
      *
-     * @throws PdfException if the image can not be parsed
+     * @throws PdfException if the image cannot be parsed
      *
      * @phpstan-return ImageType
      */

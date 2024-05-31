@@ -240,6 +240,8 @@ class PdfDocument
     protected float $topMargin = 0.0;
     /** The underlining flag. */
     protected bool $underline = false;
+    /** The viewer preferences */
+    protected PdfViewerPreferences $viewerPreferences;
     /** The current page width in user unit. */
     protected float $width = 0.0;
     /** Indicates whether the alpha channel is used. */
@@ -300,6 +302,8 @@ class PdfDocument
         $this->setAutoPageBreak(true, 2.0 * $margin);
         // producer
         $this->setProducer('FPDF ' . self::VERSION);
+        // preferences
+        $this->viewerPreferences = new PdfViewerPreferences();
     }
 
     /**
@@ -322,7 +326,7 @@ class PdfDocument
      * @param ?string            $dir    The directory where to load the definition file. If not specified, the default
      *                                   directory will be used.
      *
-     * @throws PdfException if font definition is incorrect
+     * @throws PdfException if the font file doest not exit or if the font definition is incorrect
      *
      * @see PdfDocument::setFont()
      * @see PdfDocument::setFontSizeInPoint()
@@ -349,7 +353,6 @@ class PdfDocument
         if (!\str_ends_with($dir, '/') && !\str_ends_with($dir, '\\')) {
             $dir .= \DIRECTORY_SEPARATOR;
         }
-        /** @phpstan-var FontType $info */
         $info = $this->loadFont($dir . $file);
         $info['index'] = \count($this->fonts) + 1;
         if (isset($info['file']) && '' !== $info['file']) {
@@ -957,6 +960,14 @@ class PdfDocument
     public function getTopMargin(): float
     {
         return $this->topMargin;
+    }
+
+    /**
+     * Gets the viewer preferences.
+     */
+    public function getViewerPreferences(): PdfViewerPreferences
+    {
+        return $this->viewerPreferences;
     }
 
     /**
@@ -2742,26 +2753,28 @@ class PdfDocument
     /**
      * Load the font from the given file path.
      *
-     * @psalm-suppress UnresolvableInclude
-     * @psalm-suppress UndefinedVariable
-     * @psalm-suppress UnusedVariable
-     *
-     * @phpstan-return array<array-key, mixed>
+     * @phpstan-return FontType
      */
     protected function loadFont(string $path): array
     {
-        include $path;
-        if (!isset($name)) {
-            throw PdfException::format('Could not include font definition file: %s.', $path);
-        }
-        if (isset($enc)) {
-            $enc = \strtolower((string) $enc);
-        }
-        if (!isset($subsetted)) {
-            $subsetted = false;
+        if (!\file_exists($path)) {
+            throw PdfException::format('Unable to find the font file: %s.', $path);
         }
 
-        return \get_defined_vars();
+        include $path;
+        /** @phpstan-var array{name?: string, enc?: string, subsetted?: bool} $font */
+        $font = \get_defined_vars();
+        if (!isset($font['name'])) {
+            throw PdfException::format('No font name defined in file: %s.', $path);
+        }
+
+        if (isset($font['enc'])) {
+            $font['enc'] = \strtolower($font['enc']);
+        }
+        $font['subsetted'] ??= false;
+
+        /** @phpstan-var FontType */
+        return $font;
     }
 
     /**
@@ -2896,6 +2909,11 @@ class PdfDocument
             case PdfLayout::TWO_PAGES:
                 $this->put('/PageLayout /TwoColumnLeft');
                 break;
+        }
+
+        $output = $this->viewerPreferences->getOutput();
+        if ('' !== $output) {
+            $this->put($output);
         }
     }
 
@@ -3051,6 +3069,7 @@ class PdfDocument
      */
     protected function putHeader(): void
     {
+        $this->updatePdfVersion($this->viewerPreferences->getPdfVersion());
         $this->putf('%%PDF-%s', $this->pdfVersion);
     }
 

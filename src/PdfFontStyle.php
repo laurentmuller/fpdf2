@@ -95,7 +95,7 @@ enum PdfFontStyle: string
     }
 
     /**
-     * Returns if this font style contain the underline state.
+     * Returns if this font style contains the underline state.
      */
     public function isUnderLine(): bool
     {

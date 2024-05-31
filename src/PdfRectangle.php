@@ -28,7 +28,7 @@ class PdfRectangle
     }
 
     /**
-     * Returns this x, y, width and height values as array.
+     * Returns this x, y, width and height values as an array.
      *
      * @return array{0: float, 1: float, 2: float, 3: float}
      */
@@ -74,7 +74,7 @@ class PdfRectangle
     /**
      * Returns if the given rectangle is equal to this instance.
      *
-     * To be equal, the abscissa, the ordinate, the width and the height values must equal
+     * To be equal, the abscissa, the ordinate, the width and the height values must be equal
      */
     public function equals(self $other): bool
     {
@@ -130,7 +130,7 @@ class PdfRectangle
     /**
      * Enlarges this rectangle horizontally by the specified amount.
      *
-     * @param float $value the amount to inflate horizontally
+     * @param float $value how much to inflate horizontally
      *
      * @return self this instance
      */
@@ -142,8 +142,8 @@ class PdfRectangle
     /**
      * Enlarges this rectangle by the specified amount.
      *
-     * @param float $dx the amount to inflate horizontally
-     * @param float $dy the amount to inflate vertically
+     * @param float $dx how much to inflate horizontally
+     * @param float $dy how much to inflate vertically
      *
      * @return self this instance
      */
@@ -160,7 +160,7 @@ class PdfRectangle
     /**
      * Enlarges this rectangle vertically by the specified amount.
      *
-     * @param float $value the amount to inflate vertically
+     * @param float $value how much to inflate vertically
      *
      * @return self this instance
      */

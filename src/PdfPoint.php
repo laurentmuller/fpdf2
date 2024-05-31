@@ -26,7 +26,7 @@ class PdfPoint
     }
 
     /**
-     * Returns this x and y values as array.
+     * Returns this x and y values as an array.
      *
      * @return array{0: float, 1: float}
      */
@@ -38,7 +38,7 @@ class PdfPoint
     /**
      * Returns if the given point is equal to this instance.
      *
-     * To be equal, the abscissa and the ordinate values must equal
+     * To be equal, the abscissa and the ordinate values must be equal
      */
     public function equals(self $other): bool
     {

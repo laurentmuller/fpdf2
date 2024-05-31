@@ -19,6 +19,17 @@ class PdfDocFileFontTest extends AbstractPdfDocTestCase
 {
     private const FONTS_DIR = __DIR__ . '/resources/';
 
+    public function testFontNotExist(): void
+    {
+        self::expectException(PdfException::class);
+        $doc = $this->createDocument();
+        $doc->addFont(
+            family: 'Test',
+            file: 'fake.php',
+            dir: self::FONTS_DIR
+        );
+    }
+
     public function testNoNameFont(): void
     {
         self::expectException(PdfException::class);

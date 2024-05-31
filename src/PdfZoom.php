@@ -30,7 +30,7 @@ enum PdfZoom
     case FULL_PAGE;
 
     /**
-     * Uses maximum width of window.
+     * Uses maximum width of the window.
      */
     case FULL_WIDTH;
 

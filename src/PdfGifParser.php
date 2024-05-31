@@ -40,7 +40,7 @@ class PdfGifParser extends PdfPngParser
     /**
      * @return resource
      *
-     * @throws PdfException if the stream can not be open
+     * @throws PdfException if the stream cannot be open
      */
     private function openStream(string $data)
     {

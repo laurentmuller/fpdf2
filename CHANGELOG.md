@@ -1,5 +1,11 @@
 # Change log
 
+## 1.9.0.5 - 2024-05-31
+
+- Added `PdfViewerPreferences` class and assiociate enumerations.
+- Reworked the `PdfDocument::loadFont()` function.
+- Small PHPDoc corrections.
+
 ## 1.9.0.4 - 2024-05-30
 
 - Added `previous` parameter to `PdfException::instance()` function.

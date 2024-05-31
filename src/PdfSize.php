@@ -26,7 +26,7 @@ class PdfSize
     }
 
     /**
-     * Returns this width and height values as array.
+     * Returns this width and height values as an array.
      *
      * @return array{0: float, 1: float}
      */
@@ -38,7 +38,7 @@ class PdfSize
     /**
      * Returns if the given size is equal to this instance.
      *
-     * To be equal, the width and the height values must equal
+     * To be equal, the width and the height values must be equal
      */
     public function equals(self $other): bool
     {
