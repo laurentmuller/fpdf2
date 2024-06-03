@@ -1,7 +1,7 @@
 # FPDF2
 
-**This repository is clone of [fpdf.org](http://www.fpdf.org) with typed
-variables, enumerations and PHP 8.2 dependencies.**
+This repository is clone of [fpdf.org](http://www.fpdf.org) with typed
+variables, enumerations and PHP 8.2 dependencies.
 
 `PdfDocument` is a PHP class, which allows to generate PDF files with pure PHP.
 **F** from FPDF2 stands for **Free**: you may use it for any kind of usage and

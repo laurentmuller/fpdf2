@@ -2494,12 +2494,18 @@ class PdfDocument
         return '' === $str ? $str : \str_replace("\r", '', $str);
     }
 
+    protected function convertEncoding(string $str, string $to_encoding, string $from_encoding): string
+    {
+        /** @psalm-var string */
+        return \mb_convert_encoding($str, $to_encoding, $from_encoding);
+    }
+
     /**
      * Convert the given string from ISO-8859-1 to UTF-8.
      */
     protected function convertIsoToUtf8(string $str): string
     {
-        return \mb_convert_encoding($str, 'UTF-8', 'ISO-8859-1');
+        return $this->convertEncoding($str, 'UTF-8', 'ISO-8859-1');
     }
 
     /**
@@ -2507,7 +2513,7 @@ class PdfDocument
      */
     protected function convertUtf8ToUtf16(string $str): string
     {
-        return "\xFE\xFF" . \mb_convert_encoding($str, 'UTF-16BE', 'UTF-8');
+        return "\xFE\xFF" . $this->convertEncoding($str, 'UTF-16BE', 'UTF-8');
     }
 
     /**

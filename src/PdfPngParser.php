@@ -240,8 +240,8 @@ class PdfPngParser implements PdfImageParserInterface
             $color .= $data[$pos];
             $alpha .= $data[$pos];
             $line = \substr($data, $pos + 1, $len);
-            $color .= \preg_replace($pattern1, '$1', $line);
-            $alpha .= \preg_replace($pattern2, '$1', $line);
+            $color .= (string) \preg_replace($pattern1, '$1', $line);
+            $alpha .= (string) \preg_replace($pattern2, '$1', $line);
         }
         $data = (string) \gzcompress($color);
         $mask = (string) \gzcompress($alpha);

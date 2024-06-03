@@ -1,5 +1,10 @@
 # Change log
 
+## [Unreleased]
+
+- Updated `phpunit/phpunit` to version `^11.0`.
+- Updated `vimeo/psalm` to `dev-master` branch.
+
 ## 1.9.0.6 - 2024-06-03
 
 - Updated `PdfDocument` class:
