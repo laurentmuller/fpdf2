@@ -357,10 +357,12 @@ class PdfPngParser implements PdfImageParserInterface
      */
     private function readStream($stream, int $len): string
     {
-        // @phpstan-ignore-next-line
+        // @phpstan-ignore function.alreadyNarrowedType
         if (!\is_resource($stream)) {
             throw PdfException::instance('The stream is closed.');
         }
+
+        // @phpstan-ignore argument.type
         $result = \fread($stream, $len);
         if (!\is_string($result) || $len !== \strlen($result)) {
             throw PdfException::instance('Unexpected end of stream.');

@@ -49,6 +49,7 @@ class PdfPngParserTest extends TestCase
         $parser = new class() extends PdfPngParser {
             protected function parseStream(PdfDocument $parent, $stream, string $file): array
             {
+                // @phpstan-ignore argument.type
                 \fread($stream, (int) \filesize($file));
 
                 return parent::parseStream($parent, $stream, $file);
