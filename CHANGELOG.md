@@ -1,5 +1,11 @@
 # Change log
 
+## 1.9.0.6 - 2024-06-03
+
+- Updated `PdfDocument` class:
+  - Replaced return value `self` by `static`.
+- Updated `phpstan` ignore doc.
+
 ## 1.9.0.5 - 2024-05-31
 
 - Added `PdfViewerPreferences` class and assiociate enumerations.
