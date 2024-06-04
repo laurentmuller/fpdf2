@@ -2494,7 +2494,16 @@ class PdfDocument
         return '' === $str ? $str : \str_replace("\r", '', $str);
     }
 
-    protected function convertEncoding(string $str, string $to_encoding, string $from_encoding): string
+    /**
+     * Convert a string from one character encoding to another.
+     *
+     * @param string          $str           the string to be converted
+     * @param string          $to_encoding   the desired encoding of the result
+     * @param string[]|string $from_encoding the current encoding used to interpret string
+     *
+     * @return string the encoded string
+     */
+    protected function convertEncoding(string $str, string $to_encoding, array|string $from_encoding): string
     {
         /** @psalm-var string */
         return \mb_convert_encoding($str, $to_encoding, $from_encoding);

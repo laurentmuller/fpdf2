@@ -1,9 +1,11 @@
 # Change log
 
-## [Unreleased]
+## 1.9.0.7 - 2024-06-04
 
 - Updated `phpunit/phpunit` to version `^11.0`.
 - Updated `vimeo/psalm` to `dev-master` branch.
+- Added `convertEncoding` function to `PdfDocument` class.
+- Added `replace` entry in `composer.json`.
 
 ## 1.9.0.6 - 2024-06-03
 
@@ -13,7 +15,7 @@
 
 ## 1.9.0.5 - 2024-05-31
 
-- Added `PdfViewerPreferences` class and assiociate enumerations.
+- Added `PdfViewerPreferences` class and associate enumerations.
 - Reworked the `PdfDocument::loadFont()` function.
 - Small PHPDoc corrections.
 
