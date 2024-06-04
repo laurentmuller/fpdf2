@@ -5,7 +5,6 @@
 - Updated `phpunit/phpunit` to version `^11.0`.
 - Updated `vimeo/psalm` to `dev-master` branch.
 - Added `convertEncoding` function to `PdfDocument` class.
-- Added `replace` entry in `composer.json`.
 
 ## 1.9.0.6 - 2024-06-03
 
