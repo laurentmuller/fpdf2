@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- Updated to Symfony v7.1.1.
+
 ## 1.9.0.7 - 2024-06-04
 
 - Updated `phpunit/phpunit` to version `^11.0`.
