@@ -12,10 +12,8 @@ declare(strict_types=1);
 
 namespace fpdf;
 
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-#[CoversClass(PdfJpgParser::class)]
 class PdfJpgParserTest extends TestCase
 {
     public function testInvalid(): void

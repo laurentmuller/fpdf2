@@ -12,14 +12,8 @@ declare(strict_types=1);
 
 namespace fpdf;
 
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-#[CoversClass(PdfDuplex::class)]
-#[CoversClass(PdfScaling::class)]
-#[CoversClass(PdfDirection::class)]
-#[CoversClass(PdfNonFullScreenPageMode::class)]
-#[CoversClass(PdfViewerPreferences::class)]
 class PdfViewerPreferencesTest extends TestCase
 {
     public function testDefaultDirection(): void

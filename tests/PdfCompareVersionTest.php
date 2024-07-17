@@ -12,10 +12,6 @@ declare(strict_types=1);
 
 namespace fpdf;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-
-#[CoversClass(FPDF::class)]
-#[CoversClass(PdfDocument::class)]
 class PdfCompareVersionTest extends AbstractCompareTestCase
 {
     public const PDF_VERSION = '1.6';

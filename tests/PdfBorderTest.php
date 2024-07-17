@@ -12,10 +12,8 @@ declare(strict_types=1);
 
 namespace fpdf;
 
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-#[CoversClass(PdfBorder::class)]
 class PdfBorderTest extends TestCase
 {
     public function testAll(): void

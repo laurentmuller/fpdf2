@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.0/phpunit.xsd"
-         requireCoverageMetadata="true"
          colors="true">
 
     <php>
@@ -18,11 +17,11 @@
 
     <source>
         <include>
-            <directory suffix=".php">./src</directory>
+            <directory>./src</directory>
         </include>
         <exclude>
-            <directory suffix=".php">./src/font</directory>
-            <directory suffix=".php">./tests/resources/</directory>
+            <directory>./src/font</directory>
+            <directory>./tests/resources/</directory>
         </exclude>
     </source>
 

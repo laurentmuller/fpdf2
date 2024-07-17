@@ -12,10 +12,8 @@ declare(strict_types=1);
 
 namespace fpdf;
 
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-#[CoversClass(PdfPageSize::class)]
 class PdfPageSizeTest extends TestCase
 {
     public function testA4(): void

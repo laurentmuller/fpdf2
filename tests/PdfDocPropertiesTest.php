@@ -12,9 +12,6 @@ declare(strict_types=1);
 
 namespace fpdf;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-
-#[CoversClass(PdfDocument::class)]
 class PdfDocPropertiesTest extends AbstractPdfDocTestCase
 {
     public function testAddPageClosed(): void
