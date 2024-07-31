@@ -12,8 +12,21 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 class PdfDocPropertiesTest extends AbstractPdfDocTestCase
 {
+    public static function getIsLinks(): \Generator
+    {
+        yield [null, false];
+        yield ['', false];
+        yield [0, false];
+        yield [-1, false];
+
+        yield ['link', true];
+        yield [1, true];
+    }
+
     public function testAddPageClosed(): void
     {
         self::expectException(PdfException::class);
@@ -142,6 +155,13 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
         $this->expectOutputRegex('/CreationDate/');
         $doc = $this->createDocument();
         $doc->output(PdfDestination::DOWNLOAD, '¢FAKE¢');
+    }
+
+    #[DataProvider('getIsLinks')]
+    public function testIsLink(string|int|null $link, bool $expected): void
+    {
+        $actual = PdfDocument::isLink($link);
+        self::assertSame($expected, $actual);
     }
 
     public function testLastHeight(): void

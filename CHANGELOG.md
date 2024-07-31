@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added test for `PdfDocument::isLink()` function.
 - Reworked `putFonts` function of `PdfDocument` class.
 - Added test for `PdfEnumDefaultInterface`.
 - Removed covers class attribute.

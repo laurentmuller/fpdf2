@@ -1169,16 +1169,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v3.60.0",
+            "version": "v3.61.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "e595e4e070d17c5d42ed8c4206f630fcc5f401a4"
+                "reference": "737a24b6d531db9c034ac97524ac3a3bde0c20c0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/e595e4e070d17c5d42ed8c4206f630fcc5f401a4",
-                "reference": "e595e4e070d17c5d42ed8c4206f630fcc5f401a4",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/737a24b6d531db9c034ac97524ac3a3bde0c20c0",
+                "reference": "737a24b6d531db9c034ac97524ac3a3bde0c20c0",
                 "shasum": ""
             },
             "require": {
@@ -1260,7 +1260,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues",
-                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.60.0"
+                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.61.0"
             },
             "funding": [
                 {
@@ -1268,7 +1268,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-07-25T09:26:51+00:00"
+            "time": "2024-07-31T08:18:16+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -2302,16 +2302,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "11.2.8",
+            "version": "11.2.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "a7a29e8d3113806f18f99d670f580a30e8ffff39"
+                "reference": "c197bbaaca360efda351369bf1fd9cc1ca6bcbf7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a7a29e8d3113806f18f99d670f580a30e8ffff39",
-                "reference": "a7a29e8d3113806f18f99d670f580a30e8ffff39",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c197bbaaca360efda351369bf1fd9cc1ca6bcbf7",
+                "reference": "c197bbaaca360efda351369bf1fd9cc1ca6bcbf7",
                 "shasum": ""
             },
             "require": {
@@ -2382,7 +2382,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.2.8"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.2.9"
             },
             "funding": [
                 {
@@ -2398,7 +2398,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-07-18T14:56:37+00:00"
+            "time": "2024-07-30T11:09:23+00:00"
         },
         {
             "name": "psalm/plugin-phpunit",
