@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Reworked `putFonts` function of `PdfDocument` class.
 - Added test for `PdfEnumDefaultInterface`.
 - Removed covers class attribute.
 - Updated to Symfony v7.1.2 and Rector v1.2.0.

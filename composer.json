@@ -41,10 +41,10 @@
         "friendsofphp/php-cs-fixer": "^3.0",
         "phpstan/extension-installer": "^1.0",
         "phpstan/phpstan": "^1.0",
-        "psalm/plugin-phpunit": "^0.19",
         "phpstan/phpstan-deprecation-rules": "^1.0",
         "phpstan/phpstan-strict-rules": "^1.0",
         "phpunit/phpunit": "^11.0",
+        "psalm/plugin-phpunit": "^0.19",
         "rector/rector": "^1.0",
         "vimeo/psalm": "dev-master"
     },

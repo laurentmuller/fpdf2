@@ -3011,70 +3011,74 @@ class PdfDocument
                 $name = 'AAAAAA+' . $name;
             }
             $type = $font['type'];
-            if ('Core' === $type) {
-                // core font
-                $this->putNewObj();
-                $this->put('<</Type /Font');
-                $this->putf('/BaseFont /%s', $name);
-                $this->put('/Subtype /Type1');
-                if ('Symbol' !== $name && 'ZapfDingbats' !== $name) {
-                    $this->put('/Encoding /WinAnsiEncoding');
-                }
-                if (isset($font['uv'])) {
-                    $this->putf('/ToUnicode %d 0 R', $this->charMaps[$mapKey]);
-                }
-                $this->put('>>');
-                $this->putEndObj();
-            } elseif ('Type1' === $type || 'TrueType' === $type) {
-                // additional Type1 or TrueType/OpenType font
-                $this->putNewObj();
-                $this->put('<</Type /Font');
-                $this->putf('/BaseFont /%s', $name);
-                $this->putf('/Subtype /%s', $type);
-                $this->put('/FirstChar 32 /LastChar 255');
-                $this->putf('/Widths %d 0 R', $this->objectNumber + 1);
-                $this->putf('/FontDescriptor %d 0 R', $this->objectNumber + 2);
-                if (isset($font['diff']) && isset($font['enc'])) {
-                    $this->putf('/Encoding %d 0 R', $this->encodings[$font['enc']]);
-                } else {
-                    $this->put('/Encoding /WinAnsiEncoding');
-                }
-                if (isset($font['uv'])) {
-                    $this->putf('/ToUnicode %d 0 R', $this->charMaps[$mapKey]);
-                }
-                $this->put('>>');
-                $this->putEndObj();
-                // widths
-                $this->putNewObj();
-                $charWidths = $font['cw'];
-                $output = \array_reduce(
-                    \range(\chr(32), \chr(255)),
-                    fn (string $carry, string $ch): string => $carry . \sprintf('%d ', $charWidths[$ch]),
-                    ''
-                );
-                $this->putf('[%s]', $output);
-                $this->putEndObj();
-                // descriptor
-                $this->putNewObj();
-                $output = \sprintf('<</Type /FontDescriptor /FontName /%s', $name);
-                foreach ($font['desc'] as $descKey => $descValue) {
-                    $output .= \sprintf(' /%s %s', $descKey, $descValue);
-                }
-                if (isset($font['file']) && '' !== $font['file']) {
-                    $n = $this->fontFiles[$font['file']]['number'];
-                    $output .= \sprintf(' /FontFile%s %d 0 R', 'Type1' === $type ? '' : '2', $n);
-                }
-                $output .= '>>';
-                $this->put($output);
-                $this->putEndObj();
-            } else {
-                // allow for additional types
-                $method = 'put' . \ucfirst(\strtolower($type));
-                if (!\method_exists($this, $method)) {
-                    throw PdfException::format('Unsupported font type: %s.', $type);
-                }
-                // @phpstan-ignore method.dynamicName
-                $this->$method($font);
+            switch ($type) {
+                case 'Core':
+                    // core font
+                    $this->putNewObj();
+                    $this->put('<</Type /Font');
+                    $this->putf('/BaseFont /%s', $name);
+                    $this->put('/Subtype /Type1');
+                    if ('Symbol' !== $name && 'ZapfDingbats' !== $name) {
+                        $this->put('/Encoding /WinAnsiEncoding');
+                    }
+                    if (isset($font['uv'])) {
+                        $this->putf('/ToUnicode %d 0 R', $this->charMaps[$mapKey]);
+                    }
+                    $this->put('>>');
+                    $this->putEndObj();
+                    break;
+                case 'Type1':
+                case 'TrueType':
+                    // Type1 or TrueType/OpenType font
+                    $this->putNewObj();
+                    $this->put('<</Type /Font');
+                    $this->putf('/BaseFont /%s', $name);
+                    $this->putf('/Subtype /%s', $type);
+                    $this->put('/FirstChar 32 /LastChar 255');
+                    $this->putf('/Widths %d 0 R', $this->objectNumber + 1);
+                    $this->putf('/FontDescriptor %d 0 R', $this->objectNumber + 2);
+                    if (isset($font['diff']) && isset($font['enc'])) {
+                        $this->putf('/Encoding %d 0 R', $this->encodings[$font['enc']]);
+                    } else {
+                        $this->put('/Encoding /WinAnsiEncoding');
+                    }
+                    if (isset($font['uv'])) {
+                        $this->putf('/ToUnicode %d 0 R', $this->charMaps[$mapKey]);
+                    }
+                    $this->put('>>');
+                    $this->putEndObj();
+                    // widths
+                    $this->putNewObj();
+                    $charWidths = $font['cw'];
+                    $output = \array_reduce(
+                        \range(\chr(32), \chr(255)),
+                        fn (string $carry, string $ch): string => $carry . \sprintf('%d ', $charWidths[$ch]),
+                        ''
+                    );
+                    $this->putf('[%s]', $output);
+                    $this->putEndObj();
+                    // descriptor
+                    $this->putNewObj();
+                    $output = \sprintf('<</Type /FontDescriptor /FontName /%s', $name);
+                    foreach ($font['desc'] as $descKey => $descValue) {
+                        $output .= \sprintf(' /%s %s', $descKey, $descValue);
+                    }
+                    if (isset($font['file']) && '' !== $font['file']) {
+                        $n = $this->fontFiles[$font['file']]['number'];
+                        $output .= \sprintf(' /FontFile%s %d 0 R', 'Type1' === $type ? '' : '2', $n);
+                    }
+                    $output .= '>>';
+                    $this->put($output);
+                    $this->putEndObj();
+                    break;
+                default:
+                    // allow for additional types
+                    $method = 'put' . \ucfirst(\strtolower($type));
+                    if (!\method_exists($this, $method)) {
+                        throw PdfException::format('Unsupported font type: %s.', $type);
+                    }
+                    $this->$method($font); // @phpstan-ignore method.dynamicName
+                    break;
             }
         }
     }
