@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- Added `isAny()` function to `PdfBorder` class.
+
 ## 1.9.0.8 - 2024-08-02
 
 - Added `draw()` function to `PdfBorder` class.

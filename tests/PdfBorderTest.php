@@ -68,6 +68,16 @@ class PdfBorderTest extends TestCase
         self::assertTrue($actual->isAll());
     }
 
+    public function testIsAny(): void
+    {
+        $actual = PdfBorder::none();
+        self::assertFalse($actual->isAny());
+        $actual = PdfBorder::all();
+        self::assertTrue($actual->isAny());
+        $actual = PdfBorder::left();
+        self::assertTrue($actual->isAny());
+    }
+
     public function testLeft(): void
     {
         $actual = PdfBorder::left();

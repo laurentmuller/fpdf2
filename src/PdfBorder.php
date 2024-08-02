@@ -102,6 +102,17 @@ class PdfBorder
     }
 
     /**
+     * Gets a value indicating if at least one border is set.
+     */
+    public function isAny(): bool
+    {
+        return $this->left
+            || $this->right
+            || $this->top
+            || $this->bottom;
+    }
+
+    /**
      * Gets a value indicating if the bottom border is set.
      */
     public function isBottom(): bool
