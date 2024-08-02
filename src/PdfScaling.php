@@ -24,7 +24,7 @@ enum PdfScaling: string implements PdfEnumDefaultInterface
     use PdfEnumDefaultTrait;
 
     /**
-     * Indicates the conforming reader’s default print scaling.
+     * Indicates the conforming reader’s default print scaling (default value).
      */
     #[EnumCase(extras: [self::NAME => true])]
     case APP_DEFAULT = 'AppDefault';

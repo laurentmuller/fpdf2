@@ -24,7 +24,7 @@ enum PdfNonFullScreenPageMode: string implements PdfEnumDefaultInterface
     use PdfEnumDefaultTrait;
 
     /**
-     * Neither document outline nor thumbnail images should be visible.
+     * Neither document outline nor thumbnail images should be visible (default value).
      */
     #[EnumCase(extras: [self::NAME => true])]
     case USE_NONE = 'UseNone';

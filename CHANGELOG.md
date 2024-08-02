@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Updated PHP doc.
 - Added test for `PdfDocument::isLink()` function.
 - Reworked `putFonts` function of `PdfDocument` class.
 - Added test for `PdfEnumDefaultInterface`.

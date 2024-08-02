@@ -32,7 +32,7 @@ enum PdfDuplex: string implements PdfEnumDefaultInterface
      */
     case DUPLEX_FLIP_SHORT_EDGE = 'DuplexFlipShortEdge';
     /**
-     * No duplex used.
+     * No duplex used (default value).
      */
     #[EnumCase(extras: [self::NAME => true])]
     case NONE = 'None';

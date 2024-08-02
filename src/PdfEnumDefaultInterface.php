@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace fpdf;
 
 /**
- * Class implementing this interface deals with a default value.
+ * Enumeration implementing this interface deals with a default value.
  *
  * @template T of \UnitEnum&PdfEnumDefaultInterface
  */
@@ -27,7 +27,7 @@ interface PdfEnumDefaultInterface
     /**
      * Gets the default enumeration.
      *
-     * @return T
+     * @psalm-return T
      *
      * @throws \LogicException if default enumeration is not found
      */

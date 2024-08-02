@@ -352,12 +352,11 @@ class PdfPngParser implements PdfImageParserInterface
      *
      * @throws PdfException if the stream is closed or if the end of the stream is reached
      *
-     * @phpstan-param resource|closed-resource $stream
+     * @phpstan-param resource|closed-resource|null $stream
      * @phpstan-param non-negative-int $len
      */
     private function readStream($stream, int $len): string
     {
-        // @phpstan-ignore function.alreadyNarrowedType
         if (!\is_resource($stream)) {
             throw PdfException::instance('The stream is closed.');
         }

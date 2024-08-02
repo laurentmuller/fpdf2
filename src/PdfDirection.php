@@ -24,7 +24,7 @@ enum PdfDirection: string implements PdfEnumDefaultInterface
     use PdfEnumDefaultTrait;
 
     /**
-     * Left to right.
+     * Left to right (default value).
      */
     #[EnumCase(extras: [self::NAME => true])]
     case L2R = 'L2R';
