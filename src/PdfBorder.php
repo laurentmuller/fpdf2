@@ -54,6 +54,43 @@ class PdfBorder
     }
 
     /**
+     * Draw borders, if applicable, to the given document using the current draw color and line width.
+     *
+     * @param PdfDocument  $parent the parent document to draw borders to
+     * @param PdfRectangle $bounds the border bounds
+     */
+    public function draw(PdfDocument $parent, PdfRectangle $bounds): void
+    {
+        if ($this->isNone()) {
+            return;
+        }
+
+        if ($this->isAll()) {
+            $parent->rectangle($bounds);
+
+            return;
+        }
+
+        // draw each applicable border side
+        $x = $bounds->x;
+        $y = $bounds->y;
+        $right = $bounds->right();
+        $bottom = $bounds->bottom();
+        if ($this->isLeft()) {
+            $parent->line($x, $y, $x, $bottom);
+        }
+        if ($this->isRight()) {
+            $parent->line($right, $y, $right, $bottom);
+        }
+        if ($this->isTop()) {
+            $parent->line($x, $y, $right, $y);
+        }
+        if ($this->isBottom()) {
+            $parent->line($x, $bottom, $right, $bottom);
+        }
+    }
+
+    /**
      * Gets a value indicating if all borders are set.
      */
     public function isAll(): bool

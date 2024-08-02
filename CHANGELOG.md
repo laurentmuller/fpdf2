@@ -1,7 +1,8 @@
 # Change log
 
-## Unreleased
+## 1.9.0.8 - 2024-08-02
 
+- Added `draw()` function to `PdfBorder` class.
 - Updated PHP doc.
 - Added test for `PdfDocument::isLink()` function.
 - Reworked `putFonts` function of `PdfDocument` class.

@@ -12,10 +12,21 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class PdfBorderTest extends TestCase
 {
+    public static function getBorders(): \Generator
+    {
+        yield [PdfBorder::none()];
+        yield [PdfBorder::all()];
+        yield [PdfBorder::left()];
+        yield [PdfBorder::right()];
+        yield [PdfBorder::top()];
+        yield [PdfBorder::bottom()];
+    }
+
     public function testAll(): void
     {
         $actual = PdfBorder::all();
@@ -34,6 +45,17 @@ class PdfBorderTest extends TestCase
         self::assertFalse($actual->isRight());
         self::assertFalse($actual->isTop());
         self::assertTrue($actual->isBottom());
+    }
+
+    #[DataProvider('getBorders')]
+    public function testDraw(PdfBorder $border): void
+    {
+        $document = new PdfDocument();
+        $document->setFont(PdfFontName::ARIAL)
+            ->addPage();
+        $bounds = new PdfRectangle(10, 10, 100, 100);
+        $border->draw($document, $bounds);
+        self::assertSame(1, $document->getPage());
     }
 
     public function testIsAll(): void
