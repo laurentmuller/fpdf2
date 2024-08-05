@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Updated the namespace of `PdfEnumDefaultInterfaceTest` class.
 - Added `isAny()` function to `PdfBorder` class.
 
 ## 1.9.0.8 - 2024-08-02
