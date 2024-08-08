@@ -38,6 +38,25 @@ enum PdfUnit: string
     case POINT = 'pt';
 
     /**
+     * Convert a value to the given target unit.
+     *
+     * Return the given value if the target unit is the same as this enumeration.
+     *
+     * @param float   $value  the value to convert
+     * @param PdfUnit $target the target unit
+     *
+     * @return float the converted value
+     */
+    public function convert(float $value, PdfUnit $target): float
+    {
+        if ($this === $target) {
+            return $value;
+        }
+
+        return $value * $this->getScaleFactor() / $target->getScaleFactor();
+    }
+
+    /**
      * Get the document scale factor.
      */
     public function getScaleFactor(): float

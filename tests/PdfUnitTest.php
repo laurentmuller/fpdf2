@@ -12,25 +12,74 @@ declare(strict_types=1);
 
 namespace fpdf;
 
-namespace fpdf;
-
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class PdfUnitTest extends TestCase
 {
-    public function testScaleFactor(): void
+    public static function getConverts(): \Generator
     {
-        self::assertEqualsWithDelta(28.34, PdfUnit::CENTIMETER->getScaleFactor(), 0.01);
-        self::assertEqualsWithDelta(72.0, PdfUnit::INCH->getScaleFactor(), 0.01);
-        self::assertEqualsWithDelta(2.83, PdfUnit::MILLIMETER->getScaleFactor(), 0.01);
-        self::assertEqualsWithDelta(1.0, PdfUnit::POINT->getScaleFactor(), 0.01);
+        $value = 123.123456;
+        yield [$value, PdfUnit::CENTIMETER, PdfUnit::INCH, $value / 2.54];
+        yield [$value, PdfUnit::CENTIMETER, PdfUnit::MILLIMETER, $value * 10.0];
+        yield [$value, PdfUnit::CENTIMETER, PdfUnit::POINT, $value * 72.0 / 2.54];
+
+        yield [$value, PdfUnit::MILLIMETER, PdfUnit::CENTIMETER, $value / 10.0];
+        yield [$value, PdfUnit::MILLIMETER, PdfUnit::INCH, $value / 25.4];
+        yield [$value, PdfUnit::MILLIMETER, PdfUnit::POINT, $value * 72.0 / 25.4];
+
+        yield [$value, PdfUnit::POINT, PdfUnit::CENTIMETER, $value * 2.54 / 72.0];
+        yield [$value, PdfUnit::POINT, PdfUnit::INCH, $value / 72.0];
+        yield [$value, PdfUnit::POINT, PdfUnit::MILLIMETER, $value * 25.4 / 72.0];
+
+        yield [$value, PdfUnit::INCH, PdfUnit::CENTIMETER, $value * 2.54];
+        yield [$value, PdfUnit::INCH, PdfUnit::MILLIMETER, $value * 25.4];
+        yield [$value, PdfUnit::INCH, PdfUnit::POINT, $value * 72.0];
     }
 
-    public function testValue(): void
+    public static function getScaleFactors(): \Generator
     {
-        self::assertSame('cm', PdfUnit::CENTIMETER->value);
-        self::assertSame('in', PdfUnit::INCH->value);
-        self::assertSame('mm', PdfUnit::MILLIMETER->value);
-        self::assertSame('pt', PdfUnit::POINT->value);
+        yield [PdfUnit::CENTIMETER, 28.34];
+        yield [PdfUnit::INCH, 72.0];
+        yield [PdfUnit::MILLIMETER, 2.83];
+        yield [PdfUnit::POINT, 1.0];
+    }
+
+    public static function getValues(): \Generator
+    {
+        yield [PdfUnit::CENTIMETER, 'cm'];
+        yield [PdfUnit::INCH, 'in'];
+        yield [PdfUnit::MILLIMETER, 'mm'];
+        yield [PdfUnit::POINT, 'pt'];
+    }
+
+    #[DataProvider('getConverts')]
+    public function testConvert(float $value, PdfUnit $source, PdfUnit $target, float $expected): void
+    {
+        $actual = $source->convert($value, $target);
+        self::assertEqualsWithDelta($expected, $actual, 0.0001);
+    }
+
+    public function testConvertSameUnit(): void
+    {
+        $value = 123.123456;
+        $source = PdfUnit::CENTIMETER;
+        $target = PdfUnit::CENTIMETER;
+        $actual = $source->convert($value, $target);
+        self::assertSame($value, $actual);
+    }
+
+    #[DataProvider('getScaleFactors')]
+    public function testScaleFactor(PdfUnit $unit, float $expected): void
+    {
+        $actual = $unit->getScaleFactor();
+        self::assertEqualsWithDelta($expected, $actual, 0.01);
+    }
+
+    #[DataProvider('getValues')]
+    public function testValue(PdfUnit $unit, string $expected): void
+    {
+        $actual = $unit->value;
+        self::assertSame($expected, $actual);
     }
 }

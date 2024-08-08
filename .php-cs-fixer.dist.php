@@ -57,6 +57,7 @@ $rules = [
     'php_unit_strict' => true,
     'php_unit_test_case_static_method_calls' => ['call_type' => 'self'],
     'phpdoc_to_comment' => ['allow_before_return_statement' => true],
+    'new_with_braces' => ['anonymous_class' => true, 'named_class' => true],
 ];
 
 $finder = Finder::create()

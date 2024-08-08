@@ -106,8 +106,6 @@ class PdfDocument
     protected bool $colorFlag = false;
     /** The compression flag. */
     protected bool $compression = true;
-    /** The document creation date. */
-    protected int $creationDate = 0;
     /**
      * The current font info.
      *
@@ -558,7 +556,7 @@ class PdfDocument
                 $op
             );
         }
-        if ('' === $output && !$border->isNone()) {
+        if ('' === $output && $border->isAny()) {
             $output = $this->formatBorders($this->x, $this->y, $width, $height, $border);
         }
         $text = $this->cleanText($text);
@@ -1625,7 +1623,7 @@ class PdfDocument
                 -$height * $scaleFactor,
                 $style->value
             );
-        } elseif (!$style->isNone()) {
+        } elseif ($style->isAny()) {
             $this->out($this->formatBorders($x, $y, $width, $height, $style));
         }
 
@@ -2213,7 +2211,6 @@ class PdfDocument
      */
     public function text(float $x, float $y, string $text): static
     {
-        $text = $this->cleanText($text);
         if ('' === $text) {
             return $this;
         }
@@ -2468,6 +2465,8 @@ class PdfDocument
 
     /**
      * Check if the output is not yet started.
+     *
+     * @throws PdfException if some data has already been output
      */
     protected function checkOutput(): void
     {
@@ -2527,6 +2526,8 @@ class PdfDocument
 
     /**
      * Output the underline font.
+     *
+     * @throws PdfException if no font has been set
      */
     protected function doUnderline(float $x, float $y, string $str): string
     {
@@ -2553,7 +2554,6 @@ class PdfDocument
      */
     protected function endDoc(): void
     {
-        $this->creationDate = \time();
         $this->putHeader();
         $this->putPages();
         $this->putResources();
@@ -2601,16 +2601,11 @@ class PdfDocument
      */
     protected function escape(string $str): string
     {
-        if (\str_contains($str, '(') || \str_contains($str, ')')
-            || \str_contains($str, '\\') || \str_contains($str, "\r")) {
-            return \str_replace(
-                ['\\', '(', ')', "\r"],
-                ['\\\\', '\\(', '\\)', '\\r'],
-                $str
-            );
-        }
-
-        return $str;
+        return \str_replace(
+            ['\\', '(', ')', "\r"],
+            ['\\\\', '\\(', '\\)', '\\r'],
+            $str
+        );
     }
 
     /**
@@ -2628,42 +2623,21 @@ class PdfDocument
         }
 
         $output = '';
-        $scaleFactor = $this->scaleFactor;
+        $left = $x * $this->scaleFactor;
+        $top = ($this->height - $y) * $this->scaleFactor;
+        $right = ($x + $width) * $this->scaleFactor;
+        $bottom = ($this->height - ($y + $height)) * $this->scaleFactor;
         if ($border->isLeft()) {
-            $output .= \sprintf(
-                '%.2F %.2F m %.2F %.2F l S ',
-                $x * $scaleFactor,
-                ($this->height - $y) * $scaleFactor,
-                $x * $scaleFactor,
-                ($this->height - ($y + $height)) * $scaleFactor
-            );
+            $output .= \sprintf('%.2F %.2F m %.2F %.2F l S ', $left, $top, $left, $bottom);
         }
         if ($border->isTop()) {
-            $output .= \sprintf(
-                '%.2F %.2F m %.2F %.2F l S ',
-                $x * $scaleFactor,
-                ($this->height - $y) * $scaleFactor,
-                ($x + $width) * $scaleFactor,
-                ($this->height - $y) * $scaleFactor
-            );
+            $output .= \sprintf('%.2F %.2F m %.2F %.2F l S ', $left, $top, $right, $top);
         }
         if ($border->isRight()) {
-            $output .= \sprintf(
-                '%.2F %.2F m %.2F %.2F l S ',
-                ($x + $width) * $scaleFactor,
-                ($this->height - $y) * $scaleFactor,
-                ($x + $width) * $scaleFactor,
-                ($this->height - ($y + $height)) * $scaleFactor
-            );
+            $output .= \sprintf('%.2F %.2F m %.2F %.2F l S ', $right, $top, $right, $bottom);
         }
         if ($border->isBottom()) {
-            $output .= \sprintf(
-                '%.2F %.2F m %.2F %.2F l S ',
-                $x * $scaleFactor,
-                ($this->height - ($y + $height)) * $scaleFactor,
-                ($x + $width) * $scaleFactor,
-                ($this->height - ($y + $height)) * $scaleFactor
-            );
+            $output .= \sprintf('%.2F %.2F m %.2F %.2F l S ', $left, $bottom, $right, $bottom);
         }
 
         return $output;
@@ -2768,6 +2742,8 @@ class PdfDocument
     /**
      * Load the font from the given file path.
      *
+     * @throws PdfException if the given path does not exist, or the font name is not defined
+     *
      * @phpstan-return FontType
      */
     protected function loadFont(string $path): array
@@ -2794,6 +2770,8 @@ class PdfDocument
 
     /**
      * Output the given string.
+     *
+     * @throws PdfException if no page has been added, if the end page has been called or if the document is closed
      */
     protected function out(string $output): void
     {
@@ -2952,6 +2930,8 @@ class PdfDocument
 
     /**
      * Put fonts to this buffer.
+     *
+     * @throws PdfException if a font file is not found or if a font type is unsupported
      */
     protected function putFonts(): void
     {
@@ -3168,23 +3148,22 @@ class PdfDocument
      */
     protected function putImages(): void
     {
-        foreach (\array_keys($this->images) as $file) {
-            $this->putImage($this->images[$file]);
-            unset($this->images[$file]['data']);
-            unset($this->images[$file]['soft_mask']);
+        foreach ($this->images as &$image) {
+            $this->putImage($image);
+            unset($image['data'], $image['soft_mask']);
         }
     }
 
     /**
-     * Put date and meta-data to this buffer.
+     * Put the creation date and meta-data to this buffer.
      */
     protected function putInfo(): void
     {
-        $date = \date('YmdHisO', $this->creationDate);
-        $value = \sprintf("D:%s'%s'", \substr($date, 0, -2), \substr($date, -2));
-        $this->addMetaData('CreationDate', $value);
-        foreach ($this->metadata as $key => $data) {
-            $this->putf('/%s %s', $key, $this->textString($data));
+        $date = \date('YmdHisO');
+        $date = \sprintf("D:%s'%s'", \substr($date, 0, -2), \substr($date, -2));
+        $this->addMetaData('CreationDate', $date);
+        foreach ($this->metadata as $key => $value) {
+            $this->putf('/%s %s', $key, $this->textString($value));
         }
     }
 
@@ -3401,7 +3380,7 @@ class PdfDocument
             $str = $this->convertUtf8ToUtf16($str);
         }
 
-        return '(' . $this->escape($str) . ')';
+        return \sprintf('(%s)', $this->escape($str));
     }
 
     /**

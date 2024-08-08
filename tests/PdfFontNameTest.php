@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class PdfFontNameTest extends TestCase
@@ -25,7 +26,7 @@ class PdfFontNameTest extends TestCase
         yield ['ARIAL', PdfFontName::ARIAL];
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('getTryFromFamily')]
+    #[DataProvider('getTryFromFamily')]
     public function testTryFromFamily(string $family, ?PdfFontName $expected): void
     {
         $actual = PdfFontName::tryFromFamily($family);

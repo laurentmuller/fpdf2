@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class PdfFontStyleTest extends TestCase
@@ -56,7 +57,7 @@ class PdfFontStyleTest extends TestCase
         yield ['bibi', PdfFontStyle::BOLD_ITALIC];
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('getFrom')]
+    #[DataProvider('getFrom')]
     public function testFrom(string $style, PdfFontStyle $expected, bool $exception = false): void
     {
         if ($exception) {
@@ -66,7 +67,7 @@ class PdfFontStyleTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('getFromString')]
+    #[DataProvider('getFromString')]
     public function testFromString(?string $str, PdfFontStyle $expected): void
     {
         $actual = PdfFontStyle::fromString($str);

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Added `convert()` function to `PdfUnit` enumeration.
+- Updated PHP-CS-Fixer configuration.
+- Removed the creation date field from `PdfDocument`.
+- Reworked internal code of `PdfDocument`.
 - Updated the namespace of `PdfEnumDefaultInterfaceTest` class.
 - Added `isAny()` function to `PdfBorder` class.
 
