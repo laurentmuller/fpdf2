@@ -96,7 +96,7 @@ class PdfDocument
     /**
      * The FPDF version.
      */
-    final public const VERSION = '1.86';
+    final public const VERSION = '2.0';
 
     // the empty color
     private const EMPTY_COLOR = '0 G';
@@ -316,7 +316,7 @@ class PdfDocument
         // automatic page break
         $this->setAutoPageBreak(true, 2.0 * $margin);
         // producer
-        $this->setProducer('FPDF ' . self::VERSION);
+        $this->setProducer('FPDF2 ' . self::VERSION);
         // preferences
         $this->viewerPreferences = new PdfViewerPreferences();
     }
