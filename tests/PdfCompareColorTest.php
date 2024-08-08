@@ -12,6 +12,9 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use fpdf\Enums\PdfMove;
+use fpdf\Enums\PdfTextAlignment;
+
 class PdfCompareColorTest extends AbstractCompareTestCase
 {
     protected function updateNewDocument(PdfDocument $doc): void

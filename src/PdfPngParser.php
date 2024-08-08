@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use fpdf\Interfaces\PdfImageParserInterface;
+
 /**
  * Parser for PNG images.
  *

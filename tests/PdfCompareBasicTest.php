@@ -12,6 +12,14 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use fpdf\Enums\PdfFontStyle;
+use fpdf\Enums\PdfLayout;
+use fpdf\Enums\PdfMove;
+use fpdf\Enums\PdfOrientation;
+use fpdf\Enums\PdfRectangleStyle;
+use fpdf\Enums\PdfTextAlignment;
+use fpdf\Enums\PdfZoom;
+
 class PdfCompareBasicTest extends AbstractCompareTestCase
 {
     private const COMMENT = <<<COMMENT

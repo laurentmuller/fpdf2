@@ -12,6 +12,14 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use fpdf\Enums\PdfDestination;
+use fpdf\Enums\PdfFontName;
+use fpdf\Enums\PdfFontStyle;
+use fpdf\Enums\PdfLineCap;
+use fpdf\Enums\PdfLineJoin;
+use fpdf\Enums\PdfRectangleStyle;
+use fpdf\Enums\PdfState;
+use fpdf\Enums\PdfUnit;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class PdfDocPropertiesTest extends AbstractPdfDocTestCase

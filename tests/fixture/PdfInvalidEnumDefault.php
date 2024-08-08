@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace fpdf\fixture;
 
-use fpdf\PdfEnumDefaultInterface;
-use fpdf\PdfEnumDefaultTrait;
+use fpdf\Interfaces\PdfEnumDefaultInterface;
+use fpdf\Traits\PdfEnumDefaultTrait;
 
 /**
  * @implements PdfEnumDefaultInterface<PdfInvalidEnumDefault>

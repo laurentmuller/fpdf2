@@ -12,6 +12,11 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use fpdf\Enums\PdfFontName;
+use fpdf\Enums\PdfFontStyle;
+use fpdf\Enums\PdfOrientation;
+use fpdf\Enums\PdfPageSize;
+use fpdf\Enums\PdfUnit;
 use PHPUnit\Framework\TestCase;
 
 abstract class AbstractPdfDocTestCase extends TestCase

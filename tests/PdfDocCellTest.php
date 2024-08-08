@@ -12,6 +12,11 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use fpdf\Enums\PdfFontName;
+use fpdf\Enums\PdfFontStyle;
+use fpdf\Enums\PdfMove;
+use fpdf\Enums\PdfTextAlignment;
+
 class PdfDocCellTest extends AbstractPdfDocTestCase
 {
     public function testColorFlag(): void

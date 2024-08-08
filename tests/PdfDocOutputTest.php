@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use fpdf\Enums\PdfDestination;
+
 class PdfDocOutputTest extends AbstractPdfDocTestCase
 {
     public function testOutputDownloadInvalid(): void

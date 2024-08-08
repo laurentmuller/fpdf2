@@ -12,6 +12,23 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use fpdf\Enums\PdfDestination;
+use fpdf\Enums\PdfFontName;
+use fpdf\Enums\PdfFontStyle;
+use fpdf\Enums\PdfLayout;
+use fpdf\Enums\PdfLineCap;
+use fpdf\Enums\PdfLineJoin;
+use fpdf\Enums\PdfMove;
+use fpdf\Enums\PdfOrientation;
+use fpdf\Enums\PdfPageSize;
+use fpdf\Enums\PdfRectangleStyle;
+use fpdf\Enums\PdfRotation;
+use fpdf\Enums\PdfState;
+use fpdf\Enums\PdfTextAlignment;
+use fpdf\Enums\PdfUnit;
+use fpdf\Enums\PdfZoom;
+use fpdf\Interfaces\PdfImageParserInterface;
+
 /**
  * Represent a PDF document.
  *

@@ -12,6 +12,10 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use fpdf\Enums\PdfDestination;
+use fpdf\Enums\PdfLayout;
+use fpdf\Enums\PdfZoom;
+
 class PdfDocDisplayModeTest extends AbstractPdfDocTestCase
 {
     public function testDisplayContinuous(): void

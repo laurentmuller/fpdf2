@@ -12,6 +12,9 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use fpdf\Enums\PdfFontName;
+use fpdf\Enums\PdfFontStyle;
+
 class PdfDocFontStyleTest extends AbstractPdfDocTestCase
 {
     public function testFonts(): void

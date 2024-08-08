@@ -12,6 +12,10 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use fpdf\Enums\PdfDirection;
+use fpdf\Enums\PdfDuplex;
+use fpdf\Enums\PdfNonFullScreenPageMode;
+use fpdf\Enums\PdfScaling;
 use PHPUnit\Framework\TestCase;
 
 class PdfViewerPreferencesTest extends TestCase

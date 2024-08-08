@@ -1,5 +1,10 @@
 # Change log
 
+## Unreleased
+
+- **BC Break!**: Modified source structure by adding Enums, Interfaces
+  and Traits directories.
+
 ## 1.9.0.9 - 2024-08-08
 
 - Added `convert()` function to `PdfUnit` enumeration.
