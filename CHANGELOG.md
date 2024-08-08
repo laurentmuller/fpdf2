@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 1.9.0.9 - 2024-08-08
 
 - Added `convert()` function to `PdfUnit` enumeration.
 - Updated PHP-CS-Fixer configuration.
