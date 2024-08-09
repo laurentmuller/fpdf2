@@ -1,6 +1,6 @@
 # Change log
 
-## 2.0.0.0 - 2024-08-08
+## 2.0.0 - 2024-08-08
 
 - Updated FPDF version and producer of `PdfDocument`.
 - **BC Break!**: Modified source structure by adding Enums, Interfaces
