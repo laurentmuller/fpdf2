@@ -17,6 +17,8 @@ use fpdf\Interfaces\PdfEnumDefaultInterface;
 use fpdf\Traits\PdfEnumDefaultTrait;
 
 /**
+ * The PDF scaling enumeration.
+ *
  * The page scaling option that shall be selected when a print dialog is displayed for this document.
  *
  * @implements PdfEnumDefaultInterface<PdfScaling>

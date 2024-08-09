@@ -15,8 +15,9 @@ namespace fpdf\Enums;
 /**
  * PDF move enumeration.
  *
+ * Indicates where the current position should go after a cell is printed.
+ *
  * @see PdfDocument::cell()
- * @see PdfDocument::multiCell()
  */
 enum PdfMove
 {

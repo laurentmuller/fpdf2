@@ -1,6 +1,11 @@
 # Change log
 
-## 2.0.0 - 2024-08-08
+## 2.0.1 - 2024-08-09
+
+- Updated `README.md` file.
+- Updated PHP documentation and tutorials.
+
+## 2.0.0.0 - 2024-08-08
 
 - Updated FPDF version and producer of `PdfDocument`.
 - **BC Break!**: Modified source structure by adding Enums, Interfaces

@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace fpdf\Enums;
 
 /**
- * The cell text alignment enumeration.
+ * The PDF cell text alignment enumeration.
  *
  * @see PdfDocument::cell()
  * @see PdfDocument::multiCell()

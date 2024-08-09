@@ -18,6 +18,8 @@ use fpdf\PdfSize;
 
 /**
  * The PDF document page size enumeration.
+ *
+ * Each enumeration defines the page size and the unit used.
  */
 enum PdfPageSize: string
 {

@@ -3,11 +3,11 @@
 Here's a two-page example with a header, a footer and a logo:
 
 ```php
+use fpdf\Enums\PdfFontName;
+use fpdf\Enums\PdfFontStyle;
+use fpdf\Enums\PdfMove;
 use fpdf\PdfBorder;
 use fpdf\PdfDocument;
-use fpdf\PdfFontName;
-use fpdf\PdfFontStyle;
-use fpdf\PdfMove;
 
 class CustomDocument extends PdfDocument
 {

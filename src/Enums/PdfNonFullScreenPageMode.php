@@ -17,6 +17,8 @@ use fpdf\Interfaces\PdfEnumDefaultInterface;
 use fpdf\Traits\PdfEnumDefaultTrait;
 
 /**
+ * The PDF exiting non-full-screen mode enumeration.
+ *
  * Specifying how to display the document on exiting full-screen mode.
  *
  * @implements PdfEnumDefaultInterface<PdfNonFullScreenPageMode>

@@ -4,13 +4,12 @@ Let's continue with an example, which prints justified paragraphs. It also
 illustrates the use of colors.
 
 ```php
-
+use fpdf\Enums\PdfFontName;
+use fpdf\Enums\PdfFontStyle;
+use fpdf\Enums\PdfMove;
+use fpdf\Enums\PdfTextAlignment;
 use fpdf\PdfBorder;
 use fpdf\PdfDocument;
-use fpdf\PdfFontName;
-use fpdf\PdfFontStyle;
-use fpdf\PdfMove;
-use fpdf\PdfTextAlignment;
 
 class CustomDocument extends PdfDocument
 {

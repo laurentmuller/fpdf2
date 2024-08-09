@@ -13,7 +13,9 @@ declare(strict_types=1);
 namespace fpdf\Enums;
 
 /**
- * The PDF style to draw and/or fill rectangle.
+ * The PDF rectangle style enumeration.
+ *
+ * Define the style used to draw and/or to fill rectangle.
  *
  * @see PdfDocument::rect()
  */

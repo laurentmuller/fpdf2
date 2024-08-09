@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace fpdf\Enums;
 
 /**
+ * The PDF line cap enumeration.
+ *
  * The line cap style specifies the shape to be used at the ends of open sub-paths (and dashes, if any) when they
  * are stroked.
  */

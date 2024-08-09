@@ -3,9 +3,9 @@
 Let's start with the classic example:
 
 ```php
+use fpdf\Enums\PdfFontName;
+use fpdf\Enums\PdfFontStyle;
 use fpdf\PdfDocument;
-use fpdf\PdfFontName;
-use fpdf\PdfFontStyle;
 
 $pdf = new PdfDocument();
 $pdf->addPage();

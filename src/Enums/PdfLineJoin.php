@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace fpdf\Enums;
 
 /**
+ * The PDF line join enumeration.
+ *
  * The line join style specifies the shape to be used at the corners of paths that are stroked.
  *
  * Join styles are significant only at points where consecutive segments of a path connect at an angle; segments that

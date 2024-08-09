@@ -17,6 +17,8 @@ use fpdf\Interfaces\PdfEnumDefaultInterface;
 use fpdf\Traits\PdfEnumDefaultTrait;
 
 /**
+ * The PDF duplex enumeration.
+ *
  * The paper handling option that shall be used when printing the file from the print dialog.
  *
  * @implements PdfEnumDefaultInterface<PdfDuplex>

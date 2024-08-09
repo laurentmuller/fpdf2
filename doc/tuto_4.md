@@ -4,12 +4,12 @@ This example is a variant of the previous one showing how to lay the text across
 multiple columns.
 
 ```php
+use fpdf\Enums\PdfFontName;
+use fpdf\Enums\PdfFontStyle;
+use fpdf\Enums\PdfMove;
+use fpdf\Enums\PdfTextAlignment;
 use fpdf\PdfBorder;
 use fpdf\PdfDocument;
-use fpdf\PdfFontName;
-use fpdf\PdfFontStyle;
-use fpdf\PdfMove;
-use fpdf\PdfTextAlignment;
 
 class CustomDocument extends PdfDocument
 {

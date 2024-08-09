@@ -1,33 +1,34 @@
 # FPDF2
 
-This repository is clone of [fpdf.org](http://www.fpdf.org) with typed
-variables, enumerations and PHP 8.2 dependencies.
+This repository is clone of [fpdf.org](http://www.fpdf.org) with typed variables,
+enumerations and PHP 8.2 dependencies.
 
 `PdfDocument` is a PHP class, which allows to generate PDF files with pure PHP.
 **F** from FPDF2 stands for **Free**: you may use it for any kind of usage and
 modify it to suit your needs.
 
-## Installation with [Composer](https://packagist.org/packages/laurentmuller/fpdf2)
+## Installation
 
-If you're using Composer to manage dependencies, you can use
+If you're using [Composer](https://getcomposer.org/) to manage dependencies,
+you can use:
 
-```powershell
-composer require laurentmuller/fpdf2:^1.9
+```bash
+composer require laurentmuller/fpdf2
 ```
 
-Or you can include the following in your `composer.json` file:
+Alternatively, you can add the requirement `"laurentmuller/fpdf2":"^2.0"` to
+your `composer.json` file and run `composer update`. This could be useful when
+the installation of FPDF2 is not compatible with some currently installed
+dependencies. Anyway, the previous option is the preferred way, since composer
+can pick the best requirement constraint for you.
 
-```json
-{
-    "require": {
-        "laurentmuller/fpdf2": "^1.9"
-    }
-}
-```
-
-**Usage:**
+## Basic Usage
 
 ```php
+use fpdf\Enums\PdfFontName;
+use fpdf\Enums\PdfFontStyle;
+use fpdf\PdfDocument;
+
 $pdf = new PdfDocument();
 $pdf->addPage();
 $pdf->setFont(PdfFontName::ARIAL, PdfFontStyle::BOLD, 16);
@@ -35,7 +36,7 @@ $pdf->cell(40, 10, 'Hello World!');
 $pdf->output();
 ```
 
-**Tutorials:**
+## Tutorials
 
 - [Minimal example](doc/tuto_1.md)
 - [Header, footer, page break and image](doc/tuto_2.md)

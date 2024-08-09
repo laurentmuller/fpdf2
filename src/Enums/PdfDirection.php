@@ -17,6 +17,8 @@ use fpdf\Interfaces\PdfEnumDefaultInterface;
 use fpdf\Traits\PdfEnumDefaultTrait;
 
 /**
+ * The PDF direction enumeration.
+ *
  * The predominant reading order for text.
  *
  * @implements PdfEnumDefaultInterface<PdfDirection>
