@@ -3,7 +3,6 @@
 This tutorial shows different ways to make tables.
 
 ```php
-
 use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
 use fpdf\Enums\PdfMove;
@@ -148,4 +147,5 @@ using alternatively transparent and filled cells.
 - [Header, footer, page break and image](tuto_2.md)
 - [Line breaks and colors](tuto_3.md)
 - [Multi-columns](tuto_4.md)
+- [Bookmarks](tuto_6.md)
 - [Home](../README.md)

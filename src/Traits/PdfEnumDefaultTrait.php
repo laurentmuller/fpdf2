@@ -18,7 +18,7 @@ use fpdf\Interfaces\PdfEnumDefaultInterface;
 /**
  * Trait for enumeration implementing <code>PdfEnumDefaultInterface</code> interface.
  *
- * @psalm-require-implements PdfEnumDefaultInterface
+ * @phpstan-require-implements PdfEnumDefaultInterface
  */
 trait PdfEnumDefaultTrait
 {

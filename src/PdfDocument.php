@@ -282,7 +282,7 @@ class PdfDocument
      */
     public function __construct(
         PdfOrientation $orientation = PdfOrientation::PORTRAIT,
-        PdfUnit $unit = PdfUnit::MILLIMETER,
+        protected PdfUnit $unit = PdfUnit::MILLIMETER,
         PdfPageSize|PdfSize $size = PdfPageSize::A4
     ) {
         // scale factor
@@ -418,7 +418,7 @@ class PdfDocument
      *
      * If a page is already present, the <code>footer()</code> method is called first to output the footer. Then the
      * page is added, the current position set to the top-left corner according to the left and top margins, and
-     * <code>header()</code> is called to display the header. The font, which was set before calling, is automatically
+     * <code>header()</code> is called to output the header. The font, which was set before calling, is automatically
      * restored. There is no need to call <code>setFont()</code> again if you want to continue with the same font. The
      * same is <code>true</code> for colors and line width.
      *
@@ -2521,7 +2521,7 @@ class PdfDocument
      */
     protected function convertEncoding(string $str, string $to_encoding, array|string $from_encoding): string
     {
-        /** @psalm-var string */
+        /** @phpstan-var string */
         return \mb_convert_encoding($str, $to_encoding, $from_encoding);
     }
 

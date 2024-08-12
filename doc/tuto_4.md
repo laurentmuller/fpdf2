@@ -122,4 +122,5 @@ $pdf->output();
 - [Header, footer, page break and image](tuto_2.md)
 - [Line breaks and colors](tuto_3.md)
 - [Tables](tuto_5.md)
+- [Bookmarks](tuto_6.md)
 - [Home](../README.md)

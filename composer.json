@@ -32,8 +32,9 @@
     },
     "require": {
         "php": "^8.2",
-        "ext-iconv": "*",
         "ext-gd": "*",
+        "ext-iconv": "*",
+        "ext-intl": "*",
         "ext-zlib": "*",
         "elao/enum": "^2.0"
     },

@@ -1,7 +1,9 @@
 # Change log
 
-## [Unreleased]
+## 2.0.2 - 2024-08-12
 
+- Added `PdfBookmarkTrait` trait.
+- Make `unit` parameter as protected for `PdfDocument`.
 - Updated name space of `PdfCompareEscape` class.
 - Updated `codecov-action` version to 4.5.0.
 

@@ -113,4 +113,5 @@ right-click and select Document Properties. The third method is to type the
 - [Header, footer, page break and image](tuto_2.md)
 - [Multi-columns](tuto_4.md)
 - [Tables](tuto_5.md)
+- [Bookmarks](tuto_6.md)
 - [Home](../README.md)
