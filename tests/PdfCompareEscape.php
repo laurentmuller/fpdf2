@@ -10,9 +10,7 @@
 
 declare(strict_types=1);
 
-use fpdf\AbstractCompareTestCase;
-use fpdf\FPDF;
-use fpdf\PdfDocument;
+namespace fpdf;
 
 class PdfCompareEscape extends AbstractCompareTestCase
 {

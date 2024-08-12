@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- Updated name space of `PdfCompareEscape` class.
 - Updated `codecov-action` version to 4.5.0.
 
 ## 2.0.1 - 2024-08-09
