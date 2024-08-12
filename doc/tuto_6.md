@@ -24,9 +24,9 @@ $pdf->addBookmark('Child Bookmark', level: 1);
 The given trait can also output a new index page with all bookmarks. The index
 page contains a centered title ('Index') and for each bookmark:
 
-- The bookmark text
+- The bookmark text on the left
 - A character separator ('.') between the bookmark text and the page number
-- The page number
+- The page number on the right
 
 Call the following function before closing or outputting the document:
 

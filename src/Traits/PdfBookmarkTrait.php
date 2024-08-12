@@ -124,18 +124,22 @@ trait PdfBookmarkTrait
      *
      * <b>Remark:</b> Do nothing if no bookmark is set.
      *
-     * @param ?string     $title           the index title or <code>null</code> to use the default title ('Index')
-     * @param PdfFontName $fontName        the title and content font name
-     * @param float       $titleFontSize   the title font size in points
-     * @param float       $contentFontSize the content font size in points
-     * @param bool        $addBookmark     true to add the index page itself in the list of the bookmarks
-     * @param string      $separator       the separator character used between the bookmark text and the page number
+     * @param ?string                 $title       the index title or <code>null</code> to use the default
+     *                                             title ('Index')
+     * @param PdfFontName|string|null $fontName    the title and content font name. It can be either a font name
+     *                                             enumeration or a name defined by <code>addFont()</code>.
+     *                                             If <code>null</code>, the current font name is kept.
+     * @param float                   $titleSize   the title font size in points
+     * @param float                   $contentSize the content font size in points
+     * @param bool                    $addBookmark true to add the index page itself in the list of the bookmarks
+     * @param string                  $separator   the separator character used between the bookmark text and
+     *                                             the page number
      */
     public function addPageIndex(
         ?string $title = null,
-        PdfFontName $fontName = PdfFontName::ARIAL,
-        float $titleFontSize = 9.0,
-        float $contentFontSize = 9.0,
+        PdfFontName|string|null $fontName = null,
+        float $titleSize = 9.0,
+        float $contentSize = 9.0,
         bool $addBookmark = true,
         string $separator = '.'
     ): static {
@@ -144,7 +148,7 @@ trait PdfBookmarkTrait
             return $this;
         }
 
-        // save style
+        // save font
         $oldFamily = $this->fontFamily;
         $oldStyle = $this->fontStyle;
         $oldSize = $this->fontSizeInPoint;
@@ -152,11 +156,11 @@ trait PdfBookmarkTrait
         // title
         $this->addPage();
         $space = PdfUnit::MILLIMETER->convert(self::SPACE, $this->unit);
-        $this->setFont($fontName, PdfFontStyle::BOLD, $titleFontSize);
+        $this->setFont($fontName, PdfFontStyle::BOLD, $titleSize);
         $titleBookmark = $this->outputIndexTitle($title, $addBookmark, $space);
 
         // content style
-        $this->setFont($fontName, PdfFontStyle::REGULAR, $contentFontSize);
+        $this->setFont($fontName, PdfFontStyle::REGULAR, $contentSize);
         $height = $this->getFontSize() + $space;
         $printable_width = $this->getPrintableWidth();
         if ('' === $separator) {
@@ -186,7 +190,7 @@ trait PdfBookmarkTrait
             $this->outputIndexPage($page_text, $page_size, $height, $link);
         }
 
-        // restore style
+        // restore font
         $this->setFont($oldFamily, $oldStyle, $oldSize);
 
         return $this;
@@ -284,7 +288,7 @@ trait PdfBookmarkTrait
         float $space
     ): float {
         $text_width = $this->getStringWidth($text);
-        while ($text_width > $width) {
+        while ($text_width > $width && '' !== $text) {
             $text = \substr($text, 0, -1);
             $text_width = $this->getStringWidth($text);
         }
