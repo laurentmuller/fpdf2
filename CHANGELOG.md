@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Update PHP version in `composer.json`.
 - Added `PdfVersion` enumeration.
 - Updated `addPageIndex()` function signature for `PdfBookmarkTrait` trait.
 

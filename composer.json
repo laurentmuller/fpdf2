@@ -51,7 +51,7 @@
     },
     "config": {
         "platform": {
-            "php": "8.2.16"
+            "php": "8.2.19"
         },
         "optimize-autoloader": true,
         "preferred-install": {
@@ -70,14 +70,14 @@
         "app-psalm": "vendor/bin/psalm --config psalm.xml",
         "app-phpstan": "vendor/bin/phpstan analyse --configuration phpstan.neon --memory-limit 2G -v",
         "app-rector": "vendor/bin/rector process --dry-run --config rector.php",
-        "app-tests": "vendor/bin/phpunit",
+        "app-test": "vendor/bin/phpunit",
         "app-markdown": "markdownlint-cli2",
         "app-all": [
             "@app-fixer",
             "@app-psalm",
             "@app-phpstan",
             "@app-rector",
-            "@app-tests",
+            "@app-test",
             "@app-markdown"
         ]
     }
