@@ -16,6 +16,7 @@ use fpdf\Enums\PdfDirection;
 use fpdf\Enums\PdfDuplex;
 use fpdf\Enums\PdfNonFullScreenPageMode;
 use fpdf\Enums\PdfScaling;
+use fpdf\Enums\PdfVersion;
 use fpdf\Interfaces\PdfEnumDefaultInterface;
 
 /**
@@ -104,19 +105,19 @@ class PdfViewerPreferences
     /**
      * Gets needed PDF version.
      */
-    public function getPdfVersion(): string
+    public function getPdfVersion(): PdfVersion
     {
         if ($this->pickTrayByPDFSize || $this->duplex !== PdfDuplex::getDefault()) {
-            return '1.7';
+            return PdfVersion::VERSION_1_7;
         }
         if ($this->scaling !== PdfScaling::getDefault()) {
-            return '1.6';
+            return PdfVersion::VERSION_1_6;
         }
         if ($this->displayDocTitle) {
-            return '1.4';
+            return PdfVersion::VERSION_1_4;
         }
 
-        return '1.3';
+        return PdfVersion::VERSION_1_3;
     }
 
     /**

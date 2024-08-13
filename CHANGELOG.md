@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `PdfVersion` enumeration.
 - Updated `addPageIndex()` function signature for `PdfBookmarkTrait` trait.
 
 ## 2.0.2 - 2024-08-12

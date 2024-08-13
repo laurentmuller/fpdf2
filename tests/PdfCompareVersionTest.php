@@ -12,16 +12,18 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use fpdf\Enums\PdfVersion;
+
 class PdfCompareVersionTest extends AbstractCompareTestCase
 {
-    public const PDF_VERSION = '1.6';
+    public const PDF_VERSION = PdfVersion::VERSION_1_6;
 
     protected function createOldDocument(): FPDF
     {
         $doc = new class() extends FPDF {
             public function _enddoc(): void
             {
-                $this->PDFVersion = PdfCompareVersionTest::PDF_VERSION;
+                $this->PDFVersion = PdfCompareVersionTest::PDF_VERSION->value;
                 parent::_enddoc();
             }
         };

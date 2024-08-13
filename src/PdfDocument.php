@@ -26,6 +26,7 @@ use fpdf\Enums\PdfRotation;
 use fpdf\Enums\PdfState;
 use fpdf\Enums\PdfTextAlignment;
 use fpdf\Enums\PdfUnit;
+use fpdf\Enums\PdfVersion;
 use fpdf\Enums\PdfZoom;
 use fpdf\Interfaces\PdfImageParserInterface;
 
@@ -240,7 +241,7 @@ class PdfDocument
      */
     protected array $pages = [];
     /** The PDF version number. */
-    protected string $pdfVersion = '1.3';
+    protected PdfVersion $pdfVersion;
     /** The right margin in user unit. */
     protected float $rightMargin = 0.0;
     /** The scale factor (number of points in user unit). */
@@ -317,6 +318,8 @@ class PdfDocument
         $this->setAutoPageBreak(true, 2.0 * $margin);
         // producer
         $this->setProducer('FPDF2 ' . self::VERSION);
+        // version
+        $this->pdfVersion = PdfVersion::getDefault();
         // preferences
         $this->viewerPreferences = new PdfViewerPreferences();
     }
@@ -882,7 +885,7 @@ class PdfDocument
     /**
      * Gets the PDF version.
      */
-    public function getPdfVersion(): string
+    public function getPdfVersion(): PdfVersion
     {
         return $this->pdfVersion;
     }
@@ -2254,11 +2257,11 @@ class PdfDocument
     /**
      * Ensure that this PDF version is equal to or greater than the given version.
      *
-     * @param string $pdfVersion the minimum version to set
+     * @param PdfVersion $pdfVersion the minimum version to set
      */
-    public function updatePdfVersion(string $pdfVersion): static
+    public function updatePdfVersion(PdfVersion $pdfVersion): static
     {
-        if (\version_compare($this->pdfVersion, $pdfVersion, '<')) {
+        if ($this->pdfVersion->isSmaller($pdfVersion)) {
             $this->pdfVersion = $pdfVersion;
         }
 
@@ -3086,7 +3089,7 @@ class PdfDocument
     protected function putHeader(): void
     {
         $this->updatePdfVersion($this->viewerPreferences->getPdfVersion());
-        $this->putf('%%PDF-%s', $this->pdfVersion);
+        $this->putf('%%PDF-%s', $this->pdfVersion->value);
     }
 
     /**

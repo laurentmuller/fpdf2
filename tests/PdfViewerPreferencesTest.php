@@ -16,6 +16,7 @@ use fpdf\Enums\PdfDirection;
 use fpdf\Enums\PdfDuplex;
 use fpdf\Enums\PdfNonFullScreenPageMode;
 use fpdf\Enums\PdfScaling;
+use fpdf\Enums\PdfVersion;
 use PHPUnit\Framework\TestCase;
 
 class PdfViewerPreferencesTest extends TestCase
@@ -88,23 +89,23 @@ class PdfViewerPreferencesTest extends TestCase
     {
         $preferences = new PdfViewerPreferences();
         $actual = $preferences->getPdfVersion();
-        self::assertSame('1.3', $actual);
+        self::assertSame(PdfVersion::VERSION_1_3, $actual);
 
         $preferences->setDisplayDocTitle();
         $actual = $preferences->getPdfVersion();
-        self::assertSame('1.4', $actual);
+        self::assertSame(PdfVersion::VERSION_1_4, $actual);
 
         $preferences->setScaling(PdfScaling::NONE);
         $actual = $preferences->getPdfVersion();
-        self::assertSame('1.6', $actual);
+        self::assertSame(PdfVersion::VERSION_1_6, $actual);
 
         $preferences->setDuplex(PdfDuplex::DUPLEX_FLIP_LONG_EDGE);
         $actual = $preferences->getPdfVersion();
-        self::assertSame('1.7', $actual);
+        self::assertSame(PdfVersion::VERSION_1_7, $actual);
 
         $preferences->setPickTrayByPDFSize();
         $actual = $preferences->getPdfVersion();
-        self::assertSame('1.7', $actual);
+        self::assertSame(PdfVersion::VERSION_1_7, $actual);
     }
 
     public function testReset(): void

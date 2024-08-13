@@ -20,6 +20,7 @@ use fpdf\Enums\PdfLineJoin;
 use fpdf\Enums\PdfRectangleStyle;
 use fpdf\Enums\PdfState;
 use fpdf\Enums\PdfUnit;
+use fpdf\Enums\PdfVersion;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class PdfDocPropertiesTest extends AbstractPdfDocTestCase
@@ -395,10 +396,10 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
     public function testVersion(): void
     {
         $doc = $this->createDocument();
-        self::assertSame('1.3', $doc->getPdfVersion());
-        $doc->updatePdfVersion('1.2');
-        self::assertSame('1.3', $doc->getPdfVersion());
-        $doc->updatePdfVersion('1.4');
-        self::assertSame('1.4', $doc->getPdfVersion());
+        self::assertSame(PdfVersion::VERSION_1_3, $doc->getPdfVersion());
+        $doc->updatePdfVersion(PdfVersion::VERSION_1_3);
+        self::assertSame(PdfVersion::VERSION_1_3, $doc->getPdfVersion());
+        $doc->updatePdfVersion(PdfVersion::VERSION_1_4);
+        self::assertSame(PdfVersion::VERSION_1_4, $doc->getPdfVersion());
     }
 }

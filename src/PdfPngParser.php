@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use fpdf\Enums\PdfVersion;
 use fpdf\Interfaces\PdfImageParserInterface;
 
 /**
@@ -139,7 +140,7 @@ class PdfPngParser implements PdfImageParserInterface
             [$data, $soft_mask] = $this->extractAlphaChannel($width, $height, $colorType, $data);
             $image['soft_mask'] = $soft_mask;
             $parent->setWithAlpha(true);
-            $parent->updatePdfVersion('1.4');
+            $parent->updatePdfVersion(PdfVersion::VERSION_1_4);
         }
         $image['data'] = $data;
 

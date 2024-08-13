@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use fpdf\Enums\PdfVersion;
 use PHPUnit\Framework\TestCase;
 
 class PdfPngParserTest extends TestCase
@@ -178,7 +179,7 @@ class PdfPngParserTest extends TestCase
         self::assertArrayHasKey('height', $image);
         self::assertSame(31, $image['width']);
         self::assertSame(32, $image['height']);
-        self::assertSame('1.4', $parent->getPdfVersion());
+        self::assertSame(PdfVersion::VERSION_1_4, $parent->getPdfVersion());
     }
 
     public function testValidGrey(): void
