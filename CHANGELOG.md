@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Updated the Bookmarks tutorial with a screenshot.
 - Updated name space of `PdfVersionTest` class.
 - Update PHP version in `composer.json`.
 - Added `PdfVersion` enumeration.
