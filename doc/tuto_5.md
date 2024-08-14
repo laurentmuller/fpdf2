@@ -149,4 +149,5 @@ using alternatively transparent and filled cells.
 - [Multi-columns](tuto_4.md)
 - [Bookmarks](tuto_6.md)
 - [Transparency](tuto_7.md)
+- [Circles and ellipses](tuto_8.md)
 - [Home](../README.md)

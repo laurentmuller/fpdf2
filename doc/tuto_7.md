@@ -38,4 +38,5 @@ $pdf->resetAlpha();
 - [Multi-columns](tuto_4.md)
 - [Tables](tuto_5.md)
 - [Bookmarks](tuto_6.md)
+- [Circles and ellipses](tuto_8.md)
 - [Home](../README.md)

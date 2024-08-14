@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `PdfEllipseTrait` trait and the corresponding tutorial.
 - Updated test for `PdfTransparencyTrait` trait.
 
 ## 2.0.3 - 2024-08-14
