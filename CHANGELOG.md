@@ -1,5 +1,9 @@
 # Change log
 
+## 2.0.6 - 2024-08-14
+
+- Added `PdfSectorTrait` trait and the corresponding tutorial.
+
 ## 2.0.5 - 2024-08-14
 
 - Added `PdfRotationTrait` trait and the corresponding tutorial.

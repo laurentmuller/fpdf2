@@ -49,5 +49,5 @@ $pdf->endRotate();
 - [Bookmarks](tuto_6.md)
 - [Transparency](tuto_7.md)
 - [Circles and ellipses](tuto_8.md)
-- [Rotation](tuto_9.md)
+- [Sector](tuto_10.md)
 - [Home](../README.md)
