@@ -18,6 +18,16 @@ use PHPUnit\Framework\TestCase;
 
 class PdfTransparencyTraitTest extends TestCase
 {
+    public function testEmptyTransparency(): void
+    {
+        $document = new class() extends PdfDocument {
+            use PdfTransparencyTrait;
+        };
+        $document->addPage();
+        $document->output(PdfDestination::STRING);
+        self::assertSame(1, $document->getPage());
+    }
+
     public function testRender(): void
     {
         $document = new class() extends PdfDocument {
