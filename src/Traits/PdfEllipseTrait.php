@@ -21,7 +21,7 @@ use fpdf\PdfDocument;
  *  The code is inspired from FPDF script
  *  <a href="http://www.fpdf.org/en/script/script6.php" target="_blank">Circles and ellipses</a>.
  *
- * @psalm-require-extends PdfDocument
+ * @phpstan-require-extends PdfDocument
  */
 trait PdfEllipseTrait
 {

@@ -116,4 +116,5 @@ right-click and select Document Properties. The third method is to type the
 - [Bookmarks](tuto_6.md)
 - [Transparency](tuto_7.md)
 - [Circles and ellipses](tuto_8.md)
+- [Rotation](tuto_9.md)
 - [Home](../README.md)

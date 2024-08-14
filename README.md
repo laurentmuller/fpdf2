@@ -46,6 +46,7 @@ $pdf->output();
 - [Bookmarks](doc/tuto_6.md)
 - [Transparency](doc/tuto_7.md)
 - [Circles and ellipses](doc/tuto_8.md)
+- [Rotation](doc/tuto_9.md)
 
 ## Actions
 

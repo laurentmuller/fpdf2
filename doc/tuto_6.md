@@ -50,4 +50,5 @@ previous values.
 - [Tables](tuto_5.md)
 - [Transparency](tuto_7.md)
 - [Circles and ellipses](tuto_8.md)
+- [Rotation](tuto_9.md)
 - [Home](../README.md)

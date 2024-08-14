@@ -1,6 +1,10 @@
 # Change log
 
-## Unreleased
+## 2.0.5 - 2024-08-14
+
+- Added `PdfRotationTrait` trait and the corresponding tutorial.
+
+## 2.0.4 - 2024-08-14
 
 - Added `PdfEllipseTrait` trait and the corresponding tutorial.
 - Updated test for `PdfTransparencyTrait` trait.

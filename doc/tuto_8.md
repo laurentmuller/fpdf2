@@ -40,4 +40,5 @@ $pdf->ellipse(30, 245, 20, 10, PdfRectangleStyle::BOTH);
 - [Tables](tuto_5.md)
 - [Bookmarks](tuto_6.md)
 - [Transparency](tuto_7.md)
+- [Rotation](tuto_9.md)
 - [Home](../README.md)
