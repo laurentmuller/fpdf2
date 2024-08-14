@@ -123,4 +123,5 @@ $pdf->output();
 - [Line breaks and colors](tuto_3.md)
 - [Tables](tuto_5.md)
 - [Bookmarks](tuto_6.md)
+- [Transparency](tuto_7.md)
 - [Home](../README.md)

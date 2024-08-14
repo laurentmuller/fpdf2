@@ -56,4 +56,5 @@ $pdf->output();
 - [Multi-columns](tuto_4.md)
 - [Tables](tuto_5.md)
 - [Bookmarks](tuto_6.md)
+- [Transparency](tuto_7.md)
 - [Home](../README.md)

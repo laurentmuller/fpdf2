@@ -17,6 +17,7 @@ use fpdf\Enums\PdfFontStyle;
 use fpdf\Enums\PdfMove;
 use fpdf\Enums\PdfTextAlignment;
 use fpdf\Enums\PdfUnit;
+use fpdf\PdfDocument;
 use fpdf\PdfException;
 
 /**
@@ -33,7 +34,7 @@ use fpdf\PdfException;
  *      link: int|null,
  *      hierarchy: array<string, int>}
  *
- * @phpstan-require-extends \fpdf\PdfDocument
+ * @phpstan-require-extends PdfDocument
  */
 trait PdfBookmarkTrait
 {

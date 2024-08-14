@@ -48,4 +48,5 @@ previous values.
 - [Line breaks and colors](tuto_3.md)
 - [Multi-columns](tuto_4.md)
 - [Tables](tuto_5.md)
+- [Transparency](tuto_7.md)
 - [Home](../README.md)

@@ -148,4 +148,5 @@ using alternatively transparent and filled cells.
 - [Line breaks and colors](tuto_3.md)
 - [Multi-columns](tuto_4.md)
 - [Bookmarks](tuto_6.md)
+- [Transparency](tuto_7.md)
 - [Home](../README.md)

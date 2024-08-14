@@ -1,7 +1,8 @@
 # Change log
 
-## Unreleased
+## 2.0.3 - 2024-08-14
 
+- Added `PdfTransparencyTrait` trait and the corresponding tutorial.
 - Updated the Bookmarks tutorial with a screenshot.
 - Updated name space of `PdfVersionTest` class.
 - Update PHP version in `composer.json`.

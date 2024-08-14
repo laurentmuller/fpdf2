@@ -44,6 +44,7 @@ $pdf->output();
 - [Multi-columns](doc/tuto_4.md)
 - [Tables](doc/tuto_5.md)
 - [Bookmarks](doc/tuto_6.md)
+- [Transparency](doc/tuto_7.md)
 
 ## Actions
 
