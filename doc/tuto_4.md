@@ -24,7 +24,7 @@ class CustomDocument extends PdfDocument
         $title = $this->getTitle();
         $this->setFont(PdfFontName::ARIAL, PdfFontStyle::BOLD, 15);
         $width = $this->getStringWidth($title) + 6.0;
-        $this->setX((210.0 - $width) / 2);
+        $this->setX(($this->width - $width) / 2);
         $this->setDrawColor(0, 80, 180);
         $this->setFillColor(230, 230, 0);
         $this->setTextColor(220, 50, 50);

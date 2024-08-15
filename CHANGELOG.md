@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- Minor changes in tutorials.
+
 ## 2.0.6 - 2024-08-14
 
 - Added `PdfSectorTrait` trait and the corresponding tutorial.

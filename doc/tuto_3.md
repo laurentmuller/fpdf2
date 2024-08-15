@@ -20,7 +20,7 @@ class CustomDocument extends PdfDocument
         // calculate width of title and position
         $title = $this->getTitle();
         $width = $this->getStringWidth($title) + 6.0;
-        $this->setX((210.0 - $width) / 2.0);
+        $this->setX(($this->width - $width) / 2.0);
         // colors of frame, background and text
         $this->setDrawColor(0, 80, 180);
         $this->setFillColor(230, 230, 0);
