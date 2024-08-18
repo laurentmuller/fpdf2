@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added descriptions to `PdfBlendMode` enumeration.
 - Minor changes in tutorials.
 
 ## 2.0.6 - 2024-08-14
