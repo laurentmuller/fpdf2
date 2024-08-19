@@ -563,9 +563,9 @@ class PdfDocument
         $border ??= PdfBorder::none();
         if ($fill || $border->isAll()) {
             if ($fill) {
-                $op = $border->isAll() ? 'B' : 'f';
+                $style = $border->isAll() ? PdfRectangleStyle::BOTH : PdfRectangleStyle::FILL;
             } else {
-                $op = 'S';
+                $style = PdfRectangleStyle::BORDER;
             }
             $output .= \sprintf(
                 '%.2F %.2F %.2F %.2F re %s ',
@@ -573,7 +573,7 @@ class PdfDocument
                 ($this->height - $this->y) * $scaleFactor,
                 $width * $scaleFactor,
                 -$height * $scaleFactor,
-                $op
+                $style->value
             );
         }
         if ('' === $output && $border->isAny()) {

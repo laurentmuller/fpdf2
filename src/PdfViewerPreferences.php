@@ -366,11 +366,11 @@ class PdfViewerPreferences
     }
 
     /**
-     * @phpstan-template T of \BackedEnum&PdfEnumDefaultInterface
+     * @phpstan-template T of PdfEnumDefaultInterface&\BackedEnum
      *
-     * @phpstan-param (T&PdfEnumDefaultInterface<T>) $enum
+     * @phpstan-param PdfEnumDefaultInterface<T>&\BackedEnum $enum
      */
-    private function getOutputEnum(\BackedEnum&PdfEnumDefaultInterface $enum, string $key): string
+    private function getOutputEnum(PdfEnumDefaultInterface $enum, string $key): string
     {
         return $enum->isDefault() ? '' : \sprintf('/%s %s', $key, $enum->value);
     }
