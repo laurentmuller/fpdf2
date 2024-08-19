@@ -1,0 +1,9 @@
+php_version: 8.2
+global_exclude_dirs:
+    - makefont
+    - vendor
+    - tests
+    - src/font
+rules:
+    php.class_too_long:
+        enabled: false

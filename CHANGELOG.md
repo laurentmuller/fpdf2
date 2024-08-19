@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `SymfonyInsight` quality check tool, configuration and badge.
 - Added descriptions to `PdfBlendMode` enumeration.
 - Minor changes in tutorials.
 

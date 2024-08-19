@@ -58,4 +58,5 @@ $pdf->output();
 [![Rector](https://github.com/laurentmuller/fpdf2/actions/workflows/rector.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/rector.yaml)
 [![Lint](https://github.com/laurentmuller/fpdf2/actions/workflows/lint.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/lint.yaml)
 [![StyleCI](https://github.styleci.io/repos/752676081/shield?branch=main)](https://github.styleci.io/repos/752676081?branch=main)
-[![codecov](https://codecov.io/gh/laurentmuller/fpdf2/graph/badge.svg?token=16I8LCYRRS)](https://codecov.io/gh/laurentmuller/fpdf2)
+[![Codecov](https://codecov.io/gh/laurentmuller/fpdf2/graph/badge.svg?token=16I8LCYRRS)](https://codecov.io/gh/laurentmuller/fpdf2)
+[![SymfonyInsight](https://insight.symfony.com/projects/1db4f28c-c07c-4a5f-8006-2c63eb1e8851/mini.svg)](https://insight.symfony.com/projects/1db4f28c-c07c-4a5f-8006-2c63eb1e8851)
