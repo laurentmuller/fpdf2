@@ -1,6 +1,8 @@
 config:
     line-length:
         code_blocks: false
+    html:
+        allowed_elements: [a]
 
 globs:
     - "*.md"
