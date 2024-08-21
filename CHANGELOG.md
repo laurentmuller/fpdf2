@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Replaced links in tutorials.
 - Updated tutorials.
 - Internal changes in `PdfDocument` and `PdfViewerPreferences` classes.
 - Added `SymfonyInsight` quality check tool, configuration and badge.

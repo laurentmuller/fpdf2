@@ -4,8 +4,8 @@ Since version `2.0.6`, A trait allows drawing sector of a circle. It can be
 used, for example, to render a pie chart.
 
 **Note:** The code is inspired from this given
-<a href="http://www.fpdf.org/en/script/script19.php" target="_blank">FPDF</a>
-script.
+[FPDF](http://www.fpdf.org/en/script/script19.php) script created by
+Maxime Delorme.
 
 All angle parameters are expressed in degrees ('&deg;').
 

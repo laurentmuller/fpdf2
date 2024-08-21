@@ -4,8 +4,7 @@ Since version `2.0.5`, A trait allows performing rotation around a
 given center.
 
 **Note:** The code is inspired from this given
-<a href="http://www.fpdf.org/en/script/script2.php" target="_blank">FPDF</a>
-script.
+[FPDF](http://www.fpdf.org/en/script/script2.php) script created by Olivier.
 
 The rotation affects all elements, which are printed after the method call
 (except clickable areas). Rotation is not kept from page to page.
