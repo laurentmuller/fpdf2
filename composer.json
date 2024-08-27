@@ -66,6 +66,7 @@
     },
     "scripts": {
         "app-fixer-fix": "vendor/bin/php-cs-fixer fix --diff",
+        "app-rector-fix": "vendor/bin/rector process --config rector.php",
         "app-fixer": "vendor/bin/php-cs-fixer fix --diff --dry-run",
         "app-psalm": "vendor/bin/psalm --config psalm.xml",
         "app-phpstan": "vendor/bin/phpstan analyse --configuration phpstan.neon --memory-limit 2G -v",

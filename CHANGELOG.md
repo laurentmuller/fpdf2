@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added rector fix script to `composer.json`.
 - Replaced links in tutorials.
 - Updated tutorials.
 - Internal changes in `PdfDocument` and `PdfViewerPreferences` classes.
