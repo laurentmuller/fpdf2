@@ -26,7 +26,7 @@ class PdfSize
     }
 
     /**
-     * Returns this width and height values as an array.
+     * Returns these width and height values as an array.
      *
      * @return array{0: float, 1: float}
      */

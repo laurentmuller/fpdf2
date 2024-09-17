@@ -15,7 +15,7 @@ $pdf->output();
 ```
 
 After including the library files, we create an PdfDocument object. The
-constructor is used here with the default values: pages are in A4 portrait,
+constructor is used here with the default values: pages are in the A4 portrait,
 and the unit of measure is millimeter. It could have been specified explicitly
 with:
 

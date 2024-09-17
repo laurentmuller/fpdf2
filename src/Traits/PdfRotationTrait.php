@@ -91,8 +91,8 @@ trait PdfRotationTrait
      *
      * It can be drawn (border only), filled (with no border) or both. Do nothing if the angle is equal to 0.0.
      *
-     * @param float             $x      the abscissa of upper-left corner
-     * @param float             $y      the ordinate of upper-left corner
+     * @param float             $x      the abscissa of the upper-left corner
+     * @param float             $y      the ordinate of the upper-left corner
      * @param float             $width  the width
      * @param float             $height the height
      * @param float             $angle  the rotation angle, in degrees

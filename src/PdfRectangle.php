@@ -28,7 +28,7 @@ class PdfRectangle
     }
 
     /**
-     * Returns this x, y, width and height values as an array.
+     * Returns these x, y, width and height values as an array.
      *
      * @return array{0: float, 1: float, 2: float, 3: float}
      */

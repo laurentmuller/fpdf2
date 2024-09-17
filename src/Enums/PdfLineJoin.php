@@ -25,8 +25,8 @@ enum PdfLineJoin: int
     /**
      * Bevel join.
      *
-     * The two segments are finished with butt caps and the resulting notch beyond the ends of the segments is filled
-     * with a triangle.
+     * The two segments are finished with the butt caps, and the resulting notch beyond the ends of the segments is
+     * filled with a triangle.
      */
     case BEVEL = 2;
 

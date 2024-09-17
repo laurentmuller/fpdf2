@@ -15,7 +15,7 @@ namespace fpdf\Interfaces;
 /**
  * Enumeration implementing this interface deals with a default value.
  *
- * @template T of \UnitEnum&PdfEnumDefaultInterface
+ * @template T of PdfEnumDefaultInterface&\UnitEnum
  */
 interface PdfEnumDefaultInterface
 {
@@ -29,7 +29,7 @@ interface PdfEnumDefaultInterface
      *
      * @psalm-return T
      *
-     * @throws \LogicException if default enumeration is not found
+     * @throws \LogicException if the default enumeration is not found
      */
     public static function getDefault(): self;
 

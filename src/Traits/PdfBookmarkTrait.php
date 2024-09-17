@@ -70,7 +70,7 @@ trait PdfBookmarkTrait
      *
      * @param string $text       the bookmark text
      * @param bool   $isUTF8     indicates if the text is encoded in ISO-8859-1 (false) or UTF-8 (true)
-     * @param int    $level      the outline level (0 is top level, 1 is just below, and so on)
+     * @param int    $level      the outline level (0 is the top level, 1 is just below, and so on)
      * @param bool   $currentY   indicate if the ordinate of the outline destination in the current page
      *                           is the current position (true) or the top of the page (false)
      * @param bool   $createLink true to create and add a link at the given ordinate position and page
@@ -115,19 +115,19 @@ trait PdfBookmarkTrait
     }
 
     /**
-     * Add an index page (as new page) containing all bookmarks.
+     * Add an index page (as the new page) containing all bookmarks.
      *
      * The title and content use the given font name and font sizes. For title, the bold style is used.
-     * Each line contains the text on the left, the page number on the right and are separate by
+     * Each line contains the text on the left, the page number on the right and is separated by
      * the given separator characters.
      *
-     * After calling this function, the font name, style and size are restored to the previous values.
+     * After calling this function, the font name, the style, and the size are restored to the previous values.
      *
      * <b>Remark:</b> Do nothing if no bookmark is set.
      *
      * @param ?string                 $title       the index title or <code>null</code> to use the default
      *                                             title ('Index')
-     * @param PdfFontName|string|null $fontName    the title and content font name. It can be either a font name
+     * @param PdfFontName|string|null $fontName    the title and content font name. It can be a font name
      *                                             enumeration or a name defined by <code>addFont()</code>.
      *                                             If <code>null</code>, the current font name is kept.
      * @param float                   $titleSize   the title font size in points

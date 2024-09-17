@@ -26,7 +26,7 @@ class PdfPoint
     }
 
     /**
-     * Returns this x and y values as an array.
+     * Returns these x and y values as an array.
      *
      * @return array{0: float, 1: float}
      */

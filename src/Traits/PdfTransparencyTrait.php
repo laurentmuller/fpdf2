@@ -43,7 +43,7 @@ trait PdfTransparencyTrait
     private array $transparencies = [];
 
     /**
-     * Reset the alpha mode to default (1.0).
+     * Reset the alpha mode to the default value (1.0).
      */
     public function resetAlpha(): static
     {

@@ -104,7 +104,7 @@ class PdfDocument
     // the new line separator
     private const NEW_LINE = "\n";
 
-    /** The alias for total number of pages. */
+    /** The alias for the total number of pages. */
     protected string $aliasNumberPages = '{nb}';
     /** The automatic page breaking. */
     protected bool $autoPageBreak = false;
@@ -112,7 +112,7 @@ class PdfDocument
     protected float $bottomMargin = 0.0;
     /** The buffer holding in-memory PDF. */
     protected string $buffer = '';
-    /** The cell margin in user unit. */
+    /** The cell margin in the user unit. */
     protected float $cellMargin = 0.0;
     /**
      * The map character codes to character glyphs.
@@ -177,26 +177,26 @@ class PdfDocument
     /** The current page height in user unit. */
     protected float $height = 0.0;
     /**
-     * The used images.
+     * Used images.
      *
      * @phpstan-var array<string, ImageType>
      */
     protected array $images = [];
     /** The flag set when processing footer. */
     protected bool $inFooter = false;
-    /**The flag set when processing header. */
+    /**The flag set when processing the header. */
     protected bool $inHeader = false;
     /** The height of the last printed cell. */
     protected float $lastHeight = 0.0;
     /** The layout display mode. */
     protected PdfLayout $layout = PdfLayout::DEFAULT;
-    /** The left margin in user unit. */
+    /** The left margin in the user unit. */
     protected float $leftMargin = 0.0;
     /** The line cap. */
     protected PdfLineCap $lineCap = PdfLineCap::SQUARE;
     /** The line join. */
     protected PdfLineJoin $lineJoin = PdfLineJoin::MITER;
-    /** The line width in user unit. */
+    /** The line width in the user unit. */
     protected float $lineWidth = 0.0;
     /**
      * The internal links.
@@ -242,7 +242,7 @@ class PdfDocument
     protected array $pages = [];
     /** The PDF version number. */
     protected PdfVersion $pdfVersion;
-    /** The right margin in user unit. */
+    /** The right margin in the user unit. */
     protected float $rightMargin = 0.0;
     /** The scale factor (number of points in user unit). */
     protected float $scaleFactor = 1.0;
@@ -325,7 +325,7 @@ class PdfDocument
     }
 
     /**
-     * Imports a TrueType, OpenType or Type1 font and makes it available.
+     * Imports a TrueType, an OpenType or a Type1 font and makes it available.
      *
      * It is necessary to generate a font definition file first with the <code>MakeFont</code> utility.
      *
@@ -344,7 +344,7 @@ class PdfDocument
      * @param ?string            $dir    The directory where to load the definition file. If not specified, the default
      *                                   directory will be used.
      *
-     * @throws PdfException if the font file doest not exit or if the font definition is incorrect
+     * @throws PdfException if the font file does not exit or if the font definition is incorrect
      *
      * @see PdfDocument::setFont()
      * @see PdfDocument::setFontSizeInPoint()
@@ -420,12 +420,12 @@ class PdfDocument
      * Adds a new page to the document.
      *
      * If a page is already present, the <code>footer()</code> method is called first to output the footer. Then the
-     * page is added, the current position set to the top-left corner according to the left and top margins, and
+     * page is added, the current position set to the top-left corner according to the left and top margins and
      * <code>header()</code> is called to output the header. The font, which was set before calling, is automatically
      * restored. There is no need to call <code>setFont()</code> again if you want to continue with the same font. The
      * same is <code>true</code> for colors and line width.
      *
-     * The origin of the coordinate system is in the top-left corner and increasing ordinates go downwards.
+     * The origin of the coordinate system is in the top-left corner, and increasing ordinates go downwards.
      *
      * @param ?PdfOrientation          $orientation the page orientation or <code>null</code> to use the current
      *                                              orientation
@@ -460,7 +460,7 @@ class PdfDocument
             $this->inFooter = false;
             $this->endPage();
         }
-        // start new page
+        // start the new page
         $this->beginPage($orientation, $size, $rotation);
 
         // set line cap and line join
@@ -701,7 +701,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the bottom margin in user unit.
+     * Gets the bottom margin in the user unit.
      *
      * The default value is 10 mm.
      */
@@ -721,7 +721,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the current font size in user unit.
+     * Gets the current font size in the user unit.
      */
     public function getFontSize(): float
     {
@@ -737,7 +737,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the height of last printed cell.
+     * Gets the height of the last printed cell.
      *
      * @return float the height or 0.0 if no printed cell
      */
@@ -783,7 +783,7 @@ class PdfDocument
      *
      * @param ?string $text       the text to compute
      * @param ?float  $width      the desired width. If <code>null</code>, the width extends up to the right margin.
-     * @param ?float  $cellMargin the desired cell margin or <code>null</code> to use current value
+     * @param ?float  $cellMargin the desired cell margin or <code>null</code> to use the current value
      *
      * @return int the number of lines
      *
@@ -875,7 +875,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the current page width in user unit.
+     * Gets the current page width in the user unit.
      */
     public function getPageWidth(): float
     {
@@ -891,7 +891,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the current X and Y position in user unit.
+     * Gets the current X and Y position in the user unit.
      */
     public function getPosition(): PdfPoint
     {
@@ -899,7 +899,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the printable width in user unit.
+     * Gets the printable width in the user unit.
      *
      * @return float the page width minus the left and right margins
      */
@@ -909,7 +909,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the remaining printable width in user unit.
+     * Gets the remaining printable width in the user unit.
      *
      * @return float the value from the current abscissa (x) to the right margin
      */
@@ -919,7 +919,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the right margin in user unit.
+     * Gets the right margin in the user unit.
      *
      * The default value is 10 mm.
      */
@@ -937,7 +937,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the length of a string in user unit.
+     * Gets the length of a string in the user unit.
      *
      * @param string $str the string to get width for
      *
@@ -989,7 +989,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the abscissa of the current position in user unit.
+     * Gets the abscissa of the current position in the user unit.
      */
     public function getX(): float
     {
@@ -997,7 +997,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the ordinate of the current position in user unit.
+     * Gets the ordinate of the current position in the user unit.
      */
     public function getY(): float
     {
@@ -1024,7 +1024,7 @@ class PdfDocument
      *
      * @param float      $beforeSpace the verticale space before the line
      * @param float      $afterSpace  the verticale space after the line
-     * @param float|null $lineWidth   the optional line width or <code>null</code> to use current line width
+     * @param float|null $lineWidth   the optional line width or <code>null</code> to use the current line width
      */
     public function horizontalLine(float $beforeSpace = 1.0, float $afterSpace = 1.0, ?float $lineWidth = null): static
     {
@@ -1073,7 +1073,7 @@ class PdfDocument
      *
      * For the GIF format:
      * <ul>
-     * <li>In case of an animated GIF, only the first frame is displayed.</li>
+     * <li>For an animated GIF, only the first frame is displayed.</li>
      * </ul>
      *
      * For all:
@@ -1093,7 +1093,7 @@ class PdfDocument
      * @param ?float          $y      the ordinate of the upper-left corner. If <code>null</code>, the current
      *                                ordinate is used; moreover, a page break is triggered first if necessary (in case
      *                                automatic page breaking is enabled) and, after the call, the current ordinate
-     *                                is move to the bottom of the image.
+     *                                is moved to the bottom of the image.
      * @param float           $width  the width of the image in the page. There are three cases:
      *                                <ul>
      *                                <li>If the value is positive, it represents the width in user unit.</li>
@@ -1273,7 +1273,7 @@ class PdfDocument
     /**
      * Performs a line break.
      *
-     * The current abscissa goes back to the left margin and the ordinate increases by the amount passed parameter.
+     * The current abscissa goes back to the left margin, and the ordinate increases by the amount passed parameter.
      *
      * @param float|null $height The height of the break. By default, the value equals the height of the last printed
      *                           cell.
@@ -1295,8 +1295,8 @@ class PdfDocument
      *
      * Do nothing if points are equal.
      *
-     * @param PdfPoint $start the abscissa and ordinate of first point
-     * @param PdfPoint $end   the abscissa and ordinate of second point
+     * @param PdfPoint $start the abscissa and ordinate of the first point
+     * @param PdfPoint $end   the abscissa and ordinate of the second point
      */
     public function linePoints(PdfPoint $start, PdfPoint $end): static
     {
@@ -1307,7 +1307,7 @@ class PdfDocument
      * Puts a link on a rectangular area of the page.
      *
      * Text or image links are generally put via <code>cell()</code>, <code>write()</code> or <code>image()</code>, but
-     * this method can be useful for instance to define a clickable area inside an image.
+     * this method can be useful, for instance, to define a clickable area inside an image.
      *
      * @param float      $x      the abscissa of the rectangle
      * @param float      $y      the ordinate of the rectangle
@@ -1520,13 +1520,13 @@ class PdfDocument
      * @param ?string        $name        The name of the file. It is ignored in case of
      *                                    destination <code>PdfDestination::STRING</code>. The default value
      *                                    is 'doc.pdf'.
-     * @param bool           $isUTF8      Indicates if name is encoded in ISO-8859-1 (<code>false</code>) or
+     * @param bool           $isUTF8      Indicates if the name is encoded in ISO-8859-1 (<code>false</code>) or
      *                                    UTF-8 (<code>true</code>). Only used for destinations
      *                                    <code>PdfDestination::INLINE</code> and <code>PdfDestination::DOWNLOAD</code>.
      *
      * @return string the content if the output is <code>PdfDestination::STRING</code>, an empty string otherwise
      *
-     * @throws PdfException if the destination is file and the content cannot be written or if some data has already
+     * @throws PdfException if the destination is file, and the content cannot be written, or if some data has already
      *                      been output
      */
     public function output(
@@ -1584,7 +1584,7 @@ class PdfDocument
     }
 
     /**
-     * Converts the given pixels to user unit using 72 dots per each (DPI).
+     * Converts the given pixels to the user unit using 72 dots per each (DPI).
      *
      * @param float|int $pixels the pixels to convert
      *
@@ -1843,12 +1843,12 @@ class PdfDocument
     /**
      * Sets the font used to print character strings.
      *
-     * It is mandatory to call this method at least once before a printing text.
+     * It is mandatory to call this method at least once before printing text.
      *
-     * The font can be either a standard one or a font added by the <code>addFont()</code> method. Standard fonts use
-     * the Windows encoding cp1252 (Western Europe).
+     * The font can be either standard or a font added by the <code>addFont()</code> method.
+     * Standard fonts use the Windows encoding cp1252 (Western Europe).
      *
-     * The method can be called before the first page is created and the font is kept from page to page.
+     * The method can be called before the first page is created, and the font is kept from page to page.
      *
      * If you just wish to change the current font size, it is simpler to call <code>setFontSizeInPoint()</code>.
      *
@@ -1888,7 +1888,7 @@ class PdfDocument
         $style ??= $this->fontStyle;
         $fontSizeInPoint ??= $this->fontSizeInPoint;
         $this->underline = $style->isUnderLine();
-        // test if font is already selected
+        // test if the font is already selected
         if ($this->fontFamily === $family && $this->fontStyle === $style && $this->fontSizeInPoint === $fontSizeInPoint) {
             return $this;
         }
@@ -1896,7 +1896,7 @@ class PdfDocument
         if ($this->underline) {
             $style = $style->removeUnderLine();
         }
-        // test if font is already loaded
+        // test if the font is already loaded
         $fontKey = $family . $style->value;
         if (!isset($this->fonts[$fontKey])) {
             // test if one of the core fonts
@@ -2046,7 +2046,7 @@ class PdfDocument
     }
 
     /**
-     * Defines the left, top and right margins.
+     * Defines the left, the top and the right margins.
      *
      * By default, they are equal to 1 cm. Call this method to change them.
      *
@@ -2215,9 +2215,9 @@ class PdfDocument
     /**
      * Prints a character string.
      *
-     * The origin is on the left of the first character, on the baseline. This method allows to place a string
-     * precisely on the page, but it is usually easier to use <code>cell()</code>, <code>multiCell()</code> or
-     * <code>write()</code> which are the standard methods to print text.
+     * The origin is on the left of the first character, on the baseline.
+     * This method allows placing a string precisely on the page, but it is usually easier to use <code>cell()</code>,
+     * <code>multiCell()</code> or <code>write()</code> which are the standard methods to print text.
      *
      * Do nothing if the text is empty.
      *
@@ -2570,7 +2570,7 @@ class PdfDocument
     }
 
     /**
-     * Output the end of document.
+     * Output the end of this document.
      */
     protected function endDoc(): void
     {
@@ -2609,7 +2609,7 @@ class PdfDocument
     }
 
     /**
-     * Output the end of page.
+     * Output the end of the page.
      */
     protected function endPage(): void
     {
@@ -3084,7 +3084,7 @@ class PdfDocument
     }
 
     /**
-     * Put header to this buffer.
+     * Put the header to this buffer.
      */
     protected function putHeader(): void
     {
@@ -3355,7 +3355,7 @@ class PdfDocument
     }
 
     /**
-     * Put stream string to this buffer.
+     * Put the stream string to this buffer.
      */
     protected function putStream(string $data): void
     {
@@ -3404,7 +3404,7 @@ class PdfDocument
     }
 
     /**
-     * Convert the V type array to the unicode character map.
+     * Convert the V type array to the Unicode character map.
      *
      * @phpstan-param UvType $uv
      */

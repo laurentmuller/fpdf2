@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Updated PHPStan documentation.
+- Spelling correction in documentation.
+- Updated Symfony to version 7.1.4.
 - Added rector fix script to `composer.json`.
 - Replaced links in tutorials.
 - Updated tutorials.

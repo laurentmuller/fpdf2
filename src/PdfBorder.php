@@ -187,7 +187,7 @@ class PdfBorder
     }
 
     /**
-     * Create an instance without border.
+     * Create an instance without a border.
      */
     public static function none(): self
     {

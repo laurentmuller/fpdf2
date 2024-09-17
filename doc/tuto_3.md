@@ -97,8 +97,8 @@ cell (the last parameter true indicates that the background must be filled).
 
 The method used to print the paragraphs is `multiCell()`. Each time a line
 reaches the right extremity of the cell or a carriage return character is met,
-a line break is issued and a new cell automatically created under the current
-one. Text is justified by default.
+a line break is issued and a new cell is automatically created under
+the current one. Text is justified by default.
 
 Two document properties are defined: the title (`setTitle()`) and the author
 (`setAuthor()`). There are several ways to view them in Adobe Reader. The first

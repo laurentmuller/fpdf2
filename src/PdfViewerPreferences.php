@@ -368,7 +368,7 @@ class PdfViewerPreferences
     /**
      * @phpstan-template T of PdfEnumDefaultInterface&\BackedEnum
      *
-     * @phpstan-param PdfEnumDefaultInterface<T>&\BackedEnum $enum
+     * @phpstan-param T $enum
      */
     private function getOutputEnum(PdfEnumDefaultInterface&\BackedEnum $enum, string $key): string
     {
