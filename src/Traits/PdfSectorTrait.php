@@ -13,18 +13,21 @@ declare(strict_types=1);
 namespace fpdf\Traits;
 
 use fpdf\Enums\PdfRectangleStyle;
+use fpdf\PdfDocument;
 
 /**
  * Trait to draw sector of a circle.
+ *
  * It can be used, for example, to render a pie chart.
  *
  * The code is inspired from FPDF script
  * <a href="http://www.fpdf.org/en/script/script19.php" target="_blank">Sector</a>.
  *
- * @psalm-require-extends \fpdf\PdfDocument
+ * @psalm-require-extends PdfDocument
  */
 trait PdfSectorTrait
 {
+    private const FULL_ROTATION = 360.0;
     private const HALF_PI = \M_PI / 2.0;
     private const TWO_PI = \M_PI * 2.0;
 
@@ -114,11 +117,11 @@ trait PdfSectorTrait
         $startAngle = $this->sectorValidate($startAngle);
         $endAngle = $this->sectorValidate($endAngle);
         if ($startAngle > $endAngle) {
-            $endAngle += 360.0;
+            $endAngle += self::FULL_ROTATION;
         }
 
-        $endAngle = $endAngle / 360.0 * self::TWO_PI;
-        $startAngle = $startAngle / 360.0 * self::TWO_PI;
+        $endAngle = $endAngle / self::FULL_ROTATION * self::TWO_PI;
+        $startAngle = $startAngle / self::FULL_ROTATION * self::TWO_PI;
         $deltaAngle = $endAngle - $startAngle;
         if (0.0 === $deltaAngle && 0.0 !== $angle) {
             $deltaAngle = self::TWO_PI;
@@ -130,11 +133,9 @@ trait PdfSectorTrait
     private function sectorComputeArc(float $deltaAngle, float $radius): float
     {
         $sin = \sin($deltaAngle / 2.0);
-        if (0.0 === $sin) {
-            return $sin;
-        }
+        $cos = \cos($deltaAngle / 2.0);
 
-        return 4.0 / 3.0 * (1.0 - \cos($deltaAngle / 2.0)) / $sin * $radius;
+        return 4.0 / 3.0 * (1.0 - $cos) / $sin * $radius;
     }
 
     /**
@@ -179,8 +180,8 @@ trait PdfSectorTrait
 
     private function sectorValidate(float $angle): float
     {
-        $angle = \fmod($angle, 360.0);
+        $angle = \fmod($angle, self::FULL_ROTATION);
 
-        return ($angle < 0.0) ? $angle + 360.0 : $angle;
+        return ($angle < 0.0) ? $angle + self::FULL_ROTATION : $angle;
     }
 }

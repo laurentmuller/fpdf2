@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Updated `PdfSectorTrait` trait and tests.
 - Updated PHPStan documentation.
 - Spelling correction in documentation.
 - Updated Symfony to version 7.1.4.
