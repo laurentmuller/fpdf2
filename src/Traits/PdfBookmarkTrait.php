@@ -276,9 +276,8 @@ trait PdfBookmarkTrait
                 align: PdfTextAlignment::RIGHT,
                 link: $link
             );
-        } else {
-            $this->x += $width;
         }
+        $this->x += $width;
     }
 
     private function outputIndexText(

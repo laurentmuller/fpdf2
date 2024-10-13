@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Updated `PdfLayout` enumeration.
+- Updated PHPUnit schema version.
 - Updated `PdfSectorTrait` trait and tests.
 - Updated PHPStan documentation.
 - Spelling correction in documentation.

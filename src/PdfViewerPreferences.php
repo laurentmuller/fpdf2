@@ -107,10 +107,10 @@ class PdfViewerPreferences
      */
     public function getPdfVersion(): PdfVersion
     {
-        if ($this->pickTrayByPDFSize || $this->duplex !== PdfDuplex::getDefault()) {
+        if ($this->pickTrayByPDFSize || !$this->duplex->isDefault()) {
             return PdfVersion::VERSION_1_7;
         }
-        if ($this->scaling !== PdfScaling::getDefault()) {
+        if (!$this->scaling->isDefault()) {
             return PdfVersion::VERSION_1_6;
         }
         if ($this->displayDocTitle) {

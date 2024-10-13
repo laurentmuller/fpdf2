@@ -12,30 +12,39 @@ declare(strict_types=1);
 
 namespace fpdf\Enums;
 
+use Elao\Enum\Attribute\EnumCase;
+use fpdf\Interfaces\PdfEnumDefaultInterface;
+use fpdf\Traits\PdfEnumDefaultTrait;
+
 /**
  * The PDF display layout enumeration.
  *
+ * @implements PdfEnumDefaultInterface<PdfLayout>
+ *
  * @see PdfDocument::setDisplayMode()
  */
-enum PdfLayout
+enum PdfLayout: string implements PdfEnumDefaultInterface
 {
+    use PdfEnumDefaultTrait;
+
     /**
      * Displays pages continuously.
      */
-    case CONTINUOUS;
+    case CONTINUOUS = 'OneColumn';
 
     /**
      * Uses layout default mode.
      */
-    case DEFAULT;
+    #[EnumCase(extras: [self::NAME => true])]
+    case DEFAULT = '';
 
     /**
      * Displays one page at once.
      */
-    case SINGLE;
+    case SINGLE = 'SinglePage';
 
     /**
      * Displays two pages on two columns.
      */
-    case TWO_PAGES;
+    case TWO_PAGES = 'TwoColumnLeft';
 }

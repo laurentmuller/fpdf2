@@ -1093,7 +1093,7 @@ class PdfDocument
      * @param ?float          $y      the ordinate of the upper-left corner. If <code>null</code>, the current
      *                                ordinate is used; moreover, a page break is triggered first if necessary (in case
      *                                automatic page breaking is enabled) and, after the call, the current ordinate
-     *                                is moved to the bottom of the image.
+     *                                is move to the bottom of the image.
      * @param float           $width  the width of the image in the page. There are three cases:
      *                                <ul>
      *                                <li>If the value is positive, it represents the width in user unit.</li>
@@ -1843,7 +1843,7 @@ class PdfDocument
     /**
      * Sets the font used to print character strings.
      *
-     * It is mandatory to call this method at least once before printing text.
+     * It is mandatory to call this method at least once before printing any text.
      *
      * The font can be either standard or a font added by the <code>addFont()</code> method.
      * Standard fonts use the Windows encoding cp1252 (Western Europe).
@@ -2914,13 +2914,9 @@ class PdfDocument
 
         switch ($this->layout) {
             case PdfLayout::SINGLE:
-                $this->put('/PageLayout /SinglePage');
-                break;
             case PdfLayout::CONTINUOUS:
-                $this->put('/PageLayout /OneColumn');
-                break;
             case PdfLayout::TWO_PAGES:
-                $this->put('/PageLayout /TwoColumnLeft');
+                $this->putf('/PageLayout /%s', $this->layout->value);
                 break;
         }
 
