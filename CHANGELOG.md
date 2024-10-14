@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 2.0.7 - 2024-10-14
 
 - Updated `PdfLayout` enumeration.
 - Updated PHPUnit schema version.
