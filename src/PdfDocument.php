@@ -20,6 +20,7 @@ use fpdf\Enums\PdfLineCap;
 use fpdf\Enums\PdfLineJoin;
 use fpdf\Enums\PdfMove;
 use fpdf\Enums\PdfOrientation;
+use fpdf\Enums\PdfPageMode;
 use fpdf\Enums\PdfPageSize;
 use fpdf\Enums\PdfRectangleStyle;
 use fpdf\Enums\PdfRotation;
@@ -234,6 +235,8 @@ class PdfDocument
      * @phpstan-var array<int, PageLinkType[]>
      */
     protected array $pageLinks = [];
+    /** The displayed page mode */
+    protected PdfPageMode $pageMode = PdfPageMode::USE_NONE;
     /**
      * The pages.
      *
@@ -274,7 +277,7 @@ class PdfDocument
     /**
      * Create a new instance.
      *
-     * It allows setting up the page orientation, the page size and the unit of measure used in all methods (except for
+     * It allows setting up the page orientation, the page size, and the unit of measure used in all methods (except for
      * font sizes).
      *
      * @param PdfOrientation      $orientation the page orientation
@@ -875,6 +878,14 @@ class PdfDocument
     }
 
     /**
+     * Gets how the document shall be displayed when opened.
+     */
+    public function getPageMode(): PdfPageMode
+    {
+        return $this->pageMode;
+    }
+
+    /**
      * Gets the current page width in the user unit.
      */
     public function getPageWidth(): float
@@ -1093,7 +1104,7 @@ class PdfDocument
      * @param ?float          $y      the ordinate of the upper-left corner. If <code>null</code>, the current
      *                                ordinate is used; moreover, a page break is triggered first if necessary (in case
      *                                automatic page breaking is enabled) and, after the call, the current ordinate
-     *                                is move to the bottom of the image.
+     *                                is moved to the bottom of the image.
      * @param float           $width  the width of the image in the page. There are three cases:
      *                                <ul>
      *                                <li>If the value is positive, it represents the width in user unit.</li>
@@ -2064,6 +2075,16 @@ class PdfDocument
     }
 
     /**
+     * Define how the document shall be displayed when opened.
+     */
+    public function setPageMode(PdfPageMode $pageMode): static
+    {
+        $this->pageMode = $pageMode;
+
+        return $this;
+    }
+
+    /**
      * Defines the abscissa and ordinate of the current position.
      *
      * If the passed values are negative, they are relative respectively to the right (x) and bottom (y) of the page.
@@ -2912,17 +2933,18 @@ class PdfDocument
             $this->putf('/OpenAction [%d 0 R /XYZ null null %.2F]', $number, (float) $this->zoom / 100.0);
         }
 
-        switch ($this->layout) {
-            case PdfLayout::SINGLE:
-            case PdfLayout::CONTINUOUS:
-            case PdfLayout::TWO_PAGES:
-                $this->putf('/PageLayout /%s', $this->layout->value);
-                break;
+        if (!$this->layout->isDefault()) {
+            $this->putf('/PageLayout /%s', $this->layout->value);
+            $this->updatePdfVersion($this->layout->getVersion());
         }
 
-        $output = $this->viewerPreferences->getOutput();
-        if ('' !== $output) {
-            $this->put($output);
+        if (!$this->pageMode->isDefault()) {
+            $this->putf('/PageMode /%s', $this->pageMode->value);
+            $this->updatePdfVersion($this->pageMode->getVersion());
+        }
+
+        if ($this->viewerPreferences->isChanged()) {
+            $this->put($this->viewerPreferences->getOutput());
         }
     }
 

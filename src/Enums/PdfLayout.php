@@ -28,23 +28,54 @@ enum PdfLayout: string implements PdfEnumDefaultInterface
     use PdfEnumDefaultTrait;
 
     /**
-     * Displays pages continuously.
-     */
-    case CONTINUOUS = 'OneColumn';
-
-    /**
-     * Uses layout default mode.
+     * This default layout is not outputted at all. This is the default value.
      */
     #[EnumCase(extras: [self::NAME => true])]
     case DEFAULT = '';
 
     /**
-     * Displays one page at once.
+     * Displays the pages in one column.
      */
-    case SINGLE = 'SinglePage';
+    case ONE_COLUMN = 'OneColumn';
 
     /**
-     * Displays two pages on two columns.
+     * Displays one page at a time.
      */
-    case TWO_PAGES = 'TwoColumnLeft';
+    case SINGLE_PAGE = 'SinglePage';
+
+    /**
+     * Displays the pages in two columns, with odd-numbered pages on the left.
+     */
+    case TWO_COLUMN_LEFT = 'TwoColumnLeft';
+
+    /**
+     * Displays the pages in two columns, with odd-numbered pages on the right.
+     */
+    case TWO_COLUMN_RIGHT = 'TwoColumnRight';
+
+    /**
+     * Displays the pages two at a time, with odd-numbered pages on the left.
+     *
+     * Require PDF 1.5.
+     */
+    case TWO_PAGE_LEFT = 'TwoPageLeft';
+
+    /**
+     * Displays the pages two at a time, with odd-numbered pages on the right.
+     *
+     * Require PDF 1.5.
+     */
+    case TWO_PAGE_RIGHT = 'TwoPageRight';
+
+    /**
+     * Gets the required PDF version.
+     */
+    public function getVersion(): PdfVersion
+    {
+        return match ($this) {
+            self::TWO_PAGE_LEFT,
+            self::TWO_PAGE_RIGHT => PdfVersion::VERSION_1_5,
+            default => PdfVersion::getDefault()
+        };
+    }
 }

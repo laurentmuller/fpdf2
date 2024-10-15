@@ -117,7 +117,7 @@ class PdfViewerPreferences
             return PdfVersion::VERSION_1_4;
         }
 
-        return PdfVersion::VERSION_1_3;
+        return PdfVersion::getDefault();
     }
 
     /**

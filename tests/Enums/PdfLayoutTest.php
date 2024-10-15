@@ -12,10 +12,22 @@ declare(strict_types=1);
 
 namespace fpdf\Enums;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class PdfLayoutTest extends TestCase
 {
+    public static function getVersions(): \Generator
+    {
+        yield [PdfLayout::DEFAULT, PdfVersion::VERSION_1_3];
+        yield [PdfLayout::ONE_COLUMN, PdfVersion::VERSION_1_3];
+        yield [PdfLayout::SINGLE_PAGE, PdfVersion::VERSION_1_3];
+        yield [PdfLayout::TWO_COLUMN_LEFT, PdfVersion::VERSION_1_3];
+        yield [PdfLayout::TWO_COLUMN_RIGHT, PdfVersion::VERSION_1_3];
+        yield [PdfLayout::TWO_PAGE_LEFT, PdfVersion::VERSION_1_5];
+        yield [PdfLayout::TWO_PAGE_RIGHT, PdfVersion::VERSION_1_5];
+    }
+
     public function testDefault(): void
     {
         self::assertSame(PdfLayout::DEFAULT, PdfLayout::getDefault());
@@ -23,9 +35,19 @@ class PdfLayoutTest extends TestCase
 
     public function testValue(): void
     {
-        self::assertSame('OneColumn', PdfLayout::CONTINUOUS->value);
         self::assertSame('', PdfLayout::DEFAULT->value);
-        self::assertSame('SinglePage', PdfLayout::SINGLE->value);
-        self::assertSame('TwoColumnLeft', PdfLayout::TWO_PAGES->value);
+        self::assertSame('SinglePage', PdfLayout::SINGLE_PAGE->value);
+        self::assertSame('OneColumn', PdfLayout::ONE_COLUMN->value);
+        self::assertSame('TwoColumnLeft', PdfLayout::TWO_COLUMN_LEFT->value);
+        self::assertSame('TwoColumnRight', PdfLayout::TWO_COLUMN_RIGHT->value);
+        self::assertSame('TwoPageLeft', PdfLayout::TWO_PAGE_LEFT->value);
+        self::assertSame('TwoPageRight', PdfLayout::TWO_PAGE_RIGHT->value);
+    }
+
+    #[DataProvider('getVersions')]
+    public function testVersion(PdfLayout $layout, PdfVersion $expected): void
+    {
+        $actual = $layout->getVersion();
+        self::assertSame($expected, $actual);
     }
 }

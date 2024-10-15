@@ -1,5 +1,10 @@
 # Change log
 
+## 2.0.8 - 2024-10-15
+
+- Added `PdfPageMode` enumeration.
+- Added more entries in `PdfLayout` enumeration.
+
 ## 2.0.7 - 2024-10-14
 
 - Updated `PdfLayout` enumeration.

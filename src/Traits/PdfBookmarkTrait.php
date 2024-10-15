@@ -15,6 +15,7 @@ namespace fpdf\Traits;
 use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
 use fpdf\Enums\PdfMove;
+use fpdf\Enums\PdfPageMode;
 use fpdf\Enums\PdfTextAlignment;
 use fpdf\Enums\PdfUnit;
 use fpdf\PdfDocument;
@@ -199,12 +200,13 @@ trait PdfBookmarkTrait
 
     protected function putCatalog(): void
     {
-        parent::putCatalog();
-        if ([] === $this->bookmarks) {
-            return;
+        if ([] !== $this->bookmarks) {
+            $this->setPageMode(PdfPageMode::USE_OUTLINES);
         }
-        $this->putf('/Outlines %d 0 R', $this->bookmarkRoot);
-        $this->put('/PageMode /UseOutlines');
+        parent::putCatalog();
+        if ([] !== $this->bookmarks) {
+            $this->putf('/Outlines %d 0 R', $this->bookmarkRoot);
+        }
     }
 
     protected function putResources(): void
