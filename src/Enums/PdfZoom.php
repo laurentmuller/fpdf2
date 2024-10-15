@@ -12,30 +12,37 @@ declare(strict_types=1);
 
 namespace fpdf\Enums;
 
+use Elao\Enum\Attribute\EnumCase;
+use fpdf\Interfaces\PdfEnumDefaultInterface;
+use fpdf\Traits\PdfEnumDefaultTrait;
+
 /**
  * The PDF document zoom enumeration.
  *
- * @see PdfDocument::setDisplayMode()
+ * @implements PdfEnumDefaultInterface<PdfZoom>
  */
-enum PdfZoom
+enum PdfZoom: string implements PdfEnumDefaultInterface
 {
+    use PdfEnumDefaultTrait;
+
     /**
-     * Uses viewer default mode.
+     * Uses viewer default mode (default value).
      */
-    case DEFAULT;
+    #[EnumCase(extras: [self::NAME => true])]
+    case DEFAULT = '';
 
     /**
      * Displays the entire page on screen.
      */
-    case FULL_PAGE;
+    case FULL_PAGE = 'Fit';
 
     /**
      * Uses maximum width of the window.
      */
-    case FULL_WIDTH;
+    case FULL_WIDTH = 'FitH null';
 
     /**
-     * Uses real size (equivalent to 100% zoom).
+     * Uses real size. It is equivalent to 100% zoom.
      */
-    case REAL;
+    case REAL = 'XYZ null null 1';
 }

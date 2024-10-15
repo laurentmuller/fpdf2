@@ -10,7 +10,8 @@
 
 declare(strict_types=1);
 
-use fpdf\AbstractPdfDocTestCase;
+namespace fpdf;
+
 use fpdf\Enums\PdfDestination;
 use fpdf\Enums\PdfPageMode;
 use fpdf\Enums\PdfVersion;

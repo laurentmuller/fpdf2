@@ -16,6 +16,11 @@ use PHPUnit\Framework\TestCase;
 
 class PdfLineCapTest extends TestCase
 {
+    public function testDefault(): void
+    {
+        self::assertSame(PdfLineCap::SQUARE, PdfLineCap::getDefault());
+    }
+
     public function testValue(): void
     {
         self::assertSame(0, PdfLineCap::BUTT->value);

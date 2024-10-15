@@ -91,7 +91,8 @@ class PdfCompareBasicTest extends AbstractCompareTestCase
         $doc->addPage();
         $doc->cell(null, 5.0, 'Greek: Γειά σου κόσμος', PdfBorder::all(), PdfMove::RIGHT, PdfTextAlignment::RIGHT, true);
 
-        $doc->setDisplayMode(PdfZoom::FULL_PAGE, PdfLayout::SINGLE_PAGE);
+        $doc->setZoom(PdfZoom::FULL_PAGE);
+        $doc->setLayout(PdfLayout::SINGLE_PAGE);
 
         $doc->multiCell(text: self::COMMENT);
     }

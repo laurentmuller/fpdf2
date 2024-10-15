@@ -1,5 +1,11 @@
 # Change log
 
+## 2.0.9 - 2024-10-15
+
+- Updated `PdfLineCap`, `PdfLineJoin` and `PdfZoom` enumerations.
+- **BC Break!**: Removed the `setDisplayMode()` function in `PdfDocument` class.
+  Use the `setLayout()` and `setZoom()` functions instead.
+
 ## 2.0.8 - 2024-10-15
 
 - Added `PdfPageMode` enumeration.
@@ -201,7 +207,7 @@
 ## 1.8.4.6 - 2024-03-01
 
 - Added tests.
-- Added unique CI action and removed all other actions.
+- Added a unique CI action and removed all other actions.
 - Updated cover class attributes for tests.
 - Updated `AbstractTestCase` class by removing date creation when comparing
   content.
@@ -228,7 +234,7 @@
 
 - Modified the `PdfDocument` class:
   - Added `updateWordSpacing()` function.
-  - Corrected `multiCell()` function to handle correctly borders.
+  - Corrected `multiCell()` function to handle correct borders.
   - Updated `cleanText()` function to trim line feed character only at the end.
   - Updated `parsePngStream()` function.
   - Updated `setLink()` and `createLink()` functions signature.
@@ -269,7 +275,7 @@
 - Initialize properties. Added left and right margins.
 - Replaced self by static.
 - Added test for `PdfFontStyle`.
-- Removed replace entries in the `composer.json`.
+- Removed `replace` entries in the `composer.json`.
 
 ## 1.8.4-alpha-6 - 2024-02-13
 
@@ -344,15 +350,15 @@
 ## 1.8 - 2015-11-29
 
 - PHP 5.1.0 or higher is now required.
-- The MakeFont utility now subsets fonts, which can greatly reduce font sizes.
+- The MakeFont now subsets fonts, which can greatly reduce font sizes.
 - Added ToUnicode CMaps to improve text extraction.
 - Added a parameter to AddPage() to rotate the page.
 - Added a parameter to SetY() to indicate whether the x position should be reset
   or not.
 - Added a parameter to Output() to specify the encoding of the name, and special
   characters are now properly encoded. Additionally, the order of the first two
-  parameters was reversed to be more logical (however the old order is still
-  supported for compatibility).
+  parameters was reversed to be more logical. However, the old order is still
+  supported for compatibility.
 - The Error() method now throws an exception.
 - Adding contents before the first AddPage() or after Close() now raises an
   error.
@@ -364,7 +370,7 @@
   ttf2pt1 anymore.
 - Alpha channel is now supported for PNGs.
 - When inserting an image, it is now possible to specify its resolution.
-- Default resolution for images was increased from 72 to 96 dpi.
+- The default resolution for images was increased from 72 to 96 dpi.
 - When inserting a GIF image, no temporary file is used anymore if the PHP
   version is 5.1 or higher.
 - When output buffering is enabled and the PDF is about to be sent, the buffer
@@ -378,7 +384,7 @@
 - A display issue occurring with the Adobe Reader X plug-in was fixed.
 - An issue related to transparency with some versions of Adobe Reader was fixed.
 - The Content-Length header was removed because it caused an issue when the
-  HTTP server applies compression.
+  HTTP server applied compression.
 
 ## 1.6 - 2008-08-03
 
@@ -409,14 +415,14 @@
 ## 1.52 - 2003-12-30
 
 - Image() now displays the image at 72 dpi if no dimension is given.
-- Output() takes a string as second parameter to indicate the destination.
+- Output() takes a string as the second parameter to indicate the destination.
 - Open() is now called automatically by AddPage().
 - Inserting remote JPEG images doesn't generate an error any longer.
 - The decimal separator is forced to dot in the constructor.
 - Added several encodings (Turkish, Thai, Hebrew, Ukrainian and Vietnamese).
 - The last line of a right-aligned MultiCell() was not correctly aligned if it
   was terminated by a carriage return.
-- No more error message about already sent headers when outputting the PDF to
+- No more error messages about already sent headers when outputting the PDF to
   the standard output from the command line.
 - The underlining was going too far for text containing characters \, (or).
 - $HTTP_ENV_VARS has been replaced by $HTTP_SERVER_VARS.
@@ -427,11 +433,11 @@
 - Added Baltic encoding.
 - The class now works internally in points with the origin at the bottom order
   to avoid two bugs occurring with Acrobat 5:*. The line thickness was too
-  large when printed on Windows 98 SE and ME TrueType fonts
+  large when printed on Windows 98 SE, and ME TrueType fonts
   didn't appear immediately inside the plug-in (a substitution font was used),
   one had to cause a window refresh to make them show up.
-- It is no longer necessary to set the decimal separator as dot to produce valid
-  documents.
+- It is no longer necessary to set the decimal separator as the dot to produce
+  valid documents.
 - The clickable area in a cell was always on the left independently of the
   text alignment.
 - JPEG images in CMYK mode appeared in inverted colors.
@@ -448,8 +454,9 @@
 - Added underlined style.
 - Internal and external link support (AddLink(), SetLink(), Link()).
 - Added right margin management and methods SetRightMargin(), SetTopMargin().
-- Modification of SetDisplayMode() to select page layout.
-- The border parameter of MultiCell() now let's choose borders to draw as Cell().
+- Modification of SetDisplayMode() to select the page layout.
+- The border parameter of MultiCell() now lets choosing borders to draw
+  as Cell().
 - When a document contains no page, Close() now calls AddPage() instead of
   causing a fatal error.
 
@@ -462,7 +469,8 @@
 
 - PHP3 is no longer supported.
 - Page compression (SetCompression()).
-- Choice of page format and possibility to change orientation inside document.
+- Choice of page format and possibility to change orientation inside the
+  document.
 - Added AcceptPageBreak() method.
 - Ability to print the total number of pages (AliasNbPages()).
 - Choice of cell borders to draw.
@@ -505,7 +513,7 @@
 
 - PNG support doesn't require PHP4/zlib anymore. Data are now put directly
   into `PDF` without any decompression/recompression stage.
-- Image insertion now works correctly even with magic_quotes_runtime option
+- Image insertion now works correctly even with the magic_quotes_runtime option
   set to on.
 
 ## 1.1 - 2001-10-07
@@ -515,8 +523,8 @@
 ## 1.01 - 2001-10-03
 
 - Fixed a bug involving page break: in case when Header() doesn't specify a
-  font, the one from previous page was not restored and produced an incorrect
-  document.
+  font, the one from the previous page was not restored and produced an
+  incorrect document.
 
 ## 1.0 - 2001-09-17
 

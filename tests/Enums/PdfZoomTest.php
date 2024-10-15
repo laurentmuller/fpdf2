@@ -14,17 +14,18 @@ namespace fpdf\Enums;
 
 use PHPUnit\Framework\TestCase;
 
-class PdfLineJoinTest extends TestCase
+class PdfZoomTest extends TestCase
 {
     public function testDefault(): void
     {
-        self::assertSame(PdfLineJoin::MITER, PdfLineJoin::getDefault());
+        self::assertSame(PdfZoom::DEFAULT, PdfZoom::getDefault());
     }
 
     public function testValue(): void
     {
-        self::assertSame(2, PdfLineJoin::BEVEL->value);
-        self::assertSame(0, PdfLineJoin::MITER->value);
-        self::assertSame(1, PdfLineJoin::ROUND->value);
+        self::assertSame('', PdfZoom::DEFAULT->value);
+        self::assertSame('Fit', PdfZoom::FULL_PAGE->value);
+        self::assertSame('FitH null', PdfZoom::FULL_WIDTH->value);
+        self::assertSame('XYZ null null 1', PdfZoom::REAL->value);
     }
 }

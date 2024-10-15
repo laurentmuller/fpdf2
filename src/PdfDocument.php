@@ -132,7 +132,7 @@ class PdfDocument
      */
     protected ?array $currentFont = null;
     /** The current orientation. */
-    protected PdfOrientation $currentOrientation = PdfOrientation::PORTRAIT;
+    protected PdfOrientation $currentOrientation;
     /** The current page size. */
     protected PdfSize $currentPageSize;
     /** The current page size in point. */
@@ -140,7 +140,7 @@ class PdfDocument
     /** The current page rotation. */
     protected PdfRotation $currentRotation = PdfRotation::DEFAULT;
     /** The default orientation. */
-    protected PdfOrientation $defaultOrientation = PdfOrientation::PORTRAIT;
+    protected PdfOrientation $defaultOrientation;
     /** The default page size.  */
     protected PdfSize $defaultPageSize;
     /** The commands for drawing color. */
@@ -190,13 +190,13 @@ class PdfDocument
     /** The height of the last printed cell. */
     protected float $lastHeight = 0.0;
     /** The layout display mode. */
-    protected PdfLayout $layout = PdfLayout::DEFAULT;
+    protected PdfLayout $layout;
     /** The left margin in the user unit. */
     protected float $leftMargin = 0.0;
     /** The line cap. */
-    protected PdfLineCap $lineCap = PdfLineCap::SQUARE;
+    protected PdfLineCap $lineCap;
     /** The line join. */
-    protected PdfLineJoin $lineJoin = PdfLineJoin::MITER;
+    protected PdfLineJoin $lineJoin;
     /** The line width in the user unit. */
     protected float $lineWidth = 0.0;
     /**
@@ -236,7 +236,7 @@ class PdfDocument
      */
     protected array $pageLinks = [];
     /** The displayed page mode */
-    protected PdfPageMode $pageMode = PdfPageMode::USE_NONE;
+    protected PdfPageMode $pageMode;
     /**
      * The pages.
      *
@@ -272,7 +272,7 @@ class PdfDocument
     /** The current y position in user unit. */
     protected float $y = 0.0;
     /** The zoom display mode. */
-    protected PdfZoom|int $zoom = PdfZoom::DEFAULT;
+    protected PdfZoom|int $zoom;
 
     /**
      * Create a new instance.
@@ -289,6 +289,13 @@ class PdfDocument
         protected PdfUnit $unit = PdfUnit::MILLIMETER,
         PdfPageSize|PdfSize $size = PdfPageSize::A4
     ) {
+        // enumerations
+        $this->layout = PdfLayout::getDefault();
+        $this->lineCap = PdfLineCap::getDefault();
+        $this->lineJoin = PdfLineJoin::getDefault();
+        $this->pageMode = PdfPageMode::getDefault();
+        $this->zoom = PdfZoom::getDefault();
+
         // scale factor
         $this->scaleFactor = $unit->getScaleFactor();
         // font path
@@ -468,7 +475,7 @@ class PdfDocument
 
         // set line cap and line join
         $this->outLineCap();
-        if (PdfLineJoin::MITER !== $this->lineJoin) {
+        if (!$this->lineJoin->isDefault()) {
             $this->outLineJoin();
         }
 
@@ -750,6 +757,14 @@ class PdfDocument
     }
 
     /**
+     * Gets the display layout.
+     */
+    public function getLayout(): PdfLayout
+    {
+        return $this->layout;
+    }
+
+    /**
      * Gets the left margin in user unit.
      *
      * The default value is 10 mm.
@@ -1013,6 +1028,14 @@ class PdfDocument
     public function getY(): float
     {
         return $this->y;
+    }
+
+    /**
+     * Gets the zoom.
+     */
+    public function getZoom(): PdfZoom|int
+    {
+        return $this->zoom;
     }
 
     /**
@@ -1770,31 +1793,6 @@ class PdfDocument
     }
 
     /**
-     * Defines the way the document is to be displayed by the viewer.
-     *
-     * The zoom level can be set: pages can be displayed entirely on screen, occupy the full width of the window,
-     * use real size, be scaled by a specific zooming factor or use viewer default (configured in the Preferences menu
-     * of Adobe Reader). The page layout can be specified too: single at once, continuous display, two columns or
-     * viewer default.
-     *
-     * @param PdfZoom|int $zoom   The zoom to use. It can be one of the following values:
-     *                            <ul>
-     *                            <li>A PDF zoom enumeration.</li>
-     *                            <li>A number indicating the zooming factor to use.</li>
-     *                            </ul>
-     * @param PdfLayout   $layout the page layout
-     */
-    public function setDisplayMode(
-        PdfZoom|int $zoom = PdfZoom::DEFAULT,
-        PdfLayout $layout = PdfLayout::DEFAULT
-    ): static {
-        $this->zoom = $zoom;
-        $this->layout = $layout;
-
-        return $this;
-    }
-
-    /**
      * Defines the color used for all drawing operations (lines, rectangles and cell borders).
      *
      * It can be expressed in RGB components or gray scale. The method can be called before the first page is created
@@ -1972,6 +1970,16 @@ class PdfDocument
     public function setKeywords(string $keywords, bool $isUTF8 = false): static
     {
         return $this->addMetaData('Keywords', $keywords, $isUTF8);
+    }
+
+    /**
+     * Sets the display layout.
+     */
+    public function setLayout(PdfLayout $layout): static
+    {
+        $this->layout = $layout;
+
+        return $this;
     }
 
     /**
@@ -2229,6 +2237,27 @@ class PdfDocument
         if ($resetX) {
             $this->x = $this->leftMargin;
         }
+
+        return $this;
+    }
+
+    /**
+     * Sets the zoom.
+     *
+     * Pages can be displayed entirely on screen, occupy the full width of the window, use real size, be scaled by
+     * a specific zooming factor or use viewer default (configured in the Preferences menu of Adobe Reader).
+     *
+     * @param PdfZoom|int $zoom The zoom to use. It can be one of the following values:
+     *                          <ul>
+     *                          <li>A PDF zoom enumeration.</li>
+     *                          <li>A positive number indicating the zooming factor to use.</li>
+     *                          </ul>
+     *
+     * @phpstan-param PdfZoom|positive-int $zoom
+     */
+    public function setZoom(PdfZoom|int $zoom): static
+    {
+        $this->zoom = $zoom;
 
         return $this;
     }
@@ -2917,20 +2946,10 @@ class PdfDocument
         $this->put('/Type /Catalog');
         $this->put('/Pages 1 0 R');
 
-        if ($this->zoom instanceof PdfZoom) {
-            switch ($this->zoom) {
-                case PdfZoom::FULL_PAGE:
-                    $this->putf('/OpenAction [%d 0 R /Fit]', $number);
-                    break;
-                case PdfZoom::FULL_WIDTH:
-                    $this->putf('/OpenAction [%d 0 R /FitH null]', $number);
-                    break;
-                case PdfZoom::REAL:
-                    $this->putf('/OpenAction [%d 0 R /XYZ null null 1]', $number);
-                    break;
-            }
-        } else {
+        if (\is_int($this->zoom)) {
             $this->putf('/OpenAction [%d 0 R /XYZ null null %.2F]', $number, (float) $this->zoom / 100.0);
+        } elseif (!$this->zoom->isDefault()) {
+            $this->putf('/OpenAction [%d 0 R /%s]', $number, $this->zoom->value);
         }
 
         if (!$this->layout->isDefault()) {

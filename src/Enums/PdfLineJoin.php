@@ -12,6 +12,10 @@ declare(strict_types=1);
 
 namespace fpdf\Enums;
 
+use Elao\Enum\Attribute\EnumCase;
+use fpdf\Interfaces\PdfEnumDefaultInterface;
+use fpdf\Traits\PdfEnumDefaultTrait;
+
 /**
  * The PDF line join enumeration.
  *
@@ -19,9 +23,13 @@ namespace fpdf\Enums;
  *
  * Join styles are significant only at points where consecutive segments of a path connect at an angle; segments that
  * meet or intersect fortuitously receive no special treatment.
+ *
+ * @implements PdfEnumDefaultInterface<PdfLineJoin>
  */
-enum PdfLineJoin: int
+enum PdfLineJoin: int implements PdfEnumDefaultInterface
 {
+    use PdfEnumDefaultTrait;
+
     /**
      * Bevel join.
      *
@@ -37,7 +45,9 @@ enum PdfLineJoin: int
      * frame. If the segments meet at too sharp an angle (as defined by the miter limit parameter), a bevel join is
      * used instead.
      */
+    #[EnumCase(extras: [self::NAME => true])]
     case MITER = 0;
+
     /**
      * Round join.
      *

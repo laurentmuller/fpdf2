@@ -20,8 +20,6 @@ use fpdf\Traits\PdfEnumDefaultTrait;
  * The PDF display layout enumeration.
  *
  * @implements PdfEnumDefaultInterface<PdfLayout>
- *
- * @see PdfDocument::setDisplayMode()
  */
 enum PdfLayout: string implements PdfEnumDefaultInterface
 {

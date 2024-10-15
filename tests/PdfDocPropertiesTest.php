@@ -15,12 +15,15 @@ namespace fpdf;
 use fpdf\Enums\PdfDestination;
 use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
+use fpdf\Enums\PdfLayout;
 use fpdf\Enums\PdfLineCap;
 use fpdf\Enums\PdfLineJoin;
+use fpdf\Enums\PdfPageMode;
 use fpdf\Enums\PdfRectangleStyle;
 use fpdf\Enums\PdfState;
 use fpdf\Enums\PdfUnit;
 use fpdf\Enums\PdfVersion;
+use fpdf\Enums\PdfZoom;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class PdfDocPropertiesTest extends AbstractPdfDocTestCase
@@ -183,6 +186,14 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
         self::assertEqualsWithDelta(10.0, $doc->getLeftMargin(), 0.01);
     }
 
+    public function testLayout(): void
+    {
+        $doc = $this->createDocument();
+        self::assertSame(PdfLayout::getDefault(), $doc->getLayout());
+        $doc->setLayout(PdfLayout::ONE_COLUMN);
+        self::assertSame(PdfLayout::ONE_COLUMN, $doc->getLayout());
+    }
+
     public function testLine(): void
     {
         $doc = $this->createDocument();
@@ -195,12 +206,9 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
     public function testLineCap(): void
     {
         $doc = $this->createDocument();
-        $doc->setLineWidth(2.0);
-        self::assertSame(2.0, $doc->getLineWidth());
+        self::assertSame(PdfLineCap::getDefault(), $doc->getLineCap());
         $doc->setLineCap(PdfLineCap::ROUND);
         self::assertSame(PdfLineCap::ROUND, $doc->getLineCap());
-        $doc->setLineJoin(PdfLineJoin::BEVEL);
-        self::assertSame(PdfLineJoin::BEVEL, $doc->getLineJoin());
     }
 
     public function testLineCountWithoutFont(): void
@@ -214,7 +222,9 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
     public function testLineJoin(): void
     {
         $doc = $this->createDocument(false, false);
+        self::assertSame(PdfLineJoin::getDefault(), $doc->getLineJoin());
         $doc->setLineJoin(PdfLineJoin::BEVEL);
+        self::assertSame(PdfLineJoin::BEVEL, $doc->getLineJoin());
         $doc->addPage();
         self::assertSame(1, $doc->getPage());
     }
@@ -231,6 +241,13 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
         self::assertSame(2, $doc->getLinesCount("Firs Line\nSecond Line"));
     }
 
+    public function testLineWidth(): void
+    {
+        $doc = $this->createDocument();
+        $doc->setLineWidth(2.0);
+        self::assertSame(2.0, $doc->getLineWidth());
+    }
+
     public function testMoveY(): void
     {
         $doc = $this->createDocument();
@@ -245,6 +262,14 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
         $doc->moveY(10.0);
         self::assertSame($x, $doc->getLeftMargin());
         self::assertSame($y + 10.0, $doc->getY());
+    }
+
+    public function testPageMode(): void
+    {
+        $doc = $this->createDocument();
+        self::assertSame(PdfPageMode::getDefault(), $doc->getPageMode());
+        $doc->setPageMode(PdfPageMode::FULL_SCREEN);
+        self::assertSame(PdfPageMode::FULL_SCREEN, $doc->getPageMode());
     }
 
     public function testPixels2mm(): void
@@ -401,5 +426,13 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
         self::assertSame(PdfVersion::VERSION_1_3, $doc->getPdfVersion());
         $doc->updatePdfVersion(PdfVersion::VERSION_1_4);
         self::assertSame(PdfVersion::VERSION_1_4, $doc->getPdfVersion());
+    }
+
+    public function testZoom(): void
+    {
+        $doc = $this->createDocument();
+        self::assertSame(PdfZoom::getDefault(), $doc->getZoom());
+        $doc->setZoom(PdfZoom::FULL_PAGE);
+        self::assertSame(PdfZoom::FULL_PAGE, $doc->getZoom());
     }
 }

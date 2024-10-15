@@ -15,8 +15,6 @@ namespace fpdf;
 use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
 use fpdf\Enums\PdfOrientation;
-use fpdf\Enums\PdfPageSize;
-use fpdf\Enums\PdfUnit;
 use PHPUnit\Framework\TestCase;
 
 abstract class AbstractPdfDocTestCase extends TestCase
@@ -24,11 +22,9 @@ abstract class AbstractPdfDocTestCase extends TestCase
     protected function createDocument(
         bool $addPage = true,
         bool $addFont = true,
-        PdfOrientation $orientation = PdfOrientation::PORTRAIT,
-        PdfUnit $unit = PdfUnit::MILLIMETER,
-        PdfPageSize|PdfSize $size = PdfPageSize::A4
+        PdfOrientation $orientation = PdfOrientation::PORTRAIT
     ): PdfDocument {
-        $doc = new PdfDocument($orientation, $unit, $size);
+        $doc = new PdfDocument($orientation);
         if ($addPage) {
             $doc->addPage();
         }
