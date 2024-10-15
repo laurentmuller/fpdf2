@@ -1,7 +1,8 @@
 # Change log
 
-## Unreleased
+## 2.0.10 - 2024-1-15
 
+- Corrected bug in `PdfBookmarkTrait` (page number not outputted).
 - Updated the namespace for tests.
 
 ## 2.0.9 - 2024-10-15
