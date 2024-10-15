@@ -7,7 +7,7 @@
 * Author:  Olivier PLATHEY                                                     *
 *******************************************************************************/
 
-namespace fpdf;
+namespace fpdf\Tests;
 
 class FPDF
 {

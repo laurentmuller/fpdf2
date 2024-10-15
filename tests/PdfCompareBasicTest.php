@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace fpdf;
+namespace fpdf\Tests;
 
 use fpdf\Enums\PdfFontStyle;
 use fpdf\Enums\PdfLayout;
@@ -19,6 +19,9 @@ use fpdf\Enums\PdfOrientation;
 use fpdf\Enums\PdfRectangleStyle;
 use fpdf\Enums\PdfTextAlignment;
 use fpdf\Enums\PdfZoom;
+use fpdf\PdfBorder;
+use fpdf\PdfDocument;
+use fpdf\PdfException;
 
 class PdfCompareBasicTest extends AbstractCompareTestCase
 {

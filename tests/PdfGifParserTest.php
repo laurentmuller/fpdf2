@@ -10,8 +10,11 @@
 
 declare(strict_types=1);
 
-namespace fpdf;
+namespace fpdf\Tests;
 
+use fpdf\PdfDocument;
+use fpdf\PdfException;
+use fpdf\PdfGifParser;
 use PHPUnit\Framework\TestCase;
 
 class PdfGifParserTest extends TestCase

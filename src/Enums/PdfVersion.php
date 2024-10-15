@@ -29,7 +29,7 @@ enum PdfVersion: string implements PdfEnumDefaultInterface
     use PdfEnumDefaultTrait;
 
     /**
-     * 1999, PDF 1.3 / Acrobat 4. This is the default version.
+     * 1999, PDF 1.3 / Acrobat 4 (default value).
      */
     #[EnumCase(extras: [self::NAME => true])]
     case VERSION_1_3 = '1.3';

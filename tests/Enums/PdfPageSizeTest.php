@@ -10,8 +10,10 @@
 
 declare(strict_types=1);
 
-namespace fpdf\Enums;
+namespace fpdf\Tests\Enums;
 
+use fpdf\Enums\PdfPageSize;
+use fpdf\Enums\PdfUnit;
 use PHPUnit\Framework\TestCase;
 
 class PdfPageSizeTest extends TestCase

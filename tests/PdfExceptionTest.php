@@ -10,8 +10,9 @@
 
 declare(strict_types=1);
 
-namespace fpdf;
+namespace fpdf\Tests;
 
+use fpdf\PdfException;
 use PHPUnit\Framework\TestCase;
 
 class PdfExceptionTest extends TestCase

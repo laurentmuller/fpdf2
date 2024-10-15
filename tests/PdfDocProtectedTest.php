@@ -10,11 +10,15 @@
 
 declare(strict_types=1);
 
-namespace fpdf;
+namespace fpdf\Tests;
 
 use fpdf\Enums\PdfOrientation;
 use fpdf\Enums\PdfPageSize;
 use fpdf\Enums\PdfUnit;
+use fpdf\PdfBorder;
+use fpdf\PdfDocument;
+use fpdf\PdfException;
+use fpdf\PdfSize;
 use PHPUnit\Framework\TestCase;
 
 class PdfDocProtectedTest extends TestCase

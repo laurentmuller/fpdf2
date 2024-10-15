@@ -10,10 +10,11 @@
 
 declare(strict_types=1);
 
-namespace fpdf\Traits;
+namespace fpdf\Tests\Traits;
 
 use fpdf\Enums\PdfDestination;
 use fpdf\PdfDocument;
+use fpdf\Traits\PdfTransparencyTrait;
 use PHPUnit\Framework\TestCase;
 
 class PdfTransparencyTraitTest extends TestCase

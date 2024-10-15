@@ -10,8 +10,9 @@
 
 declare(strict_types=1);
 
-namespace fpdf\Enums;
+namespace fpdf\Tests\Enums;
 
+use fpdf\Enums\PdfDuplex;
 use PHPUnit\Framework\TestCase;
 
 class PdfDuplexTest extends TestCase

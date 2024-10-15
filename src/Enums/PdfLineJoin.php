@@ -39,7 +39,7 @@ enum PdfLineJoin: int implements PdfEnumDefaultInterface
     case BEVEL = 2;
 
     /**
-     * Miter join.
+     * Miter join (default value).
      *
      * The outer edges of the strokes for the two segments are extended until they meet at an angle, as in a picture
      * frame. If the segments meet at too sharp an angle (as defined by the miter limit parameter), a bevel join is

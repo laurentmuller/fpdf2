@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- Updated the namespace for tests.
+
 ## 2.0.9 - 2024-10-15
 
 - Updated `PdfLineCap`, `PdfLineJoin` and `PdfZoom` enumerations.

@@ -10,9 +10,12 @@
 
 declare(strict_types=1);
 
-namespace fpdf;
+namespace fpdf\Tests;
 
 use fpdf\Enums\PdfVersion;
+use fpdf\PdfDocument;
+use fpdf\PdfException;
+use fpdf\PdfPngParser;
 use PHPUnit\Framework\TestCase;
 
 class PdfPngParserTest extends TestCase

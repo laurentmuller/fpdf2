@@ -10,11 +10,13 @@
 
 declare(strict_types=1);
 
-namespace fpdf;
+namespace fpdf\Tests;
 
 use fpdf\Enums\PdfOrientation;
 use fpdf\Enums\PdfPageSize;
 use fpdf\Enums\PdfRotation;
+use fpdf\PdfDocument;
+use fpdf\PdfSize;
 
 class PdfCompareOrientationTest extends AbstractCompareTestCase
 {

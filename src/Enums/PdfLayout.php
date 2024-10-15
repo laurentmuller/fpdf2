@@ -26,7 +26,7 @@ enum PdfLayout: string implements PdfEnumDefaultInterface
     use PdfEnumDefaultTrait;
 
     /**
-     * This default layout is not outputted at all. This is the default value.
+     * This layout is not outputted at all (default value).
      */
     #[EnumCase(extras: [self::NAME => true])]
     case DEFAULT = '';

@@ -10,7 +10,10 @@
 
 declare(strict_types=1);
 
-namespace fpdf;
+namespace fpdf\Tests;
+
+use fpdf\PdfBorder;
+use fpdf\PdfDocument;
 
 class PdfCompareMultiCellTest extends AbstractCompareTestCase
 {

@@ -10,8 +10,9 @@
 
 declare(strict_types=1);
 
-namespace fpdf\Enums;
+namespace fpdf\Tests\Enums;
 
+use fpdf\Enums\PdfRotation;
 use PHPUnit\Framework\TestCase;
 
 class PdfRotationTest extends TestCase

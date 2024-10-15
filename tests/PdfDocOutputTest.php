@@ -10,9 +10,10 @@
 
 declare(strict_types=1);
 
-namespace fpdf;
+namespace fpdf\Tests;
 
 use fpdf\Enums\PdfDestination;
+use fpdf\PdfException;
 
 class PdfDocOutputTest extends AbstractPdfDocTestCase
 {

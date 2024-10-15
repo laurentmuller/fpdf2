@@ -43,7 +43,7 @@ enum PdfLineCap: int implements PdfEnumDefaultInterface
     case ROUND = 1;
 
     /**
-     * Projecting square cap.
+     * Projecting square cap (default value).
      *
      * The stroke continues beyond the endpoint of the path for a distance equal to half the line width and is
      * squared off.

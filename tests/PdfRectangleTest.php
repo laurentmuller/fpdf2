@@ -10,8 +10,11 @@
 
 declare(strict_types=1);
 
-namespace fpdf;
+namespace fpdf\Tests;
 
+use fpdf\PdfPoint;
+use fpdf\PdfRectangle;
+use fpdf\PdfSize;
 use PHPUnit\Framework\TestCase;
 
 class PdfRectangleTest extends TestCase

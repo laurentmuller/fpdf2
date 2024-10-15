@@ -10,8 +10,10 @@
 
 declare(strict_types=1);
 
-namespace fpdf\Enums;
+namespace fpdf\Tests\Enums;
 
+use fpdf\Enums\PdfPageMode;
+use fpdf\Enums\PdfVersion;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 

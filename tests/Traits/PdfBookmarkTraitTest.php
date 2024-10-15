@@ -10,12 +10,12 @@
 
 declare(strict_types=1);
 
-namespace fpdf\Traits;
+namespace fpdf\Tests\Traits;
 
 use fpdf\Enums\PdfDestination;
 use fpdf\Enums\PdfFontName;
-use fpdf\fixture\PdfDocumentBookmark;
 use fpdf\PdfException;
+use fpdf\Tests\fixture\PdfDocumentBookmark;
 use PHPUnit\Framework\TestCase;
 
 class PdfBookmarkTraitTest extends TestCase

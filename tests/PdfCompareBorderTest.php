@@ -10,9 +10,12 @@
 
 declare(strict_types=1);
 
-namespace fpdf;
+namespace fpdf\Tests;
 
 use fpdf\Enums\PdfMove;
+use fpdf\PdfBorder;
+use fpdf\PdfDocument;
+use fpdf\PdfException;
 
 class PdfCompareBorderTest extends AbstractCompareTestCase
 {

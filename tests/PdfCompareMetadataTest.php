@@ -10,7 +10,9 @@
 
 declare(strict_types=1);
 
-namespace fpdf;
+namespace fpdf\Tests;
+
+use fpdf\PdfDocument;
 
 class PdfCompareMetadataTest extends AbstractCompareTestCase
 {

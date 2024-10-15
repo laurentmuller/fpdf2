@@ -10,12 +10,13 @@
 
 declare(strict_types=1);
 
-namespace fpdf\Traits;
+namespace fpdf\Tests\Traits;
 
 use fpdf\Enums\PdfDestination;
 use fpdf\Enums\PdfFontName;
 use fpdf\PdfDocument;
 use fpdf\PdfRectangle;
+use fpdf\Traits\PdfRotationTrait;
 use PHPUnit\Framework\TestCase;
 
 class PdfRotationTraitTest extends TestCase

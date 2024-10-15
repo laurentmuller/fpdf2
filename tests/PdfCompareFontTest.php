@@ -10,11 +10,13 @@
 
 declare(strict_types=1);
 
-namespace fpdf;
+namespace fpdf\Tests;
 
 use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
 use fpdf\Enums\PdfMove;
+use fpdf\PdfDocument;
+use fpdf\PdfException;
 
 class PdfCompareFontTest extends AbstractCompareTestCase
 {

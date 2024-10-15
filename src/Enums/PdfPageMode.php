@@ -40,7 +40,7 @@ enum PdfPageMode: string implements PdfEnumDefaultInterface
     case USE_ATTACHMENTS = 'UseAttachments';
 
     /**
-     * Neither document outline nor thumbnail images visible. This is the default value.
+     * Neither document outline nor thumbnail images visible (default value).
      */
     #[EnumCase(extras: [self::NAME => true])]
     case USE_NONE = 'UseNone';

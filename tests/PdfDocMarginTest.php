@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace fpdf;
+namespace fpdf\Tests;
 
 class PdfDocMarginTest extends AbstractPdfDocTestCase
 {

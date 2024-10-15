@@ -10,10 +10,12 @@
 
 declare(strict_types=1);
 
-namespace fpdf;
+namespace fpdf\Tests;
 
 use fpdf\Enums\PdfMove;
 use fpdf\Enums\PdfTextAlignment;
+use fpdf\PdfBorder;
+use fpdf\PdfDocument;
 
 class PdfCompareColorTest extends AbstractCompareTestCase
 {

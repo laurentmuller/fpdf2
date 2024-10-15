@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace fpdf;
+namespace fpdf\Tests;
 
 use fpdf\Enums\PdfDestination;
 use fpdf\Enums\PdfFontName;
@@ -24,6 +24,12 @@ use fpdf\Enums\PdfState;
 use fpdf\Enums\PdfUnit;
 use fpdf\Enums\PdfVersion;
 use fpdf\Enums\PdfZoom;
+use fpdf\PdfBorder;
+use fpdf\PdfDocument;
+use fpdf\PdfException;
+use fpdf\PdfPoint;
+use fpdf\PdfRectangle;
+use fpdf\PdfSize;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class PdfDocPropertiesTest extends AbstractPdfDocTestCase

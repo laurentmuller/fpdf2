@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace fpdf\fixture;
+namespace fpdf\Tests\fixture;
 
 use fpdf\PdfDocument;
 use fpdf\Traits\PdfBookmarkTrait;

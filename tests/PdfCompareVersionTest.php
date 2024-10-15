@@ -10,9 +10,10 @@
 
 declare(strict_types=1);
 
-namespace fpdf;
+namespace fpdf\Tests;
 
 use fpdf\Enums\PdfVersion;
+use fpdf\PdfDocument;
 
 class PdfCompareVersionTest extends AbstractCompareTestCase
 {

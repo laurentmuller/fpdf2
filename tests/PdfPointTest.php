@@ -10,8 +10,9 @@
 
 declare(strict_types=1);
 
-namespace fpdf;
+namespace fpdf\Tests;
 
+use fpdf\PdfPoint;
 use PHPUnit\Framework\TestCase;
 
 class PdfPointTest extends TestCase

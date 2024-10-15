@@ -10,8 +10,9 @@
 
 declare(strict_types=1);
 
-namespace fpdf\Enums;
+namespace fpdf\Tests\Enums;
 
+use fpdf\Enums\PdfFontStyle;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -85,7 +86,7 @@ class PdfFontStyleTest extends TestCase
         self::assertFalse(PdfFontStyle::REGULAR->isUnderLine());
     }
 
-    public function testRemovUnderline(): void
+    public function testRemoveUnderline(): void
     {
         self::assertSame(PdfFontStyle::BOLD, PdfFontStyle::BOLD->removeUnderLine());
         self::assertSame(PdfFontStyle::BOLD_ITALIC, PdfFontStyle::BOLD_ITALIC->removeUnderLine());

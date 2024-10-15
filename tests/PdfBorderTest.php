@@ -10,9 +10,12 @@
 
 declare(strict_types=1);
 
-namespace fpdf;
+namespace fpdf\Tests;
 
 use fpdf\Enums\PdfFontName;
+use fpdf\PdfBorder;
+use fpdf\PdfDocument;
+use fpdf\PdfRectangle;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 

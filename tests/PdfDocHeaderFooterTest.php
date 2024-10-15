@@ -10,10 +10,11 @@
 
 declare(strict_types=1);
 
-namespace fpdf;
+namespace fpdf\Tests;
 
 use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
+use fpdf\PdfDocument;
 use PHPUnit\Framework\TestCase;
 
 class PdfDocHeaderFooterTest extends TestCase
