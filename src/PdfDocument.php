@@ -107,6 +107,8 @@ class PdfDocument
 
     /** The alias for the total number of pages. */
     protected string $aliasNumberPages = '{nb}';
+    /** Indicates whether the alpha channel is used. */
+    protected bool $alphaChannel = false;
     /** The automatic page breaking. */
     protected bool $autoPageBreak = false;
     /** The bottom margin in user unit (page break margin). */
@@ -263,8 +265,6 @@ class PdfDocument
     protected PdfViewerPreferences $viewerPreferences;
     /** The current page width in user unit. */
     protected float $width = 0.0;
-    /** Indicates whether the alpha channel is used. */
-    protected bool $withAlpha = false;
     /** The word spacing. */
     protected float $wordSpacing = 0.0;
     /** The current x position in user unit. */
@@ -277,8 +277,8 @@ class PdfDocument
     /**
      * Create a new instance.
      *
-     * It allows setting up the page orientation, the page size, and the unit of measure used in all methods (except for
-     * font sizes).
+     * It allows setting up the page orientation, the page size, and the unit of measure used in all methods
+     * (except for font sizes).
      *
      * @param PdfOrientation      $orientation the page orientation
      * @param PdfUnit             $unit        the document unit to use
@@ -335,7 +335,7 @@ class PdfDocument
     }
 
     /**
-     * Imports a TrueType, an OpenType or a Type1 font and makes it available.
+     * Imports a TrueType, an OpenType, or a Type1 font and makes it available.
      *
      * It is necessary to generate a font definition file first with the <code>MakeFont</code> utility.
      *
@@ -524,7 +524,7 @@ class PdfDocument
     }
 
     /**
-     * Prints a cell (rectangular area) with optional borders, background color and character string.
+     * Prints a cell (rectangular area) with optional borders, background color, and character string.
      *
      * It is possible to put a link on the cell.
      *
@@ -678,16 +678,17 @@ class PdfDocument
      *
      * This is a combination of the <code>addLink()</code> and the <code>setLink()</code> functions.
      *
-     * @param float    $y    the ordinate of target position; a negative value indicates the current position.
-     *                       The default value is 0 (top of page).
-     * @param int|null $page the target page or <code>null</code> to use the current page
+     * @param float|null $y    the ordinate of the target position. A <code>null</code> value indicates the current
+     *                         ordinate.
+     *                         The default value is 0 (top of the page).
+     * @param int|null   $page the target page or <code>null</code> to use the current page
      *
      * @return int the link identifier
      *
      * @see PdfDocument::addLink()
      * @see PdfDocument::setLink()
      */
-    public function createLink(float $y = 0, ?int $page = null): int
+    public function createLink(?float $y = 0, ?int $page = null): int
     {
         $id = $this->addLink();
         $this->setLink($id, $y, $page);
@@ -1089,7 +1090,7 @@ class PdfDocument
      * <li>No explicit dimension, in which case the image is put at 96 dpi.</li>
      * </ul>
      *
-     * Supported formats are JPEG, PNG and GIF. The GD extension is required for the GIF format.
+     * Supported formats are JPEG, PNG, and GIF. The GD extension is required for the GIF format.
      *
      * For the JPEG format, the following variants are allowed:
      * <ul>
@@ -1125,8 +1126,8 @@ class PdfDocument
      * @param ?float          $x      the abscissa of the upper-left corner. If <code>null</code>, the current abscissa
      *                                is used.
      * @param ?float          $y      the ordinate of the upper-left corner. If <code>null</code>, the current
-     *                                ordinate is used; moreover, a page break is triggered first if necessary (in case
-     *                                automatic page breaking is enabled) and, after the call, the current ordinate
+     *                                ordinate is used. Moreover, a page break is triggered first if necessary (in case
+     *                                automatic page breaking is enabled). After the call, the current ordinate
      *                                is moved to the bottom of the image.
      * @param float           $width  the width of the image in the page. There are three cases:
      *                                <ul>
@@ -1389,7 +1390,7 @@ class PdfDocument
      * This method allows printing text with line breaks.
      *
      * They can be automatic as soon as the text reaches the right border of the cell, or explicit via the line
-     * feed character ("\n"). As many cells as necessary are output, one below the other. Text can be aligned, centered
+     * feed character ("\n"). As many cells as necessary are output, one below the other. Text can be aligned, centered,
      * or justified. The cell block can be framed and the background painted.
      *
      * @param ?float           $width  the cell width. If <code>null</code>, the cell extends up to the right margin.
@@ -1725,6 +1726,16 @@ class PdfDocument
     }
 
     /**
+     * Sets a value indicating if the alpha channel is used.
+     */
+    public function setAlphaChannel(bool $alphaChannel): static
+    {
+        $this->alphaChannel = $alphaChannel;
+
+        return $this;
+    }
+
+    /**
      * Defines the author of the document.
      *
      * @param string $author the name of the author
@@ -2044,20 +2055,19 @@ class PdfDocument
     /**
      * Defines the page and position a link points to.
      *
-     * @param int      $link the link identifier returned by <code>addLink()</code>
-     * @param float    $y    the ordinate of target position; a negative value indicates the current position.
-     *                       The default value is 0 (top of the page).
-     * @param int|null $page the target page or <code>null</code> to use the current page
+     * @param int        $link the link identifier returned by <code>addLink()</code>
+     * @param float|null $y    the ordinate of the target position. A <code>null</code> value indicates the current
+     *                         ordinate.
+     *                         The default value is 0 (top of the page).
+     * @param int|null   $page the target page or <code>null</code> to use the current page
      *
      * @see PdfDocument::addLink()
      * @see PdfDocument::link()
      * @see PdfDocument::createLink()
      */
-    public function setLink(int $link, float $y = 0, ?int $page = null): static
+    public function setLink(int $link, ?float $y = 0, ?int $page = null): static
     {
-        if ($y < 0) {
-            $y = $this->y;
-        }
+        $y ??= $this->y;
         $page ??= $this->page;
         $this->links[$link] = [$page, $y];
 
@@ -2191,16 +2201,6 @@ class PdfDocument
     }
 
     /**
-     * Sets a value indicating if the alpha channel is used.
-     */
-    public function setWithAlpha(bool $withAlpha): static
-    {
-        $this->withAlpha = $withAlpha;
-
-        return $this;
-    }
-
-    /**
      * Defines the abscissa of the current position.
      *
      * @param float $x the value of the abscissa. If the passed value is negative, it is relative to the right of
@@ -2245,7 +2245,7 @@ class PdfDocument
      * Sets the zoom.
      *
      * Pages can be displayed entirely on screen, occupy the full width of the window, use real size, be scaled by
-     * a specific zooming factor or use viewer default (configured in the Preferences menu of Adobe Reader).
+     * a specific zooming factor, or use viewer default (configured in the Preferences menu of Adobe Reader).
      *
      * @param PdfZoom|int $zoom The zoom to use. It can be one of the following values:
      *                          <ul>
@@ -2659,7 +2659,7 @@ class PdfDocument
     }
 
     /**
-     * Output the end of the page.
+     * Output end of the page.
      */
     protected function endPage(): void
     {
@@ -3302,7 +3302,7 @@ class PdfDocument
             $output .= ']';
             $this->put($output);
         }
-        if ($this->withAlpha) {
+        if ($this->alphaChannel) {
             $this->put('/Group <</Type /Group /S /Transparency /CS /DeviceRGB>>');
         }
         $this->putf('/Contents %d 0 R>>', $this->objectNumber + 1);

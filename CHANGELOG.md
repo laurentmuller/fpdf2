@@ -1,6 +1,14 @@
 # Change log
 
-## 2.0.10 - 2024-1-15
+## 2.0.11 - 2024-10-21
+
+- Updated signature of `createLink()` and `setLink()` functions of the
+  `PdfDocument` class.
+  The `$y` parameter can be null and correspond to the current ordinate.
+- **BC Break!**: Renamed function `setWithAlpha()` to `setAlphaChannel()` of
+  the `PdfDocument` class.
+
+## 2.0.10 - 2024-10-15
 
 - Corrected bug in `PdfBookmarkTrait` (page number not outputted).
 - Updated the namespace for tests.

@@ -139,7 +139,7 @@ class PdfPngParser implements PdfImageParserInterface
             // extract alpha channel
             [$data, $soft_mask] = $this->extractAlphaChannel($width, $height, $colorType, $data);
             $image['soft_mask'] = $soft_mask;
-            $parent->setWithAlpha(true);
+            $parent->setAlphaChannel(true);
             $parent->updatePdfVersion(PdfVersion::VERSION_1_4);
         }
         $image['data'] = $data;
