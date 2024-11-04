@@ -10,6 +10,7 @@
 /.markdownlint-cli2.yaml export-ignore
 /.php-cs-fixer.dist.php  export-ignore
 /.styleci.yml            export-ignore
+/.symfony.insight.yaml   export-ignore
 /CHANGELOG.md            export-ignore
 /phpstan.neon            export-ignore
 /phpunit.xml.dist        export-ignore

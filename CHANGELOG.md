@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Updated `.gitattributes` file.
 - Updated Symfony to version 7.1.6.
 
 ## 2.0.11 - 2024-10-21
