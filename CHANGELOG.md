@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added badges to `README.md`.
+- Updated Symfony to version 7.1.7.
 - Updated `.gitattributes` file.
 - Updated Symfony to version 7.1.6.
 

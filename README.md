@@ -49,6 +49,15 @@ $pdf->output();
 - [Rotation](doc/tuto_9.md)
 - [Sector](doc/tuto_10.md)
 
+## Qualité du code
+
+[![SymfonyInsight](https://insight.symfony.com/projects/1db4f28c-c07c-4a5f-8006-2c63eb1e8851/mini.svg)](https://insight.symfony.com/projects/1db4f28c-c07c-4a5f-8006-2c63eb1e8851)
+[![Codacy](https://app.codacy.com/project/badge/Grade/a70c684f21c446fb88658acf29fdafd5)](https://app.codacy.com/gh/laurentmuller/fpdf2/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![PHP-Stan](https://img.shields.io/badge/PHPStan-Level%209-brightgreen.svg?style=flat&logo=php)](https://phpstan.org/blog/find-bugs-in-your-code-without-writing-tests)
+[![Psalm](https://img.shields.io/badge/Psalm-Level%201-brightgreen.svg?style=flat)](https://psalm.dev/docs/running_psalm/installation/)
+[![CodeFactor](https://www.codefactor.io/repository/github/laurentmuller/fpdf2/badge)](https://www.codefactor.io/repository/github/laurentmuller/fpdf2)
+[![Codecov](https://codecov.io/gh/laurentmuller/fpdf2/graph/badge.svg?token=16I8LCYRRS)](https://codecov.io/gh/laurentmuller/fpdf2)
+
 ## Actions
 
 [![PHP-CS-Fixer](https://github.com/laurentmuller/fpdf2/actions/workflows/php-cs-fixer.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/php-cs-fixer.yaml)
@@ -58,5 +67,3 @@ $pdf->output();
 [![Rector](https://github.com/laurentmuller/fpdf2/actions/workflows/rector.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/rector.yaml)
 [![Lint](https://github.com/laurentmuller/fpdf2/actions/workflows/lint.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/lint.yaml)
 [![StyleCI](https://github.styleci.io/repos/752676081/shield?branch=main)](https://github.styleci.io/repos/752676081?branch=main)
-[![Codecov](https://codecov.io/gh/laurentmuller/fpdf2/graph/badge.svg?token=16I8LCYRRS)](https://codecov.io/gh/laurentmuller/fpdf2)
-[![SymfonyInsight](https://insight.symfony.com/projects/1db4f28c-c07c-4a5f-8006-2c63eb1e8851/mini.svg)](https://insight.symfony.com/projects/1db4f28c-c07c-4a5f-8006-2c63eb1e8851)
