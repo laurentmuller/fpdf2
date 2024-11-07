@@ -49,7 +49,7 @@ $pdf->output();
 - [Rotation](doc/tuto_9.md)
 - [Sector](doc/tuto_10.md)
 
-## Qualité du code
+## Code Quality
 
 [![SymfonyInsight](https://insight.symfony.com/projects/1db4f28c-c07c-4a5f-8006-2c63eb1e8851/mini.svg)](https://insight.symfony.com/projects/1db4f28c-c07c-4a5f-8006-2c63eb1e8851)
 [![Codacy](https://app.codacy.com/project/badge/Grade/a70c684f21c446fb88658acf29fdafd5)](https://app.codacy.com/gh/laurentmuller/fpdf2/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
