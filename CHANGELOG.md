@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added bleeding edge before update `phpstan` to version 2.0.
 - Added badges to `README.md`.
 - Updated Symfony to version 7.1.7.
 - Updated `.gitattributes` file.

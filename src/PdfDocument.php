@@ -2835,7 +2835,7 @@ class PdfDocument
         $font['subsetted'] ??= false;
 
         /** @phpstan-var FontType */
-        return $font;
+        return $font; // @phpstan-ignore varTag.type
     }
 
     /**

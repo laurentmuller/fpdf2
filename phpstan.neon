@@ -13,3 +13,6 @@ parameters:
 
     reportUnmatchedIgnoredErrors: true
     checkUninitializedProperties: true
+
+includes:
+	- vendor/phpstan/phpstan/conf/bleedingEdge.neon

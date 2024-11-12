@@ -150,7 +150,7 @@ class PdfPngParserTest extends TestCase
             public function parse(PdfDocument $parent, string $file): array
             {
                 /** @phpstan-var resource $stream */
-                $stream = null;
+                $stream = null; // @phpstan-ignore varTag.nativeType
 
                 return $this->parseStream($parent, $stream, $file);
             }
