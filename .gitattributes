@@ -5,6 +5,7 @@
 /doc                     export-ignore
 /makefont                export-ignore
 /tests                   export-ignore
+/vendor-bin              export-ignore
 /.gitattributes          export-ignore
 /.gitignore              export-ignore
 /.markdownlint-cli2.yaml export-ignore

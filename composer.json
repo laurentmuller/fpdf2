@@ -39,15 +39,15 @@
         "elao/enum": "^2.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.0",
-        "phpstan/extension-installer": "^1.0",
-        "phpstan/phpstan": "^1.0",
-        "phpstan/phpstan-deprecation-rules": "^1.0",
-        "phpstan/phpstan-strict-rules": "^1.0",
         "phpunit/phpunit": "^11.0",
-        "psalm/plugin-phpunit": "^0.19",
-        "rector/rector": "^1.0",
-        "vimeo/psalm": "dev-master"
+        "bamarni/composer-bin-plugin": "^1.0"
+    },
+    "extra": {
+        "bamarni-bin": {
+            "bin-links": false,
+            "forward-command": true,
+            "target-directory": "vendor-bin"
+        }
     },
     "config": {
         "platform": {
@@ -61,23 +61,23 @@
         "platform-check": true,
         "discard-changes": true,
         "allow-plugins": {
-            "phpstan/extension-installer": true
+            "bamarni/composer-bin-plugin": true
         }
     },
     "scripts": {
-        "app-fixer-fix": "vendor/bin/php-cs-fixer fix --diff",
-        "app-rector-fix": "vendor/bin/rector process --config rector.php",
-        "app-fixer": "vendor/bin/php-cs-fixer fix --diff --dry-run",
-        "app-psalm": "vendor/bin/psalm --config psalm.xml",
-        "app-phpstan": "vendor/bin/phpstan analyse --configuration phpstan.neon --memory-limit 2G -v",
-        "app-rector": "vendor/bin/rector process --dry-run --config rector.php",
+        "app-fixer": "vendor-bin/php-cs-fixer/vendor/bin/php-cs-fixer fix --diff --dry-run",
+        "app-fixer-fix": "vendor-bin/php-cs-fixer/vendor/bin/php-cs-fixer fix --diff",
+        "app-rector": "vendor-bin/rector/vendor/bin/rector process --dry-run --config rector.php",
+        "app-rector-fix": "vendor-bin/rector/vendor/bin/rector process --config rector.php",
+        "app-psalm": "vendor-bin/psalm/vendor/bin/psalm --config psalm.xml",
+        "app-stan": "vendor-bin/phpstan/vendor/bin/phpstan analyse --configuration phpstan.neon --memory-limit 2G",
         "app-test": "vendor/bin/phpunit",
         "app-markdown": "markdownlint-cli2",
         "app-all": [
             "@app-fixer",
-            "@app-psalm",
-            "@app-phpstan",
             "@app-rector",
+            "@app-psalm",
+            "@app-stan",
             "@app-test",
             "@app-markdown"
         ]

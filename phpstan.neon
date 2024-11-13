@@ -14,5 +14,10 @@ parameters:
     reportUnmatchedIgnoredErrors: true
     checkUninitializedProperties: true
 
+    ignoreErrors:
+        -
+             identifier: staticMethod.alreadyNarrowedType
+             path: tests/
+
 includes:
-	- vendor/phpstan/phpstan/conf/bleedingEdge.neon
+	- vendor-bin/phpstan/vendor/phpstan/phpstan/conf/bleedingEdge.neon
