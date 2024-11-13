@@ -299,6 +299,7 @@ class PdfDocument
         // scale factor
         $this->scaleFactor = $unit->getScaleFactor();
         // font path
+        // @phpstan-ignore cast.string
         $this->fontPath = \defined('FPDF_FONTPATH') ? (string) FPDF_FONTPATH : __DIR__ . '/font/';
         // font size
         $this->fontSize = $this->fontSizeInPoint / $this->scaleFactor;

@@ -1,5 +1,5 @@
 parameters:
-    level: 9
+    level: 10
     paths:
         - src
         - tests
@@ -18,6 +18,3 @@ parameters:
         -
              identifier: staticMethod.alreadyNarrowedType
              path: tests/
-
-includes:
-	- vendor-bin/phpstan/vendor/phpstan/phpstan/conf/bleedingEdge.neon

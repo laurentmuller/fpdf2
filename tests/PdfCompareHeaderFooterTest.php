@@ -72,9 +72,11 @@ class PdfCompareHeaderFooterTest extends AbstractCompareTestCase
 
             public function Footer(): void
             {
+                /** @phpstan-var int $page */
+                $page = $this->PageNo();
                 $this->SetY(-15);
                 $this->SetFont('Arial', 'I', 8);
-                $this->Cell(0, 10, \sprintf('Page %d', (int) $this->PageNo()), 0, 0, 'C');
+                $this->Cell(0, 10, \sprintf('Page %d', $page), 0, 0, 'C');
             }
         };
         $doc->SetFont('Arial', '', 9.0);
