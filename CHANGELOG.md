@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Updated `PHPunit` continuous integration action.
 - Updated `PHPStan` level to 10.
 - Split dependencies in dedicated folders using `bamarni/composer-bin-plugin`.
 - Added bleeding edge before update `phpstan` to version 2.0.
