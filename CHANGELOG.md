@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 2.0.12 - 2024-11-25
 
 - Updated `php-cs-fixer` to version 3.65.0.
 - Updated `PHPunit` continuous integration action.
@@ -532,7 +532,7 @@
   SetKeywords(), SetSubject(), SetTitle()).
 - Possibility to force PDF download by the browser.
 - Added SetX() and GetX() methods.
-- During automatic page break, current abscissa is now retained.
+- During the automatic page break, the current abscissa is now retained.
 
 ## 1.11 - 2001-10-20
 
