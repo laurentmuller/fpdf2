@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Updated `php-cs-fixer` to version 3.65.0.
 - Updated `PHPunit` continuous integration action.
 - Updated `PHPStan` level to 10.
 - Split dependencies in dedicated folders using `bamarni/composer-bin-plugin`.
