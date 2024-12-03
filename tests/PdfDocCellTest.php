@@ -18,16 +18,14 @@ use fpdf\Enums\PdfFontStyle;
 use fpdf\Enums\PdfMove;
 use fpdf\Enums\PdfTextAlignment;
 use fpdf\PdfException;
-use fpdf\PdfGrayColor;
-use fpdf\PdfRgbColor;
 
 class PdfDocCellTest extends AbstractPdfDocTestCase
 {
     public function testColorFlag(): void
     {
         $doc = $this->createDocument();
-        $doc->setFillColor(new PdfRgbColor(255, 255, 255));
-        $doc->setTextColor(new PdfGrayColor(0));
+        $doc->setFillColor(255, 255, 255);
+        $doc->setTextColor(0, 0, 0);
         $doc->cell(text: 'fake', align: PdfTextAlignment::JUSTIFIED);
         self::assertSame(1, $doc->getPage());
     }

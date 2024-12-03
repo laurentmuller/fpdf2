@@ -28,10 +28,8 @@ use fpdf\Enums\PdfZoom;
 use fpdf\PdfBorder;
 use fpdf\PdfDocument;
 use fpdf\PdfException;
-use fpdf\PdfGrayColor;
 use fpdf\PdfPoint;
 use fpdf\PdfRectangle;
-use fpdf\PdfRgbColor;
 use fpdf\PdfSize;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -96,8 +94,8 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
     public function testColorFlag(): void
     {
         $doc = $this->createDocument(false, false);
-        $doc->setFillColor(new PdfRgbColor(255, 255, 255));
-        $doc->setTextColor(new PdfGrayColor(0));
+        $doc->setFillColor(255, 255, 255);
+        $doc->setTextColor(0, 0, 0);
         $doc->addPage();
         $doc->setFont(PdfFontName::ARIAL);
         $doc->cell(text: 'fake');

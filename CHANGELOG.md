@@ -2,9 +2,6 @@
 
 ## Unreleased
 
-- **BC Break!**: Updated `PdfDocument` class to take account of the new
-  colors model.
-- Added `PdfColorInterface`, `PdfRgbColor` and `PdfGrayColor`.
 - Updated Symfony to version 7.2.0.
 - Updated Symfony to version 7.1.9.
 

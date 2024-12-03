@@ -23,8 +23,6 @@ use fpdf\Enums\PdfZoom;
 use fpdf\PdfBorder;
 use fpdf\PdfDocument;
 use fpdf\PdfException;
-use fpdf\PdfGrayColor;
-use fpdf\PdfRgbColor;
 
 class PdfCompareBasicTest extends AbstractCompareTestCase
 {
@@ -74,21 +72,21 @@ class PdfCompareBasicTest extends AbstractCompareTestCase
         $doc->addPage(PdfOrientation::LANDSCAPE);
         $doc->cell(text: 'This is  test 3456.', move: PdfMove::BELOW);
 
-        $doc->setDrawColor(new PdfRgbColor(255, 0, 0));
+        $doc->setDrawColor(255, 0, 0);
         $x = $doc->getX();
         $y = $doc->getY();
         $doc->setLineWidth(0.5);
         $doc->line($x, $y, $x + 100.0, $y);
 
-        $doc->setFillColor(new PdfRgbColor(0, 255, 0));
-        $doc->setTextColor(new PdfRgbColor(0, 0, 255));
+        $doc->setFillColor(0, 255, 0);
+        $doc->setTextColor(0, 0, 255);
         $x = $doc->getX();
         $y = $doc->getY() + 10.0;
         $doc->rect($x, $y, 100, 100, PdfRectangleStyle::BOTH);
 
-        $doc->setDrawColor(new PdfGrayColor(255));
-        $doc->setFillColor(new PdfGrayColor(255));
-        $doc->setTextColor(new PdfGrayColor(255));
+        $doc->setDrawColor(255);
+        $doc->setFillColor(255);
+        $doc->setTextColor(255);
         $doc->setFontSizeInPoint(9.5);
 
         $doc->text($doc->getX(), $doc->getY(), 'Text');
