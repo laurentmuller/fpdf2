@@ -1,6 +1,6 @@
 # Change log
 
-## 2.0.13 - 2024-12-03
+## Unreleased
 
 - **BC Break!**: Updated `PdfDocument` class to take account of the new
   colors model.
