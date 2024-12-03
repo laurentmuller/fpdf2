@@ -16,6 +16,7 @@ namespace fpdf\Tests;
 use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
 use fpdf\PdfDocument;
+use fpdf\PdfRgbColor;
 use PHPUnit\Framework\TestCase;
 
 class PdfDocHeaderFooterTest extends TestCase
@@ -38,9 +39,9 @@ class PdfDocHeaderFooterTest extends TestCase
             public function header(): void
             {
                 $this->setFont(PdfFontName::TIMES, PdfFontStyle::UNDERLINE, 12.0);
-                $this->setDrawColor(10, 10, 10);
-                $this->setTextColor(20, 20, 20);
-                $this->setFillColor(30, 30, 30);
+                $this->setDrawColor(new PdfRgbColor(10, 10, 10));
+                $this->setTextColor(new PdfRgbColor(20, 20, 20));
+                $this->setFillColor(new PdfRgbColor(30, 30, 30));
                 $this->setLineWidth(2.0);
                 $this->cell(text: 'Header');
             }
@@ -48,9 +49,9 @@ class PdfDocHeaderFooterTest extends TestCase
             public function footer(): void
             {
                 $this->setFont(PdfFontName::TIMES, PdfFontStyle::BOLD, 10.0);
-                $this->setDrawColor(255, 255, 255);
-                $this->setTextColor(100, 100, 100);
-                $this->setFillColor(50, 50, 50);
+                $this->setDrawColor(new PdfRgbColor(255, 255, 255));
+                $this->setTextColor(new PdfRgbColor(100, 100, 100));
+                $this->setFillColor(new PdfRgbColor(50, 50, 50));
                 $this->setLineWidth(3.0);
                 $this->cell(text: 'Footer');
             }

@@ -30,6 +30,7 @@ use fpdf\Enums\PdfTextAlignment;
 use fpdf\Enums\PdfUnit;
 use fpdf\Enums\PdfVersion;
 use fpdf\Enums\PdfZoom;
+use fpdf\Interfaces\PdfColorInterface;
 use fpdf\Interfaces\PdfImageParserInterface;
 
 /**
@@ -101,8 +102,6 @@ class PdfDocument
      */
     final public const VERSION = '2.0';
 
-    // the empty color
-    private const EMPTY_COLOR = '0 G';
     // the new line separator
     private const NEW_LINE = "\n";
 
@@ -146,16 +145,16 @@ class PdfDocument
     protected PdfOrientation $defaultOrientation;
     /** The default page size.  */
     protected PdfSize $defaultPageSize;
-    /** The commands for drawing color. */
-    protected string $drawColor = self::EMPTY_COLOR;
+    /** The drawing color. */
+    protected ?PdfColorInterface $drawColor = null;
     /**
      * The encodings.
      *
      * @phpstan-var array<string, int>
      */
     protected array $encodings = [];
-    /** The commands for filling color. */
-    protected string $fillColor = self::EMPTY_COLOR;
+    /** The filling color. */
+    protected ?PdfColorInterface $fillColor = null;
     /** The current font family. */
     protected string $fontFamily = '';
     /**
@@ -254,8 +253,8 @@ class PdfDocument
     protected float $scaleFactor = 1.0;
     /** The current document state. */
     protected PdfState $state = PdfState::NO_PAGE;
-    /** The commands for text color. */
-    protected string $textColor = self::EMPTY_COLOR;
+    /** The text color. */
+    protected ?PdfColorInterface $textColor = null;
     /** The document title. */
     protected string $title = '';
     /** The top margin in user unit. */
@@ -488,13 +487,11 @@ class PdfDocument
             $this->setFont($fontFamily, $fontStyle, $fontSizeInPoint);
         }
         $this->drawColor = $drawColor;
-        if (self::EMPTY_COLOR !== $drawColor) {
-            $this->out($drawColor);
-        }
+        $this->outColor($this->drawColor, true);
+
         $this->fillColor = $fillColor;
-        if (self::EMPTY_COLOR !== $fillColor) {
-            $this->out($fillColor);
-        }
+        $this->outColor($this->fillColor, false);
+
         $this->textColor = $textColor;
         $this->colorFlag = $colorFlag;
 
@@ -513,11 +510,11 @@ class PdfDocument
         }
         if ($this->drawColor !== $drawColor) {
             $this->drawColor = $drawColor;
-            $this->out($drawColor);
+            $this->outColor($this->drawColor, true);
         }
         if ($this->fillColor !== $fillColor) {
             $this->fillColor = $fillColor;
-            $this->out($fillColor);
+            $this->outColor($this->fillColor, false);
         }
         $this->textColor = $textColor;
         $this->colorFlag = $colorFlag;
@@ -601,8 +598,8 @@ class PdfDocument
                 PdfTextAlignment::CENTER => ($width - $this->getStringWidth($text)) / 2.0,
                 default => $this->cellMargin,
             };
-            if ($this->colorFlag) {
-                $output .= \sprintf('q %s ', $this->textColor);
+            if ($this->colorFlag && $this->textColor instanceof PdfColorInterface) {
+                $output .= \sprintf('q %s ', $this->formatColor($this->textColor, true));
             }
             $output .= \sprintf(
                 'BT %.2F %.2F Td (%s) Tj ET',
@@ -1811,23 +1808,14 @@ class PdfDocument
      * It can be expressed in RGB components or gray scale. The method can be called before the first page is created
      * and the value is retained from page to page.
      *
-     * @param int  $r If <code>$g</code> and <code>$b</code> are given, red component; if not, indicates the gray
-     *                level. Value between 0 and 255.
-     * @param ?int $g the green component (between 0 and 255)
-     * @param ?int $b the blue component (between 0 and 255)
-     *
      * @see PdfDocument::setFillColor()
      * @see PdfDocument::setTextColor()
-     *
-     * @phpstan-param ColorType $r
-     * @phpstan-param ColorType|null $g
-     * @phpstan-param ColorType|null $b
      */
-    public function setDrawColor(int $r, ?int $g = null, ?int $b = null): static
+    public function setDrawColor(?PdfColorInterface $drawColor): static
     {
-        $this->drawColor = $this->parseColor($r, $g, $b, true);
+        $this->drawColor = $drawColor;
         if ($this->page > 0) {
-            $this->out($this->drawColor);
+            $this->outColor($this->drawColor, true);
         }
 
         return $this;
@@ -1839,24 +1827,15 @@ class PdfDocument
      * It can be expressed in RGB components or gray scale. The method can be called before the first page is created
      * and the value is retained from page to page.
      *
-     * @param int  $r If <code>$g</code> and <code>$b</code> are given, red component; if not, indicates the gray
-     *                level. Value between 0 and 255.
-     * @param ?int $g the green component (between 0 and 255)
-     * @param ?int $b the blue component (between 0 and 255)
-     *
      * @see PdfDocument::setDrawColor()
      * @see PdfDocument::setTextColor()
-     *
-     * @phpstan-param ColorType $r
-     * @phpstan-param ColorType|null $g
-     * @phpstan-param ColorType|null $b
      */
-    public function setFillColor(int $r, ?int $g = null, ?int $b = null): static
+    public function setFillColor(?PdfColorInterface $fillColor): static
     {
-        $this->fillColor = $this->parseColor($r, $g, $b);
-        $this->colorFlag = ($this->fillColor !== $this->textColor);
+        $this->fillColor = $fillColor;
+        $this->colorFlag = !$this->computeColorFlag();
         if ($this->page > 0) {
-            $this->out($this->fillColor);
+            $this->outColor($this->fillColor, false);
         }
 
         return $this;
@@ -2156,22 +2135,13 @@ class PdfDocument
      * It can be expressed in RGB components or gray scale. The method can be called before the first page is created
      * and the value is retained from page to page.
      *
-     * @param int  $r If <code>$g</code> and <code>$b</code> are given, red component; if not, indicates the gray
-     *                level. Value between 0 and 255.
-     * @param ?int $g the green component (between 0 and 255)
-     * @param ?int $b the blue component (between 0 and 255)
-     *
      * @see PdfDocument::setDrawColor()
      * @see PdfDocument::setFillColor()
-     *
-     * @phpstan-param ColorType $r
-     * @phpstan-param ColorType|null $g
-     * @phpstan-param ColorType|null $b
      */
-    public function setTextColor(int $r, ?int $g = null, ?int $b = null): static
+    public function setTextColor(?PdfColorInterface $textColor): static
     {
-        $this->textColor = $this->parseColor($r, $g, $b);
-        $this->colorFlag = ($this->fillColor !== $this->textColor);
+        $this->textColor = $textColor;
+        $this->colorFlag = !$this->computeColorFlag();
 
         return $this;
     }
@@ -2298,8 +2268,8 @@ class PdfDocument
         if ($this->underline) {
             $output .= $this->doUnderline($x, $y, $text);
         }
-        if ($this->colorFlag) {
-            $output = \sprintf('q %s %s Q', $this->textColor, $output);
+        if ($this->colorFlag && $this->textColor instanceof PdfColorInterface) {
+            $output = \sprintf('q %s %s Q', $this->formatColor($this->textColor, true), $output);
         }
         $this->out($output);
 
@@ -2566,6 +2536,20 @@ class PdfDocument
     }
 
     /**
+     * Returns if this fill color is equal to this text color.
+     */
+    protected function computeColorFlag(): bool
+    {
+        if ($this->fillColor === $this->textColor) {
+            return true;
+        }
+
+        return $this->fillColor instanceof PdfColorInterface
+            && $this->textColor instanceof PdfColorInterface
+            && $this->fillColor->equals($this->textColor);
+    }
+
+    /**
      * Convert a string from one character encoding to another.
      *
      * @param string          $str           the string to be converted
@@ -2716,6 +2700,20 @@ class PdfDocument
     }
 
     /**
+     * Gets the formatted color (operation).
+     *
+     * @param PdfColorInterface $color    the color to format
+     * @param bool              $stroking true for stroking operations (draw),
+     *                                    false for non-stroking operations (text and fill)
+     *
+     * @return string the formatted color
+     */
+    protected function formatColor(PdfColorInterface $color, bool $stroking): string
+    {
+        return $stroking ? \strtoupper($color->getColor()) : \strtolower($color->getColor());
+    }
+
+    /**
      * Gets the image parser for the given type.
      *
      * @param string $type the image type (file extension)
@@ -2861,6 +2859,20 @@ class PdfDocument
     }
 
     /**
+     * Output the given color; if not null.
+     *
+     * @param ?PdfColorInterface $color    the color to output
+     * @param bool               $stroking true for stroking operations (draw),
+     *                                     false for non-stroking operations (text and fill)
+     */
+    protected function outColor(?PdfColorInterface $color, bool $stroking): void
+    {
+        if ($color instanceof PdfColorInterface) {
+            $this->out($this->formatColor($color, $stroking));
+        }
+    }
+
+    /**
      * Output the current font.
      *
      * Do nothing if no page is added or if the current font is <code>null</code>.
@@ -2914,21 +2926,6 @@ class PdfDocument
         if ($this->page > 0) {
             $this->outf('%.2F w', $this->lineWidth * $this->scaleFactor);
         }
-    }
-
-    /**
-     * Parse the given RGB color.
-     */
-    protected function parseColor(int $r, ?int $g = null, ?int $b = null, bool $upper = false): string
-    {
-        if ((0 === $r && 0 === $g && 0 === $b) || null === $g) {
-            $suffix = $upper ? 'G' : 'g';
-
-            return \sprintf('%.3F %s', (float) $r / 255.0, $suffix);
-        }
-        $suffix = $upper ? 'RG' : 'rg';
-
-        return \sprintf('%.3F %.3F %.3F %s', (float) $r / 255.0, (float) $g / 255.0, (float) $b / 255.0, $suffix);
     }
 
     /**

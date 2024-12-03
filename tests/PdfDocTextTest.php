@@ -16,14 +16,16 @@ namespace fpdf\Tests;
 use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
 use fpdf\PdfException;
+use fpdf\PdfGrayColor;
+use fpdf\PdfRgbColor;
 
 class PdfDocTextTest extends AbstractPdfDocTestCase
 {
     public function testColorFlag(): void
     {
         $doc = $this->createDocument();
-        $doc->setFillColor(255, 255, 255);
-        $doc->setTextColor(0, 0, 0);
+        $doc->setFillColor(new PdfRgbColor(255, 255, 255));
+        $doc->setTextColor(new PdfGrayColor(0));
         $doc->text(25, 25, text: 'fake');
         self::assertSame(1, $doc->getPage());
     }
