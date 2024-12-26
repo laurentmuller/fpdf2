@@ -6,6 +6,7 @@ Here's a two-page example with a header, a footer and a logo:
 use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
 use fpdf\Enums\PdfMove;
+use fpdf\Enums\PdfTextAlignment;
 use fpdf\PdfBorder;
 use fpdf\PdfDocument;
 
