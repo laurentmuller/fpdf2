@@ -4,7 +4,7 @@ Since version `2.0.4`, circles and ellipses can be drawn within
 the `PdfDocument`.
 
 **Note:** The code is inspired from this given
-[FPDF](http://www.fpdf.org/en/script/script6.php) script created by Olivier.
+[FPDF script](http://www.fpdf.org/en/script/script6.php) created by Olivier.
 
 To use it, create a derived class and use the `PdfEllipseTrait` trait:
 

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Updated documentation.
+- Updated Symfony to version 7.2.1.
 - Updated Symfony to version 7.2.0.
 - Updated Symfony to version 7.1.9.
 

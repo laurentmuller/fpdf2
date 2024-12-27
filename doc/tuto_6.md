@@ -3,7 +3,7 @@
 Since version `2.0.2`, bookmarks can be added within the `PdfDocument`.
 
 **Note:** The code is inspired from this given
-[FPDF](http://www.fpdf.org/en/script/script1.php) script created by Olivier.
+[FPDF script](http://www.fpdf.org/en/script/script1.php) created by Olivier.
 
 To use it, create a derived class and use the `PdfBookmarkTrait` trait:
 
