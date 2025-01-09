@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Updated test for `PdfSectorTrait`.
 - Updated `PdfViewerPreferences` class.
 - Updated documentation.
 - Updated Symfony to version 7.2.1.

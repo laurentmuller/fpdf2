@@ -18,6 +18,14 @@ use PHPUnit\Framework\TestCase;
 
 class PdfSectorTraitTest extends TestCase
 {
+    public function testDeltaAngleZero(): void
+    {
+        $document = new PdfDocumentSector();
+        $document->addPage();
+        $document->sector(100, 100, 50, 0, 360);
+        self::assertSame(1, $document->getPage());
+    }
+
     public function testEmpty(): void
     {
         $document = new PdfDocumentSector();
