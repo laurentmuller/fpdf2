@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Updated `PdfViewerPreferences` class.
 - Updated documentation.
 - Updated Symfony to version 7.2.1.
 - Updated Symfony to version 7.2.0.

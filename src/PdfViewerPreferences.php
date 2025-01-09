@@ -87,18 +87,18 @@ class PdfViewerPreferences
         }
 
         $output = '/ViewerPreferences<<';
-        $output .= $this->getOutputBool($this->fitWindow, 'FitWindow');
-        $output .= $this->getOutputBool($this->hideToolbar, 'HideToolbar');
-        $output .= $this->getOutputBool($this->hideMenubar, 'HideMenubar');
-        $output .= $this->getOutputBool($this->hideWindowUI, 'HideWindowUI');
-        $output .= $this->getOutputBool($this->centerWindow, 'CenterWindow');
-        $output .= $this->getOutputBool($this->displayDocTitle, 'DisplayDocTitle');
-        $output .= $this->getOutputBool($this->pickTrayByPDFSize, 'PickTrayByPDFSize');
+        $output .= $this->getOutputBool('FitWindow', $this->fitWindow);
+        $output .= $this->getOutputBool('HideToolbar', $this->hideToolbar);
+        $output .= $this->getOutputBool('HideMenubar', $this->hideMenubar);
+        $output .= $this->getOutputBool('HideWindowUI', $this->hideWindowUI);
+        $output .= $this->getOutputBool('CenterWindow', $this->centerWindow);
+        $output .= $this->getOutputBool('DisplayDocTitle', $this->displayDocTitle);
+        $output .= $this->getOutputBool('PickTrayByPDFSize', $this->pickTrayByPDFSize);
 
-        $output .= $this->getOutputEnum($this->duplex, 'Duplex');
-        $output .= $this->getOutputEnum($this->direction, 'Direction');
-        $output .= $this->getOutputEnum($this->scaling, 'PrintScaling');
-        $output .= $this->getOutputEnum($this->nonFullScreenPageMode, 'NonFullScreenPageMode');
+        $output .= $this->getOutputEnum('Duplex', $this->duplex);
+        $output .= $this->getOutputEnum('Direction', $this->direction);
+        $output .= $this->getOutputEnum('PrintScaling', $this->scaling);
+        $output .= $this->getOutputEnum('NonFullScreenPageMode', $this->nonFullScreenPageMode);
 
         return $output . '>>';
     }
@@ -361,7 +361,7 @@ class PdfViewerPreferences
         return $this;
     }
 
-    private function getOutputBool(bool $value, string $key): string
+    private function getOutputBool(string $key, bool $value): string
     {
         return $value ? \sprintf('/%s true', $key) : '';
     }
@@ -371,7 +371,7 @@ class PdfViewerPreferences
      *
      * @phpstan-param T $enum
      */
-    private function getOutputEnum(PdfEnumDefaultInterface&\BackedEnum $enum, string $key): string
+    private function getOutputEnum(string $key, PdfEnumDefaultInterface&\BackedEnum $enum): string
     {
         return $enum->isDefault() ? '' : \sprintf('/%s %s', $key, $enum->value);
     }
