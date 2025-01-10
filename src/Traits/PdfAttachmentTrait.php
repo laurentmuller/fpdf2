@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace fpdf\Traits;
 
+use fpdf\PdfDocument;
+
 /**
  * Trait to add file attachment support.
  *
@@ -22,7 +24,8 @@ namespace fpdf\Traits;
  * @phpstan-type PdfAttachedFileType = array{
  *      file: string,
  *      name: string,
- *      desc: string}
+ *      desc: string,
+ *      n:    int}
  *
  * @phpstan-require-extends PdfDocument
  */
@@ -38,7 +41,7 @@ trait PdfAttachmentTrait
     /**
      * The files object number.
      */
-    private int $nFiles;
+    private int $nFiles = -1;
 
     /**
      * Flag to open the attachment pane in a PDF reader per default.
@@ -62,7 +65,7 @@ trait PdfAttachmentTrait
             }
             $name = false !== $p ? \substr($file, $p + 1) : $file;
         }
-        $this->files[] = ['file' => $file, 'name' => $name, 'desc' => $desc];
+        $this->files[] = ['file' => $file, 'name' => $name, 'desc' => $desc, 'n' => -1];
 
         return $this;
     }
@@ -80,11 +83,11 @@ trait PdfAttachmentTrait
     protected function putCatalog(): void
     {
         parent::putCatalog();
-        if (!empty($this->files)) {
+        if (count($this->files) > 0) {
             $this->put('/Names <</EmbeddedFiles ' . $this->nFiles . ' 0 R>>');
             $a = [];
             foreach ($this->files as $info) {
-                $a[] = $info['n'] . ' 0 R';
+                $a[] = strval($info['n']) . ' 0 R';
             }
             $this->put('/AF [' . \implode(' ', $a) . ']');
             if ($this->openAttachmentPane) {
@@ -96,7 +99,7 @@ trait PdfAttachmentTrait
     protected function putResources(): void
     {
         parent::putResources();
-        if (!empty($this->files)) {
+        if (count($this->files) > 0) {
             $this->putFiles();
         }
     }
@@ -110,16 +113,16 @@ trait PdfAttachmentTrait
     private function putFiles(): void
     {
         foreach ($this->files as $i => &$info) {
-            $file = $info['file'];
-            $name = $info['name'];
-            $desc = $info['desc'];
+            [$file, $name, $desc] = $info;
 
             $fc = \file_get_contents($file);
             if (false === $fc) {
                 $this->error('Cannot open file: ' . $file);
+                return;
             }
             $size = \strlen($fc);
-            $date = @\date('YmdHisO', \filemtime($file));
+            $time = \filemtime($file) ?: time();
+            $date = @\date('YmdHisO', $time);
             $md = 'D:' . \substr($date, 0, -2) . "'" . \substr($date, -2) . "'";
 
             $this->putNewObj();
@@ -127,10 +130,10 @@ trait PdfAttachmentTrait
             $this->put('<<');
             $this->put('/Type /Filespec');
             $this->put('/F (' . $this->escape($name) . ')');
-            $this->put('/UF ' . $this->textstring($name));
+            $this->put('/UF ' . $this->textString($name));
             $this->put('/EF <</F ' . ($this->objectNumber + 1) . ' 0 R>>');
-            if ($desc) {
-                $this->put('/Desc ' . $this->textstring($desc));
+            if ($desc !== '') {
+                $this->put('/Desc ' . $this->textString($desc));
             }
             $this->put('/AFRelationship /Unspecified');
             $this->put('>>');
@@ -141,7 +144,7 @@ trait PdfAttachmentTrait
             $this->put('/Type /EmbeddedFile');
             $this->put('/Subtype /application#2Foctet-stream');
             $this->put('/Length ' . $size);
-            $this->put('/Params <</Size ' . $size . ' /ModDate ' . $this->textstring($md) . '>>');
+            $this->put('/Params <</Size ' . $size . ' /ModDate ' . $this->textString($md) . '>>');
             $this->put('>>');
             $this->putstream($fc);
             $this->put('endobj');
@@ -152,7 +155,7 @@ trait PdfAttachmentTrait
         $this->nFiles = $this->objectNumber;
         $a = [];
         foreach ($this->files as $i => $info) {
-            $a[] = $this->textstring(\sprintf('%03d', $i)) . ' ' . $info['n'] . ' 0 R';
+            $a[] = $this->textString(\sprintf('%03d', $i)) . ' ' . strval($info['n']) . ' 0 R';
         }
         $this->put('<<');
         $this->put('/Names [' . \implode(' ', $a) . ']');
