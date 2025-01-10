@@ -6,21 +6,19 @@
  * For the license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Andreas Müller <hello@devmount.com>
+ * @author bibi.nu <bibi@bibi.nu>
  */
 
 declare(strict_types=1);
 
 namespace fpdf\Traits;
 
-use Exception;
-
 /**
  * Trait to add file attachment support.
  *
  * The code is inspired from FPDF script
  * <a href="http://www.fpdf.org/en/script/script95.php" target="_blank">Attachment</a>.
- * 
+ *
  * @phpstan-type PdfAttachedFileType = array{
  *      file: string,
  *      name: string,
@@ -43,64 +41,86 @@ trait PdfAttachmentTrait
     private int $nFiles;
 
     /**
-     * Flag to open the attachment pane in a PDF reader per default
+     * Flag to open the attachment pane in a PDF reader per default.
      */
     private bool $openAttachmentPane = false;
 
-        
     /**
      * Attaches a given file to the PDF document.
      *
-     * @param  string $file Path to the file to be attached.
-     * @param  string $name Optional alternative file name to be used for the attachment. The default value is taken
-     *                      from $file.
-     * @param  string $desc Optional description for the file contents.
-     * @return static
+     * @param string $file path to the file to be attached
+     * @param string $name Optional alternative file name to be used for the attachment. The default value is taken
+     *                     from $file.
+     * @param string $desc optional description for the file contents
      */
     public function attach(string $file, string $name = '', string $desc = ''): static
     {
-        if ($name == '') {
-            $p = strrpos($file, '/');
-            if ($p === false) {
-                $p = strrpos($file, '\\');
+        if ('' === $name) {
+            $p = \strrpos($file, '/');
+            if (false === $p) {
+                $p = \strrpos($file, '\\');
             }
-            if ($p !== false) {
-                $name = substr($file, $p + 1);
-            }
-            else {
-                $name = $file;
-            }
+            $name = false !== $p ? \substr($file, $p + 1) : $file;
         }
         $this->files[] = ['file' => $file, 'name' => $name, 'desc' => $desc];
+
         return $this;
     }
 
-    
     /**
      * Forces the attachment pane to open in PDF viewers that support it.
-     *
-     * @return static
      */
     public function openAttachmentPane(): static
     {
         $this->openAttachmentPane = true;
+
         return $this;
     }
 
-    private function putFiles()
+    protected function putCatalog(): void
+    {
+        parent::putCatalog();
+        if (!empty($this->files)) {
+            $this->put('/Names <</EmbeddedFiles ' . $this->nFiles . ' 0 R>>');
+            $a = [];
+            foreach ($this->files as $info) {
+                $a[] = $info['n'] . ' 0 R';
+            }
+            $this->put('/AF [' . \implode(' ', $a) . ']');
+            if ($this->openAttachmentPane) {
+                $this->put('/PageMode /UseAttachments');
+            }
+        }
+    }
+
+    protected function putResources(): void
+    {
+        parent::putResources();
+        if (!empty($this->files)) {
+            $this->putFiles();
+        }
+    }
+
+    private function error(string $msg): void
+    {
+        // Fatal error
+        throw new \Exception('FPDF2 error: ' . $msg);
+    }
+
+    private function putFiles(): void
     {
         foreach ($this->files as $i => &$info) {
             $file = $info['file'];
             $name = $info['name'];
             $desc = $info['desc'];
 
-            $fc = file_get_contents($file);
-            if ($fc === false) {
+            $fc = \file_get_contents($file);
+            if (false === $fc) {
                 $this->error('Cannot open file: ' . $file);
             }
-            $size = strlen($fc);
-            $date = @date('YmdHisO', filemtime($file));
-            $md = 'D:' . substr($date, 0, -2) . "'" . substr($date, -2) . "'";;
+            $size = \strlen($fc);
+            $date = @\date('YmdHisO', \filemtime($file));
+            $md = 'D:' . \substr($date, 0, -2) . "'" . \substr($date, -2) . "'";
 
             $this->putNewObj();
             $info['n'] = $this->objectNumber;
@@ -130,43 +150,13 @@ trait PdfAttachmentTrait
 
         $this->putNewObj();
         $this->nFiles = $this->objectNumber;
-        $a = array();
+        $a = [];
         foreach ($this->files as $i => $info) {
-            $a[] = $this->textstring(sprintf('%03d', $i)) . ' ' . $info['n'] . ' 0 R';
+            $a[] = $this->textstring(\sprintf('%03d', $i)) . ' ' . $info['n'] . ' 0 R';
         }
         $this->put('<<');
-        $this->put('/Names [' . implode(' ', $a) . ']');
+        $this->put('/Names [' . \implode(' ', $a) . ']');
         $this->put('>>');
         $this->put('endobj');
-    }
-
-    protected function putResources(): void
-    {
-        parent::putResources();
-        if (!empty($this->files)) {
-            $this->putFiles();
-        }
-    }
-
-    protected function putCatalog(): void
-    {
-        parent::putCatalog();
-        if (!empty($this->files)) {
-            $this->put('/Names <</EmbeddedFiles ' . $this->nFiles . ' 0 R>>');
-            $a = array();
-            foreach ($this->files as $info) {
-                $a[] = $info['n'] . ' 0 R';
-            }
-            $this->put('/AF [' . implode(' ', $a) . ']');
-            if ($this->openAttachmentPane) {
-                $this->put('/PageMode /UseAttachments');
-            }
-        }
-    }
-
-    private function error(string $msg)
-    {
-        // Fatal error
-        throw new Exception('FPDF2 error: ' . $msg);
     }
 }

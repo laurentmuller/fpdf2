@@ -20,16 +20,6 @@ use PHPUnit\Framework\TestCase;
 
 class PdfAttachmentTraitTest extends TestCase
 {
-    public function testNoAttachments(): void
-    {
-        $document = new class() extends PdfDocument {
-            use PdfAttachmentTrait;
-        };
-        $document->addPage();
-        $document->output(PdfDestination::STRING);
-        self::assertSame(1, $document->getPage());
-    }
-
     public function testAttachment(): void
     {
         $document = new class() extends PdfDocument {
@@ -38,6 +28,16 @@ class PdfAttachmentTraitTest extends TestCase
         $document->addPage();
         $document->attach('tests/resources/attachment.txt');
         $document->openAttachmentPane();
+        $document->output(PdfDestination::STRING);
+        self::assertSame(1, $document->getPage());
+    }
+
+    public function testNoAttachments(): void
+    {
+        $document = new class() extends PdfDocument {
+            use PdfAttachmentTrait;
+        };
+        $document->addPage();
         $document->output(PdfDestination::STRING);
         self::assertSame(1, $document->getPage());
     }
