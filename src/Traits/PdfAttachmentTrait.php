@@ -21,6 +21,8 @@ use fpdf\PdfDocument;
  * The code is inspired from FPDF script
  * <a href="http://www.fpdf.org/en/script/script95.php" target="_blank">Attachment</a>.
  *
+ * @author Andreas Müller <hello@devmount.com>
+ *
  * @phpstan-type PdfAttachedFileType = array{
  *      file: string,
  *      name: string,
@@ -83,11 +85,11 @@ trait PdfAttachmentTrait
     protected function putCatalog(): void
     {
         parent::putCatalog();
-        if (count($this->files) > 0) {
+        if (\count($this->files) > 0) {
             $this->put('/Names <</EmbeddedFiles ' . $this->nFiles . ' 0 R>>');
             $a = [];
             foreach ($this->files as $info) {
-                $a[] = strval($info['n']) . ' 0 R';
+                $a[] = (string) $info['n'] . ' 0 R';
             }
             $this->put('/AF [' . \implode(' ', $a) . ']');
             if ($this->openAttachmentPane) {
@@ -99,7 +101,7 @@ trait PdfAttachmentTrait
     protected function putResources(): void
     {
         parent::putResources();
-        if (count($this->files) > 0) {
+        if (\count($this->files) > 0) {
             $this->putFiles();
         }
     }
@@ -118,10 +120,11 @@ trait PdfAttachmentTrait
             $fc = \file_get_contents($file);
             if (false === $fc) {
                 $this->error('Cannot open file: ' . $file);
+
                 return;
             }
             $size = \strlen($fc);
-            $time = \filemtime($file) ?: time();
+            $time = \filemtime($file) ?: \time();
             $date = @\date('YmdHisO', $time);
             $md = 'D:' . \substr($date, 0, -2) . "'" . \substr($date, -2) . "'";
 
@@ -132,7 +135,7 @@ trait PdfAttachmentTrait
             $this->put('/F (' . $this->escape($name) . ')');
             $this->put('/UF ' . $this->textString($name));
             $this->put('/EF <</F ' . ($this->objectNumber + 1) . ' 0 R>>');
-            if ($desc !== '') {
+            if ('' !== $desc) {
                 $this->put('/Desc ' . $this->textString($desc));
             }
             $this->put('/AFRelationship /Unspecified');
@@ -155,7 +158,7 @@ trait PdfAttachmentTrait
         $this->nFiles = $this->objectNumber;
         $a = [];
         foreach ($this->files as $i => $info) {
-            $a[] = $this->textString(\sprintf('%03d', $i)) . ' ' . strval($info['n']) . ' 0 R';
+            $a[] = $this->textString(\sprintf('%03d', $i)) . ' ' . (string) $info['n'] . ' 0 R';
         }
         $this->put('<<');
         $this->put('/Names [' . \implode(' ', $a) . ']');
