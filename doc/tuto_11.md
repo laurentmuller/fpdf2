@@ -22,7 +22,6 @@ class AttachmentDocument extends PdfDocument
 
 $file = "test/attached.txt";
 
-// instanciation of inherited class
 $pdf = new AttachmentDocument();
 $pdf->addPage();
 $document->attach($file);
