@@ -52,7 +52,8 @@ trait PdfAttachmentTrait
      * Attaches a given file to the PDF document.
      *
      * @param  string $file Path to the file to be attached.
-     * @param  string $name Optional alternative file name to be used for the attachment.
+     * @param  string $name Optional alternative file name to be used for the attachment. The default value is taken
+     *                      from $file.
      * @param  string $desc Optional description for the file contents.
      * @return static
      */
@@ -76,7 +77,7 @@ trait PdfAttachmentTrait
 
     
     /**
-     * Opens the attachment pane in PDF readers that support it.
+     * Forces the attachment pane to open in PDF viewers that support it.
      *
      * @return static
      */
