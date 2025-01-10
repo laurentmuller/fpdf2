@@ -134,7 +134,7 @@ trait PdfAttachmentTrait
             $this->put('/Type /Filespec');
             $this->put('/F (' . $this->escape($name) . ')');
             $this->put('/UF ' . $this->textString($name));
-            $this->put('/EF <</F ' . ($this->objectNumber + 1) . ' 0 R>>');
+            $this->put('/EF <</F ' . (string) ($this->objectNumber + 1) . ' 0 R>>');
             if ('' !== $desc) {
                 $this->put('/Desc ' . $this->textString($desc));
             }
@@ -146,8 +146,8 @@ trait PdfAttachmentTrait
             $this->put('<<');
             $this->put('/Type /EmbeddedFile');
             $this->put('/Subtype /application#2Foctet-stream');
-            $this->put('/Length ' . $size);
-            $this->put('/Params <</Size ' . $size . ' /ModDate ' . $this->textString($md) . '>>');
+            $this->put('/Length ' . (string) $size);
+            $this->put('/Params <</Size ' . (string) $size . ' /ModDate ' . $this->textString($md) . '>>');
             $this->put('>>');
             $this->putStream($fc);
             $this->put('endobj');
