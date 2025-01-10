@@ -61,11 +61,7 @@ trait PdfAttachmentTrait
     public function attach(string $file, string $name = '', string $desc = ''): static
     {
         if ('' === $name) {
-            $p = \strrpos($file, '/');
-            if (false === $p) {
-                $p = \strrpos($file, '\\');
-            }
-            $name = false !== $p ? \substr($file, $p + 1) : $file;
+            $name = \basename($file);
         }
         $this->files[] = ['file' => $file, 'name' => $name, 'desc' => $desc, 'n' => -1];
 
