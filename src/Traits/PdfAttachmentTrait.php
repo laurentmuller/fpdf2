@@ -86,7 +86,7 @@ trait PdfAttachmentTrait
     {
         parent::putCatalog();
         if (\count($this->files) > 0) {
-            $this->put('/Names <</EmbeddedFiles ' . $this->nFiles . ' 0 R>>');
+            $this->put('/Names <</EmbeddedFiles ' . (string) $this->nFiles . ' 0 R>>');
             $a = [];
             foreach ($this->files as $info) {
                 $a[] = (string) $info['n'] . ' 0 R';
@@ -114,8 +114,8 @@ trait PdfAttachmentTrait
 
     private function putFiles(): void
     {
-        foreach ($this->files as $i => &$info) {
-            [$file, $name, $desc] = $info;
+        foreach ($this->files as &$info) {
+            ['file' => $file, 'name' => $name, 'desc' => $desc] = $info;
 
             $fc = \file_get_contents($file);
             if (false === $fc) {
@@ -124,7 +124,7 @@ trait PdfAttachmentTrait
                 return;
             }
             $size = \strlen($fc);
-            $time = \filemtime($file) ?: \time();
+            $time = false !== \filemtime($file) ? \filemtime($file) : \time();
             $date = @\date('YmdHisO', $time);
             $md = 'D:' . \substr($date, 0, -2) . "'" . \substr($date, -2) . "'";
 
@@ -149,7 +149,7 @@ trait PdfAttachmentTrait
             $this->put('/Length ' . $size);
             $this->put('/Params <</Size ' . $size . ' /ModDate ' . $this->textString($md) . '>>');
             $this->put('>>');
-            $this->putstream($fc);
+            $this->putStream($fc);
             $this->put('endobj');
         }
         unset($info);
