@@ -121,7 +121,7 @@ trait PdfAttachmentTrait
             }
             $size = \strlen($fc);
             $time = false !== \filemtime($file) ? \filemtime($file) : \time();
-            $date = @\date('YmdHisO', $time);
+            $date = \date('YmdHisO', $time);
             $md = 'D:' . \substr($date, 0, -2) . "'" . \substr($date, -2) . "'";
 
             $this->putNewObj();
