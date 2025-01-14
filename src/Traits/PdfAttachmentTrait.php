@@ -42,7 +42,7 @@ trait PdfAttachmentTrait
     /**
      * The attached files.
      *
-     * @phpstan-var PdfAttachedFileType[]
+     * @phpstan-var array<int, PdfAttachedFileType>
      */
     private array $attachments = [];
 
