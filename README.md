@@ -48,6 +48,7 @@ $pdf->output();
 - [Circles and ellipses](doc/tuto_8.md)
 - [Rotation](doc/tuto_9.md)
 - [Sector](doc/tuto_10.md)
+- [Attachments](doc/tuto_11.md)
 
 ## Code Quality
 
