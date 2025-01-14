@@ -26,13 +26,12 @@ class PdfAttachmentTraitTest extends TestCase
             use PdfAttachmentTrait;
         };
         $document->addPage();
-        $document->attach('tests/resources/attachment.txt');
-        $document->openAttachmentPane();
+        $document->attach(__DIR__ . '/../resources/attachment.txt');
         $document->output(PdfDestination::STRING);
         self::assertSame(1, $document->getPage());
     }
 
-    public function testNoAttachments(): void
+    public function testNoAttachment(): void
     {
         $document = new class() extends PdfDocument {
             use PdfAttachmentTrait;

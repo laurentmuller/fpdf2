@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace fpdf\Traits;
 
 use fpdf\PdfDocument;
+use fpdf\PdfException;
 
 /**
  * Trait to add file attachment support.
@@ -27,53 +28,38 @@ use fpdf\PdfDocument;
  *      file: string,
  *      name: string,
  *      desc: string,
- *      n:    int}
+ *      n: int}
  *
  * @phpstan-require-extends PdfDocument
  */
 trait PdfAttachmentTrait
 {
     /**
+     * The attachement object number.
+     */
+    private int $attachmentNumber = -1;
+
+    /**
      * The attached files.
      *
      * @phpstan-var PdfAttachedFileType[]
      */
-    private array $files = [];
-
-    /**
-     * The files object number.
-     */
-    private int $nFiles = -1;
-
-    /**
-     * Flag to open the attachment pane in a PDF reader per default.
-     */
-    private bool $openAttachmentPane = false;
+    private array $attachments = [];
 
     /**
      * Attaches a given file to the PDF document.
      *
      * @param string $file path to the file to be attached
-     * @param string $name Optional alternative file name to be used for the attachment. The default value is taken
-     *                     from $file.
-     * @param string $desc optional description for the file contents
+     * @param string $name an optional alternative file name to be used for the attachment. The default value is the
+     *                     base name of the file.
+     * @param string $desc an optional description for the file contents
      */
     public function attach(string $file, string $name = '', string $desc = ''): static
     {
         if ('' === $name) {
             $name = \basename($file);
         }
-        $this->files[] = ['file' => $file, 'name' => $name, 'desc' => $desc, 'n' => -1];
-
-        return $this;
-    }
-
-    /**
-     * Forces the attachment pane to open in PDF viewers that support it.
-     */
-    public function openAttachmentPane(): static
-    {
-        $this->openAttachmentPane = true;
+        $this->attachments[] = ['file' => $file, 'name' => $name, 'desc' => $desc, 'n' => -1];
 
         return $this;
     }
@@ -81,84 +67,77 @@ trait PdfAttachmentTrait
     protected function putCatalog(): void
     {
         parent::putCatalog();
-        if (\count($this->files) > 0) {
-            $this->put('/Names <</EmbeddedFiles ' . (string) $this->nFiles . ' 0 R>>');
-            $a = [];
-            foreach ($this->files as $info) {
-                $a[] = (string) $info['n'] . ' 0 R';
-            }
-            $this->put('/AF [' . \implode(' ', $a) . ']');
-            if ($this->openAttachmentPane) {
-                $this->put('/PageMode /UseAttachments');
-            }
+        if ([] === $this->attachments) {
+            return;
         }
+        $this->putf('/Names <</EmbeddedFiles %d 0 R>>', $this->attachmentNumber);
+        $array = \array_map(
+            static fn (array $attachment): string => \sprintf('%d 0 R', $attachment['n']),
+            $this->attachments
+        );
+        $this->putf('/AF [%s]', \implode(' ', $array));
     }
 
     protected function putResources(): void
     {
         parent::putResources();
-        if (\count($this->files) > 0) {
-            $this->putFiles();
+        if ([] !== $this->attachments) {
+            $this->putAttachments();
         }
     }
 
-    private function error(string $msg): void
+    private function putAttachments(): void
     {
-        // Fatal error
-        throw new \Exception('FPDF2 error: ' . $msg);
-    }
+        foreach ($this->attachments as &$info) {
+            $file = $info['file'];
+            $name = $info['name'];
+            $desc = $info['desc'];
 
-    private function putFiles(): void
-    {
-        foreach ($this->files as &$info) {
-            ['file' => $file, 'name' => $name, 'desc' => $desc] = $info;
-
-            $fc = \file_get_contents($file);
-            if (false === $fc) {
-                $this->error('Cannot open file: ' . $file);
-
-                return;
+            $contents = \file_get_contents($file);
+            if (false === $contents) {
+                throw PdfException::format('Cannot get content of the file: "%s".', $file);
             }
-            $size = \strlen($fc);
-            $time = false !== \filemtime($file) ? \filemtime($file) : \time();
-            $date = \date('YmdHisO', $time);
-            $md = 'D:' . \substr($date, 0, -2) . "'" . \substr($date, -2) . "'";
+            $size = \strlen($contents);
+            $time = \filemtime($file);
+            $date = \date('YmdHisO', false === $time ? \time() : $time);
+            $md = \sprintf("D: %s '%s'", \substr($date, 0, -2), \substr($date, -2));
 
             $this->putNewObj();
             $info['n'] = $this->objectNumber;
             $this->put('<<');
             $this->put('/Type /Filespec');
-            $this->put('/F (' . $this->escape($name) . ')');
-            $this->put('/UF ' . $this->textString($name));
-            $this->put('/EF <</F ' . (string) ($this->objectNumber + 1) . ' 0 R>>');
+            $this->putf('/F (%s)', $this->escape($name));
+            $this->putf('/UF %s', $this->textString($name));
+            $this->putf('/EF <</F %d 0 R>>', $this->objectNumber + 1);
             if ('' !== $desc) {
-                $this->put('/Desc ' . $this->textString($desc));
+                $this->putf('/Desc %s', $this->textString($desc));
             }
             $this->put('/AFRelationship /Unspecified');
             $this->put('>>');
-            $this->put('endobj');
+            $this->putEndObj();
 
             $this->putNewObj();
             $this->put('<<');
             $this->put('/Type /EmbeddedFile');
             $this->put('/Subtype /application#2Foctet-stream');
-            $this->put('/Length ' . (string) $size);
-            $this->put('/Params <</Size ' . (string) $size . ' /ModDate ' . $this->textString($md) . '>>');
+            $this->putf('/Length %d', $size);
+            $this->putf('/Params <</Size %d /ModDate %s>>', $size, $this->textString($md));
             $this->put('>>');
-            $this->putStream($fc);
-            $this->put('endobj');
+            $this->putStream($contents);
+            $this->putEndObj();
         }
         unset($info);
 
         $this->putNewObj();
-        $this->nFiles = $this->objectNumber;
-        $a = [];
-        foreach ($this->files as $i => $info) {
-            $a[] = $this->textString(\sprintf('%03d', $i)) . ' ' . (string) $info['n'] . ' 0 R';
-        }
+        $this->attachmentNumber = $this->objectNumber;
+        $array = \array_map(
+            fn (int $index, array $info): string => $this->textString(\sprintf('%03d %d 0 R', $index, $info['n'])),
+            \array_keys($this->attachments),
+            \array_values($this->attachments)
+        );
         $this->put('<<');
-        $this->put('/Names [' . \implode(' ', $a) . ']');
+        $this->putf('/Names [%s]', \implode(' ', $array));
         $this->put('>>');
-        $this->put('endobj');
+        $this->putEndObj();
     }
 }

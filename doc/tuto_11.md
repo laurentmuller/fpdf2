@@ -6,12 +6,10 @@ Since version `2.0.13`, a trait allows attaching files to the PDF.
 [FPDF script](http://www.fpdf.org/en/script/script95.php) created by
 Oliver.
 
-The `openAttachmentPane()` method is also provided to force the PDF viewer to open
-the attachment pane when the document is loaded.
-
 To use it, create a derived class and use the `PdfAttachmentTrait` trait:
 
 ```php
+use fpdf\Enums\PdfPageMode;
 use fpdf\PdfDocument;
 use fpdf\Traits\PdfAttachmentTrait;
 
@@ -20,19 +18,15 @@ class AttachmentDocument extends PdfDocument
     use PdfAttachmentTrait;
 }
 
-$file = "test/attached.txt";
+$file = "attached.txt";
 
 $pdf = new AttachmentDocument();
 $pdf->addPage();
-$document->attach($file);
-$document->openAttachmentPane();
-
+$pdf->attach($file);
+// force the PDF viewer to open the attachment pane
+$pdf->setPageMode(PdfPageMode::USE_ATTACHMENTS);
 $pdf->output();
 ```
-
-**Result:**
-
-![Result](http://www.fpdf.org/en/script/ex95.pdf)
 
 **See also:**
 
