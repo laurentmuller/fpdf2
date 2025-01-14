@@ -18,11 +18,6 @@ use fpdf\PdfDocument;
 use fpdf\Traits\PdfTransparencyTrait;
 use PHPUnit\Framework\TestCase;
 
-/**
- * PdfTransparencyTraitTest.
- *
- * @author Andreas Müller <hello@devmount.com>
- */
 class PdfTransparencyTraitTest extends TestCase
 {
     public function testEmptyTransparency(): void
