@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- Removed `composer.lock` from export.
+
 ## 2.0.13 - 2025-01-15
 
 - Update `PDfVersion` when attachments are added.

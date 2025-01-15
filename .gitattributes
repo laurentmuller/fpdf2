@@ -18,3 +18,4 @@
 /psalm.xml               export-ignore
 /rector.php              export-ignore
 /README.md               export-ignore
+/composer.lock           export-ignore
