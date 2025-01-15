@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `PdfAttachmentTrait` trait.
 - Updated test for `PdfSectorTrait`.
 - Updated `PdfViewerPreferences` class.
 - Updated documentation.

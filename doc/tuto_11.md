@@ -22,7 +22,7 @@ $file = "attached.txt";
 
 $pdf = new AttachmentDocument();
 $pdf->addPage();
-$pdf->attach($file);
+$pdf->addAttachment($file);
 // force the PDF viewer to open the attachment pane
 $pdf->setPageMode(PdfPageMode::USE_ATTACHMENTS);
 $pdf->output();

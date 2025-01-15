@@ -54,7 +54,7 @@ trait PdfAttachmentTrait
      *                     base name of the file.
      * @param string $desc an optional description for the file contents
      */
-    public function attach(string $file, string $name = '', string $desc = ''): static
+    public function addAttachment(string $file, string $name = '', string $desc = ''): static
     {
         if ('' === $name) {
             $name = \basename($file);
@@ -86,6 +86,9 @@ trait PdfAttachmentTrait
         }
     }
 
+    /**
+     * @throws PdfException if an error occurs, while get content of an attachment
+     */
     private function putAttachments(): void
     {
         foreach ($this->attachments as &$info) {
