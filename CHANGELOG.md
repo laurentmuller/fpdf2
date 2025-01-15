@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Update `PDfVersion` when attachments are added.
 - Updated documentation.
 - Added `PdfAttachmentTrait` trait.
 - Updated test for `PdfSectorTrait`.

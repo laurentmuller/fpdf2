@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace fpdf\Traits;
 
+use fpdf\Enums\PdfVersion;
 use fpdf\PdfDocument;
 use fpdf\PdfException;
 
@@ -60,6 +61,7 @@ trait PdfAttachmentTrait
             $name = \basename($file);
         }
         $this->attachments[] = ['file' => $file, 'name' => $name, 'desc' => $desc, 'n' => -1];
+        $this->updatePdfVersion('' === $desc ? PdfVersion::VERSION_1_4 : PdfVersion::VERSION_1_6);
 
         return $this;
     }
