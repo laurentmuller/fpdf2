@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 2.0.13 - 2025-01-15
 
 - Update `PDfVersion` when attachments are added.
 - Updated documentation.
