@@ -3,7 +3,7 @@
 This repository is clone of [fpdf.org](http://www.fpdf.org) with typed variables,
 enumerations and PHP 8.2 dependencies.
 
-`PdfDocument` is a PHP class, which allows to generate PDF files with pure PHP.
+`PdfDocument` is a PHP class, which allows generating PDF files with pure PHP.
 **F** from FPDF2 stands for **Free**: you may use it for any kind of usage and
 modify it to suit your needs.
 
@@ -19,8 +19,8 @@ composer require laurentmuller/fpdf2
 Alternatively, you can add the requirement `"laurentmuller/fpdf2":"^2.0"` to
 your `composer.json` file and run `composer update`. This could be useful when
 the installation of FPDF2 is not compatible with some currently installed
-dependencies. Anyway, the previous option is the preferred way, since composer
-can pick the best requirement constraint for you.
+dependencies. Anyway, the previous option is the preferred way, since the
+composer can pick the best requirement constraint for you.
 
 ## Basic Usage
 
@@ -36,19 +36,7 @@ $pdf->cell(40, 10, 'Hello World!');
 $pdf->output();
 ```
 
-## Tutorials
-
-- [Minimal example](doc/tuto_1.md)
-- [Header, footer, page break and image](doc/tuto_2.md)
-- [Line breaks and colors](doc/tuto_3.md)
-- [Multi-columns](doc/tuto_4.md)
-- [Tables](doc/tuto_5.md)
-- [Bookmarks](doc/tuto_6.md)
-- [Transparency](doc/tuto_7.md)
-- [Circles and ellipses](doc/tuto_8.md)
-- [Rotation](doc/tuto_9.md)
-- [Sector](doc/tuto_10.md)
-- [Attachments](doc/tuto_11.md)
+See other [examples](doc/examples.md) in the dedicated documents.
 
 ## Code Quality
 
