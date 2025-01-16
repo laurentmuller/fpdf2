@@ -89,7 +89,7 @@ trait PdfAttachmentTrait
     }
 
     /**
-     * @throws PdfException if an error occurs, while get content of an attachment
+     * @throws PdfException if unable to get the file content of an attachment
      */
     private function putAttachments(): void
     {
@@ -104,8 +104,7 @@ trait PdfAttachmentTrait
             }
             $size = \strlen($contents);
             $time = \filemtime($file);
-            $date = \date('YmdHisO', false === $time ? \time() : $time);
-            $md = \sprintf("D: %s '%s'", \substr($date, 0, -2), \substr($date, -2));
+            $date = $this->formatDate(\is_int($time) ? $time : null);
 
             $this->putNewObj();
             $info['n'] = $this->objectNumber;
@@ -126,12 +125,11 @@ trait PdfAttachmentTrait
             $this->put('/Type /EmbeddedFile');
             $this->put('/Subtype /application#2Foctet-stream');
             $this->putf('/Length %d', $size);
-            $this->putf('/Params <</Size %d /ModDate %s>>', $size, $this->textString($md));
+            $this->putf('/Params <</Size %d /ModDate %s>>', $size, $this->textString($date));
             $this->put('>>');
             $this->putStream($contents);
             $this->putEndObj();
         }
-        unset($info);
 
         $this->putNewObj();
         $this->attachmentNumber = $this->objectNumber;

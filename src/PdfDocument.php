@@ -92,7 +92,7 @@ use fpdf\Interfaces\PdfImageParserInterface;
 class PdfDocument
 {
     /**
-     * The default line height in mm.
+     * The default line height in millimeters.
      */
     final public const LINE_HEIGHT = 5.0;
 
@@ -1092,7 +1092,7 @@ class PdfDocument
      * <li>No explicit dimension, in which case the image is put at 96 dpi.</li>
      * </ul>
      *
-     * Supported formats are JPEG, PNG, and GIF. The GD extension is required for the GIF format.
+     * Supported formats are JPEG, PNG and GIF. The GD extension is required for the GIF format.
      *
      * For the JPEG format, the following variants are allowed:
      * <ul>
@@ -2716,6 +2716,18 @@ class PdfDocument
     }
 
     /**
+     * Format the given timestamp.
+     *
+     * @param ?int $timestamp the timestamp to format or the current local time if the timestamp is null
+     */
+    protected function formatDate(?int $timestamp = null): string
+    {
+        $date = \date('YmdHisO', $timestamp);
+
+        return \sprintf("D:%s'%s'", \substr($date, 0, -2), \substr($date, -2));
+    }
+
+    /**
      * Gets the image parser for the given type.
      *
      * @param string $type the image type (file extension)
@@ -3218,9 +3230,7 @@ class PdfDocument
      */
     protected function putInfo(): void
     {
-        $date = \date('YmdHisO');
-        $date = \sprintf("D:%s'%s'", \substr($date, 0, -2), \substr($date, -2));
-        $this->addMetaData('CreationDate', $date);
+        $this->addMetaData('CreationDate', $this->formatDate());
         foreach ($this->metadata as $key => $value) {
             $this->putf('/%s %s', $key, $this->textString($value));
         }
