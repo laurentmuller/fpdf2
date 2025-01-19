@@ -245,7 +245,15 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
         self::assertSame(2, $doc->getLinesCount("\r\n"));
         self::assertSame(3, $doc->getLinesCount("\n\n"));
         self::assertSame(1, $doc->getLinesCount('fake'));
-        self::assertSame(2, $doc->getLinesCount("Firs Line\nSecond Line"));
+        self::assertSame(2, $doc->getLinesCount("First Line\nSecond Line"));
+    }
+
+    public function testLinesCountNoSepIndex(): void
+    {
+        $doc = $this->createDocument();
+        $text = \str_repeat('w', 20);
+        $lines = $doc->getLinesCount($text, 2.0, 0.0);
+        self::assertSame(21, $lines);
     }
 
     public function testLineWidth(): void
