@@ -18,26 +18,36 @@ use fpdf\PdfException;
 use fpdf\PdfGifParser;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @phpstan-import-type ImageType from PdfDocument
+ */
 class PdfGifParserTest extends TestCase
 {
     public function testInvalid(): void
     {
         self::expectException(PdfException::class);
-        $parent = new PdfDocument();
-        $parser = new PdfGifParser();
         $file = __DIR__ . '/images/image.fake';
-        $parser->parse($parent, $file);
+        $this->parseFile($file);
     }
 
     public function testValid(): void
     {
-        $parent = new PdfDocument();
-        $parser = new PdfGifParser();
         $file = __DIR__ . '/images/image.gif';
-        $image = $parser->parse($parent, $file);
+        $image = $this->parseFile($file);
         self::assertArrayHasKey('width', $image);
         self::assertArrayHasKey('height', $image);
         self::assertSame(400, $image['width']);
         self::assertSame(400, $image['height']);
+    }
+
+    /**
+     * @phpstan-return ImageType
+     */
+    private function parseFile(string $file): array
+    {
+        $parent = new PdfDocument();
+        $parser = new PdfGifParser();
+
+        return $parser->parse($parent, $file);
     }
 }

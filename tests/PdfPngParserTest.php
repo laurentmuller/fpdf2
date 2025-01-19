@@ -19,14 +19,15 @@ use fpdf\PdfException;
 use fpdf\PdfPngParser;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @phpstan-import-type ImageType from PdfDocument
+ */
 class PdfPngParserTest extends TestCase
 {
     public function testColorType0(): void
     {
-        $parent = new PdfDocument();
-        $parser = new PdfPngParser();
         $file = __DIR__ . '/images/image_color_type_0.png';
-        $image = $parser->parse($parent, $file);
+        $image = $this->parseFile($file);
         self::assertArrayHasKey('width', $image);
         self::assertArrayHasKey('height', $image);
         self::assertSame(124, $image['width']);
@@ -35,10 +36,8 @@ class PdfPngParserTest extends TestCase
 
     public function testColorType2(): void
     {
-        $parent = new PdfDocument();
-        $parser = new PdfPngParser();
         $file = __DIR__ . '/images/image_color_type_2.png';
-        $image = $parser->parse($parent, $file);
+        $image = $this->parseFile($file);
         self::assertArrayHasKey('width', $image);
         self::assertArrayHasKey('height', $image);
         self::assertSame(124, $image['width']);
@@ -65,82 +64,64 @@ class PdfPngParserTest extends TestCase
     public function testInvalid(): void
     {
         self::expectException(PdfException::class);
-        $parent = new PdfDocument();
-        $parser = new PdfPngParser();
         $file = __DIR__ . '/images/image.fake';
-        $parser->parse($parent, $file);
+        $this->parseFile($file);
     }
 
     public function testInvalidBpc(): void
     {
         self::expectException(PdfException::class);
-        $parent = new PdfDocument();
-        $parser = new PdfPngParser();
         $file = __DIR__ . '/images/invalid_bpc.png';
-        $parser->parse($parent, $file);
+        $this->parseFile($file);
     }
 
     public function testInvalidColorType(): void
     {
         self::expectException(PdfException::class);
-        $parent = new PdfDocument();
-        $parser = new PdfPngParser();
         $file = __DIR__ . '/images/invalid_color_type.png';
-        $parser->parse($parent, $file);
+        $this->parseFile($file);
     }
 
     public function testInvalidColorTypeWithPalette(): void
     {
         self::expectException(PdfException::class);
-        $parent = new PdfDocument();
-        $parser = new PdfPngParser();
         $file = __DIR__ . '/images/invalid_color_type_with_palette.png';
-        $parser->parse($parent, $file);
+        $this->parseFile($file);
     }
 
     public function testInvalidCompression(): void
     {
         self::expectException(PdfException::class);
-        $parent = new PdfDocument();
-        $parser = new PdfPngParser();
         $file = __DIR__ . '/images/invalid_compression.png';
-        $parser->parse($parent, $file);
+        $this->parseFile($file);
     }
 
     public function testInvalidFilter(): void
     {
         self::expectException(PdfException::class);
-        $parent = new PdfDocument();
-        $parser = new PdfPngParser();
         $file = __DIR__ . '/images/invalid_filter.png';
-        $parser->parse($parent, $file);
+        $this->parseFile($file);
     }
 
     public function testInvalidHeaderChunk(): void
     {
         self::expectException(PdfException::class);
-        $parent = new PdfDocument();
-        $parser = new PdfPngParser();
         $file = __DIR__ . '/images/invalid_header_chunk.png';
-        $parser->parse($parent, $file);
+        $this->parseFile($file);
     }
 
     public function testInvalidInterlacing(): void
     {
         self::expectException(PdfException::class);
-        $parent = new PdfDocument();
-        $parser = new PdfPngParser();
         $file = __DIR__ . '/images/invalid_interlacing.png';
-        $parser->parse($parent, $file);
+        $this->parseFile($file);
     }
 
     public function testInvalidSignature(): void
     {
         self::expectException(PdfException::class);
-        $parent = new PdfDocument();
-        $parser = new PdfPngParser();
         $file = __DIR__ . '/images/invalid_signature.png';
-        $parser->parse($parent, $file);
+        $this->parseFile($file);
     }
 
     public function testStreamClosed(): void
@@ -162,10 +143,8 @@ class PdfPngParserTest extends TestCase
 
     public function testValid(): void
     {
-        $parent = new PdfDocument();
-        $parser = new PdfPngParser();
         $file = __DIR__ . '/images/image.png';
-        $image = $parser->parse($parent, $file);
+        $image = $this->parseFile($file);
         self::assertArrayHasKey('width', $image);
         self::assertArrayHasKey('height', $image);
         self::assertSame(124, $image['width']);
@@ -188,13 +167,22 @@ class PdfPngParserTest extends TestCase
 
     public function testValidGrey(): void
     {
-        $parent = new PdfDocument();
-        $parser = new PdfPngParser();
         $file = __DIR__ . '/images/grey_image.png';
-        $image = $parser->parse($parent, $file);
+        $image = $this->parseFile($file);
         self::assertArrayHasKey('width', $image);
         self::assertArrayHasKey('height', $image);
         self::assertSame(349, $image['width']);
         self::assertSame(173, $image['height']);
+    }
+
+    /**
+     * @phpstan-return ImageType
+     */
+    private function parseFile(string $file): array
+    {
+        $parent = new PdfDocument();
+        $parser = new PdfPngParser();
+
+        return $parser->parse($parent, $file);
     }
 }

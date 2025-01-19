@@ -18,35 +18,59 @@ use fpdf\PdfException;
 use fpdf\PdfJpgParser;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @phpstan-import-type ImageType from PdfDocument
+ */
 class PdfJpgParserTest extends TestCase
 {
+    public function testImageCmyk(): void
+    {
+        $file = __DIR__ . '/images/cmyk_image.jpg';
+        $image = $this->parseFile($file);
+        self::assertArrayHasKey('width', $image);
+        self::assertArrayHasKey('height', $image);
+    }
+
+    public function testImageGray(): void
+    {
+        $file = __DIR__ . '/images/grey_image.jpg';
+        $image = $this->parseFile($file);
+        self::assertArrayHasKey('width', $image);
+        self::assertArrayHasKey('height', $image);
+    }
+
     public function testInvalid(): void
     {
         self::expectException(PdfException::class);
-        $parent = new PdfDocument();
-        $parser = new PdfJpgParser();
         $file = __DIR__ . '/images/image.fake';
-        $parser->parse($parent, $file);
+        $this->parseFile($file);
     }
 
     public function testInvalidType(): void
     {
         self::expectException(PdfException::class);
-        $parent = new PdfDocument();
-        $parser = new PdfJpgParser();
         $file = __DIR__ . '/images/image.gif';
-        $parser->parse($parent, $file);
+        $this->parseFile($file);
     }
 
     public function testValid(): void
     {
-        $parent = new PdfDocument();
-        $parser = new PdfJpgParser();
         $file = __DIR__ . '/images/image.jpg';
-        $image = $parser->parse($parent, $file);
+        $image = $this->parseFile($file);
         self::assertArrayHasKey('width', $image);
         self::assertArrayHasKey('height', $image);
         self::assertSame(960, $image['width']);
         self::assertSame(684, $image['height']);
+    }
+
+    /**
+     * @phpstan-return ImageType
+     */
+    private function parseFile(string $file): array
+    {
+        $parent = new PdfDocument();
+        $parser = new PdfJpgParser();
+
+        return $parser->parse($parent, $file);
     }
 }

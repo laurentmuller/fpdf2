@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Updated tests for image parsers.
 - Added `formatDate` function to `PdfDocument` class.
 - Removed `composer.lock` from export.
 
