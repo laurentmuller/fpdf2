@@ -46,18 +46,8 @@ class PdfPngParserTest extends TestCase
     public function testEndOfStream(): void
     {
         self::expectException(PdfException::class);
-        $parent = new PdfDocument();
-        $parser = new class() extends PdfPngParser {
-            protected function parseStream(PdfDocument $parent, $stream, string $file): array
-            {
-                // @phpstan-ignore argument.type
-                \fread($stream, (int) \filesize($file));
-
-                return parent::parseStream($parent, $stream, $file);
-            }
-        };
-        $file = __DIR__ . '/images/image.png';
-        $parser->parse($parent, $file);
+        $file = 'image_truncate.png';
+        $this->parseFile($file);
     }
 
     public function testInvalid(): void

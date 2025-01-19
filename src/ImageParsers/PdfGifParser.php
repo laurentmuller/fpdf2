@@ -23,10 +23,10 @@ class PdfGifParser extends AbstractGdImageParser
         return \imagecreatefromgif($file);
     }
 
-    protected function toPngImage(\GdImage $image): string
+    protected function toPngData(\GdImage $image): string
     {
         \imageinterlace($image, false);
 
-        return parent::toPngImage($image);
+        return parent::toPngData($image);
     }
 }

@@ -28,7 +28,7 @@ abstract class AbstractGdImageParser extends PdfPngParser
             throw PdfException::format('Missing or incorrect image file: %s.', $file);
         }
 
-        $data = $this->toPngImage($image);
+        $data = $this->toPngData($image);
         $stream = $this->openDataStream($data);
 
         try {
@@ -48,7 +48,14 @@ abstract class AbstractGdImageParser extends PdfPngParser
      */
     abstract protected function createImageFromFile(string $file): \GdImage|false;
 
-    protected function toPngImage(\GdImage $image): string
+    /**
+     * Convert the given GD image to the PNG image content.
+     *
+     * @param \GdImage $image the image to convert to
+     *
+     * @return string the PNG image content
+     */
+    protected function toPngData(\GdImage $image): string
     {
         \ob_start();
         \imagepng($image);
