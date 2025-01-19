@@ -1501,7 +1501,7 @@ class PdfDocument
                     if (PdfTextAlignment::JUSTIFIED === $align) {
                         $wordSpacing = ($newSeparator > 1)
                             ? ($widthMax - $lineSpace) / 1000.0 * $this->fontSize / (float) ($newSeparator - 1)
-                            : 0;
+                            : 0.0;
                         $this->updateWordSpacing($wordSpacing, true);
                     }
                     $this->cell(

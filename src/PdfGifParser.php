@@ -45,11 +45,8 @@ class PdfGifParser extends PdfPngParser
      */
     private function openStream(string $data)
     {
+        /** @phpstan-var resource $stream */
         $stream = \fopen('php://temp', 'rb+');
-        if (!\is_resource($stream)) {
-            throw PdfException::instance('Unable to create memory stream.');
-        }
-
         \fwrite($stream, $data);
         \rewind($stream);
 

@@ -37,11 +37,6 @@ class PdfJpgParser implements PdfImageParserInterface
             throw PdfException::format('The file is not a JPEG image: %s.', $file);
         }
 
-        $data = \file_get_contents($file);
-        if (!\is_string($data)) {
-            throw PdfException::format('Unable get image file content: %s.', $file);
-        }
-
         /** @phpstan-var int<3,5> $channels */
         $channels = $size['channels'] ?? 3;
         $color_space = match ($channels) {
@@ -50,6 +45,7 @@ class PdfJpgParser implements PdfImageParserInterface
             default => 'DeviceGray'
         };
         $bitsPerComponent = $size['bits'] ?? 8;
+        $data = (string) \file_get_contents($file);
 
         return [
             'index' => 0,
