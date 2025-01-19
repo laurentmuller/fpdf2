@@ -30,6 +30,10 @@ use fpdf\Enums\PdfTextAlignment;
 use fpdf\Enums\PdfUnit;
 use fpdf\Enums\PdfVersion;
 use fpdf\Enums\PdfZoom;
+use fpdf\ImageParsers\PdfGifParser;
+use fpdf\ImageParsers\PdfJpgParser;
+use fpdf\ImageParsers\PdfPngParser;
+use fpdf\ImageParsers\PdfWebpParser;
 use fpdf\Interfaces\PdfImageParserInterface;
 
 /**
@@ -2741,6 +2745,7 @@ class PdfDocument
             'jpg' => new PdfJpgParser(),
             'gif' => new PdfGifParser(),
             'png' => new PdfPngParser(),
+            'webp' => new PdfWebpParser(),
             default => null,
         };
     }

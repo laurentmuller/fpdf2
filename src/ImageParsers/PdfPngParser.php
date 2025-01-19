@@ -11,10 +11,12 @@
 
 declare(strict_types=1);
 
-namespace fpdf;
+namespace fpdf\ImageParsers;
 
 use fpdf\Enums\PdfVersion;
 use fpdf\Interfaces\PdfImageParserInterface;
+use fpdf\PdfDocument;
+use fpdf\PdfException;
 
 /**
  * Parser for PNG images.
@@ -83,7 +85,7 @@ class PdfPngParser implements PdfImageParserInterface
         $this->checkCompression($stream, $file);
         $this->checkFilter($stream, $file);
         $this->checkInterlacing($stream, $file);
-        $this->readStream($stream, 4);
+        $this->readString($stream, 4);
 
         $decodeParams = \sprintf(
             '/Predictor 15 /Colors %d /BitsPerComponent %d /Columns %d',
@@ -99,22 +101,22 @@ class PdfPngParser implements PdfImageParserInterface
         do {
             $length = $this->readInt($stream);
             /** @phpstan-var 'PLTE'|'tRNS'|'IDAT'|'IEND' $type */
-            $type = $this->readStream($stream, 4);
+            $type = $this->readString($stream, 4);
             switch ($type) {
                 case 'PLTE': // palette
                     $palette = $this->getPalette($stream, $length);
-                    $this->readStream($stream, 4);
+                    $this->readString($stream, 4);
                     break;
                 case 'tRNS': // transparency
                     $transparencies = $this->getTransparencies($stream, $length, $colorType);
-                    $this->readStream($stream, 4);
+                    $this->readString($stream, 4);
                     break;
                 case 'IDAT': // image data
-                    $data .= $this->readStream($stream, $length);
-                    $this->readStream($stream, 4);
+                    $data .= $this->readString($stream, $length);
+                    $this->readString($stream, 4);
                     break;
                 default: // skip
-                    $this->readStream($stream, $length + 4);
+                    $this->readString($stream, $length + 4);
                     break;
             }
         } while ($length);
@@ -187,8 +189,8 @@ class PdfPngParser implements PdfImageParserInterface
      */
     private function checkHeader(mixed $stream, string $file): void
     {
-        $this->readStream($stream, 4);
-        if ('IHDR' !== $this->readStream($stream, 4)) {
+        $this->readString($stream, 4);
+        if ('IHDR' !== $this->readString($stream, 4)) {
             throw PdfException::format('Incorrect PNG header chunk (IHDR): %s.', $file);
         }
     }
@@ -221,7 +223,7 @@ class PdfPngParser implements PdfImageParserInterface
             $this->signature = \chr(0x89) . \chr(0x50) . \chr(0x4E) . \chr(0x47)
                 . \chr(0x0D) . \chr(0x0A) . \chr(0x1A) . \chr(0x0A);
         }
-        if ($this->readStream($stream, \strlen($this->signature)) !== $this->signature) {
+        if ($this->readString($stream, \strlen($this->signature)) !== $this->signature) {
             throw PdfException::format('Incorrect PNG header signature: %s.', $file);
         }
     }
@@ -276,7 +278,7 @@ class PdfPngParser implements PdfImageParserInterface
      */
     private function getPalette($stream, int $length): string
     {
-        return $this->readStream($stream, $length);
+        return $this->readString($stream, $length);
     }
 
     /**
@@ -287,7 +289,7 @@ class PdfPngParser implements PdfImageParserInterface
      */
     private function getTransparencies($stream, int $length, int $colorType): array
     {
-        $transparency = $this->readStream($stream, $length);
+        $transparency = $this->readString($stream, $length);
         switch ($colorType) {
             case 0:
                 return [\ord(\substr($transparency, 1, 1))];
@@ -328,7 +330,7 @@ class PdfPngParser implements PdfImageParserInterface
      */
     private function readByte($stream): int
     {
-        return \ord($this->readStream($stream, 1));
+        return \ord($this->readString($stream, 1));
     }
 
     /**
@@ -343,7 +345,7 @@ class PdfPngParser implements PdfImageParserInterface
     private function readInt($stream): int
     {
         /** @phpstan-var array{i: non-negative-int} $unpack */
-        $unpack = \unpack('Ni', $this->readStream($stream, 4));
+        $unpack = \unpack('Ni', $this->readString($stream, 4));
 
         return $unpack['i'];
     }
@@ -359,7 +361,7 @@ class PdfPngParser implements PdfImageParserInterface
      * @phpstan-param resource|closed-resource|null $stream
      * @phpstan-param non-negative-int $len
      */
-    private function readStream($stream, int $len): string
+    private function readString($stream, int $len): string
     {
         if (!\is_resource($stream)) {
             throw PdfException::instance('The stream is closed.');

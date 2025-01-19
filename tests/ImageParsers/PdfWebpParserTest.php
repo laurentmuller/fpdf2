@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of the 'fpdf' package.
  *
@@ -11,33 +10,25 @@
 
 declare(strict_types=1);
 
-namespace fpdf\Tests;
+namespace fpdf\Tests\ImageParsers;
 
+use fpdf\ImageParsers\PdfWebpParser;
 use fpdf\PdfDocument;
-use fpdf\PdfException;
-use fpdf\PdfGifParser;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @phpstan-import-type ImageType from PdfDocument
  */
-class PdfGifParserTest extends TestCase
+class PdfWebpParserTest extends TestCase
 {
-    public function testInvalid(): void
-    {
-        self::expectException(PdfException::class);
-        $file = __DIR__ . '/images/image.fake';
-        $this->parseFile($file);
-    }
-
     public function testValid(): void
     {
-        $file = __DIR__ . '/images/image.gif';
+        $file = 'image.webp';
         $image = $this->parseFile($file);
         self::assertArrayHasKey('width', $image);
         self::assertArrayHasKey('height', $image);
-        self::assertSame(400, $image['width']);
-        self::assertSame(400, $image['height']);
+        self::assertSame(320, $image['width']);
+        self::assertSame(214, $image['height']);
     }
 
     /**
@@ -46,8 +37,8 @@ class PdfGifParserTest extends TestCase
     private function parseFile(string $file): array
     {
         $parent = new PdfDocument();
-        $parser = new PdfGifParser();
+        $parser = new PdfWebpParser();
 
-        return $parser->parse($parent, $file);
+        return $parser->parse($parent, __DIR__ . '/../images/' . $file);
     }
 }

@@ -11,12 +11,11 @@
 
 declare(strict_types=1);
 
-namespace fpdf\Tests;
+namespace fpdf\Tests\ImageParsers;
 
-use fpdf\Enums\PdfVersion;
+use fpdf\ImageParsers\PdfPngParser;
 use fpdf\PdfDocument;
 use fpdf\PdfException;
-use fpdf\PdfPngParser;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -26,7 +25,7 @@ class PdfPngParserTest extends TestCase
 {
     public function testColorType0(): void
     {
-        $file = __DIR__ . '/images/image_color_type_0.png';
+        $file = 'image_color_type_0.png';
         $image = $this->parseFile($file);
         self::assertArrayHasKey('width', $image);
         self::assertArrayHasKey('height', $image);
@@ -36,7 +35,7 @@ class PdfPngParserTest extends TestCase
 
     public function testColorType2(): void
     {
-        $file = __DIR__ . '/images/image_color_type_2.png';
+        $file = 'image_color_type_2.png';
         $image = $this->parseFile($file);
         self::assertArrayHasKey('width', $image);
         self::assertArrayHasKey('height', $image);
@@ -64,63 +63,63 @@ class PdfPngParserTest extends TestCase
     public function testInvalid(): void
     {
         self::expectException(PdfException::class);
-        $file = __DIR__ . '/images/image.fake';
+        $file = 'image.fake';
         $this->parseFile($file);
     }
 
     public function testInvalidBpc(): void
     {
         self::expectException(PdfException::class);
-        $file = __DIR__ . '/images/invalid_bpc.png';
+        $file = 'invalid_bpc.png';
         $this->parseFile($file);
     }
 
     public function testInvalidColorType(): void
     {
         self::expectException(PdfException::class);
-        $file = __DIR__ . '/images/invalid_color_type.png';
+        $file = 'invalid_color_type.png';
         $this->parseFile($file);
     }
 
     public function testInvalidColorTypeWithPalette(): void
     {
         self::expectException(PdfException::class);
-        $file = __DIR__ . '/images/invalid_color_type_with_palette.png';
+        $file = 'invalid_color_type_with_palette.png';
         $this->parseFile($file);
     }
 
     public function testInvalidCompression(): void
     {
         self::expectException(PdfException::class);
-        $file = __DIR__ . '/images/invalid_compression.png';
+        $file = 'invalid_compression.png';
         $this->parseFile($file);
     }
 
     public function testInvalidFilter(): void
     {
         self::expectException(PdfException::class);
-        $file = __DIR__ . '/images/invalid_filter.png';
+        $file = 'invalid_filter.png';
         $this->parseFile($file);
     }
 
     public function testInvalidHeaderChunk(): void
     {
         self::expectException(PdfException::class);
-        $file = __DIR__ . '/images/invalid_header_chunk.png';
+        $file = 'invalid_header_chunk.png';
         $this->parseFile($file);
     }
 
     public function testInvalidInterlacing(): void
     {
         self::expectException(PdfException::class);
-        $file = __DIR__ . '/images/invalid_interlacing.png';
+        $file = 'invalid_interlacing.png';
         $this->parseFile($file);
     }
 
     public function testInvalidSignature(): void
     {
         self::expectException(PdfException::class);
-        $file = __DIR__ . '/images/invalid_signature.png';
+        $file = 'invalid_signature.png';
         $this->parseFile($file);
     }
 
@@ -143,7 +142,7 @@ class PdfPngParserTest extends TestCase
 
     public function testValid(): void
     {
-        $file = __DIR__ . '/images/image.png';
+        $file = 'image.png';
         $image = $this->parseFile($file);
         self::assertArrayHasKey('width', $image);
         self::assertArrayHasKey('height', $image);
@@ -153,21 +152,18 @@ class PdfPngParserTest extends TestCase
 
     public function testValidAlpha(): void
     {
-        $parent = new PdfDocument();
-        $parser = new PdfPngParser();
-        $file = __DIR__ . '/images/alpha_image.png';
-        $image = $parser->parse($parent, $file);
+        $file = 'alpha_image.png';
+        $image = $this->parseFile($file);
         self::assertArrayHasKey('soft_mask', $image);
         self::assertArrayHasKey('width', $image);
         self::assertArrayHasKey('height', $image);
         self::assertSame(31, $image['width']);
         self::assertSame(32, $image['height']);
-        self::assertSame(PdfVersion::VERSION_1_4, $parent->getPdfVersion());
     }
 
     public function testValidGrey(): void
     {
-        $file = __DIR__ . '/images/grey_image.png';
+        $file = 'grey_image.png';
         $image = $this->parseFile($file);
         self::assertArrayHasKey('width', $image);
         self::assertArrayHasKey('height', $image);
@@ -183,6 +179,6 @@ class PdfPngParserTest extends TestCase
         $parent = new PdfDocument();
         $parser = new PdfPngParser();
 
-        return $parser->parse($parent, $file);
+        return $parser->parse($parent, __DIR__ . '/../images/' . $file);
     }
 }

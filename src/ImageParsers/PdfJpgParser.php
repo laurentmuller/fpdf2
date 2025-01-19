@@ -11,9 +11,11 @@
 
 declare(strict_types=1);
 
-namespace fpdf;
+namespace fpdf\ImageParsers;
 
 use fpdf\Interfaces\PdfImageParserInterface;
+use fpdf\PdfDocument;
+use fpdf\PdfException;
 
 /**
  * Parser for JPEG images.

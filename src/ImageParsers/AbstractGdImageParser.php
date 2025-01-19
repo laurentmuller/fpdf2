@@ -11,24 +11,25 @@
 
 declare(strict_types=1);
 
-namespace fpdf;
+namespace fpdf\ImageParsers;
+
+use fpdf\PdfDocument;
+use fpdf\PdfException;
 
 /**
- * Parser for GIF images.
- *
- * @phpstan-import-type ImageType from PdfDocument
+ * Abstract image parser that converts a file to a GD Image.
  */
-class PdfGifParser extends PdfPngParser
+abstract class AbstractGdImageParser extends PdfPngParser
 {
     public function parse(PdfDocument $parent, string $file): array
     {
-        $image = \imagecreatefromgif($file);
+        $image = $this->createImageFromFile($file);
         if (!$image instanceof \GdImage) {
             throw PdfException::format('Missing or incorrect image file: %s.', $file);
         }
 
         $data = $this->toPngImage($image);
-        $stream = $this->openStream($data);
+        $stream = $this->openDataStream($data);
 
         try {
             return $this->parseStream($parent, $stream, $file);
@@ -39,11 +40,26 @@ class PdfGifParser extends PdfPngParser
     }
 
     /**
-     * @return resource
+     * Creates a GD image from the given file.
      *
-     * @throws PdfException if the stream cannot be open
+     * @param string $file the image file
+     *
+     * @return \GdImage|false an image resource identifier on success, false on errors
      */
-    private function openStream(string $data)
+    abstract protected function createImageFromFile(string $file): \GdImage|false;
+
+    protected function toPngImage(\GdImage $image): string
+    {
+        \ob_start();
+        \imagepng($image);
+
+        return (string) \ob_get_clean();
+    }
+
+    /**
+     * @return resource
+     */
+    private function openDataStream(string $data)
     {
         /** @phpstan-var resource $stream */
         $stream = \fopen('php://temp', 'rb+');
@@ -51,14 +67,5 @@ class PdfGifParser extends PdfPngParser
         \rewind($stream);
 
         return $stream;
-    }
-
-    private function toPngImage(\GdImage $image): string
-    {
-        \imageinterlace($image, false);
-        \ob_start();
-        \imagepng($image);
-
-        return (string) \ob_get_clean();
     }
 }

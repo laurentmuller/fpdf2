@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **BC Break!**: Moved image parsers to dedicated namespace.
+- Added Webp image parser.
 - Simplified image parsers.
 - Added word spacing test.
 - Updated tests for image parsers.

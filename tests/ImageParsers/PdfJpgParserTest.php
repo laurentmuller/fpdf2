@@ -11,11 +11,11 @@
 
 declare(strict_types=1);
 
-namespace fpdf\Tests;
+namespace fpdf\Tests\ImageParsers;
 
+use fpdf\ImageParsers\PdfJpgParser;
 use fpdf\PdfDocument;
 use fpdf\PdfException;
-use fpdf\PdfJpgParser;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -25,7 +25,7 @@ class PdfJpgParserTest extends TestCase
 {
     public function testImageCmyk(): void
     {
-        $file = __DIR__ . '/images/cmyk_image.jpg';
+        $file = 'cmyk_image.jpg';
         $image = $this->parseFile($file);
         self::assertArrayHasKey('width', $image);
         self::assertArrayHasKey('height', $image);
@@ -33,7 +33,7 @@ class PdfJpgParserTest extends TestCase
 
     public function testImageGray(): void
     {
-        $file = __DIR__ . '/images/grey_image.jpg';
+        $file = 'grey_image.jpg';
         $image = $this->parseFile($file);
         self::assertArrayHasKey('width', $image);
         self::assertArrayHasKey('height', $image);
@@ -42,20 +42,20 @@ class PdfJpgParserTest extends TestCase
     public function testInvalid(): void
     {
         self::expectException(PdfException::class);
-        $file = __DIR__ . '/images/image.fake';
+        $file = 'image.fake';
         $this->parseFile($file);
     }
 
     public function testInvalidType(): void
     {
         self::expectException(PdfException::class);
-        $file = __DIR__ . '/images/image.gif';
+        $file = 'image.gif';
         $this->parseFile($file);
     }
 
     public function testValid(): void
     {
-        $file = __DIR__ . '/images/image.jpg';
+        $file = 'image.jpg';
         $image = $this->parseFile($file);
         self::assertArrayHasKey('width', $image);
         self::assertArrayHasKey('height', $image);
@@ -71,6 +71,6 @@ class PdfJpgParserTest extends TestCase
         $parent = new PdfDocument();
         $parser = new PdfJpgParser();
 
-        return $parser->parse($parent, $file);
+        return $parser->parse($parent, __DIR__ . '/../images/' . $file);
     }
 }
