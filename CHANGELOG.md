@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added bitmap image parser.
 - **BC Break!**: Moved image parsers to dedicated namespace.
 - Added Webp image parser.
 - Simplified image parsers.

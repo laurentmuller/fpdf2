@@ -25,7 +25,7 @@ use fpdf\PdfException;
  */
 class PdfPngParser implements PdfImageParserInterface
 {
-    private string $signature = '';
+    private static string $signature = '';
 
     /**
      * @phpstan-return ImageType
@@ -100,7 +100,6 @@ class PdfPngParser implements PdfImageParserInterface
         $transparencies = [];
         do {
             $length = $this->readInt($stream);
-            /** @phpstan-var 'PLTE'|'tRNS'|'IDAT'|'IEND' $type */
             $type = $this->readString($stream, 4);
             switch ($type) {
                 case 'PLTE': // palette
@@ -136,16 +135,17 @@ class PdfPngParser implements PdfImageParserInterface
             'decode_parms' => $decodeParams,
             'palette' => $palette,
             'transparencies' => $transparencies,
+            'data' => $data,
         ];
 
         if ($colorType >= 4) {
             // extract alpha channel
             [$data, $soft_mask] = $this->extractAlphaChannel($width, $height, $colorType, $data);
-            $image['soft_mask'] = $soft_mask;
-            $parent->setAlphaChannel(true);
             $parent->updatePdfVersion(PdfVersion::VERSION_1_4);
+            $parent->setAlphaChannel(true);
+            $image['soft_mask'] = $soft_mask;
+            $image['data'] = $data;
         }
-        $image['data'] = $data;
 
         return $image;
     }
@@ -155,7 +155,7 @@ class PdfPngParser implements PdfImageParserInterface
      *
      * @param resource $stream
      *
-     * @throws PdfException if the signature is invalid
+     * @throws PdfException if the compression is invalid
      */
     private function checkCompression(mixed $stream, string $file): void
     {
@@ -219,11 +219,11 @@ class PdfPngParser implements PdfImageParserInterface
      */
     private function checkSignature(mixed $stream, string $file): void
     {
-        if ('' === $this->signature) {
-            $this->signature = \chr(0x89) . \chr(0x50) . \chr(0x4E) . \chr(0x47)
+        if ('' === self::$signature) {
+            self::$signature = \chr(0x89) . \chr(0x50) . \chr(0x4E) . \chr(0x47)
                 . \chr(0x0D) . \chr(0x0A) . \chr(0x1A) . \chr(0x0A);
         }
-        if ($this->readString($stream, \strlen($this->signature)) !== $this->signature) {
+        if ($this->readString($stream, \strlen(self::$signature)) !== self::$signature) {
             throw PdfException::format('Incorrect PNG header signature: %s.', $file);
         }
     }
@@ -235,8 +235,8 @@ class PdfPngParser implements PdfImageParserInterface
     {
         $isAlpha = 4 === $colorType;
         $len = $isAlpha ? 2 * $width : 4 * $width;
-        $pattern1 = $isAlpha ? '/(.)./s' : '/(.{3})./s';
-        $pattern2 = $isAlpha ? '/.(.)/s' : '/.{3}(.)/s';
+        $colorPattern = $isAlpha ? '/(.)./s' : '/(.{3})./s';
+        $alphaPattern = $isAlpha ? '/.(.)/s' : '/.{3}(.)/s';
 
         $color = '';
         $alpha = '';
@@ -246,8 +246,8 @@ class PdfPngParser implements PdfImageParserInterface
             $color .= $data[$pos];
             $alpha .= $data[$pos];
             $line = \substr($data, $pos + 1, $len);
-            $color .= (string) \preg_replace($pattern1, '$1', $line);
-            $alpha .= (string) \preg_replace($pattern2, '$1', $line);
+            $color .= (string) \preg_replace($colorPattern, '$1', $line);
+            $alpha .= (string) \preg_replace($alphaPattern, '$1', $line);
         }
         $data = (string) \gzcompress($color);
         $mask = (string) \gzcompress($alpha);

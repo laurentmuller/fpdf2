@@ -30,6 +30,7 @@ use fpdf\Enums\PdfTextAlignment;
 use fpdf\Enums\PdfUnit;
 use fpdf\Enums\PdfVersion;
 use fpdf\Enums\PdfZoom;
+use fpdf\ImageParsers\PdfBmpParser;
 use fpdf\ImageParsers\PdfGifParser;
 use fpdf\ImageParsers\PdfJpgParser;
 use fpdf\ImageParsers\PdfPngParser;
@@ -77,7 +78,7 @@ use fpdf\Interfaces\PdfImageParserInterface;
  *     color_space: string,
  *     bits_per_component: int,
  *     filter?: string,
- *     data?: string,
+ *     data: string,
  *     decode_parms?: string,
  *     soft_mask?: string,
  *     palette: string,
@@ -2746,6 +2747,7 @@ class PdfDocument
             'gif' => new PdfGifParser(),
             'png' => new PdfPngParser(),
             'webp' => new PdfWebpParser(),
+            'bmp' => new PdfBmpParser(),
             default => null,
         };
     }
@@ -3191,11 +3193,10 @@ class PdfDocument
         if (isset($image['soft_mask'])) {
             $this->putf('/SMask %d 0 R', $this->objectNumber + 1);
         }
-        if (isset($image['data'])) {
-            $this->putf('/Length %d>>', \strlen($image['data']));
-            $this->putStream($image['data']);
-        }
+        $this->putf('/Length %d>>', \strlen($image['data']));
+        $this->putStream($image['data']);
         $this->putEndObj();
+
         // soft mask
         if (isset($image['soft_mask'])) {
             $decodeParms = \sprintf('/Predictor 15 /Colors 1 /BitsPerComponent 8 /Columns %.2f', $image['width']);
