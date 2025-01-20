@@ -57,6 +57,19 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
         self::assertSame(2, $doc->getPage());
     }
 
+    public function testImages(): void
+    {
+        $dir = __DIR__ . '/images/';
+        $doc = $this->createDocument();
+        $doc->image($dir . 'image.jpg');
+        $doc->image($dir . 'image.gif');
+        $doc->image($dir . 'image.png');
+        $doc->image($dir . 'image.webp');
+        $doc->image($dir . 'image.bmp');
+        $doc->close();
+        self::assertSame(3, $doc->getPage());
+    }
+
     public function testInvalid(): void
     {
         self::expectException(PdfException::class);
