@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 2.0.14 - 2025-01-23
 
 - Added bitmap image parser.
 - **BC Break!**: Moved image parsers to dedicated namespace.
