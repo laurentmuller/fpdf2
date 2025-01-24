@@ -1,5 +1,11 @@
 # Change log
 
+## Unreleased
+
+- **BC Break!**: Created dedicated colors namespace. Now the `setDrawColor()`,
+  `setFillColor()` and `setTextColor()` functions of `PdfDocument` class take
+  a `PdfColorInterface` instance.
+
 ## 2.0.14 - 2025-01-23
 
 - Added bitmap image parser.

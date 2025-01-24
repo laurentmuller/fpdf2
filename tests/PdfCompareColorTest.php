@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace fpdf\Tests;
 
+use fpdf\Color\PdfGrayColor;
+use fpdf\Color\PdfRgbColor;
 use fpdf\Enums\PdfMove;
 use fpdf\Enums\PdfTextAlignment;
 use fpdf\PdfBorder;
@@ -22,14 +24,14 @@ class PdfCompareColorTest extends AbstractCompareTestCase
 {
     protected function updateNewDocument(PdfDocument $doc): void
     {
-        $doc->setDrawColor(100);
-        $doc->setDrawColor(50, 100, 200);
+        $doc->setDrawColor(PdfGrayColor::instance(100));
+        $doc->setDrawColor(PdfRgbColor::instance(50, 100, 200));
 
-        $doc->setFillColor(100);
-        $doc->setFillColor(50, 100, 200);
+        $doc->setFillColor(PdfGrayColor::instance(100));
+        $doc->setFillColor(PdfRgbColor::instance(50, 100, 200));
 
-        $doc->setTextColor(100);
-        $doc->setTextColor(50, 100, 200);
+        $doc->setTextColor(PdfGrayColor::instance(100));
+        $doc->setTextColor(PdfRgbColor::instance(50, 100, 200));
 
         $doc->cell(null, 5.0, 'Test Color', PdfBorder::all(), PdfMove::BELOW, PdfTextAlignment::RIGHT);
         $doc->cell(null, 5.0, 'Test Color', PdfBorder::all(), PdfMove::BELOW, PdfTextAlignment::CENTER, true);

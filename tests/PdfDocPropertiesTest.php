@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace fpdf\Tests;
 
+use fpdf\Color\PdfRgbColor;
 use fpdf\Enums\PdfDestination;
 use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
@@ -94,8 +95,8 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
     public function testColorFlag(): void
     {
         $doc = $this->createDocument(false, false);
-        $doc->setFillColor(255, 255, 255);
-        $doc->setTextColor(0, 0, 0);
+        $doc->setFillColor(PdfRgbColor::white());
+        $doc->setTextColor(PdfRgbColor::black());
         $doc->addPage();
         $doc->setFont(PdfFontName::ARIAL);
         $doc->cell(text: 'fake');
