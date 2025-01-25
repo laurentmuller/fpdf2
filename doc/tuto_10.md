@@ -12,6 +12,7 @@ All angle parameters are expressed in degrees ('&deg;').
 To use it, create a derived class and use the `PdfSectorTrait` trait:
 
 ```php
+use fpdf\Color\PdfRgbColor;
 use fpdf\PdfDocument;
 use fpdf\Traits\PdfSectorTrait;
 
@@ -28,13 +29,13 @@ $centerY = 60;
 $pdf = new SectorDocument();
 $pdf->addPage();
 // first sector
-$pdf->setFillColor(120, 120, 255);
+$pdf->setFillColor(PdfRgbColor::instance(120, 120, 255));
 $pdf->sector($centerX, $centerY, $radius, 20, 120);
 // second sector
-$pdf->setFillColor(120, 255, 120);
+$pdf->setFillColor(PdfRgbColor::instance(120, 255, 120));
 $pdf->sector($centerX, $centerY, $radius, 120, 250);
 // third sector
-$pdf->setFillColor(255, 120, 120);
+$pdf->setFillColor(PdfRgbColor::instance(255, 120, 120));
 $pdf->sector($centerX, $centerY, $radius, 250, 20);
 
 $pdf->output();

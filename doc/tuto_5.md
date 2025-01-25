@@ -3,6 +3,8 @@
 This tutorial shows different ways to make tables.
 
 ```php
+use fpdf\Color\PdfGrayColor;
+use fpdf\Color\PdfRgbColor;
 use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
 use fpdf\Enums\PdfMove;
@@ -71,9 +73,9 @@ class CustomDocument extends PdfDocument
     public function fancyTable(array $header, array $data): void
     {
         // colors, line width and bold font
-        $this->setFillColor(255, 0, 0);
-        $this->setTextColor(255);
-        $this->setDrawColor(128, 0, 0);
+        $this->setFillColor(PdfRgbColor::red());
+        $this->setTextColor(PdfGrayColor::white());
+        $this->setDrawColor(PdfRgbColor::darkRed());
         $this->setLineWidth(0.3);
         $this->setFont(style: PdfFontStyle::BOLD);
         // header
@@ -83,8 +85,8 @@ class CustomDocument extends PdfDocument
         }
         $this->lineBreak();
         // color and font restoration
-        $this->setFillColor(224, 235, 255);
-        $this->setTextColor(0);
+        $this->setFillColor(PdfRgbColor::instance(224, 235, 255));
+        $this->setTextColor(PdfGrayColor::instance(0));
         $this->setFont(style: PdfFontStyle::REGULAR);
         // data
         $fill = false;

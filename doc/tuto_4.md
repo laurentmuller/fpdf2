@@ -4,6 +4,7 @@ This example is a variant of the previous one showing how to lay the text across
 multiple columns.
 
 ```php
+use fpdf\Color\PdfRgbColor;
 use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
 use fpdf\Enums\PdfMove;
@@ -25,9 +26,9 @@ class CustomDocument extends PdfDocument
         $this->setFont(PdfFontName::ARIAL, PdfFontStyle::BOLD, 15);
         $width = $this->getStringWidth($title) + 6.0;
         $this->setX(($this->width - $width) / 2);
-        $this->setDrawColor(0, 80, 180);
-        $this->setFillColor(230, 230, 0);
-        $this->setTextColor(220, 50, 50);
+        $this->setDrawColor(PdfRgbColor::instance(0, 80, 180));
+        $this->setFillColor(PdfRgbColor::instance(230, 230, 0));
+        $this->setTextColor(PdfRgbColor::instance(220, 50, 50));
         $this->setLineWidth(1);
         $this->cell($width, 9, $title, PdfBorder::all(), PdfMove::NEW_LINE, PdfTextAlignment::CENTER, true);
         $this->lineBreak(10);
@@ -73,7 +74,7 @@ class CustomDocument extends PdfDocument
     {
         // title
         $this->setFont(PdfFontName::ARIAL, PdfFontStyle::REGULAR, 12);
-        $this->setFillColor(200, 220, 255);
+        $this->setFillColor(PdfRgbColor::instance(200, 220, 255));
         $this->cell(null, 6, \sprintf('Chapter %d. %s', $num, $title), PdfBorder::none(), PdfMove::NEW_LINE, PdfTextAlignment::LEFT, true);
         $this->lineBreak(4);
         // save ordinate
