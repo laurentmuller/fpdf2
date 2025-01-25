@@ -4,6 +4,8 @@ Let's continue with an example, which prints justified paragraphs. It also
 illustrates the use of colors.
 
 ```php
+use fpdf\Color\PdfGrayColor;
+use fpdf\Color\PdfRgbColor;
 use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
 use fpdf\Enums\PdfMove;
@@ -22,9 +24,9 @@ class CustomDocument extends PdfDocument
         $width = $this->getStringWidth($title) + 6.0;
         $this->setX(($this->width - $width) / 2.0);
         // colors of frame, background and text
-        $this->setDrawColor(0, 80, 180);
-        $this->setFillColor(230, 230, 0);
-        $this->setTextColor(220, 50, 50);
+        $this->setDrawColor(PdfRgbColor::instance(0, 80, 180));
+        $this->setFillColor(PdfRgbColor::instance(230, 230, 0));
+        $this->setTextColor(PdfRgbColor::instance(220, 50, 50));
         // thickness of frame (1 mm)
         $this->setLineWidth(1);
         // title
@@ -40,7 +42,7 @@ class CustomDocument extends PdfDocument
         // Arial italic 8pt
         $this->setFont(PdfFontName::ARIAL, PdfFontStyle::ITALIC, 8);
         // text color in gray
-        $this->setTextColor(128);
+        $this->setTextColor(PdfGrayColor::instance(128));
         // page number
         $this->cell(null, 10, \sprintf('Page %d', $this->getPage()), PdfBorder::none(), PdfMove::RIGHT, PdfTextAlignment::CENTER);
     }
@@ -65,7 +67,7 @@ class CustomDocument extends PdfDocument
         // Arial 12pt
         $this->setFont(PdfFontName::ARIAL, PdfFontStyle::REGULAR, 12);
         // background color
-        $this->setFillColor(200, 220, 255);
+        $this->setFillColor(PdfRgbColor::instance(200, 220, 255));
         // title
         $this->cell(null, 6, \sprintf('Chapter %d. %s', $num, $title), PdfBorder::none(), PdfMove::NEW_LINE, PdfTextAlignment::LEFT, true);
         // line break
