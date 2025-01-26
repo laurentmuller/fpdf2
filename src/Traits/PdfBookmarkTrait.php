@@ -41,11 +41,6 @@ use fpdf\PdfException;
 trait PdfBookmarkTrait
 {
     /**
-     * The default index title.
-     */
-    private const INDEX_TITLE = 'Index';
-
-    /**
      * The space, in millimeters, between texts.
      */
     private const SPACE = 1.25;
@@ -127,8 +122,7 @@ trait PdfBookmarkTrait
      *
      * <b>Remark:</b> Do nothing if no bookmark is set.
      *
-     * @param ?string                 $title       the index title or <code>null</code> to use the default
-     *                                             title ('Index')
+     * @param string                  $title       the index title. If empty (''), no title is output.
      * @param PdfFontName|string|null $fontName    the title and content font name. It can be a font name
      *                                             enumeration or a name defined by <code>addFont()</code>.
      *                                             If <code>null</code>, the current font name is kept.
@@ -139,7 +133,7 @@ trait PdfBookmarkTrait
      *                                             the page number
      */
     public function addPageIndex(
-        ?string $title = null,
+        string $title = 'Index',
         PdfFontName|string|null $fontName = null,
         float $titleSize = 9.0,
         float $contentSize = 9.0,
@@ -158,9 +152,12 @@ trait PdfBookmarkTrait
 
         // title
         $this->addPage();
+        $titleBookmark = false;
         $space = PdfUnit::MILLIMETER->convert(self::SPACE, $this->unit);
-        $this->setFont($fontName, PdfFontStyle::BOLD, $titleSize);
-        $titleBookmark = $this->outputIndexTitle($title, $addBookmark, $space);
+        if ('' !== $title) {
+            $this->setFont($fontName, PdfFontStyle::BOLD, $titleSize);
+            $titleBookmark = $this->outputIndexTitle($title, $addBookmark, $space);
+        }
 
         // content style
         $this->setFont($fontName, PdfFontStyle::REGULAR, $contentSize);
@@ -307,15 +304,15 @@ trait PdfBookmarkTrait
     }
 
     /**
+     * @phpstan-param non-empty-string $title
+     *
      * @phpstan-return PdfBookmarkType|false
      */
     private function outputIndexTitle(
-        ?string $title,
+        string $title,
         bool $addBookmark,
         float $space
     ): array|false {
-        $title ??= self::INDEX_TITLE;
-
         $result = false;
         if ($addBookmark) {
             $this->addBookmark($title, currentY: false);

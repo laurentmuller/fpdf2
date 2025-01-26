@@ -49,6 +49,16 @@ class PdfBookmarkTraitTest extends TestCase
         self::assertSame(2, $doc->getPage());
     }
 
+    public function testIndexNoTitle(): void
+    {
+        $doc = $this->createDocument();
+        $doc->addBookmark('Level 0');
+        $doc->addBookmark('Level 1', level: 1);
+        $doc->addPageIndex(title: '');
+        $doc->output(PdfDestination::STRING);
+        self::assertSame(2, $doc->getPage());
+    }
+
     public function testLevelInvalid(): void
     {
         self::expectException(PdfException::class);
