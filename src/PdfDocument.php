@@ -1839,7 +1839,7 @@ class PdfDocument
     public function setFillColor(PdfColorInterface $color): static
     {
         $this->fillColor = \strtolower($color->getOutput());
-        $this->colorFlag = ($this->fillColor !== $this->textColor);
+        $this->colorFlag = $this->fillColor !== $this->textColor;
         if ($this->page > 0) {
             $this->out($this->fillColor);
         }
@@ -2146,7 +2146,7 @@ class PdfDocument
     public function setTextColor(PdfColorInterface $color): static
     {
         $this->textColor = \strtolower($color->getOutput());
-        $this->colorFlag = ($this->fillColor !== $this->textColor);
+        $this->colorFlag = $this->fillColor !== $this->textColor;
 
         return $this;
     }
