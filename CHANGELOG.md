@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added default title to the `addPageIndex()` function of
+  the `PdfBookmarkTrait` trait.
 - Added function definitions in examples.
 - Updated examples.
 - **BC Break!**: Created dedicated colors namespace. Now the `setDrawColor()`,

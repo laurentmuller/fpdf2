@@ -59,7 +59,7 @@ page contains a centered title ('Index') and for each bookmark:
 
 ```php
 addPageIndex(
-    ?string $title = null,
+    string $title = 'Index',
     PdfFontName|string|null $fontName = null,
     float $titleSize = 9.0,
     float $contentSize = 9.0,
@@ -70,7 +70,7 @@ addPageIndex(
 
 **Parameters:**
 
-- `$title`: The index title or null to use the default title ('Index').
+- `$title`: The index title. If empty (''), the title is not rendered.
 - `$fontName`: The title and content font name.
   It can be a font name enumeration or a name defined by `addFont()`.
   If null, the current font name is kept.
