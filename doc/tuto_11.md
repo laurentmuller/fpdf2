@@ -6,6 +6,19 @@ Since version `2.0.13`, a trait allows attaching files to the PDF.
 [FPDF script](http://www.fpdf.org/en/script/script95.php) created by
 Oliver.
 
+**Definition:**
+
+```php
+addAttachment(string $file, string $name = '', string $desc = '')
+```
+
+**Parameters:**
+
+- `$file`: The path to the file to be attached.
+- `$name`: An optional alternative file name to be used for the attachment
+  The default value is the base name of the file.
+- `$desc`: An optional description for the file contents.
+
 To use it, create a derived class and use the `PdfAttachmentTrait` trait:
 
 ```php
