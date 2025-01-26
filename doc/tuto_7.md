@@ -20,6 +20,7 @@ class TransparencyDocument extends PdfDocument
 
 // instanciation of inherited class
 $pdf = new TransparencyDocument();
+$pdf->addPage();
 // output an image with no transparency
 $pdf->image('logo.png', 10, 20);
 // set alpha with a 50% of transparency

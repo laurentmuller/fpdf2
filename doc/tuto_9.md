@@ -28,6 +28,8 @@ class RotationDocument extends PdfDocument
 
 // instanciation of inherited class
 $pdf = new RotationDocument();
+$pdf->addPage();
+$pdf->setFont(PdfFontName::ARIAL);
 // rotate text by 45 degrees
 $pdf->rotateText('My Rotated test', 45, 10, 50);
 // rotate rectangle

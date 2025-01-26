@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added function definitions in examples.
 - Updated examples.
 - **BC Break!**: Created dedicated colors namespace. Now the `setDrawColor()`,
   `setFillColor()` and `setTextColor()` functions of `PdfDocument` class take

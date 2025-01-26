@@ -24,7 +24,7 @@ use fpdf\PdfDocument;
  * The code is inspired from FPDF script
  * <a href="http://www.fpdf.org/en/script/script19.php" target="_blank">Sector</a>.
  *
- * @psalm-require-extends PdfDocument
+ * @phpstan-require-extends PdfDocument
  */
 trait PdfSectorTrait
 {

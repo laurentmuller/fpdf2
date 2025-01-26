@@ -7,7 +7,35 @@ used, for example, to render a pie chart.
 [FPDF script](http://www.fpdf.org/en/script/script19.php) created by
 Maxime Delorme.
 
-All angle parameters are expressed in degrees ('&deg;').
+**Definition:**
+
+```php
+sector(
+    float $centerX,
+    float $centerY,
+    float $radius, 
+    float $startAngle,
+    float $endAngle,
+    PdfRectangleStyle $style = PdfRectangleStyle::BOTH,
+    boolean $clockwise = true,
+    float $origin = 90
+)
+```
+
+**Parameters:**
+
+- `$centerX`: The abscissa of the center.
+- `$centerY`: The ordinate of the center.
+- `$radius`: The radius.
+- `$startAngle`: The starting angle in degrees.
+- `$endAngle`: The ending angle in degrees.
+- `$style`: The style of rendering.
+- `$clockwise`: Indicates whether to go clockwise (true) or counter-clockwise
+  (false).
+- `$origin`: the origin,in degrees, of angles (0=right, 90=top, 180=left,
+  270=for bottom).
+
+All angle parameters are expressed in degrees (&deg;).
 
 To use it, create a derived class and use the `PdfSectorTrait` trait:
 

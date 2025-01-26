@@ -26,7 +26,7 @@ $pdf->setDrawColor(PdfRgbColor::red());
 $pdf->ellipse(30, 220, 20, 10);
 $pdf->circle(65, 220, 10);
 // output an ellipse and a circle with border and fill colors
-$pdf->setFillColor(PdfRgbColor::blue());
+$pdf->setFillColor(PdfRgbColor::green());
 $pdf->circle(65, 245, 10, PdfRectangleStyle::BOTH);
 $pdf->ellipse(30, 245, 20, 10, PdfRectangleStyle::BOTH);
 ```
