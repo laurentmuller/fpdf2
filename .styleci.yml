@@ -1,5 +1,5 @@
 risky: true
-version: 8.2
+version: 8.1
 preset: symfony2023
 monolithic: true
 finder:
