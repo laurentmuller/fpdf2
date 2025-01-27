@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace fpdf\Tests;
 
-use fpdf\Color\PdfGrayColor;
-use fpdf\Color\PdfRgbColor;
 use fpdf\Enums\PdfFontStyle;
 use fpdf\Enums\PdfLayout;
 use fpdf\Enums\PdfMove;
@@ -74,22 +72,21 @@ class PdfCompareBasicTest extends AbstractCompareTestCase
         $doc->addPage(PdfOrientation::LANDSCAPE);
         $doc->cell(text: 'This is  test 3456.', move: PdfMove::BELOW);
 
-        $doc->setDrawColor(PdfRgbColor::red());
+        $doc->setDrawColor(255, 0, 0);
         $x = $doc->getX();
         $y = $doc->getY();
         $doc->setLineWidth(0.5);
         $doc->line($x, $y, $x + 100.0, $y);
 
-        $doc->setFillColor(PdfRgbColor::green());
-        $doc->setTextColor(PdfRgbColor::blue());
+        $doc->setFillColor(0, 255, 0);
+        $doc->setTextColor(0, 0, 255);
         $x = $doc->getX();
         $y = $doc->getY() + 10.0;
         $doc->rect($x, $y, 100, 100, PdfRectangleStyle::BOTH);
 
-        $color = PdfGrayColor::instance(255);
-        $doc->setDrawColor($color);
-        $doc->setFillColor($color);
-        $doc->setTextColor($color);
+        $doc->setDrawColor(255);
+        $doc->setFillColor(255);
+        $doc->setTextColor(255);
         $doc->setFontSizeInPoint(9.5);
 
         $doc->text($doc->getX(), $doc->getY(), 'Text');
