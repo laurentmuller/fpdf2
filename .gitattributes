@@ -2,6 +2,7 @@
 *.{png,jpg,jpeg,gif,webp,woff,woff2,pdf} binary
 
 /.github                 export-ignore
+/cache                   export-ignore
 /doc                     export-ignore
 /makefont                export-ignore
 /tests                   export-ignore

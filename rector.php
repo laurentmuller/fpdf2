@@ -17,6 +17,7 @@ use Rector\Set\ValueObject\SetList;
 use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
 
 return RectorConfig::configure()
+    ->withCache(__DIR__ . '/cache/rector')
     ->withRootFiles()
     ->withPaths([
         __DIR__ . '/src',
