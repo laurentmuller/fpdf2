@@ -113,6 +113,23 @@ class PdfPngParserTest extends TestCase
         $this->parseFile($file);
     }
 
+    public function testStreamClosed(): void
+    {
+        self::expectException(PdfException::class);
+        $parent = new PdfDocument();
+        $parser = new class() extends PdfPngParser {
+            public function parse(PdfDocument $parent, string $file): array
+            {
+                /** @phpstan-var resource $stream */
+                $stream = null; // @phpstan-ignore varTag.nativeType
+
+                return $this->parseStream($parent, $stream, $file);
+            }
+        };
+        $file = __DIR__ . '/images/image.png';
+        $parser->parse($parent, $file);
+    }
+
     public function testValid(): void
     {
         $file = 'image.png';
