@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Updated psalm to version 6.0.
 - Added default title to the `addPageIndex()` function of
   the `PdfBookmarkTrait` trait.
 - Added function definitions in examples.
