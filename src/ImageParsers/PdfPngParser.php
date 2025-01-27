@@ -58,7 +58,7 @@ class PdfPngParser implements PdfImageParserInterface
      *
      * @phpstan-return ImageType
      */
-    protected function parseStream(PdfDocument $parent, $stream, string $file): array
+    protected function parseStream(PdfDocument $parent, mixed $stream, string $file): array
     {
         // check header signature
         $this->checkSignature($stream, $file);
@@ -231,7 +231,7 @@ class PdfPngParser implements PdfImageParserInterface
     }
 
     /**
-     * @phpstan-return array{0: string, 1: string}
+     * @return array{0: string, 1: string}
      */
     private function extractAlphaChannel(int $width, int $height, int $colorType, string $data): array
     {
@@ -275,23 +275,23 @@ class PdfPngParser implements PdfImageParserInterface
     }
 
     /**
-     * @phpstan-param resource $stream
+     * @param resource $stream
      *
      * @throws PdfException if the end of the stream is reached
      */
-    private function getPalette($stream, int $length): string
+    private function getPalette(mixed $stream, int $length): string
     {
         return $this->readString($stream, $length);
     }
 
     /**
-     * @phpstan-param resource $stream
+     * @param resource $stream
      *
-     * @phpstan-return int[]
+     * @return int[]
      *
      * @throws PdfException if the end of the stream is reached
      */
-    private function getTransparencies($stream, int $length, int $colorType): array
+    private function getTransparencies(mixed $stream, int $length, int $colorType): array
     {
         $transparency = $this->readString($stream, $length);
         switch ($colorType) {
@@ -332,7 +332,7 @@ class PdfPngParser implements PdfImageParserInterface
      *
      * @throws PdfException if the end of the stream is reached
      */
-    private function readByte($stream): int
+    private function readByte(mixed $stream): int
     {
         return \ord($this->readString($stream, 1));
     }
@@ -344,9 +344,9 @@ class PdfPngParser implements PdfImageParserInterface
      *
      * @throws PdfException if the end of the stream is reached
      */
-    private function readInt($stream): int
+    private function readInt(mixed $stream): int
     {
-        /** @phpstan-var array{i: int} $unpack */
+        /** @var array{i: int} $unpack */
         $unpack = \unpack('Ni', $this->readString($stream, 4));
 
         return $unpack['i'];
@@ -360,7 +360,7 @@ class PdfPngParser implements PdfImageParserInterface
      *
      * @throws PdfException if the end of the stream is reached
      */
-    private function readString($stream, int $len): string
+    private function readString(mixed $stream, int $len): string
     {
         /** @psalm-var int<1, max> $len */
         $result = \fread($stream, $len);

@@ -86,13 +86,13 @@ readonly class PdfCmykColor implements PdfColorInterface
         $black = $this->asFloat($this->black);
         $magenta = $this->asFloat($this->magenta);
         $yellow = $this->asFloat($this->yellow);
-
         $multiplier = 1.0 - $black;
-        $red = $this->asInt($cyan, $multiplier);
-        $green = $this->asInt($magenta, $multiplier);
-        $blue = $this->asInt($yellow, $multiplier);
 
-        return PdfRgbColor::instance($red, $green, $blue);
+        return PdfRgbColor::instance(
+            $this->asInt($cyan, $multiplier),
+            $this->asInt($magenta, $multiplier),
+            $this->asInt($yellow, $multiplier)
+        );
     }
 
     private function asFloat(int $value): float
