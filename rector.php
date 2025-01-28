@@ -25,7 +25,6 @@ return RectorConfig::configure()
         __DIR__ . '/rector.php',
     ])->withSkip([
         PreferPHPUnitThisCallRector::class,
-        DisallowedEmptyRuleFixerRector::class,
         __DIR__ . '/src/font',
         __DIR__ . '/tests/FPDF.php',
         __DIR__ . '/tests/font',
