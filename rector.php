@@ -14,7 +14,6 @@ use Rector\Config\RectorConfig;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\SetList;
-use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
 
 return RectorConfig::configure()
     ->withCache(__DIR__ . '/cache/rector')
