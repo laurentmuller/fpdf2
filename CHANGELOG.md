@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Updated Symfony to version 7.2.3.
 - Updated Rector to version 2.0.
 - Updated cache configurations.
 - Updated psalm to version 6.0.
