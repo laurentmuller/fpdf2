@@ -16,10 +16,51 @@ namespace fpdf\Tests\Color;
 use fpdf\Color\PdfCmykColor;
 use fpdf\Color\PdfGrayColor;
 use fpdf\Color\PdfRgbColor;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class PdfRgbColorTest extends TestCase
 {
+    public static function getHexColors(): \Iterator
+    {
+        $rgb = [0x00, 0x00, 0x00];
+        yield [$rgb[0], $rgb[1], $rgb[2], '000000'];
+        yield [$rgb[0], $rgb[1], $rgb[2], '0x000000', '0x'];
+
+        $rgb = [0xFF, 0xFF, 0xFF];
+        yield [$rgb[0], $rgb[1], $rgb[2], 'ffffff'];
+        yield [$rgb[0], $rgb[1], $rgb[2], '0xffffff', '0x'];
+
+        $rgb = [0x32, 0x64, 0x96];
+        yield [$rgb[0], $rgb[1], $rgb[2], '326496'];
+        yield [$rgb[0], $rgb[1], $rgb[2], '0x326496', '0x'];
+
+        $rgb = [0x00, 0x64, 0x96];
+        yield [$rgb[0], $rgb[1], $rgb[2], '006496'];
+        yield [$rgb[0], $rgb[1], $rgb[2], '0x006496', '0x'];
+
+        $rgb = [0x00, 0xFF, 0x00];
+        yield [$rgb[0], $rgb[1], $rgb[2], '00ff00'];
+        yield [$rgb[0], $rgb[1], $rgb[2], '0x00ff00', '0x'];
+
+        $rgb = [0x00, 0x00, 0xFF];
+        yield [$rgb[0], $rgb[1], $rgb[2], '0000ff'];
+        yield [$rgb[0], $rgb[1], $rgb[2], '0x0000ff', '0x'];
+    }
+
+    /**
+     * @param int<0, 255> $red
+     * @param int<0, 255> $green
+     * @param int<0, 255> $blue
+     */
+    #[DataProvider('getHexColors')]
+    public function testAsHex(int $red, int $green, int $blue, string $expected, string $prefix = ''): void
+    {
+        $color = PdfRgbColor::instance($red, $green, $blue);
+        $actual = $color->asHex($prefix);
+        self::assertSame($expected, $actual);
+    }
+
     public function testBlack(): void
     {
         $actual = PdfRgbColor::black();
@@ -53,23 +94,29 @@ class PdfRgbColorTest extends TestCase
         $actual = PdfRgbColor::create('FA');
         self::assertNull($actual);
 
-        $actual = PdfRgbColor::create(0);
+        $actual = PdfRgbColor::create('FAB');
         self::assertInstanceOf(PdfRgbColor::class, $actual);
-        self::assertSameColor($actual, 0, 0, 0);
-
-        // 3296100
-        $value = 50 << 0x10 | 75 << 0x08 | 100;
-        $actual = PdfRgbColor::create($value);
-        self::assertInstanceOf(PdfRgbColor::class, $actual);
-        self::assertSameColor($actual, 50, 75, 100);
+        self::assertSameColor($actual, 255, 170, 187);
 
         $actual = PdfRgbColor::create('#FAB');
         self::assertInstanceOf(PdfRgbColor::class, $actual);
         self::assertSameColor($actual, 255, 170, 187);
 
-        $actual = PdfRgbColor::create('#FFAABB');
+        $actual = PdfRgbColor::create('#FAB#');
         self::assertInstanceOf(PdfRgbColor::class, $actual);
         self::assertSameColor($actual, 255, 170, 187);
+
+        $actual = PdfRgbColor::create('FF00BB');
+        self::assertInstanceOf(PdfRgbColor::class, $actual);
+        self::assertSameColor($actual, 255, 0, 187);
+
+        $actual = PdfRgbColor::create('#FF00BB');
+        self::assertInstanceOf(PdfRgbColor::class, $actual);
+        self::assertSameColor($actual, 255, 0, 187);
+
+        $actual = PdfRgbColor::create('#FF00BB#');
+        self::assertInstanceOf(PdfRgbColor::class, $actual);
+        self::assertSameColor($actual, 255, 0, 187);
     }
 
     public function testDarkGray(): void

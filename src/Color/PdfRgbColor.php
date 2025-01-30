@@ -41,6 +41,18 @@ readonly class PdfRgbColor implements PdfColorInterface
     }
 
     /**
+     * Gets the hexadecimal representation of these values.
+     *
+     * @param string $prefix the optional prefix to prepend
+     *
+     * @return string the hexadecimal value as six lower case characters (like <code>'ff8040'</code>)
+     */
+    public function asHex(string $prefix = ''): string
+    {
+        return \sprintf('%s%02x%02x%02x', $prefix, $this->red, $this->green, $this->blue);
+    }
+
+    /**
      * Gets the black color.
      *
      * The value is RGB(0, 0, 0).
@@ -61,24 +73,28 @@ readonly class PdfRgbColor implements PdfColorInterface
     }
 
     /**
-     * Try to create an RGB color from the given value.
+     * Try to create an RGB color from the given string.
      *
-     * @param int|string|null $value the value to parse. An integer value or a hexadecimal string
-     *                               like <code>'FF8040'</code> or <code>'FFF'</code>
+     * Note: This function will ignore any non-hexadecimal characters it encounters.
+     *
+     * @param ?string $value the value to parse. A hexadecimal string
+     *                       like <code>'FF8040'</code> or <code>'FFF'</code>
      *
      * @return PdfRgbColor|null the RGB color, if applicable, null otherwise
      */
-    public static function create(int|string|null $value): ?self
+    public static function create(?string $value): ?self
     {
         if (null === $value || '' === $value) {
             return null;
         }
 
-        if (\is_int($value)) {
-            return self::createFromInt($value);
-        }
+        $value = (string) \preg_replace('/[^0-9A-F]/i', '', $value);
 
-        return self::createFromString($value);
+        return match (\strlen($value)) {
+            3 => self::createFrom3Chars($value),
+            6 => self::createFrom6Chars($value),
+            default => null,
+        };
     }
 
     /**
@@ -229,29 +245,6 @@ readonly class PdfRgbColor implements PdfColorInterface
         $blue = self::hexdec(\substr($value, 4, 2));
 
         return self::instance($red, $green, $blue);
-    }
-
-    private static function createFromInt(int $value): self
-    {
-        /** @var int<0, 255> $red */
-        $red = 0xFF & ($value >> 0x10);
-        /** @var int<0, 255> $green */
-        $green = 0xFF & ($value >> 0x08);
-        /** @var int<0, 255> $blue */
-        $blue = 0xFF & $value;
-
-        return self::instance($red, $green, $blue);
-    }
-
-    private static function createFromString(string $value): ?self
-    {
-        $value = (string) \preg_replace('/[^0-9A-F]/i', '', $value);
-
-        return match (\strlen($value)) {
-            3 => self::createFrom3Chars($value),
-            6 => self::createFrom6Chars($value),
-            default => null,
-        };
     }
 
     /**
