@@ -18,14 +18,14 @@ use fpdf\Interfaces\PdfColorInterface;
 /**
  * Represents an RGB (red-green-blue) color.
  */
-readonly class PdfRgbColor implements PdfColorInterface
+class PdfRgbColor implements PdfColorInterface
 {
     /**
      * @param int<0, 255> $red   the red component (0 to 255)
      * @param int<0, 255> $green the green component (0 to 255)
      * @param int<0, 255> $blue  the blue component (0 to 255)
      */
-    public function __construct(public int $red, public int $green, public int $blue)
+    public function __construct(public readonly int $red, public readonly int $green, public readonly int $blue)
     {
     }
 

@@ -1,6 +1,10 @@
 # Change log
 
-## Unreleased
+## 3.0.1 - 2025-01-30
+
+- Make `PdfRgbColor` class no more read-only.
+
+## 3.0.0 - 2025-01-30
 
 - Updated `PdfRgbColor` class.
 - Updated Symfony to version 7.2.3.
