@@ -1,5 +1,9 @@
 # Change log
 
+## 3.0.3 - 2025-01-30
+
+- Make `PdfRgbColor` class as read-only.
+
 ## 3.0.2 - 2025-01-30
 
 - Updated `PdfRgbColor` class with static methods and return types.
