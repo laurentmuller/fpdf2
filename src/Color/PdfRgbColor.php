@@ -25,7 +25,7 @@ class PdfRgbColor implements PdfColorInterface
      * @param int<0, 255> $green the green component (0 to 255)
      * @param int<0, 255> $blue  the blue component (0 to 255)
      */
-    public function __construct(public readonly int $red, public readonly int $green, public readonly int $blue)
+    final public function __construct(public readonly int $red, public readonly int $green, public readonly int $blue)
     {
     }
 
@@ -57,9 +57,9 @@ class PdfRgbColor implements PdfColorInterface
      *
      * The value is RGB(0, 0, 0).
      */
-    public static function black(): self
+    public static function black(): static
     {
-        return new self(0, 0, 0);
+        return self::instance(0, 0, 0);
     }
 
     /**
@@ -67,9 +67,9 @@ class PdfRgbColor implements PdfColorInterface
      *
      * The value is RGB(0, 0, 255).
      */
-    public static function blue(): self
+    public static function blue(): static
     {
-        return new self(0, 0, 255);
+        return self::instance(0, 0, 255);
     }
 
     /**
@@ -80,9 +80,9 @@ class PdfRgbColor implements PdfColorInterface
      * @param ?string $value the value to parse. A hexadecimal string
      *                       like <code>'FF8040'</code> or <code>'FFF'</code>
      *
-     * @return PdfRgbColor|null the RGB color, if applicable, null otherwise
+     * @return static|null the RGB color, if applicable, null otherwise
      */
-    public static function create(?string $value): ?self
+    public static function create(?string $value): ?static
     {
         if (null === $value || '' === $value) {
             return null;
@@ -102,9 +102,9 @@ class PdfRgbColor implements PdfColorInterface
      *
      * The value is RGB(169, 169, 169).
      */
-    public static function darkGray(): self
+    public static function darkGray(): static
     {
-        return new self(169, 169, 169);
+        return self::instance(169, 169, 169);
     }
 
     /**
@@ -112,9 +112,9 @@ class PdfRgbColor implements PdfColorInterface
      *
      * The value is RGB(0, 128, 0).
      */
-    public static function darkGreen(): self
+    public static function darkGreen(): static
     {
-        return new self(0, 128, 0);
+        return self::instance(0, 128, 0);
     }
 
     /**
@@ -122,9 +122,9 @@ class PdfRgbColor implements PdfColorInterface
      *
      * The value is RGB(128, 0, 0).
      */
-    public static function darkRed(): self
+    public static function darkRed(): static
     {
-        return new self(128, 0, 0);
+        return self::instance(128, 0, 0);
     }
 
     public function equals(PdfColorInterface $other): bool
@@ -139,7 +139,7 @@ class PdfRgbColor implements PdfColorInterface
     {
         // black?
         if (0 === $this->red && 0 === $this->green && 0 === $this->blue) {
-            return '0.000 g';
+            return \sprintf('%.3F g', 0.0);
         }
 
         return \sprintf(
@@ -155,9 +155,9 @@ class PdfRgbColor implements PdfColorInterface
      *
      * The value is RGB(0, 255, 0).
      */
-    public static function green(): self
+    public static function green(): static
     {
-        return new self(0, 255, 0);
+        return self::instance(0, 255, 0);
     }
 
     /**
@@ -165,9 +165,9 @@ class PdfRgbColor implements PdfColorInterface
      * @param int<0, 255> $green the green component
      * @param int<0, 255> $blue  the blue component
      */
-    public static function instance(int $red, int $green, int $blue): self
+    public static function instance(int $red, int $green, int $blue): static
     {
-        return new self($red, $green, $blue);
+        return new static($red, $green, $blue);
     }
 
     /**
@@ -175,9 +175,9 @@ class PdfRgbColor implements PdfColorInterface
      *
      * The value is RGB(255, 0, 0).
      */
-    public static function red(): self
+    public static function red(): static
     {
-        return new self(255, 0, 0);
+        return self::instance(255, 0, 0);
     }
 
     /**
@@ -210,9 +210,9 @@ class PdfRgbColor implements PdfColorInterface
      *
      * The value is RGB(255, 255, 255).
      */
-    public static function white(): self
+    public static function white(): static
     {
-        return new self(255, 255, 255);
+        return self::instance(255, 255, 255);
     }
 
     private function asFloat(int $value): float
@@ -229,7 +229,7 @@ class PdfRgbColor implements PdfColorInterface
         return (int) \round($value * 100.0);
     }
 
-    private static function createFrom3Chars(string $value): self
+    private static function createFrom3Chars(string $value): static
     {
         $red = self::hexdec(\str_repeat(\substr($value, 0, 1), 2));
         $green = self::hexdec(\str_repeat(\substr($value, 1, 1), 2));
@@ -238,7 +238,7 @@ class PdfRgbColor implements PdfColorInterface
         return self::instance($red, $green, $blue);
     }
 
-    private static function createFrom6Chars(string $value): self
+    private static function createFrom6Chars(string $value): static
     {
         $red = self::hexdec(\substr($value, 0, 2));
         $green = self::hexdec(\substr($value, 2, 2));
