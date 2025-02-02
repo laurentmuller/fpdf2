@@ -1,5 +1,10 @@
 # Change log
 
+## Unreleased
+
+- Renamed private functions of `PdfSectorTrait`.
+- Added `scale()` and `divide()` functions to `PdfDocument` class.
+
 ## 3.0.3 - 2025-01-30
 
 - Make `PdfRgbColor` class as read-only.

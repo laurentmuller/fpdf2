@@ -122,7 +122,7 @@ class PdfDocument
     /** The buffer holding in-memory PDF. */
     protected string $buffer = '';
     /** The cell margin in the user unit. */
-    protected float $cellMargin = 0.0;
+    protected float $cellMargin;
     /**
      * The map character codes to character glyphs.
      *
@@ -178,13 +178,13 @@ class PdfDocument
      */
     protected array $fonts = [];
     /** The current font size in user unit. */
-    protected float $fontSize = 0.0;
+    protected float $fontSize;
     /** The current font size in points. */
     protected float $fontSizeInPoint = 9.0;
     /** The current font style. */
     protected PdfFontStyle $fontStyle = PdfFontStyle::REGULAR;
     /** The current page height in user unit. */
-    protected float $height = 0.0;
+    protected float $height;
     /**
      * Used images.
      *
@@ -206,7 +206,7 @@ class PdfDocument
     /** The line join. */
     protected PdfLineJoin $lineJoin;
     /** The line width in the user unit. */
-    protected float $lineWidth = 0.0;
+    protected float $lineWidth;
     /**
      * The internal links.
      *
@@ -256,7 +256,7 @@ class PdfDocument
     /** The right margin in the user unit. */
     protected float $rightMargin = 0.0;
     /** The scale factor (number of points in user unit). */
-    protected float $scaleFactor = 1.0;
+    protected float $scaleFactor;
     /** The current document state. */
     protected PdfState $state = PdfState::NO_PAGE;
     /** The commands for text color. */
@@ -270,7 +270,7 @@ class PdfDocument
     /** The viewer preferences */
     protected PdfViewerPreferences $viewerPreferences;
     /** The current page width in user unit. */
-    protected float $width = 0.0;
+    protected float $width;
     /** The word spacing. */
     protected float $wordSpacing = 0.0;
     /** The current x position in user unit. */
@@ -308,7 +308,7 @@ class PdfDocument
         // @phpstan-ignore cast.string
         $this->fontPath = \defined('FPDF_FONTPATH') ? (string) FPDF_FONTPATH : __DIR__ . '/font/';
         // font size
-        $this->fontSize = $this->fontSizeInPoint / $this->scaleFactor;
+        $this->fontSize = $this->divide($this->fontSizeInPoint);
         // page orientation
         $this->defaultOrientation = $orientation;
         $this->currentOrientation = $orientation;
@@ -325,12 +325,12 @@ class PdfDocument
         }
         $this->currentPageSizeInPoint = PdfSize::instance($this->width, $this->height)->scale($this->scaleFactor);
         // page margins (1 cm)
-        $margin = 28.35 / $this->scaleFactor;
+        $margin = $this->divide(28.35);
         $this->setMargins($margin, $margin);
         // interior cell margin (1 mm)
         $this->cellMargin = $margin / 10.0;
         // line width (0.2 mm)
-        $this->lineWidth = .567 / $this->scaleFactor;
+        $this->lineWidth = $this->divide(0.567);
         // automatic page break
         $this->setAutoPageBreak(true, 2.0 * $margin);
         // producer
@@ -560,7 +560,6 @@ class PdfDocument
         bool $fill = false,
         string|int|null $link = null
     ): static {
-        $scaleFactor = $this->scaleFactor;
         if (!$this->isPrintable($height) && !$this->inHeader && !$this->inFooter && $this->autoPageBreak) {
             // automatic page break
             $x = $this->x;
@@ -586,10 +585,10 @@ class PdfDocument
             }
             $output .= \sprintf(
                 '%.2F %.2F %.2F %.2F re %s ',
-                $this->x * $scaleFactor,
-                ($this->height - $this->y) * $scaleFactor,
-                $width * $scaleFactor,
-                -$height * $scaleFactor,
+                $this->scale($this->x),
+                $this->scale($this->height - $this->y),
+                $this->scale($width),
+                $this->scale(-$height),
                 $style->value
             );
         }
@@ -611,8 +610,8 @@ class PdfDocument
             }
             $output .= \sprintf(
                 'BT %.2F %.2F Td (%s) Tj ET',
-                ($this->x + $dx) * $scaleFactor,
-                ($this->height - ($this->y + 0.5 * $height + 0.3 * $this->fontSize)) * $scaleFactor,
+                $this->scale($this->x + $dx),
+                $this->scale($this->height - ($this->y + 0.5 * $height + 0.3 * $this->fontSize)),
                 $this->escape($text)
             );
             if ($this->underline) {
@@ -1199,10 +1198,10 @@ class PdfDocument
         $infoWidth = (float) $image['width'];
         $infoHeight = (float) $image['height'];
         if ($width < 0.0) {
-            $width = -$infoWidth * 72.0 / $width / $this->scaleFactor;
+            $width = $this->divide(-$infoWidth * 72.0 / $width);
         }
         if ($height < 0.0) {
-            $height = -$infoHeight * 72.0 / $height / $this->scaleFactor;
+            $height = $this->divide(-$infoHeight * 72.0 / $height);
         }
         if (0.0 === $width) {
             $width = $height * $infoWidth / $infoHeight;
@@ -1226,10 +1225,10 @@ class PdfDocument
         $x ??= $this->x;
         $this->outf(
             'q %.2F 0 0 %.2F %.2F %.2F cm /I%d Do Q',
-            $width * $this->scaleFactor,
-            $height * $this->scaleFactor,
-            $x * $this->scaleFactor,
-            ($this->height - $y - $height) * $this->scaleFactor,
+            $this->scale($width),
+            $this->scale($height),
+            $this->scale($x),
+            $this->scale($this->height - $y - $height),
             $image['index']
         );
         if (self::isLink($link)) {
@@ -1303,10 +1302,10 @@ class PdfDocument
 
         $this->outf(
             '%.2F %.2F m %.2F %.2F l S',
-            $x1 * $this->scaleFactor,
-            ($this->height - $y1) * $this->scaleFactor,
-            $x2 * $this->scaleFactor,
-            ($this->height - $y2) * $this->scaleFactor
+            $this->scale($x1),
+            $this->scale($this->height - $y1),
+            $this->scale($x2),
+            $this->scale($this->height - $y2)
         );
 
         return $this;
@@ -1365,10 +1364,10 @@ class PdfDocument
     {
         $heightInPoint = $this->currentPageSizeInPoint->height;
         $this->pageLinks[$this->page][] = [
-            $x * $this->scaleFactor,
-            $heightInPoint - $y * $this->scaleFactor,
-            $width * $this->scaleFactor,
-            $height * $this->scaleFactor,
+            $this->scale($x),
+            $heightInPoint - $this->scale($y),
+            $this->scale($width),
+            $this->scale($height),
             $link,
             0,
         ];
@@ -1637,7 +1636,7 @@ class PdfDocument
      */
     public function pixels2UserUnit(float|int $pixels): float
     {
-        return (float) $pixels * 72.0 / 96.0 / $this->scaleFactor;
+        return $this->divide((float) $pixels * 72.0 / 96.0);
     }
 
     /**
@@ -1652,7 +1651,7 @@ class PdfDocument
      */
     public function points2UserUnit(float|int $points): float
     {
-        return (float) $points / $this->scaleFactor;
+        return $this->divide((float) $points);
     }
 
     /**
@@ -1676,13 +1675,12 @@ class PdfDocument
         string|int|null $link = null
     ): static {
         if ($style instanceof PdfRectangleStyle) {
-            $scaleFactor = $this->scaleFactor;
             $this->outf(
                 '%.2F %.2F %.2F %.2F re %s',
-                $x * $scaleFactor,
-                ($this->height - $y) * $scaleFactor,
-                $width * $scaleFactor,
-                -$height * $scaleFactor,
+                $this->scale($x),
+                $this->scale($this->height - $y),
+                $this->scale($width),
+                $this->scale(-$height),
                 $style->value
             );
         } elseif ($style->isAny()) {
@@ -1926,7 +1924,7 @@ class PdfDocument
         $this->fontFamily = $family;
         $this->fontStyle = $style;
         $this->fontSizeInPoint = $fontSizeInPoint;
-        $this->fontSize = $fontSizeInPoint / $this->scaleFactor;
+        $this->fontSize = $this->divide($fontSizeInPoint);
         $this->currentFont = $this->fonts[$fontKey];
         $this->outCurrentFont();
 
@@ -1938,7 +1936,7 @@ class PdfDocument
      */
     public function setFontSize(float $fontSize): static
     {
-        return $this->setFontSizeInPoint($fontSize * $this->scaleFactor);
+        return $this->setFontSizeInPoint($this->scale($fontSize));
     }
 
     /**
@@ -1952,7 +1950,7 @@ class PdfDocument
             return $this;
         }
         $this->fontSizeInPoint = $fonsSizeInPoint;
-        $this->fontSize = $fonsSizeInPoint / $this->scaleFactor;
+        $this->fontSize = $this->divide($fonsSizeInPoint);
         $this->outCurrentFont();
 
         return $this;
@@ -2266,8 +2264,8 @@ class PdfDocument
         }
         $output = \sprintf(
             'BT %.2F %.2F Td (%s) Tj ET',
-            $x * $this->scaleFactor,
-            ($this->height - $y) * $this->scaleFactor,
+            $this->scale($x),
+            $this->scale($this->height - $y),
             $this->escape($text)
         );
         if ($this->underline) {
@@ -2572,6 +2570,20 @@ class PdfDocument
     }
 
     /**
+     * Divide the given value by this scale factor.
+     *
+     * @param float $value the value to divide
+     *
+     * @return float the divided value
+     *
+     * @see PdfDocument::scale()
+     */
+    protected function divide(float $value): float
+    {
+        return $value / $this->scaleFactor;
+    }
+
+    /**
      * Output the underline font.
      *
      * @throws PdfException if no font has been set
@@ -2589,9 +2601,9 @@ class PdfDocument
 
         return \sprintf(
             ' %.2F %.2F %.2F %.2F re f',
-            $x * $this->scaleFactor,
-            ($this->height - ($y - $up / 1000.0 * $this->fontSize)) * $this->scaleFactor,
-            $width * $this->scaleFactor,
+            $this->scale($x),
+            $this->scale($this->height - ($y - $up / 1000.0 * $this->fontSize)),
+            $this->scale($width),
             -$ut / 1000.0 * $this->fontSizeInPoint
         );
     }
@@ -2670,10 +2682,10 @@ class PdfDocument
         }
 
         $output = '';
-        $left = $x * $this->scaleFactor;
-        $top = ($this->height - $y) * $this->scaleFactor;
-        $right = ($x + $width) * $this->scaleFactor;
-        $bottom = ($this->height - ($y + $height)) * $this->scaleFactor;
+        $left = $this->scale($x);
+        $top = $this->scale($this->height - $y);
+        $right = $this->scale($x + $width);
+        $bottom = $this->scale($this->height - ($y + $height));
         if ($border->isLeft()) {
             $output .= \sprintf('%.2F %.2F m %.2F %.2F l S ', $left, $top, $left, $bottom);
         }
@@ -2901,7 +2913,7 @@ class PdfDocument
     protected function outLineWidth(): void
     {
         if ($this->page > 0) {
-            $this->outf('%.2F w', $this->lineWidth * $this->scaleFactor);
+            $this->outf('%.2F w', $this->scale($this->lineWidth));
         }
     }
 
@@ -3222,13 +3234,13 @@ class PdfDocument
                     $height = $pageInfo['size']->width;
                 } else {
                     $height = (PdfOrientation::PORTRAIT === $this->defaultOrientation)
-                        ? $this->defaultPageSize->height * $this->scaleFactor
-                        : $this->defaultPageSize->width * $this->scaleFactor;
+                        ? $this->scale($this->defaultPageSize->height)
+                        : $this->scale($this->defaultPageSize->width);
                 }
                 $output .= \sprintf(
                     '/Dest [%d 0 R /XYZ 0 %.2F null]>>',
                     $pageInfo['number'] ?? 0,
-                    $height - $link[1] * $this->scaleFactor
+                    $height - $this->scale($link[1])
                 );
             }
             $this->put($output);
@@ -3323,7 +3335,7 @@ class PdfDocument
             $width = $this->defaultPageSize->height;
             $height = $this->defaultPageSize->width;
         }
-        $this->putf('/MediaBox [0 0 %.2F %.2F]', $width * $this->scaleFactor, $height * $this->scaleFactor);
+        $this->putf('/MediaBox [0 0 %.2F %.2F]', $this->scale($width), $this->scale($height));
         $this->put('>>');
         $this->putEndObj();
     }
@@ -3402,6 +3414,20 @@ class PdfDocument
     }
 
     /**
+     * Multiply the given value by this scale factor.
+     *
+     * @param float $value the value to scale
+     *
+     * @return float the scaled value
+     *
+     * @see PdfDocument::divide()
+     */
+    protected function scale(float $value): float
+    {
+        return $value * $this->scaleFactor;
+    }
+
+    /**
      * Convert the given string.
      */
     protected function textString(string $str): string
@@ -3471,7 +3497,7 @@ class PdfDocument
     {
         $this->wordSpacing = $value;
         if ($format || 0.0 !== $this->wordSpacing) {
-            $this->outf('%.3F Tw', $this->wordSpacing * $this->scaleFactor);
+            $this->outf('%.3F Tw', $this->scale($this->wordSpacing));
         } else {
             $this->out('0 Tw');
         }

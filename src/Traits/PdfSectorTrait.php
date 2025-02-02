@@ -63,39 +63,38 @@ trait PdfSectorTrait
 
         // compute values
         $height = $this->height;
-        $scaleFactor = $this->scaleFactor;
-        [$startAngle, $endAngle, $deltaAngle] = $this->sectorComputeAngles($startAngle, $endAngle, $clockwise, $origin);
-        $arc = $this->sectorComputeArc($deltaAngle, $radius);
+        [$startAngle, $endAngle, $deltaAngle] = $this->computeSectorAngles($startAngle, $endAngle, $clockwise, $origin);
+        $arc = $this->computeSectorArc($deltaAngle, $radius);
 
         // put center
-        $this->outf('%.2F %.2F m', $centerX * $scaleFactor, ($height - $centerY) * $scaleFactor);
+        $this->outf('%.2F %.2F m', $this->scale($centerX), $this->scale($height - $centerY));
 
         // put the first point
-        $x = ($centerX + $radius * \cos($startAngle)) * $scaleFactor;
-        $y = ($height - ($centerY - $radius * \sin($startAngle))) * $scaleFactor;
+        $x = $this->scale($centerX + $radius * \cos($startAngle));
+        $y = $this->scale($height - ($centerY - $radius * \sin($startAngle)));
         $this->outf('%.2F %.2F l', $x, $y);
 
         // draw arc
         if ($deltaAngle >= self::HALF_PI) {
             $endAngle = $startAngle + $deltaAngle / 4.0;
             $arc = 4.0 / 3.0 * (1.0 - \cos($deltaAngle / 8.0)) / \sin($deltaAngle / 8.0) * $radius;
-            $this->sectorOutputArc($centerX, $centerY, $radius, $startAngle, $endAngle, $arc);
+            $this->outputSectorArc($centerX, $centerY, $radius, $startAngle, $endAngle, $arc);
 
             $startAngle = $endAngle;
             $endAngle = $startAngle + $deltaAngle / 4.0;
-            $this->sectorOutputArc($centerX, $centerY, $radius, $startAngle, $endAngle, $arc);
+            $this->outputSectorArc($centerX, $centerY, $radius, $startAngle, $endAngle, $arc);
 
             $startAngle = $endAngle;
             $endAngle = $startAngle + $deltaAngle / 4.0;
-            $this->sectorOutputArc($centerX, $centerY, $radius, $startAngle, $endAngle, $arc);
+            $this->outputSectorArc($centerX, $centerY, $radius, $startAngle, $endAngle, $arc);
 
             $startAngle = $endAngle;
             $endAngle = $startAngle + $deltaAngle / 4.0;
         }
-        $this->sectorOutputArc($centerX, $centerY, $radius, $startAngle, $endAngle, $arc);
+        $this->outputSectorArc($centerX, $centerY, $radius, $startAngle, $endAngle, $arc);
 
         // terminate drawing
-        $this->sectorTerminate($style);
+        $this->terminateSector($style);
 
         return $this;
     }
@@ -103,7 +102,7 @@ trait PdfSectorTrait
     /**
      * @return float[]
      */
-    private function sectorComputeAngles(float $startAngle, float $endAngle, bool $clockwise, float $origin): array
+    private function computeSectorAngles(float $startAngle, float $endAngle, bool $clockwise, float $origin): array
     {
         $angle = $startAngle - $endAngle;
         if ($clockwise) {
@@ -115,8 +114,8 @@ trait PdfSectorTrait
             $startAngle += $origin;
         }
 
-        $startAngle = $this->sectorValidate($startAngle);
-        $endAngle = $this->sectorValidate($endAngle);
+        $startAngle = $this->validateSector($startAngle);
+        $endAngle = $this->validateSector($endAngle);
         if ($startAngle > $endAngle) {
             $endAngle += self::FULL_ROTATION;
         }
@@ -131,7 +130,7 @@ trait PdfSectorTrait
         return [$startAngle, $endAngle, $deltaAngle];
     }
 
-    private function sectorComputeArc(float $deltaAngle, float $radius): float
+    private function computeSectorArc(float $deltaAngle, float $radius): float
     {
         $sin = \sin($deltaAngle / 2.0);
         $cos = \cos($deltaAngle / 2.0);
@@ -144,7 +143,7 @@ trait PdfSectorTrait
      *
      * @psalm-suppress InvalidOperand
      */
-    private function sectorOutputArc(
+    private function outputSectorArc(
         float $centerX,
         float $centerY,
         float $radius,
@@ -162,24 +161,23 @@ trait PdfSectorTrait
 
         // output
         $height = $this->height;
-        $scaleFactor = $this->scaleFactor;
         $this->outf(
             '%.2F %.2F %.2F %.2F %.2F %.2F c',
-            $x1 * $scaleFactor,
-            ($height - $y1) * $scaleFactor,
-            $x2 * $scaleFactor,
-            ($height - $y2) * $scaleFactor,
-            $x3 * $scaleFactor,
-            ($height - $y3) * $scaleFactor
+            $this->scale($x1),
+            $this->scale($height - $y1),
+            $this->scale($x2),
+            $this->scale($height - $y2),
+            $this->scale($x3),
+            $this->scale($height - $y3)
         );
     }
 
-    private function sectorTerminate(PdfRectangleStyle $style): void
+    private function terminateSector(PdfRectangleStyle $style): void
     {
         $this->out($style->value);
     }
 
-    private function sectorValidate(float $angle): float
+    private function validateSector(float $angle): float
     {
         $angle = \fmod($angle, self::FULL_ROTATION);
 
