@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 3.0.4 - 2025-01-04 
 
 - Replaced the `width` and `height` properties of the `PdfDocument`
   by a `PdfSize` instance.
