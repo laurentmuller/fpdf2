@@ -23,6 +23,16 @@ class PdfDocMarginTest extends AbstractPdfDocTestCase
         self::assertSame($expected, $doc->getBottomMargin());
     }
 
+    public function testMargins(): void
+    {
+        $doc = $this->createDocument();
+        $actual = $doc->getMargins();
+        self::assertEqualsWithDelta(10.0, $actual->left, 0.01);
+        self::assertEqualsWithDelta(10.0, $actual->top, 0.01);
+        self::assertEqualsWithDelta(10.0, $actual->right, 0.01);
+        self::assertEqualsWithDelta(20.0, $actual->bottom, 0.01);
+    }
+
     public function testRightMargin(): void
     {
         $doc = $this->createDocument();

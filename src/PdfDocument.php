@@ -117,8 +117,6 @@ class PdfDocument
     protected bool $alphaChannel = false;
     /** The automatic page breaking. */
     protected bool $autoPageBreak = false;
-    /** The bottom margin in user unit (page break margin). */
-    protected float $bottomMargin = 0.0;
     /** The buffer holding in-memory PDF. */
     protected string $buffer = '';
     /** The cell margin in the user unit. */
@@ -141,7 +139,7 @@ class PdfDocument
     protected ?array $currentFont = null;
     /** The current orientation. */
     protected PdfOrientation $currentOrientation;
-    /** The current page size. */
+    /** The current page size in user unit. */
     protected PdfSize $currentPageSize;
     /** The current page size in point. */
     protected PdfSize $currentPageSizeInPoint;
@@ -149,12 +147,12 @@ class PdfDocument
     protected PdfRotation $currentRotation = PdfRotation::DEFAULT;
     /** The default orientation. */
     protected PdfOrientation $defaultOrientation;
-    /** The default page size.  */
+    /** The default page size in user unit.  */
     protected PdfSize $defaultPageSize;
     /** The commands for drawing color. */
     protected string $drawColor = self::EMPTY_COLOR;
     /**
-     * The encodings.
+     * The font encodings.
      *
      * @phpstan-var array<string, int>
      */
@@ -183,8 +181,6 @@ class PdfDocument
     protected float $fontSizeInPoint = 9.0;
     /** The current font style. */
     protected PdfFontStyle $fontStyle = PdfFontStyle::REGULAR;
-    /** The current page height in user unit. */
-    protected float $height;
     /**
      * Used images.
      *
@@ -199,8 +195,6 @@ class PdfDocument
     protected float $lastHeight = 0.0;
     /** The layout display mode. */
     protected PdfLayout $layout;
-    /** The left margin in the user unit. */
-    protected float $leftMargin = 0.0;
     /** The line cap. */
     protected PdfLineCap $lineCap;
     /** The line join. */
@@ -213,6 +207,8 @@ class PdfDocument
      * @phpstan-var array<int, LinkType>
      */
     protected array $links = [];
+    /** The margins in user unit. */
+    protected PdfMargins $margins;
     /**
      * The document properties.
      *
@@ -251,10 +247,10 @@ class PdfDocument
      * @phpstan-var array<int, string>
      */
     protected array $pages = [];
+    /** The page size in user unit.  */
+    protected PdfSize $pageSize;
     /** The PDF version number. */
     protected PdfVersion $pdfVersion;
-    /** The right margin in the user unit. */
-    protected float $rightMargin = 0.0;
     /** The scale factor (number of points in user unit). */
     protected float $scaleFactor;
     /** The current document state. */
@@ -263,14 +259,10 @@ class PdfDocument
     protected string $textColor = self::EMPTY_COLOR;
     /** The document title. */
     protected string $title = '';
-    /** The top margin in user unit. */
-    protected float $topMargin = 0.0;
     /** The underlining flag. */
     protected bool $underline = false;
     /** The viewer preferences */
     protected PdfViewerPreferences $viewerPreferences;
-    /** The current page width in user unit. */
-    protected float $width;
     /** The word spacing. */
     protected float $wordSpacing = 0.0;
     /** The current x position in user unit. */
@@ -313,20 +305,14 @@ class PdfDocument
         $this->defaultOrientation = $orientation;
         $this->currentOrientation = $orientation;
         // page size
-        $size = $this->getPageSize($size);
+        $size = $this->parsePageSize($size);
         $this->defaultPageSize = clone $size;
         $this->currentPageSize = clone $size;
-        if (PdfOrientation::PORTRAIT === $orientation) {
-            $this->width = $size->width;
-            $this->height = $size->height;
-        } else {
-            $this->width = $size->height;
-            $this->height = $size->width;
-        }
-        $this->currentPageSizeInPoint = PdfSize::instance($this->width, $this->height)->scale($this->scaleFactor);
-        // page margins (1 cm)
+        $this->pageSize = PdfOrientation::PORTRAIT === $orientation ? clone $size : $size->swap();
+        $this->currentPageSizeInPoint = $this->pageSize->scale($this->scaleFactor);
+        // page margins (10 mm, except bottom = 20 mm)
         $margin = $this->divide(28.35);
-        $this->setMargins($margin, $margin);
+        $this->margins = PdfMargins::instance($margin, $margin, $margin);
         // interior cell margin (1 mm)
         $this->cellMargin = $margin / 10.0;
         // line width (0.2 mm)
@@ -586,7 +572,7 @@ class PdfDocument
             $output .= \sprintf(
                 '%.2F %.2F %.2F %.2F re %s ',
                 $this->scale($this->x),
-                $this->scale($this->height - $this->y),
+                $this->scale($this->getPageHeight() - $this->y),
                 $this->scale($width),
                 $this->scale(-$height),
                 $style->value
@@ -611,7 +597,7 @@ class PdfDocument
             $output .= \sprintf(
                 'BT %.2F %.2F Td (%s) Tj ET',
                 $this->scale($this->x + $dx),
-                $this->scale($this->height - ($this->y + 0.5 * $height + 0.3 * $this->fontSize)),
+                $this->scale($this->getPageHeight() - ($this->y + 0.5 * $height + 0.3 * $this->fontSize)),
                 $this->escape($text)
             );
             if ($this->underline) {
@@ -644,7 +630,7 @@ class PdfDocument
                 break;
             case PdfMove::NEW_LINE:
                 $this->y += $height;
-                $this->x = $this->leftMargin;
+                $this->x = $this->margins->left;
                 break;
             case PdfMove::BELOW:
                 $this->y += $height;
@@ -724,7 +710,7 @@ class PdfDocument
      */
     public function getBottomMargin(): float
     {
-        return $this->bottomMargin;
+        return $this->margins->bottom;
     }
 
     /**
@@ -778,7 +764,7 @@ class PdfDocument
      */
     public function getLeftMargin(): float
     {
-        return $this->leftMargin;
+        return $this->margins->left;
     }
 
     /**
@@ -884,6 +870,14 @@ class PdfDocument
     }
 
     /**
+     * Gets the margins.
+     */
+    public function getMargins(): PdfMargins
+    {
+        return $this->margins;
+    }
+
+    /**
      * Gets the current page number.
      */
     public function getPage(): int
@@ -896,7 +890,7 @@ class PdfDocument
      */
     public function getPageHeight(): float
     {
-        return $this->height;
+        return $this->pageSize->height;
     }
 
     /**
@@ -908,11 +902,21 @@ class PdfDocument
     }
 
     /**
+     * Gets the page size in user unit.
+     *
+     * Note: Return a copy (clone) of the actual page size. Modify values does not affect the current page size.
+     */
+    public function getPageSize(): PdfSize
+    {
+        return clone $this->pageSize;
+    }
+
+    /**
      * Gets the current page width in the user unit.
      */
     public function getPageWidth(): float
     {
-        return $this->width;
+        return $this->pageSize->width;
     }
 
     /**
@@ -938,7 +942,7 @@ class PdfDocument
      */
     public function getPrintableWidth(): float
     {
-        return $this->width - $this->leftMargin - $this->rightMargin;
+        return $this->getPageWidth() - $this->margins->left - $this->margins->right;
     }
 
     /**
@@ -948,7 +952,7 @@ class PdfDocument
      */
     public function getRemainingWidth(): float
     {
-        return $this->width - $this->rightMargin - $this->x;
+        return $this->getPageWidth() - $this->margins->right - $this->x;
     }
 
     /**
@@ -958,7 +962,7 @@ class PdfDocument
      */
     public function getRightMargin(): float
     {
-        return $this->rightMargin;
+        return $this->margins->right;
     }
 
     /**
@@ -1010,7 +1014,7 @@ class PdfDocument
      */
     public function getTopMargin(): float
     {
-        return $this->topMargin;
+        return $this->margins->top;
     }
 
     /**
@@ -1228,7 +1232,7 @@ class PdfDocument
             $this->scale($width),
             $this->scale($height),
             $this->scale($x),
-            $this->scale($this->height - $y - $height),
+            $this->scale($this->getPageHeight() - $y - $height),
             $image['index']
         );
         if (self::isLink($link)) {
@@ -1303,9 +1307,9 @@ class PdfDocument
         $this->outf(
             '%.2F %.2F m %.2F %.2F l S',
             $this->scale($x1),
-            $this->scale($this->height - $y1),
+            $this->scale($this->getPageHeight() - $y1),
             $this->scale($x2),
-            $this->scale($this->height - $y2)
+            $this->scale($this->getPageHeight() - $y2)
         );
 
         return $this;
@@ -1325,7 +1329,7 @@ class PdfDocument
      */
     public function lineBreak(?float $height = null): static
     {
-        $this->x = $this->leftMargin;
+        $this->x = $this->margins->left;
         $this->y += $height ?? $this->lastHeight;
 
         return $this;
@@ -1678,7 +1682,7 @@ class PdfDocument
             $this->outf(
                 '%.2F %.2F %.2F %.2F re %s',
                 $this->scale($x),
-                $this->scale($this->height - $y),
+                $this->scale($this->getPageHeight() - $y),
                 $this->scale($width),
                 $this->scale(-$height),
                 $style->value
@@ -1763,8 +1767,8 @@ class PdfDocument
     public function setAutoPageBreak(bool $autoPageBreak, float $bottomMargin = 0): static
     {
         $this->autoPageBreak = $autoPageBreak;
-        $this->bottomMargin = $bottomMargin;
-        $this->pageBreakTrigger = $this->height - $bottomMargin;
+        $this->margins->bottom = $bottomMargin;
+        $this->pageBreakTrigger = $this->getPageHeight() - $bottomMargin;
 
         return $this;
     }
@@ -1985,7 +1989,7 @@ class PdfDocument
      */
     public function setLeftMargin(float $leftMargin): static
     {
-        $this->leftMargin = $leftMargin;
+        $this->margins->left = $leftMargin;
         if ($this->page > 0 && $this->x < $leftMargin) {
             $this->x = $leftMargin;
         }
@@ -2070,9 +2074,9 @@ class PdfDocument
      */
     public function setMargins(float $leftMargin, float $topMargin, ?float $rightMargin = null): static
     {
-        $this->leftMargin = $leftMargin;
-        $this->topMargin = $topMargin;
-        $this->rightMargin = $rightMargin ?? $leftMargin;
+        $this->margins->left = $leftMargin;
+        $this->margins->top = $topMargin;
+        $this->margins->right = $rightMargin ?? $leftMargin;
 
         return $this;
     }
@@ -2116,7 +2120,7 @@ class PdfDocument
      */
     public function setRightMargin(float $rightMargin): static
     {
-        $this->rightMargin = $rightMargin;
+        $this->margins->right = $rightMargin;
 
         return $this;
     }
@@ -2170,7 +2174,7 @@ class PdfDocument
      */
     public function setTopMargin(float $topMargin): static
     {
-        $this->topMargin = $topMargin;
+        $this->margins->top = $topMargin;
 
         return $this;
     }
@@ -2183,7 +2187,7 @@ class PdfDocument
      */
     public function setX(float $x): static
     {
-        $this->x = $x >= 0 ? $x : $this->width + $x;
+        $this->x = $x >= 0 ? $x : $this->getPageWidth() + $x;
 
         return $this;
     }
@@ -2208,9 +2212,9 @@ class PdfDocument
      */
     public function setY(float $y, bool $resetX = true): static
     {
-        $this->y = $y >= 0 ? $y : $this->height + $y;
+        $this->y = $y >= 0 ? $y : $this->getPageHeight() + $y;
         if ($resetX) {
-            $this->x = $this->leftMargin;
+            $this->x = $this->margins->left;
         }
 
         return $this;
@@ -2265,7 +2269,7 @@ class PdfDocument
         $output = \sprintf(
             'BT %.2F %.2F Td (%s) Tj ET',
             $this->scale($x),
-            $this->scale($this->height - $y),
+            $this->scale($this->getPageHeight() - $y),
             $this->escape($text)
         );
         if ($this->underline) {
@@ -2366,7 +2370,7 @@ class PdfDocument
                 $currentIndex = $index;
                 $currentWidth = 0.0;
                 if (1 === $newLine) {
-                    $this->x = $this->leftMargin;
+                    $this->x = $this->margins->left;
                     $width = $this->getRemainingWidth();
                     $widthMax = ($width - 2.0 * $this->cellMargin) * 1000.0 / $this->fontSize;
                 }
@@ -2380,9 +2384,9 @@ class PdfDocument
             if ($currentWidth > $widthMax) {
                 // automatic line break
                 if (-1 === $sepIndex) {
-                    if ($this->x > $this->leftMargin) {
+                    if ($this->x > $this->margins->left) {
                         // Move to the next line
-                        $this->x = $this->leftMargin;
+                        $this->x = $this->margins->left;
                         $this->y += $height;
                         $width = $this->getRemainingWidth();
                         $widthMax = ($width - 2.0 * $this->cellMargin) * 1000.0 / $this->fontSize;
@@ -2420,7 +2424,7 @@ class PdfDocument
                 $currentIndex = $index;
                 $currentWidth = 0.0;
                 if (1 === $newLine) {
-                    $this->x = $this->leftMargin;
+                    $this->x = $this->margins->left;
                     $width = $this->getRemainingWidth();
                     $widthMax = ($width - 2.0 * $this->cellMargin) * 1000.0 / $this->fontSize;
                 }
@@ -2475,25 +2479,17 @@ class PdfDocument
         $this->pages[$this->page] = '';
         $this->pageLinks[$this->page] = [];
         $this->state = PdfState::PAGE_STARTED;
-        $this->x = $this->leftMargin;
-        $this->y = $this->topMargin;
+        $this->x = $this->margins->left;
+        $this->y = $this->margins->top;
         $this->fontFamily = '';
         // check page size and orientation
-        if (!$orientation instanceof PdfOrientation) {
-            $orientation = $this->defaultOrientation;
-        }
-        $size = null === $size ? $this->defaultPageSize : $this->getPageSize($size);
+        $orientation ??= $this->defaultOrientation;
+        $size = null === $size ? $this->defaultPageSize : $this->parsePageSize($size);
         if ($orientation !== $this->currentOrientation || !$size->equals($this->currentPageSize)) {
             // new size or orientation
-            if (PdfOrientation::PORTRAIT === $orientation) {
-                $this->width = $size->width;
-                $this->height = $size->height;
-            } else {
-                $this->width = $size->height;
-                $this->height = $size->width;
-            }
-            $this->currentPageSizeInPoint = PdfSize::instance($this->width, $this->height)->scale($this->scaleFactor);
-            $this->pageBreakTrigger = $this->height - $this->bottomMargin;
+            $this->pageSize = PdfOrientation::PORTRAIT === $orientation ? clone $size : $size->swap();
+            $this->currentPageSizeInPoint = $this->pageSize->scale($this->scaleFactor);
+            $this->pageBreakTrigger = $this->getPageHeight() - $this->margins->bottom;
             $this->currentOrientation = $orientation;
             $this->currentPageSize = clone $size;
         }
@@ -2602,7 +2598,7 @@ class PdfDocument
         return \sprintf(
             ' %.2F %.2F %.2F %.2F re f',
             $this->scale($x),
-            $this->scale($this->height - ($y - $up / 1000.0 * $this->fontSize)),
+            $this->scale($this->getPageHeight() - ($y - $up / 1000.0 * $this->fontSize)),
             $this->scale($width),
             -$ut / 1000.0 * $this->fontSizeInPoint
         );
@@ -2683,9 +2679,9 @@ class PdfDocument
 
         $output = '';
         $left = $this->scale($x);
-        $top = $this->scale($this->height - $y);
+        $top = $this->scale($this->getPageHeight() - $y);
         $right = $this->scale($x + $width);
-        $bottom = $this->scale($this->height - ($y + $height));
+        $bottom = $this->scale($this->getPageHeight() - ($y + $height));
         if ($border->isLeft()) {
             $output .= \sprintf('%.2F %.2F m %.2F %.2F l S ', $left, $top, $left, $bottom);
         }
@@ -2740,22 +2736,6 @@ class PdfDocument
     protected function getOffset(): int
     {
         return \strlen($this->buffer);
-    }
-
-    /**
-     * Gets the page size.
-     */
-    protected function getPageSize(PdfPageSize|PdfSize $size): PdfSize
-    {
-        if ($size instanceof PdfPageSize) {
-            return $size->getSize()->scale(1.0 / $this->scaleFactor);
-        }
-
-        if ($size->width > $size->height) {
-            return $size->swap();
-        }
-
-        return $size;
     }
 
     /**
@@ -2915,6 +2895,22 @@ class PdfDocument
         if ($this->page > 0) {
             $this->outf('%.2F w', $this->scale($this->lineWidth));
         }
+    }
+
+    /**
+     * Parse the page size.
+     */
+    protected function parsePageSize(PdfPageSize|PdfSize $size): PdfSize
+    {
+        if ($size instanceof PdfPageSize) {
+            return $size->getSize()->scale(1.0 / $this->scaleFactor);
+        }
+
+        if ($size->width > $size->height) {
+            return $size->swap();
+        }
+
+        return $size;
     }
 
     /**

@@ -62,7 +62,7 @@ trait PdfSectorTrait
         }
 
         // compute values
-        $height = $this->height;
+        $height = $this->getPageHeight();
         [$startAngle, $endAngle, $deltaAngle] = $this->computeSectorAngles($startAngle, $endAngle, $clockwise, $origin);
         $arc = $this->computeSectorArc($deltaAngle, $radius);
 
@@ -160,7 +160,7 @@ trait PdfSectorTrait
         $y3 = $centerY - $radius * \sin($endAngle);
 
         // output
-        $height = $this->height;
+        $height = $this->getPageHeight();
         $this->outf(
             '%.2F %.2F %.2F %.2F %.2F %.2F c',
             $this->scale($x1),

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Replaced the `width` and `height` properties of the `PdfDocument`
+  by a `PdfSize` instance.
+- Replaced all margins properties of the `PdfDocument` by a `PdfMargins` class.
 - Renamed private functions of `PdfSectorTrait`.
 - Added `scale()` and `divide()` functions to `PdfDocument` class.
 
