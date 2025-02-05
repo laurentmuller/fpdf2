@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Removed the `self::fail()` functions to unit tests.
 - Added the `getAliasNumberPages()` function to the `PdfDocument` class.
 - Minor modifications.
 

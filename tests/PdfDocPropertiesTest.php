@@ -53,7 +53,6 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
         $doc = $this->createDocument(false, false);
         $doc->close();
         $doc->addPage();
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testAliasNumberPages(): void
@@ -86,7 +85,6 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
         self::expectException(PdfException::class);
         $doc = $this->createDocument(true, false);
         $doc->cell(text: 'fake');
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testClose2Times(): void
@@ -231,7 +229,6 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
         self::expectException(PdfException::class);
         $doc = $this->createDocument(false, false);
         $doc->getLinesCount('fake');
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testLineJoin(): void
@@ -364,7 +361,6 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
         self::expectException(PdfException::class);
         $doc = $this->createDocument(false, false);
         $doc->setFont('Fake');
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testSetLink(): void

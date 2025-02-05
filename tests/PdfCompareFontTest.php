@@ -45,7 +45,6 @@ class PdfCompareFontTest extends AbstractCompareTestCase
         self::expectException(PdfException::class);
         $doc = new PdfDocument();
         $doc->addFont('Fake', file: 'Invalid character/');
-        self::fail('A PDF exception must be raised.');
     }
 
     /**
@@ -110,9 +109,8 @@ class PdfCompareFontTest extends AbstractCompareTestCase
     {
         $pattern = self::FONTS_DIR . '*.php';
         $files = \glob($pattern);
-        if (!\is_array($files) || [] === $files) {
-            self::fail("No font found with the glob pattern '$pattern'!");
-        }
+        self::assertIsArray($files);
+        self::assertNotEmpty($files);
 
         $add_page = false;
         foreach ($files as $file) {

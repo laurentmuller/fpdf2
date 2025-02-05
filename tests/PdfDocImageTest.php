@@ -30,7 +30,6 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
         self::expectException(PdfException::class);
         $doc = $this->createDocument();
         $doc->image('');
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testEmptyType(): void
@@ -38,7 +37,6 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
         self::expectException(PdfException::class);
         $doc = $this->createDocument();
         $doc->image(__DIR__);
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testGrey(): void
@@ -75,7 +73,6 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
         self::expectException(PdfException::class);
         $doc = $this->createDocument();
         $doc->image(__FILE__);
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testInvalidBPC(): void
@@ -83,7 +80,6 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
         self::expectException(PdfException::class);
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/images/invalid_bpc.png');
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testInvalidColorType(): void
@@ -91,7 +87,6 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
         self::expectException(PdfException::class);
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/images/invalid_color_type.png');
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testInvalidCompression(): void
@@ -99,7 +94,6 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
         self::expectException(PdfException::class);
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/images/invalid_compression.png');
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testInvalidFilter(): void
@@ -107,7 +101,6 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
         self::expectException(PdfException::class);
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/images/invalid_filter.png');
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testInvalidGif(): void
@@ -115,7 +108,6 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
         self::expectException(PdfException::class);
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/fake.txt', type: 'gif');
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testInvalidHeaderChunk(): void
@@ -123,7 +115,6 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
         self::expectException(PdfException::class);
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/images/invalid_header_chunk.png');
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testInvalidInterlacing(): void
@@ -131,7 +122,6 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
         self::expectException(PdfException::class);
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/images/invalid_interlacing.png');
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testInvalidJpeg(): void
@@ -139,7 +129,6 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
         self::expectException(PdfException::class);
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/fake.txt', type: 'jpg');
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testInvalidPng(): void
@@ -147,7 +136,6 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
         self::expectException(PdfException::class);
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/fake.txt', type: 'png');
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testInvalidSignature(): void
@@ -155,7 +143,6 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
         self::expectException(PdfException::class);
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/images/invalid_signature.png');
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testWidthLessZero(): void

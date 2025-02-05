@@ -43,6 +43,5 @@ class PdfDocTextTest extends AbstractPdfDocTestCase
         self::expectException(PdfException::class);
         $doc = $this->createDocument(true, false);
         $doc->text(25, 25, 'fake');
-        self::fail('A PDF exception must be raised.');
     }
 }

@@ -39,7 +39,6 @@ class PdfDocFileFontTest extends AbstractPdfDocTestCase
             file: 'font_no_name.php',
             dir: self::FONTS_DIR
         );
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testOtherFont(): void
