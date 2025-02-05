@@ -297,8 +297,7 @@ class PdfDocument
         // scale factor
         $this->scaleFactor = $unit->getScaleFactor();
         // font path
-        // @phpstan-ignore cast.string
-        $this->fontPath = \defined('FPDF_FONTPATH') ? (string) FPDF_FONTPATH : __DIR__ . '/font/';
+        $this->fontPath = $this->getFontPath();
         // font size
         $this->fontSize = $this->divide($this->fontSizeInPoint);
         // page orientation
@@ -2469,6 +2468,15 @@ class PdfDocument
 
     /**
      * Begin a new page.
+     *
+     * It is automatically called within the <code>addPage()</code> method and should not be called directly by the
+     *  application.
+     *
+     * @param ?PdfOrientation          $orientation the page orientation or <code>null</code> to use the current
+     *                                              orientation
+     * @param PdfPageSize|PdfSize|null $size        the page size or <code>null</code> to use the current size
+     * @param ?PdfRotation             $rotation    the rotation by which to rotate the page or <code>null</code> to
+     *                                              use the current rotation
      */
     protected function beginPage(
         ?PdfOrientation $orientation = null,
@@ -2708,6 +2716,22 @@ class PdfDocument
         $date = \date('YmdHisO', $timestamp);
 
         return \sprintf("D:%s'%s'", \substr($date, 0, -2), \substr($date, -2));
+    }
+
+    /**
+     * Gets the font path.
+     *
+     * If the 'FPDF_FONTPATH' constant is defined, then use it.
+     * If not, the 'font' child directory is used.
+     */
+    protected function getFontPath(): string
+    {
+        if (\defined('FPDF_FONTPATH')) {
+            /** @phpstan-var string */
+            return FPDF_FONTPATH;
+        }
+
+        return __DIR__ . '/font/';
     }
 
     /**

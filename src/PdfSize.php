@@ -64,7 +64,7 @@ class PdfSize
      */
     public function scale(float $scaleFactor): self
     {
-        return new self($this->width * $scaleFactor, $this->height * $scaleFactor);
+        return self::instance($this->width * $scaleFactor, $this->height * $scaleFactor);
     }
 
     /**
