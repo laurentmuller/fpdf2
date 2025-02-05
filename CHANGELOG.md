@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added the `getAliasNumberPages()` function to the `PdfDocument` class.
 - Minor modifications.
 
 ## 3.0.4 - 2025-01-04

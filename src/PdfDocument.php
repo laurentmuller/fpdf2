@@ -703,6 +703,16 @@ class PdfDocument
     }
 
     /**
+     * Gets the alias for the total number of pages.
+     *
+     * The default value is '{nb}'.
+     */
+    public function getAliasNumberPages(): string
+    {
+        return $this->aliasNumberPages;
+    }
+
+    /**
      * Gets the bottom margin in the user unit.
      *
      * The default value is 10 mm.

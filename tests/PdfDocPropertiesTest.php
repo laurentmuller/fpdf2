@@ -59,9 +59,16 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
     public function testAliasNumberPages(): void
     {
         $doc = $this->createDocument(false, false);
+        $actual = $doc->getAliasNumberPages();
+        self::assertSame('{nb}', $actual);
+
         $doc->setAliasNumberPages();
-        $doc->addPage();
-        self::assertSame(1, $doc->getPage());
+        $actual = $doc->getAliasNumberPages();
+        self::assertSame('{nb}', $actual);
+
+        $doc->setAliasNumberPages('{pages}');
+        $actual = $doc->getAliasNumberPages();
+        self::assertSame('{pages}', $actual);
     }
 
     public function testAutoPageBreak(): void
