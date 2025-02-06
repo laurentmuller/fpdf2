@@ -458,7 +458,7 @@ class PdfDocument
         // page footer and close page
         if ($this->page > 0) {
             $this->inFooter = true;
-            $this->footer();
+            $this->footer($this->page, $this->aliasNumberPages);
             $this->inFooter = false;
             $this->endPage();
         }
@@ -490,7 +490,7 @@ class PdfDocument
 
         // page header
         $this->inHeader = true;
-        $this->header();
+        $this->header($this->page, $this->aliasNumberPages);
         $this->inHeader = false;
 
         // restore context
@@ -655,7 +655,7 @@ class PdfDocument
         }
         // page footer
         $this->inFooter = true;
-        $this->footer();
+        $this->footer($this->page, $this->aliasNumberPages);
         $this->inFooter = false;
         // close page and document
         $this->endPage();
@@ -696,9 +696,12 @@ class PdfDocument
      * The implementation is empty, so you have to subclass it and override the method if you want specific
      * processing.
      *
+     * @param int    $page             the current page number
+     * @param string $aliasNumberPages the alias for the total number of pages
+     *
      * @see PdfDocument::header()
      */
-    public function footer(): void
+    public function footer(int $page, string $aliasNumberPages): void
     {
     }
 
@@ -1067,9 +1070,12 @@ class PdfDocument
      * The implementation is empty, so you have to subclass it and override the method if you want specific
      * processing.
      *
+     * @param int    $page             the current page number
+     * @param string $aliasNumberPages the alias for the total number of pages
+     *
      * @see PdfDocument::footer()
      */
-    public function header(): void
+    public function header(int $page, string $aliasNumberPages): void
     {
     }
 
