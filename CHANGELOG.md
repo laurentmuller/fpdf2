@@ -1,6 +1,6 @@
 # Change log
 
-## 3.0.5 - 2025-02-06
+## Unreleased
 
 - Removed the `self::fail()` functions to unit tests.
 - Added the `getAliasNumberPages()` function to the `PdfDocument` class.
