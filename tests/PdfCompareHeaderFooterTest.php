@@ -25,7 +25,7 @@ class PdfCompareHeaderFooterTest extends AbstractCompareTestCase
     protected function createNewDocument(): PdfDocument
     {
         $doc = new class() extends PdfDocument {
-            public function header(int $page, string $aliasNumberPages): void
+            public function header(): void
             {
                 $this->setFont('Arial', PdfFontStyle::BOLD, 15);
                 $this->cell(80);
@@ -40,14 +40,14 @@ class PdfCompareHeaderFooterTest extends AbstractCompareTestCase
                 $this->lineBreak(20);
             }
 
-            public function footer(int $page, string $aliasNumberPages): void
+            public function footer(): void
             {
                 $this->setY(-15);
                 $this->setFont('Arial', PdfFontStyle::ITALIC, 8);
                 $this->cell(
                     null,
                     10,
-                    \sprintf('Page %d', $page),
+                    \sprintf('Page %d', $this->getPage()),
                     PdfBorder::none(),
                     PdfMove::RIGHT,
                     PdfTextAlignment::CENTER

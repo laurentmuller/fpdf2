@@ -36,7 +36,7 @@ class PdfDocHeaderFooterTest extends TestCase
     private function getDocument(): PdfDocument
     {
         return new class() extends PdfDocument {
-            public function header(int $page, string $aliasNumberPages): void
+            public function header(): void
             {
                 $this->setFont(PdfFontName::TIMES, PdfFontStyle::UNDERLINE, 12.0);
                 $this->setDrawColor(PdfRgbColor::instance(10, 10, 10));
@@ -46,7 +46,7 @@ class PdfDocHeaderFooterTest extends TestCase
                 $this->cell(text: 'Header');
             }
 
-            public function footer(int $page, string $aliasNumberPages): void
+            public function footer(): void
             {
                 $this->setFont(PdfFontName::TIMES, PdfFontStyle::BOLD, 10.0);
                 $this->setDrawColor(PdfRgbColor::white());

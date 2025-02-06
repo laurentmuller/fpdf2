@@ -2,8 +2,6 @@
 
 ## 3.0.5 - 2025-02-06
 
-- **BC Break!**: Added `$page` and `$aliasNumberPages` parameters to
-  the `header()` and `footer()` functions.
 - Removed the `self::fail()` functions to unit tests.
 - Added the `getAliasNumberPages()` function to the `PdfDocument` class.
 - Minor modifications.
