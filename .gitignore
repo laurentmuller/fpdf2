@@ -1,4 +1,4 @@
-/vendor
 /cache
-/tests/*.pdf
+/vendor
 /vendor-bin/**/vendor/
+/vendor-bin/**/composer.lock
