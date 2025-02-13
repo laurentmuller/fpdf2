@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the 'fpdf' package.
  *
@@ -37,32 +38,35 @@ $rules = [
     // --------------------------------------------------------------
     //  Rules override
     // --------------------------------------------------------------
-    'method_chaining_indentation' => true,
-    'native_function_invocation' => ['include' => ['@internal', 'all']],
-    'final_internal_class' => true,
-    'header_comment' => ['header' => $comment, 'location' => 'after_open', 'separate' => 'bottom'],
-    'blank_line_before_statement' => ['statements' => ['declare', 'try', 'return']],
-    'no_unused_imports' => true,
-    'strict_comparison' => true,
     'strict_param' => true,
-    'ordered_imports' => ['imports_order' => ['const', 'class', 'function']],
-    'ordered_class_elements' => ['sort_algorithm' => 'alpha'],
-    'concat_space' => ['spacing' => 'one'],
-    'array_syntax' => ['syntax' => 'short'],
-    'list_syntax' => ['syntax' => 'short'],
-    'doctrine_annotation_array_assignment' => ['operator' => '='],
-    'ordered_interfaces' => true,
+    'php_unit_strict' => true,
     'no_useless_else' => true,
     'no_useless_return' => true,
-    'php_unit_strict' => true,
-    'php_unit_test_case_static_method_calls' => ['call_type' => 'self'],
+    'no_unused_imports' => true,
+    'strict_comparison' => true,
+    'ordered_interfaces' => true,
+    'final_internal_class' => true,
+    'method_chaining_indentation' => true,
+    'concat_space' => ['spacing' => 'one'],
+    'list_syntax' => ['syntax' => 'short'],
+    'array_syntax' => ['syntax' => 'short'],
+    'ordered_class_elements' => ['sort_algorithm' => 'alpha'],
     'phpdoc_to_comment' => ['allow_before_return_statement' => true],
+    'php_unit_test_case_static_method_calls' => ['call_type' => 'self'],
+    'native_function_invocation' => ['include' => ['@internal', 'all']],
     'new_with_braces' => ['anonymous_class' => true, 'named_class' => true],
+    'ordered_imports' => ['imports_order' => ['const', 'class', 'function']],
+    'blank_line_before_statement' => ['statements' => ['declare', 'try', 'return']],
+    'header_comment' => ['header' => $comment, 'location' => 'after_open', 'separate' => 'bottom'],
 ];
 
 $finder = Finder::create()
     ->in(__DIR__ . '/src')
     ->in(__DIR__ . '/tests')
+    ->append([
+        __FILE__,
+        __DIR__ . '/rector.php',
+    ])
     ->notPath('tests/resources')
     ->notPath('font')
     ->notName('FPDF.php');

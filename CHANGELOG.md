@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- Updated rector configuration.
+
 ## 3.0.5 - 2025-02-06
 
 - Removed the `self::fail()` functions to unit tests.
