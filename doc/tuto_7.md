@@ -6,6 +6,8 @@ Since version `2.0.3`, transparency can be added within the `PdfDocument`.
 [FPDF script](http://www.fpdf.org/en/script/script74.php) created by
 Martin Hall-May.
 
+**Usage:**
+
 To use it, create a derived class and use the `PdfTransparencyTrait` trait:
 
 ```php

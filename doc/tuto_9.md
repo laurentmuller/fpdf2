@@ -15,6 +15,8 @@ affected, nor the automatic page break mechanism.
 
 All angle parameters are expressed in degrees ('&deg;').
 
+**Usage:**
+
 To use it, create a derived class and use the `PdfRotationTrait` trait:
 
 ```php

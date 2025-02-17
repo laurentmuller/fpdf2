@@ -1,10 +1,50 @@
 # Circles and ellipses
 
-Since version `2.0.4`, circles and ellipses can be drawn within
+Since version `2.0.4`, ellipses and circles can be drawn within
 the `PdfDocument`.
 
 **Note:** The code is inspired from this given
 [FPDF script](http://www.fpdf.org/en/script/script6.php) created by Olivier.
+
+**Ellipse Definition:**
+
+```php
+ellipse(
+    float $x,
+    float $y,
+    float $rx,
+    float $ry,
+    PdfRectangleStyle $style = PdfRectangleStyle::BORDER
+)
+```
+
+**Ellipse Parameters:**
+
+- `$x`: The abscissa of the center.
+- `$y`: The ordinate of the center.
+- `$rx`: The horizontal radius.
+- `$ry`: The vertical radius.
+- `$style`: The style of rendering.
+
+***Circle Definition:***
+
+```php
+circle(
+    float $x,
+    float $y,
+    float $r,
+    PdfRectangleStyle $style = PdfRectangleStyle::BORDER
+)
+```
+
+**Circle Parameters:**
+
+- `$x`: The abscissa of the center.
+- `$y`: The ordinate of the center.
+- `$r`: The radius.
+- `$style`: The style of rendering.
+
+**Usage:**
 
 To use it, create a derived class and use the `PdfEllipseTrait` trait:
 

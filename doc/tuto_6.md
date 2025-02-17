@@ -28,6 +28,8 @@ addBookmark(
 - `$createLink`: true to create and add a link at the given ordinate position
   and page
 
+**Usage:**
+
 To use it, create a derived class and use the `PdfBookmarkTrait` trait:
 
 ```php

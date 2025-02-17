@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Updated documentation.
 - Updated rector configuration.
 
 ## 3.0.5 - 2025-02-06
