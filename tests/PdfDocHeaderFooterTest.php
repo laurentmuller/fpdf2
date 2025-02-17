@@ -36,6 +36,7 @@ class PdfDocHeaderFooterTest extends TestCase
     private function getDocument(): PdfDocument
     {
         return new class() extends PdfDocument {
+            #[\Override]
             public function header(): void
             {
                 $this->setFont(PdfFontName::TIMES, PdfFontStyle::UNDERLINE, 12.0);
@@ -46,6 +47,7 @@ class PdfDocHeaderFooterTest extends TestCase
                 $this->cell(text: 'Header');
             }
 
+            #[\Override]
             public function footer(): void
             {
                 $this->setFont(PdfFontName::TIMES, PdfFontStyle::BOLD, 10.0);

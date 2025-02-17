@@ -50,6 +50,7 @@ class PdfCompareFontTest extends AbstractCompareTestCase
     /**
      * @throws PdfException
      */
+    #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void
     {
         $callback = function (string $base_name, string $file_name, bool $add_page) use ($doc): void {
@@ -76,6 +77,7 @@ class PdfCompareFontTest extends AbstractCompareTestCase
         $this->applyFonts($callback);
     }
 
+    #[\Override]
     protected function updateOldDocument(FPDF $doc): void
     {
         $callback = function (string $base_name, string $file_name, bool $add_page) use ($doc): void {

@@ -28,6 +28,7 @@ class PdfPngParser implements PdfImageParserInterface
     /**
      * @phpstan-return ImageType
      */
+    #[\Override]
     public function parse(PdfDocument $parent, string $file): array
     {
         $stream = $this->openStream($file);
@@ -41,6 +42,8 @@ class PdfPngParser implements PdfImageParserInterface
 
     /**
      * Close the given stream.
+     *
+     * @param ?resource $stream
      */
     protected function closeStream(mixed $stream): void
     {

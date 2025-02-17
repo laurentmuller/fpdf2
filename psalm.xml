@@ -5,9 +5,7 @@
        cacheDirectory="cache/psalm"
        allowStringToStandInForClass="true"
        findUnusedVariablesAndParams="true"
-       findUnusedBaselineEntry="true"
        findUnusedPsalmSuppress="true"
-       strictBinaryOperands="true"
        findUnusedCode="false"
        phpVersion="8.2"
        errorLevel="1">

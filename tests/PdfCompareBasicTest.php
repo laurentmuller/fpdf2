@@ -40,6 +40,7 @@ class PdfCompareBasicTest extends AbstractCompareTestCase
     /**
      * @throws PdfException
      */
+    #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void
     {
         $doc->setFont('Arial', PdfFontStyle::BOLD, 16);
@@ -104,6 +105,7 @@ class PdfCompareBasicTest extends AbstractCompareTestCase
         $doc->multiCell(text: self::COMMENT);
     }
 
+    #[\Override]
     protected function updateOldDocument(FPDF $doc): void
     {
         $doc->SetFont('Arial', 'B', 16);

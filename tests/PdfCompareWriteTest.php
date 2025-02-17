@@ -17,11 +17,13 @@ use fpdf\PdfDocument;
 
 class PdfCompareWriteTest extends AbstractCompareTestCase
 {
+    #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void
     {
         $doc->write("This is a write test.\nWith multi-lines.");
     }
 
+    #[\Override]
     protected function updateOldDocument(FPDF $doc): void
     {
         $doc->Write(5.0, "This is a write test.\nWith multi-lines.");

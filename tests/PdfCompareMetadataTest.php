@@ -17,6 +17,7 @@ use fpdf\PdfDocument;
 
 class PdfCompareMetadataTest extends AbstractCompareTestCase
 {
+    #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void
     {
         $doc->setTitle('Title æ', true);
@@ -26,6 +27,7 @@ class PdfCompareMetadataTest extends AbstractCompareTestCase
         $doc->setKeywords('Keys words');
     }
 
+    #[\Override]
     protected function updateOldDocument(FPDF $doc): void
     {
         $doc->SetTitle('Title æ', true);

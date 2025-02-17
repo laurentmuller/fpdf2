@@ -42,6 +42,7 @@ readonly class PdfCmykColor implements PdfColorInterface
         );
     }
 
+    #[\Override]
     public function equals(PdfColorInterface $other): bool
     {
         return $other instanceof self
@@ -51,6 +52,7 @@ readonly class PdfCmykColor implements PdfColorInterface
             && $this->black === $other->black;
     }
 
+    #[\Override]
     public function getOutput(): string
     {
         return \sprintf(

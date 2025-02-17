@@ -22,6 +22,7 @@ use fpdf\PdfDocument;
 
 class PdfCompareColorTest extends AbstractCompareTestCase
 {
+    #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void
     {
         $doc->setDrawColor(PdfGrayColor::instance(100));
@@ -40,6 +41,7 @@ class PdfCompareColorTest extends AbstractCompareTestCase
         $doc->cell(null, 5.0, 'Test Color', PdfBorder::none(), PdfMove::BELOW, PdfTextAlignment::CENTER, true);
     }
 
+    #[\Override]
     protected function updateOldDocument(FPDF $doc): void
     {
         $doc->SetDrawColor(100);

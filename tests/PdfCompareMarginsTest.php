@@ -17,6 +17,7 @@ use fpdf\PdfDocument;
 
 class PdfCompareMarginsTest extends AbstractCompareTestCase
 {
+    #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void
     {
         $doc->setLeftMargin(20);
@@ -26,6 +27,7 @@ class PdfCompareMarginsTest extends AbstractCompareTestCase
         $doc->setMargins(10, 10);
     }
 
+    #[\Override]
     protected function updateOldDocument(FPDF $doc): void
     {
         $doc->SetLeftMargin(20);

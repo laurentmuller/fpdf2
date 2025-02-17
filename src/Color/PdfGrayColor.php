@@ -46,11 +46,13 @@ readonly class PdfGrayColor implements PdfColorInterface
         return new self(0);
     }
 
+    #[\Override]
     public function equals(PdfColorInterface $other): bool
     {
         return $other instanceof self && $this->level === $other->level;
     }
 
+    #[\Override]
     public function getOutput(): string
     {
         return \sprintf('%.3F g', (float) $this->level / 255.0);

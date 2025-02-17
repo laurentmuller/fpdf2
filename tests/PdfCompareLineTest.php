@@ -17,6 +17,7 @@ use fpdf\PdfDocument;
 
 class PdfCompareLineTest extends AbstractCompareTestCase
 {
+    #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void
     {
         $doc->line(10, 10, 100, 100);
@@ -24,6 +25,7 @@ class PdfCompareLineTest extends AbstractCompareTestCase
         $doc->line(10, 20, 100, 100);
     }
 
+    #[\Override]
     protected function updateOldDocument(FPDF $doc): void
     {
         $doc->Line(10, 10, 100, 100);

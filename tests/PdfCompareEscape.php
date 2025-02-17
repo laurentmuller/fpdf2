@@ -17,6 +17,7 @@ use fpdf\PdfDocument;
 
 class PdfCompareEscape extends AbstractCompareTestCase
 {
+    #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void
     {
         $text = $this->getText();
@@ -25,6 +26,7 @@ class PdfCompareEscape extends AbstractCompareTestCase
         $doc->multiCell(text: $text);
     }
 
+    #[\Override]
     protected function updateOldDocument(FPDF $doc): void
     {
         $text = $this->getText();

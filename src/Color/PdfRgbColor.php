@@ -127,6 +127,7 @@ readonly class PdfRgbColor implements PdfColorInterface
         return self::instance(128, 0, 0);
     }
 
+    #[\Override]
     public function equals(PdfColorInterface $other): bool
     {
         return $other instanceof self
@@ -135,6 +136,7 @@ readonly class PdfRgbColor implements PdfColorInterface
             && $this->blue === $other->blue;
     }
 
+    #[\Override]
     public function getOutput(): string
     {
         // black?
