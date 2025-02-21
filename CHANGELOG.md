@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added tests for font files.
 - Added missing override attribute.
 - Updated documentation.
 - Updated rector configuration.

@@ -1146,8 +1146,8 @@ class PdfDocument
      *                                is used.
      * @param ?float          $y      the ordinate of the upper-left corner. If <code>null</code>, the current
      *                                ordinate is used. Moreover, a page break is triggered first if necessary (in case
-     *                                automatic page breaking is enabled). After the call, the current ordinate
-     *                                is moved to the bottom of the image.
+     *                                automatic page breaking enabled). After the call, the current ordinate moved to
+     *                                the bottom of the image.
      * @param float           $width  the width of the image in the page. There are three cases:
      *                                <ul>
      *                                <li>If the value is positive, it represents the width in user unit.</li>
@@ -3014,10 +3014,7 @@ class PdfDocument
         foreach ($this->fontFiles as $file => $info) {
             $this->putNewObj();
             $this->fontFiles[$file]['number'] = $this->objectNumber;
-            $content = \file_get_contents($file);
-            if (false === $content) {
-                throw PdfException::format('Font file not found: %s.', $file);
-            }
+            $content = (string) \file_get_contents($file);
             $compressed = \str_ends_with($file, '.z');
             if (!$compressed && isset($info['length2'])) {
                 $length1 = $info['length1'];
@@ -3132,7 +3129,9 @@ class PdfDocument
                     if (!\method_exists($this, $method)) {
                         throw PdfException::format('Unsupported font type: %s.', $type);
                     }
-                    $this->$method($font); // @phpstan-ignore method.dynamicName
+                    /** @phpstan-var callable $callback */
+                    $callback = [$this, $method];
+                    \call_user_func($callback);
                     break;
             }
         }
