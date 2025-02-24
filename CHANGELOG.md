@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 3.0.6 - 2025-02-24
 
 - Added tests for font files.
 - Added missing override attribute.
