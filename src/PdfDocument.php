@@ -293,6 +293,7 @@ class PdfDocument
         $this->lineJoin = PdfLineJoin::getDefault();
         $this->pageMode = PdfPageMode::getDefault();
         $this->zoom = PdfZoom::getDefault();
+        $this->pdfVersion = PdfVersion::getDefault();
 
         // scale factor
         $this->scaleFactor = $unit->getScaleFactor();
@@ -320,8 +321,6 @@ class PdfDocument
         $this->setAutoPageBreak(true, 2.0 * $margin);
         // producer
         $this->setProducer('FPDF2 ' . self::VERSION);
-        // version
-        $this->pdfVersion = PdfVersion::getDefault();
         // preferences
         $this->viewerPreferences = new PdfViewerPreferences();
     }
@@ -871,7 +870,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the line width.
+     * Gets the line width in the user unit.
      */
     public function getLineWidth(): float
     {
@@ -879,11 +878,13 @@ class PdfDocument
     }
 
     /**
-     * Gets the margins.
+     * Gets the margins in user unit.
+     *
+     * Note: Return a copy (clone) of the actual margins. Modify values does not affect the current margins.
      */
     public function getMargins(): PdfMargins
     {
-        return $this->margins;
+        return clone $this->margins;
     }
 
     /**
@@ -2807,6 +2808,16 @@ class PdfDocument
     }
 
     /**
+     * Join the given strings with a new line as separator and add an extra new line at the end.
+     *
+     * @param string[] $values
+     */
+    protected function implode(array $values): string
+    {
+        return \implode(self::NEW_LINE, $values) . self::NEW_LINE;
+    }
+
+    /**
      * Returns if the given string is valid for the <code>ASCII</code> encoding.
      *
      * @return bool <code>true</code> if the given string is only containing <code>ASCII</code> characters
@@ -3475,45 +3486,43 @@ class PdfDocument
      */
     protected function toUnicodeCmap(array $uv): string
     {
-        $nbc = 0;
-        $nbr = 0;
-        $chars = '';
-        $ranges = '';
+        $chars = [];
+        $ranges = [];
         foreach ($uv as $c => $v) {
             if (\is_array($v)) {
-                $ranges .= \sprintf('<%02X> <%02X> <%04X>%s', $c, $c + $v[1] - 1, $v[0], self::NEW_LINE);
-                ++$nbr;
+                $ranges[] = \sprintf('<%02X> <%02X> <%04X>', $c, $c + $v[1] - 1, $v[0]);
             } else {
-                $chars .= \sprintf('<%02X> <%04X>%s', $c, $v, self::NEW_LINE);
-                ++$nbc;
+                $chars[] = \sprintf('<%02X> <%04X>', $c, $v);
             }
         }
-        $output = '/CIDInit /ProcSet findresource begin' . self::NEW_LINE;
-        $output .= '12 dict begin' . self::NEW_LINE;
-        $output .= 'begincmap' . self::NEW_LINE;
-        $output .= '/CIDSystemInfo' . self::NEW_LINE;
-        $output .= '<</Registry (Adobe)' . self::NEW_LINE;
-        $output .= '/Ordering (UCS)' . self::NEW_LINE;
-        $output .= '/Supplement 0' . self::NEW_LINE;
-        $output .= '>> def' . self::NEW_LINE;
-        $output .= '/CMapName /Adobe-Identity-UCS def' . self::NEW_LINE;
-        $output .= '/CMapType 2 def' . self::NEW_LINE;
-        $output .= '1 begincodespacerange' . self::NEW_LINE;
-        $output .= '<00> <FF>' . self::NEW_LINE;
-        $output .= 'endcodespacerange' . self::NEW_LINE;
-        if ($nbr > 0) {
-            $output .= \sprintf('%d beginbfrange', $nbr) . self::NEW_LINE;
-            $output .= \sprintf('%sendbfrange', $ranges) . self::NEW_LINE;
+        $output = [
+            '/CIDInit /ProcSet findresource begin',
+            '12 dict begin',
+            'begincmap',
+            '/CIDSystemInfo',
+            '<</Registry (Adobe)',
+            '/Ordering (UCS)',
+            '/Supplement 0',
+            '>> def',
+            '/CMapName /Adobe-Identity-UCS def',
+            '/CMapType 2 def',
+            '1 begincodespacerange',
+            '<00> <FF>',
+            'endcodespacerange',
+        ];
+        if ([] !== $ranges) {
+            $output[] = \sprintf('%d beginbfrange', \count($ranges));
+            $output[] = \sprintf('%sendbfrange', $this->implode($ranges));
         }
-        if ($nbc > 0) {
-            $output .= \sprintf('%d beginbfchar', $nbc) . self::NEW_LINE;
-            $output .= \sprintf('%sendbfchar', $chars) . self::NEW_LINE;
+        if ([] !== $chars) {
+            $output[] = \sprintf('%d beginbfchar', \count($chars));
+            $output[] = \sprintf('%sendbfchar', $this->implode($chars));
         }
-        $output .= 'endcmap' . self::NEW_LINE;
-        $output .= 'CMapName currentdict /CMap defineresource pop' . self::NEW_LINE;
-        $output .= 'end' . self::NEW_LINE;
+        $output[] = 'endcmap';
+        $output[] = 'CMapName currentdict /CMap defineresource pop';
+        $output[] = 'end';
 
-        return $output . 'end';
+        return $this->implode($output) . 'end';
     }
 
     /**
