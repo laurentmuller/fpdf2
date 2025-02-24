@@ -3153,7 +3153,7 @@ class PdfDocument
      */
     protected function putHeader(): void
     {
-        $this->updatePdfVersion($this->viewerPreferences->getPdfVersion());
+        $this->updatePdfVersion($this->viewerPreferences->getVersion());
         $this->putf('%%PDF-%s', $this->pdfVersion->value);
     }
 

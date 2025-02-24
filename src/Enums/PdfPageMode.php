@@ -34,32 +34,32 @@ enum PdfPageMode: string implements PdfEnumDefaultInterface
     case FULL_SCREEN = 'FullScreen';
 
     /**
-     * Attachments panel is visible.
+     * The attachments panel is visible.
      *
      * Require PDF 1.6.
      */
     case USE_ATTACHMENTS = 'UseAttachments';
 
     /**
-     * Neither document outline nor thumbnail images visible (default value).
+     * Neither document outline nor thumbnail image are visible (default value).
      */
     #[EnumCase(extras: [self::NAME => true])]
     case USE_NONE = 'UseNone';
 
     /**
-     * Optional content group panel visible.
+     * The optional content group panel is visible.
      *
      * Require PDF 1.5.
      */
     case USE_OC = 'UseOC';
 
     /**
-     * Document outline visible.
+     * The document outline is visible.
      */
     case USE_OUTLINES = 'UseOutlines';
 
     /**
-     * Thumbnail images visible.
+     * The thumbnail image is visible.
      */
     case USE_THUMBS = 'UseThumbs';
 
