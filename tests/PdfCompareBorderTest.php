@@ -23,6 +23,7 @@ class PdfCompareBorderTest extends AbstractCompareTestCase
     /**
      * @throws PdfException
      */
+    #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void
     {
         $width = null;
@@ -39,6 +40,7 @@ class PdfCompareBorderTest extends AbstractCompareTestCase
         $doc->cell($width, $height, 'Left/Right Border', PdfBorder::leftRight(), $move);
     }
 
+    #[\Override]
     protected function updateOldDocument(FPDF $doc): void
     {
         $width = 0.0;

@@ -19,6 +19,8 @@ addAttachment(string $file, string $name = '', string $desc = '')
   The default value is the base name of the file.
 - `$desc`: An optional description for the file contents.
 
+**Usage:**
+
 To use it, create a derived class and use the `PdfAttachmentTrait` trait:
 
 ```php

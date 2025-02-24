@@ -25,7 +25,6 @@ class PdfDocOutputTest extends AbstractPdfDocTestCase
         $doc = $this->createDocument();
         echo 'fake';
         $doc->output(PdfDestination::DOWNLOAD);
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testOutputDownloadValid(): void
@@ -41,7 +40,6 @@ class PdfDocOutputTest extends AbstractPdfDocTestCase
         self::expectException(PdfException::class);
         $doc = $this->createDocument();
         $doc->output(PdfDestination::FILE, 'https://www.bibi.nu/file.doc');
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testOutputInlineInvalid(): void
@@ -51,7 +49,6 @@ class PdfDocOutputTest extends AbstractPdfDocTestCase
         $doc = $this->createDocument();
         echo 'fake';
         $doc->output();
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testOutputInlineValid(): void

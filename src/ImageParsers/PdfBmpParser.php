@@ -18,6 +18,7 @@ namespace fpdf\ImageParsers;
  */
 class PdfBmpParser extends AbstractGdImageParser
 {
+    #[\Override]
     protected function createImageFromFile(string $file): \GdImage|false
     {
         return \imagecreatefrombmp($file);

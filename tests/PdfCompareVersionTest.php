@@ -20,9 +20,11 @@ class PdfCompareVersionTest extends AbstractCompareTestCase
 {
     public const PDF_VERSION = PdfVersion::VERSION_1_6;
 
+    #[\Override]
     protected function createOldDocument(): FPDF
     {
         $doc = new class() extends FPDF {
+            #[\Override]
             public function _enddoc(): void
             {
                 $this->PDFVersion = PdfCompareVersionTest::PDF_VERSION->value;
@@ -35,11 +37,13 @@ class PdfCompareVersionTest extends AbstractCompareTestCase
         return $doc;
     }
 
+    #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void
     {
         $doc->updatePdfVersion(self::PDF_VERSION);
     }
 
+    #[\Override]
     protected function updateOldDocument(FPDF $doc): void
     {
     }

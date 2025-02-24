@@ -28,6 +28,7 @@ abstract class AbstractCompareTestCase extends TestCase
     private string $newFile = '';
     private string $oldFile = '';
 
+    #[\Override]
     public static function setUpBeforeClass(): void
     {
         if (!\defined('FPDF_FONTPATH')) {
@@ -35,6 +36,7 @@ abstract class AbstractCompareTestCase extends TestCase
         }
     }
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->newFile = __DIR__ . '/doc_new.pdf';

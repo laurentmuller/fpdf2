@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "elao/enum",
-            "version": "v2.5.1",
+            "version": "v2.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Elao/PhpEnums.git",
-                "reference": "25382e9a114872148f34f549d028378bc357ffac"
+                "reference": "0e67f9baff2d8e40291218f2e24e94ef8b8caa55"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Elao/PhpEnums/zipball/25382e9a114872148f34f549d028378bc357ffac",
-                "reference": "25382e9a114872148f34f549d028378bc357ffac",
+                "url": "https://api.github.com/repos/Elao/PhpEnums/zipball/0e67f9baff2d8e40291218f2e24e94ef8b8caa55",
+                "reference": "0e67f9baff2d8e40291218f2e24e94ef8b8caa55",
                 "shasum": ""
             },
             "require": {
@@ -85,7 +85,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Elao/PhpEnums/issues",
-                "source": "https://github.com/Elao/PhpEnums/tree/v2.5.1"
+                "source": "https://github.com/Elao/PhpEnums/tree/v2.5.2"
             },
             "funding": [
                 {
@@ -93,7 +93,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-10-16T19:13:47+00:00"
+            "time": "2025-01-20T12:56:25+00:00"
         }
     ],
     "packages-dev": [
@@ -156,16 +156,16 @@
         },
         {
             "name": "myclabs/deep-copy",
-            "version": "1.12.1",
+            "version": "1.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "123267b2c49fbf30d78a7b2d333f6be754b94845"
+                "reference": "024473a478be9df5fdaca2c793f2232fe788e414"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/123267b2c49fbf30d78a7b2d333f6be754b94845",
-                "reference": "123267b2c49fbf30d78a7b2d333f6be754b94845",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/024473a478be9df5fdaca2c793f2232fe788e414",
+                "reference": "024473a478be9df5fdaca2c793f2232fe788e414",
                 "shasum": ""
             },
             "require": {
@@ -204,7 +204,7 @@
             ],
             "support": {
                 "issues": "https://github.com/myclabs/DeepCopy/issues",
-                "source": "https://github.com/myclabs/DeepCopy/tree/1.12.1"
+                "source": "https://github.com/myclabs/DeepCopy/tree/1.13.0"
             },
             "funding": [
                 {
@@ -212,7 +212,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-11-08T17:47:46+00:00"
+            "time": "2025-02-12T12:17:51+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -715,16 +715,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "11.5.3",
+            "version": "11.5.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "30e319e578a7b5da3543073e30002bf82042f701"
+                "reference": "c91c830e7108a81e5845aeb6ba8fe3c1a4351c0b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/30e319e578a7b5da3543073e30002bf82042f701",
-                "reference": "30e319e578a7b5da3543073e30002bf82042f701",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c91c830e7108a81e5845aeb6ba8fe3c1a4351c0b",
+                "reference": "c91c830e7108a81e5845aeb6ba8fe3c1a4351c0b",
                 "shasum": ""
             },
             "require": {
@@ -734,7 +734,7 @@
                 "ext-mbstring": "*",
                 "ext-xml": "*",
                 "ext-xmlwriter": "*",
-                "myclabs/deep-copy": "^1.12.1",
+                "myclabs/deep-copy": "^1.13.0",
                 "phar-io/manifest": "^2.0.4",
                 "phar-io/version": "^3.2.1",
                 "php": ">=8.2",
@@ -796,7 +796,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.5.3"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.5.9"
             },
             "funding": [
                 {
@@ -812,7 +812,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-01-13T09:36:00+00:00"
+            "time": "2025-02-21T06:08:50+00:00"
         },
         {
             "name": "sebastian/cli-parser",

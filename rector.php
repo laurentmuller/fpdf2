@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the 'fpdf' package.
  *
@@ -14,9 +15,9 @@ use Rector\Config\RectorConfig;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\SetList;
-use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
 
 return RectorConfig::configure()
+    ->withCache(__DIR__ . '/cache/rector')
     ->withRootFiles()
     ->withPaths([
         __DIR__ . '/src',
@@ -24,7 +25,6 @@ return RectorConfig::configure()
         __DIR__ . '/rector.php',
     ])->withSkip([
         PreferPHPUnitThisCallRector::class,
-        DisallowedEmptyRuleFixerRector::class,
         __DIR__ . '/src/font',
         __DIR__ . '/tests/FPDF.php',
         __DIR__ . '/tests/font',
@@ -36,7 +36,7 @@ return RectorConfig::configure()
         SetList::INSTANCEOF,
         SetList::STRICT_BOOLEANS,
         // PHP-Unit
-        PHPUnitSetList::PHPUNIT_100,
+        PHPUnitSetList::PHPUNIT_110,
         PHPUnitSetList::PHPUNIT_CODE_QUALITY,
         PHPUnitSetList::ANNOTATIONS_TO_ATTRIBUTES,
     ]);

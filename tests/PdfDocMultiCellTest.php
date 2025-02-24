@@ -31,7 +31,6 @@ class PdfDocMultiCellTest extends AbstractPdfDocTestCase
         $doc = $this->createDocument(false, false);
         $text = \str_repeat('This is a very long text to use for multi lines. ', 10);
         $doc->cell(text: $text);
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testCellNoSep(): void
@@ -66,7 +65,6 @@ class PdfDocMultiCellTest extends AbstractPdfDocTestCase
         $doc = $this->createDocument(false, false);
         $text = \str_repeat('This is a very long text to use for multi lines. ', 10);
         $doc->getLinesCount($text);
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testLineCountNoSep(): void
@@ -91,7 +89,6 @@ class PdfDocMultiCellTest extends AbstractPdfDocTestCase
         $doc = $this->createDocument(false, false);
         $text = \str_repeat('This is a very long text to use for multi lines. ', 10);
         $doc->multiCell(text: $text);
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testMultiCellNoSep(): void

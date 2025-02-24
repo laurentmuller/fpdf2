@@ -104,9 +104,19 @@ class PdfViewerPreferences
     }
 
     /**
-     * Gets needed PDF version.
+     * Gets the page scaling option that shall be selected when a print dialog is displayed for this document.
+     *
+     * The default value is <code>PdfScaling::NONE</code>.
      */
-    public function getPdfVersion(): PdfVersion
+    public function getScaling(): PdfScaling
+    {
+        return $this->scaling;
+    }
+
+    /**
+     * Gets the required PDF version.
+     */
+    public function getVersion(): PdfVersion
     {
         if ($this->pickTrayByPDFSize || !$this->duplex->isDefault()) {
             return PdfVersion::VERSION_1_7;
@@ -119,16 +129,6 @@ class PdfViewerPreferences
         }
 
         return PdfVersion::getDefault();
-    }
-
-    /**
-     * Gets the page scaling option that shall be selected when a print dialog is displayed for this document.
-     *
-     * The default value is <code>PdfScaling::NONE</code>.
-     */
-    public function getScaling(): PdfScaling
-    {
-        return $this->scaling;
     }
 
     /**

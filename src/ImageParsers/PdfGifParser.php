@@ -18,11 +18,13 @@ namespace fpdf\ImageParsers;
  */
 class PdfGifParser extends AbstractGdImageParser
 {
+    #[\Override]
     protected function createImageFromFile(string $file): \GdImage|false
     {
         return \imagecreatefromgif($file);
     }
 
+    #[\Override]
     protected function toPngData(\GdImage $image): string
     {
         \imageinterlace($image, false);

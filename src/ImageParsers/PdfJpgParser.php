@@ -27,6 +27,7 @@ class PdfJpgParser implements PdfImageParserInterface
     /**
      * @phpstan-return ImageType
      */
+    #[\Override]
     public function parse(PdfDocument $parent, string $file): array
     {
         /* @phpstan-var array{0: int, 1: int, 2: int, channels?: int, bits?: int}|false $size */

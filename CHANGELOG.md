@@ -2,6 +2,44 @@
 
 ## Unreleased
 
+- Added tests for font files.
+- Added missing override attribute.
+- Updated documentation.
+- Updated rector configuration.
+
+## 3.0.5 - 2025-02-06
+
+- Removed the `self::fail()` functions to unit tests.
+- Added the `getAliasNumberPages()` function to the `PdfDocument` class.
+- Minor modifications.
+
+## 3.0.4 - 2025-01-04
+
+- Replaced the `width` and `height` properties of the `PdfDocument`
+  by a `PdfSize` instance.
+- Replaced all margins properties of the `PdfDocument` by a `PdfMargins` class.
+- Renamed private functions of `PdfSectorTrait`.
+- Added `scale()` and `divide()` functions to `PdfDocument` class.
+
+## 3.0.3 - 2025-01-30
+
+- Make `PdfRgbColor` class as read-only.
+
+## 3.0.2 - 2025-01-30
+
+- Updated `PdfRgbColor` class with static methods and return types.
+
+## 3.0.1 - 2025-01-30
+
+- Make `PdfRgbColor` class no more read-only.
+
+## 3.0.0 - 2025-01-30
+
+- Updated `PdfRgbColor` class.
+- Updated Symfony to version 7.2.3.
+- Updated Rector to version 2.0.
+- Updated cache configurations.
+- Updated psalm to version 6.0.
 - Added default title to the `addPageIndex()` function of
   the `PdfBookmarkTrait` trait.
 - Added function definitions in examples.

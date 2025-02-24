@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace fpdf\Tests;
 
+use fpdf\Color\PdfRgbColor;
 use fpdf\Enums\PdfDestination;
 use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
@@ -52,15 +53,21 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
         $doc = $this->createDocument(false, false);
         $doc->close();
         $doc->addPage();
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testAliasNumberPages(): void
     {
         $doc = $this->createDocument(false, false);
+        $actual = $doc->getAliasNumberPages();
+        self::assertSame('{nb}', $actual);
+
         $doc->setAliasNumberPages();
-        $doc->addPage();
-        self::assertSame(1, $doc->getPage());
+        $actual = $doc->getAliasNumberPages();
+        self::assertSame('{nb}', $actual);
+
+        $doc->setAliasNumberPages('{pages}');
+        $actual = $doc->getAliasNumberPages();
+        self::assertSame('{pages}', $actual);
     }
 
     public function testAutoPageBreak(): void
@@ -78,7 +85,6 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
         self::expectException(PdfException::class);
         $doc = $this->createDocument(true, false);
         $doc->cell(text: 'fake');
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testClose2Times(): void
@@ -94,8 +100,8 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
     public function testColorFlag(): void
     {
         $doc = $this->createDocument(false, false);
-        $doc->setFillColor(255, 255, 255);
-        $doc->setTextColor(0, 0, 0);
+        $doc->setFillColor(PdfRgbColor::white());
+        $doc->setTextColor(PdfRgbColor::black());
         $doc->addPage();
         $doc->setFont(PdfFontName::ARIAL);
         $doc->cell(text: 'fake');
@@ -223,7 +229,6 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
         self::expectException(PdfException::class);
         $doc = $this->createDocument(false, false);
         $doc->getLinesCount('fake');
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testLineJoin(): void
@@ -356,7 +361,6 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
         self::expectException(PdfException::class);
         $doc = $this->createDocument(false, false);
         $doc->setFont('Fake');
-        self::fail('A PDF exception must be raised.');
     }
 
     public function testSetLink(): void

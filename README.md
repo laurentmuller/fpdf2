@@ -16,7 +16,7 @@ you can use:
 composer require laurentmuller/fpdf2
 ```
 
-Alternatively, you can add the requirement `"laurentmuller/fpdf2":"^2.0"` to
+Alternatively, you can add the requirement `"laurentmuller/fpdf2":"^3.0"` to
 your `composer.json` file and run `composer update`. This could be useful when
 the installation of FPDF2 is not compatible with some currently installed
 dependencies. Anyway, the previous option is the preferred way, since the

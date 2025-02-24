@@ -64,7 +64,7 @@ class PdfPoint
      */
     public function scale(float $scaleFactor): self
     {
-        return new self($this->x * $scaleFactor, $this->y * $scaleFactor);
+        return self::instance($this->x * $scaleFactor, $this->y * $scaleFactor);
     }
 
     /**

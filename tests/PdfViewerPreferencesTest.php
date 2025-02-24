@@ -90,23 +90,23 @@ class PdfViewerPreferencesTest extends TestCase
     public function testPdfVersion(): void
     {
         $preferences = new PdfViewerPreferences();
-        $actual = $preferences->getPdfVersion();
+        $actual = $preferences->getVersion();
         self::assertSame(PdfVersion::VERSION_1_3, $actual);
 
         $preferences->setDisplayDocTitle();
-        $actual = $preferences->getPdfVersion();
+        $actual = $preferences->getVersion();
         self::assertSame(PdfVersion::VERSION_1_4, $actual);
 
         $preferences->setScaling(PdfScaling::NONE);
-        $actual = $preferences->getPdfVersion();
+        $actual = $preferences->getVersion();
         self::assertSame(PdfVersion::VERSION_1_6, $actual);
 
         $preferences->setDuplex(PdfDuplex::DUPLEX_FLIP_LONG_EDGE);
-        $actual = $preferences->getPdfVersion();
+        $actual = $preferences->getVersion();
         self::assertSame(PdfVersion::VERSION_1_7, $actual);
 
         $preferences->setPickTrayByPDFSize();
-        $actual = $preferences->getPdfVersion();
+        $actual = $preferences->getVersion();
         self::assertSame(PdfVersion::VERSION_1_7, $actual);
     }
 

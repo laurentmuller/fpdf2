@@ -22,6 +22,9 @@ use fpdf\Traits\PdfEnumDefaultTrait;
  *
  * Specifying how to display the document on exiting full-screen mode.
  *
+ * This enumeration is meaningful only if the value of the <code>PageMode</code> entry in
+ * the Catalog dictionary is <code>FullScreen</code>.
+ *
  * @implements PdfEnumDefaultInterface<PdfNonFullScreenPageMode>
  */
 enum PdfNonFullScreenPageMode: string implements PdfEnumDefaultInterface

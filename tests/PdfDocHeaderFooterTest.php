@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace fpdf\Tests;
 
+use fpdf\Color\PdfRgbColor;
 use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
 use fpdf\PdfDocument;
@@ -35,22 +36,24 @@ class PdfDocHeaderFooterTest extends TestCase
     private function getDocument(): PdfDocument
     {
         return new class() extends PdfDocument {
+            #[\Override]
             public function header(): void
             {
                 $this->setFont(PdfFontName::TIMES, PdfFontStyle::UNDERLINE, 12.0);
-                $this->setDrawColor(10, 10, 10);
-                $this->setTextColor(20, 20, 20);
-                $this->setFillColor(30, 30, 30);
+                $this->setDrawColor(PdfRgbColor::instance(10, 10, 10));
+                $this->setTextColor(PdfRgbColor::instance(20, 20, 20));
+                $this->setFillColor(PdfRgbColor::instance(30, 30, 30));
                 $this->setLineWidth(2.0);
                 $this->cell(text: 'Header');
             }
 
+            #[\Override]
             public function footer(): void
             {
                 $this->setFont(PdfFontName::TIMES, PdfFontStyle::BOLD, 10.0);
-                $this->setDrawColor(255, 255, 255);
-                $this->setTextColor(100, 100, 100);
-                $this->setFillColor(50, 50, 50);
+                $this->setDrawColor(PdfRgbColor::white());
+                $this->setTextColor(PdfRgbColor::instance(100, 100, 100));
+                $this->setFillColor(PdfRgbColor::instance(50, 50, 50));
                 $this->setLineWidth(3.0);
                 $this->cell(text: 'Footer');
             }

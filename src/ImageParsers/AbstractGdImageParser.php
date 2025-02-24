@@ -21,6 +21,7 @@ use fpdf\PdfException;
  */
 abstract class AbstractGdImageParser extends PdfPngParser
 {
+    #[\Override]
     public function parse(PdfDocument $parent, string $file): array
     {
         $image = $this->createImageFromFile($file);

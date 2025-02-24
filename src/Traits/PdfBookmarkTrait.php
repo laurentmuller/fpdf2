@@ -98,7 +98,7 @@ trait PdfBookmarkTrait
         $page = $this->page;
         $y = $currentY ? $this->y : 0.0;
         $link = $createLink ? $this->createLink($y, $page) : null;
-        $y = ($this->height - $y) * $this->scaleFactor;
+        $y = $this->scale($this->getPageHeight() - $y);
         $this->bookmarks[] = [
             'text' => $text,
             'level' => $level,

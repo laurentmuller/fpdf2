@@ -17,6 +17,7 @@ use fpdf\PdfDocument;
 
 class PdfCompareLineWidthTest extends AbstractCompareTestCase
 {
+    #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void
     {
         $doc->setLineWidth(1);
@@ -24,6 +25,7 @@ class PdfCompareLineWidthTest extends AbstractCompareTestCase
         $doc->setLineWidth(2);
     }
 
+    #[\Override]
     protected function updateOldDocument(FPDF $doc): void
     {
         $doc->SetLineWidth(1);

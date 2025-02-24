@@ -4,6 +4,7 @@ This example is a variant of the previous one showing how to lay the text across
 multiple columns.
 
 ```php
+use fpdf\Color\PdfGrayColor;
 use fpdf\Color\PdfRgbColor;
 use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
@@ -41,7 +42,7 @@ class CustomDocument extends PdfDocument
         // page footer
         $this->setY(-15);
         $this->setFont(PdfFontName::ARIAL, PdfFontStyle::ITALIC, 8);
-        $this->setTextColor(128);
+        $this->setTextColor(PdfGrayColor::instance(128));
         $this->cell(null, 10, \sprintf('Page %d', $this->getPage()), PdfBorder::none(), PdfMove::RIGHT, PdfTextAlignment::CENTER);
     }
 

@@ -17,6 +17,7 @@ use fpdf\PdfDocument;
 
 class PdfCompareImageTest extends AbstractCompareTestCase
 {
+    #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void
     {
         $doc->image(__DIR__ . '/images/image.png');
@@ -26,6 +27,7 @@ class PdfCompareImageTest extends AbstractCompareTestCase
         $doc->image(__DIR__ . '/images/image.gif');
     }
 
+    #[\Override]
     protected function updateOldDocument(FPDF $doc): void
     {
         $doc->Image(__DIR__ . '/images/image.png');

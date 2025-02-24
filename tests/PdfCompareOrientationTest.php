@@ -28,6 +28,7 @@ class PdfCompareOrientationTest extends AbstractCompareTestCase
         self::assertEqualsWithDelta(210.0, $doc->getPageHeight(), 0.1);
     }
 
+    #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void
     {
         $doc->cell(null, 0.0, 'Portrait');
@@ -54,6 +55,7 @@ class PdfCompareOrientationTest extends AbstractCompareTestCase
         $doc->cell(null, 0.0, 'Portrait 0deg.');
     }
 
+    #[\Override]
     protected function updateOldDocument(FPDF $doc): void
     {
         $doc->Cell(0.0, 0.0, 'Portrait');

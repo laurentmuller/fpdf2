@@ -22,9 +22,11 @@ use fpdf\PdfDocument;
 
 class PdfCompareHeaderFooterTest extends AbstractCompareTestCase
 {
+    #[\Override]
     protected function createNewDocument(): PdfDocument
     {
         $doc = new class() extends PdfDocument {
+            #[\Override]
             public function header(): void
             {
                 $this->setFont('Arial', PdfFontStyle::BOLD, 15);
@@ -40,6 +42,7 @@ class PdfCompareHeaderFooterTest extends AbstractCompareTestCase
                 $this->lineBreak(20);
             }
 
+            #[\Override]
             public function footer(): void
             {
                 $this->setY(-15);
@@ -60,9 +63,11 @@ class PdfCompareHeaderFooterTest extends AbstractCompareTestCase
         return $doc;
     }
 
+    #[\Override]
     protected function createOldDocument(): FPDF
     {
         $doc = new class() extends FPDF {
+            #[\Override]
             public function Header(): void
             {
                 $this->SetFont('Arial', 'B', 15);
@@ -71,6 +76,7 @@ class PdfCompareHeaderFooterTest extends AbstractCompareTestCase
                 $this->Ln(20);
             }
 
+            #[\Override]
             public function Footer(): void
             {
                 /** @phpstan-var int $page */
@@ -86,6 +92,7 @@ class PdfCompareHeaderFooterTest extends AbstractCompareTestCase
         return $doc;
     }
 
+    #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void
     {
         $doc->cell(height: 5.0, text: 'This is a header/footer test.');
@@ -93,6 +100,7 @@ class PdfCompareHeaderFooterTest extends AbstractCompareTestCase
         $doc->cell(height: 5.0, text: 'This is a header/footer test.');
     }
 
+    #[\Override]
     protected function updateOldDocument(FPDF $doc): void
     {
         $doc->Cell(w: 0.0, h: 5.0, txt: 'This is a header/footer test.');

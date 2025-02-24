@@ -63,48 +63,47 @@ trait PdfEllipseTrait
         float $ry,
         PdfRectangleStyle $style = PdfRectangleStyle::BORDER
     ): void {
-        $height = $this->height;
-        $scaleFactor = $this->scaleFactor;
+        $height = $this->getPageHeight();
         $lx = 4.0 / 3.0 * (\M_SQRT2 - 1.0) * $rx;
         $ly = 4.0 / 3.0 * (\M_SQRT2 - 1.0) * $ry;
 
         $this->outf(
             '%.2F %.2F m %.2F %.2F %.2F %.2F %.2F %.2F c',
-            ($x + $rx) * $scaleFactor,
-            ($height - $y) * $scaleFactor,
-            ($x + $rx) * $scaleFactor,
-            ($height - ($y - $ly)) * $scaleFactor,
-            ($x + $lx) * $scaleFactor,
-            ($height - ($y - $ry)) * $scaleFactor,
-            $x * $scaleFactor,
-            ($height - ($y - $ry)) * $scaleFactor
+            $this->scale($x + $rx),
+            $this->scale($height - $y),
+            $this->scale($x + $rx),
+            $this->scale($height - ($y - $ly)),
+            $this->scale($x + $lx),
+            $this->scale($height - ($y - $ry)),
+            $this->scale($x),
+            $this->scale($height - ($y - $ry))
         );
         $this->outf(
             '%.2F %.2F %.2F %.2F %.2F %.2F c',
-            ($x - $lx) * $scaleFactor,
-            ($height - ($y - $ry)) * $scaleFactor,
-            ($x - $rx) * $scaleFactor,
-            ($height - ($y - $ly)) * $scaleFactor,
-            ($x - $rx) * $scaleFactor,
-            ($height - $y) * $scaleFactor
+            $this->scale($x - $lx),
+            $this->scale($height - ($y - $ry)),
+            $this->scale($x - $rx),
+            $this->scale($height - ($y - $ly)),
+            $this->scale($x - $rx),
+            $this->scale($height - $y)
         );
         $this->outf(
             '%.2F %.2F %.2F %.2F %.2F %.2F c',
-            ($x - $rx) * $scaleFactor,
-            ($height - ($y + $ly)) * $scaleFactor,
-            ($x - $lx) * $scaleFactor,
-            ($height - ($y + $ry)) * $scaleFactor,
-            $x * $scaleFactor,
-            ($height - ($y + $ry)) * $scaleFactor
+            $this->scale($x - $rx),
+            $this->scale($height - ($y + $ly)),
+            $this->scale($x - $lx),
+            $this->scale($height - ($y + $ry)),
+            $this->scale($x),
+            $this->scale($height - ($y + $ry))
         );
         $this->outf(
             '%.2F %.2F %.2F %.2F %.2F %.2F c %s',
-            ($x + $lx) * $scaleFactor,
-            ($height - ($y + $ry)) * $scaleFactor,
-            ($x + $rx) * $scaleFactor,
-            ($height - ($y + $ly)) * $scaleFactor,
-            ($x + $rx) * $scaleFactor,
-            ($height - $y) * $scaleFactor,
+            $this->scale($x + $lx),
+            $this->scale($height - ($y + $ry)),
+            $this->scale($x + $rx),
+            $this->scale($height - ($y + $ly)),
+            $this->scale($x + $rx),
+            $this->scale($height - $y),
             $style->value
         );
     }

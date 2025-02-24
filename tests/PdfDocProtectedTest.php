@@ -103,7 +103,7 @@ class PdfDocProtectedTest extends TestCase
             ) {
                 parent::__construct($orientation, $unit, $size);
                 if ($this->isUTF8('fake')) {
-                    $this->height = $this->getPageHeight();
+                    $this->pageSize->height = $this->getPageHeight();
                 }
             }
         };

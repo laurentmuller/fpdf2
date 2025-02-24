@@ -1,5 +1,4 @@
+/cache
 /vendor
-/.php-cs-fixer.cache
-/.phpunit.result.cache
-/tests/*.pdf
 /vendor-bin/**/vendor/
+/vendor-bin/**/composer.lock

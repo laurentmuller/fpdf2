@@ -27,6 +27,7 @@ class PdfCompareMultiCellTest extends AbstractCompareTestCase
 
     private const TEXT_WIDTH = 80.0;
 
+    #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void
     {
         $doc->multiCell(width: self::TEXT_WIDTH, text: 'ALL: ' . self::CONTENT, border: PdfBorder::all());
@@ -46,6 +47,7 @@ class PdfCompareMultiCellTest extends AbstractCompareTestCase
         $doc->multiCell(width: self::TEXT_WIDTH, text: 'RIGHT: ' . self::CONTENT, border: PdfBorder::right());
     }
 
+    #[\Override]
     protected function updateOldDocument(FPDF $doc): void
     {
         $doc->MultiCell(w: self::TEXT_WIDTH, h: 5.0, txt: 'ALL: ' . self::CONTENT, border: 'LRTB');
