@@ -35,8 +35,6 @@ sector(
 - `$origin`: the origin,in degrees, of angles (0=right, 90=top, 180=left,
   270=for bottom).
 
-All angle parameters are expressed in degrees (&deg;).
-
 **Usage:**
 
 To use it, create a derived class and use the `PdfSectorTrait` trait:
