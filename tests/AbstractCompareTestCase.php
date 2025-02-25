@@ -61,7 +61,7 @@ abstract class AbstractCompareTestCase extends TestCase
         self::assertIsString($old_content);
         self::assertIsString($new_content);
 
-        // remove creation date and version
+        // remove creation date and producer
         $patterns = [
             '/\/CreationDate.*\)/mi',
             '/\/Producer \(FPDF.*\)/mi',

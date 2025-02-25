@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Updated `getLinesCount()` function to the `PdfDocument` class.
+- Added `splitText()` function to the `PdfDocument` class.
 - Small optimizations of the `PdfDocument` class.
 
 ## 3.0.6 - 2025-02-24
