@@ -292,8 +292,8 @@ class PdfDocument
         $this->lineCap = PdfLineCap::getDefault();
         $this->lineJoin = PdfLineJoin::getDefault();
         $this->pageMode = PdfPageMode::getDefault();
-        $this->zoom = PdfZoom::getDefault();
         $this->pdfVersion = PdfVersion::getDefault();
+        $this->zoom = PdfZoom::getDefault();
 
         // scale factor
         $this->scaleFactor = $unit->getScaleFactor();
@@ -334,12 +334,12 @@ class PdfDocument
      * <ul>
      * <li>The directory indicated by the 4th parameter (if that parameter is set).</li>
      * <li>The directory indicated by the <code>FPDF_FONTPATH</code> constant (if that constant is defined).</li>
-     * <li>The font directory located in the same directory as this class.</li>
+     * <li>The <code>font</code> directory located in the same directory as this class.</li>
      * </ul>
      *
      * @param PdfFontName|string $family The font family. The name can be chosen arbitrarily. If it is a standard
      *                                   family name, it will override the corresponding font.
-     * @param PdfFontStyle       $style  The font style. The default value is regular.
+     * @param PdfFontStyle       $style  The font style. The default value is <code>PdfFontStyle::REGULAR</code>.
      * @param ?string            $file   The name of the font definition file. By default, it is built from the family
      *                                   and style, in lower case with no space.
      * @param ?string            $dir    The directory where to load the definition file. If not specified, the default
@@ -584,9 +584,10 @@ class PdfDocument
             if (null === $this->currentFont) {
                 throw PdfException::instance('No font has been set.');
             }
+            $textWidth = $this->getStringWidth($text);
             $dx = match ($align) {
-                PdfTextAlignment::RIGHT => $width - $this->cellMargin - $this->getStringWidth($text),
-                PdfTextAlignment::CENTER => ($width - $this->getStringWidth($text)) / 2.0,
+                PdfTextAlignment::RIGHT => $width - $this->cellMargin - $textWidth,
+                PdfTextAlignment::CENTER => ($width - $textWidth) / 2.0,
                 default => $this->cellMargin,
             };
             if ($this->colorFlag) {
@@ -602,7 +603,8 @@ class PdfDocument
                 $output .= $this->doUnderline(
                     $this->x + $dx,
                     $this->y + 0.5 * $height + 0.3 * $this->fontSize,
-                    $text
+                    $text,
+                    $textWidth
                 );
             }
             if ($this->colorFlag) {
@@ -612,7 +614,7 @@ class PdfDocument
                 $this->link(
                     $this->x + $dx,
                     $this->y + 0.5 * $height - 0.5 * $this->fontSize,
-                    $this->getStringWidth($text),
+                    $textWidth,
                     $this->fontSize,
                     $link
                 );
@@ -2600,19 +2602,15 @@ class PdfDocument
 
     /**
      * Output the underline font.
-     *
-     * @throws PdfException if no font has been set
      */
-    protected function doUnderline(float $x, float $y, string $str): string
+    protected function doUnderline(float $x, float $y, string $str, ?float $textWidth = null): string
     {
-        if (null === $this->currentFont) {
-            throw PdfException::instance('No font has been set.');
-        }
-
-        // underline text
-        $up = (float) $this->currentFont['up'];
-        $ut = (float) $this->currentFont['ut'];
-        $width = $this->getStringWidth($str) + $this->wordSpacing * (float) \substr_count($str, ' ');
+        /** @phpstan-var FontType $font */
+        $font = $this->currentFont;
+        $up = (float) $font['up'];
+        $ut = (float) $font['ut'];
+        $textWidth ??= $this->getStringWidth($str);
+        $width = $textWidth + $this->wordSpacing * (float) \substr_count($str, ' ');
 
         return \sprintf(
             ' %.2F %.2F %.2F %.2F re f',

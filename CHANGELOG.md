@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- Small optimizations of the `PdfDocument` class.
+
 ## 3.0.6 - 2025-02-24
 
 - Added tests for font files.
