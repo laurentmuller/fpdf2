@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 3.0.7 - 2025-02-26
 
 - Updated unit tests.
 - Simplified `multiCell()` and `write()` functions.
