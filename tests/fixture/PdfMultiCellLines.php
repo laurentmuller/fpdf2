@@ -49,9 +49,9 @@ class PdfMultiCellLines extends PdfDocument
         $firstKey = \array_key_first($lines);
         $lastKey = \array_key_last($lines);
         $width ??= $this->getRemainingWidth();
-        $widthMax = ($width - 2.0 * $this->cellMargin) * 1000.0 / $this->fontSize;
+        $widthMax = $width - 2.0 * $this->cellMargin;
 
-        foreach ($lines as $key => $line) {
+        foreach ($lines as $key => $entry) {
             // last line?
             if ($lastKey === $key) {
                 if ($border->isBottom()) {
@@ -60,29 +60,22 @@ class PdfMultiCellLines extends PdfDocument
                 if ($this->wordSpacing > 0) {
                     $this->updateWordSpacing();
                 }
-            } elseif (PdfTextAlignment::JUSTIFIED === $align) {
-                $separators = \substr_count($line, ' ');
+            } elseif (!$entry[1] && PdfTextAlignment::JUSTIFIED === $align) {
+                $separators = \substr_count($entry[0], ' ');
                 if ($separators > 0) {
-                    $textWidth = $this->getStringWidth($line) * 1000.0 / $this->fontSize;
-                    $wordSpacing = ($widthMax - $textWidth) / 1000.0 * $this->fontSize / (float) $separators;
+                    $textWidth = $this->getStringWidth($entry[0]);
+                    $wordSpacing = ($widthMax - $textWidth) / (float) $separators;
                     if ($wordSpacing > 0.0) {
-                        $this->updateWordSpacing($wordSpacing);
+                        $this->updateWordSpacing($wordSpacing, true);
                     }
                 }
             }
 
-            $this->cell(
-                $width,
-                $height,
-                $line,
-                $border1,
-                PdfMove::BELOW,
-                $align,
-                $fill
-            );
+            $this->cell($width, $height, $entry[0], $border1, PdfMove::BELOW, $align, $fill);
 
             // first line?
             if ($firstKey === $key) {
+                // clone?
                 $border1 = clone $border2;
             }
         }

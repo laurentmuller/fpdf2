@@ -948,7 +948,7 @@ class PdfDocument
 
         $width = 0.0;
         $charWidths = $this->currentFont['cw'];
-        for ($i = 0,$len = \strlen($str); $i < $len; ++$i) {
+        for ($i = 0, $len = \strlen($str); $i < $len; ++$i) {
             $width += (float) $charWidths[$str[$i]];
         }
 
@@ -3412,9 +3412,12 @@ class PdfDocument
      *
      * @param ?string    $text       the text to split
      * @param float|null $width      the desired width. If <code>null</code>, the width extends up to the right margin.
-     * @param ?float     $cellMargin the desired cell margin or <code>null</code> to use the current value
+     * @param ?float     $cellMargin the desired cell margin or <code>null</code> to use the current cell margin
      *
-     * @return string[] the text exploded or an empty array if the text is null or empty
+     * @return array<array{0: string, 1: bool}> an array where each entry contains the line text and a flag indicating
+     *                                          if the end line is explicit (<code>true</code>) or if caused by text
+     *                                          overflow (<code>false</code>).
+     *                                          Returns an empty array if the text is null or empty
      *
      * @throws PdfException if the given text is not empty and no font is set
      */
@@ -3448,7 +3451,7 @@ class PdfDocument
             $ch = $text[$index];
             if (self::NEW_LINE === $ch) {
                 // explicit line break
-                $lines[] = \substr($text, $lastIndex, $index - $lastIndex);
+                $lines[] = [\substr($text, $lastIndex, $index - $lastIndex), true];
                 ++$index;
                 $sepIndex = -1;
                 $lastIndex = $index;
@@ -3465,9 +3468,9 @@ class PdfDocument
                     if ($index === $lastIndex) {
                         ++$index;
                     }
-                    $lines[] = \substr($text, $lastIndex, $index - $lastIndex);
+                    $lines[] = [\substr($text, $lastIndex, $index - $lastIndex), false];
                 } else {
-                    $lines[] = \substr($text, $lastIndex, $sepIndex - $lastIndex);
+                    $lines[] = [\substr($text, $lastIndex, $sepIndex - $lastIndex), false];
                     $index = $sepIndex + 1;
                 }
                 $sepIndex = -1;
@@ -3479,7 +3482,7 @@ class PdfDocument
         }
 
         // last chunk
-        $lines[] = \substr($text, $lastIndex);
+        $lines[] = [\substr($text, $lastIndex), false];
 
         return $lines;
     }
