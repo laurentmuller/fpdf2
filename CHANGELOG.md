@@ -1,5 +1,10 @@
 # Change log
 
+## Unreleased
+
+- **BC Break!**: Sets `PdfBorder` properties public, removed the corresponding
+  getter and setter functions and added more instances creation.
+
 ## 3.0.7 - 2025-02-26
 
 - Updated unit tests.

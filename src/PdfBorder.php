@@ -23,18 +23,16 @@ namespace fpdf;
 class PdfBorder
 {
     /**
-     * Create a new instance.
-     *
      * @param bool $left   a value indicating if the left border is set
      * @param bool $top    a value indicating if the top border is set
      * @param bool $right  a value indicating if the right border is set
      * @param bool $bottom a value indicating if the bottom border is set
      */
     public function __construct(
-        private bool $left,
-        private bool $top,
-        private bool $right,
-        private bool $bottom,
+        public bool $left,
+        public bool $top,
+        public bool $right,
+        public bool $bottom,
     ) {
     }
 
@@ -43,7 +41,7 @@ class PdfBorder
      */
     public static function all(): self
     {
-        return new self(true, true, true, true);
+        return self::instance(true, true, true, true);
     }
 
     /**
@@ -51,7 +49,7 @@ class PdfBorder
      */
     public static function bottom(): self
     {
-        return new self(false, false, false, true);
+        return self::instance(false, false, false, true);
     }
 
     /**
@@ -77,18 +75,50 @@ class PdfBorder
         $y = $bounds->y;
         $right = $bounds->right();
         $bottom = $bounds->bottom();
-        if ($this->isLeft()) {
+        if ($this->left) {
             $parent->line($x, $y, $x, $bottom);
         }
-        if ($this->isRight()) {
+        if ($this->right) {
             $parent->line($right, $y, $right, $bottom);
         }
-        if ($this->isTop()) {
+        if ($this->top) {
             $parent->line($x, $y, $right, $y);
         }
-        if ($this->isBottom()) {
+        if ($this->bottom) {
             $parent->line($x, $bottom, $right, $bottom);
         }
+    }
+
+    /**
+     * Returns if the given border is equal to this instance.
+     *
+     * To be equal, the four sides must be equal
+     */
+    public function equals(self $other): bool
+    {
+        return ($this === $other) || (
+            $this->left === $other->left
+            && $this->top === $other->top
+            && $this->right === $other->right
+            && $this->bottom === $other->bottom
+        );
+    }
+
+    /**
+     * Create a new instance.
+     *
+     * @param bool $left   a value indicating if the left border is set
+     * @param bool $top    a value indicating if the top border is set
+     * @param bool $right  a value indicating if the right border is set
+     * @param bool $bottom a value indicating if the bottom border is set
+     */
+    public static function instance(
+        bool $left,
+        bool $top,
+        bool $right,
+        bool $bottom,
+    ): self {
+        return new self($left, $top, $right, $bottom);
     }
 
     /**
@@ -114,22 +144,6 @@ class PdfBorder
     }
 
     /**
-     * Gets a value indicating if the bottom border is set.
-     */
-    public function isBottom(): bool
-    {
-        return $this->bottom;
-    }
-
-    /**
-     * Gets a value indicating if the left border is set.
-     */
-    public function isLeft(): bool
-    {
-        return $this->left;
-    }
-
-    /**
      * Gets a value indicating if no border is set.
      */
     public function isNone(): bool
@@ -141,27 +155,11 @@ class PdfBorder
     }
 
     /**
-     * Gets a value indicating if the right border is set.
-     */
-    public function isRight(): bool
-    {
-        return $this->right;
-    }
-
-    /**
-     * Gets a value indicating if the top border is set.
-     */
-    public function isTop(): bool
-    {
-        return $this->top;
-    }
-
-    /**
      * Create an instance with the left border only.
      */
     public static function left(): self
     {
-        return new self(true, false, false, false);
+        return self::instance(true, false, false, false);
     }
 
     /**
@@ -169,7 +167,7 @@ class PdfBorder
      */
     public static function leftRight(): self
     {
-        return new self(true, false, true, false);
+        return self::instance(true, false, true, false);
     }
 
     /**
@@ -192,7 +190,39 @@ class PdfBorder
      */
     public static function none(): self
     {
-        return new self(false, false, false, false);
+        return self::instance(false, false, false, false);
+    }
+
+    /**
+     * Create an instance with all borders except the bottom.
+     */
+    public static function notBottom(): self
+    {
+        return self::instance(true, true, true, false);
+    }
+
+    /**
+     * Create an instance with all borders except the left.
+     */
+    public static function notLeft(): self
+    {
+        return self::instance(false, true, true, true);
+    }
+
+    /**
+     * Create an instance with all borders except the right.
+     */
+    public static function notRight(): self
+    {
+        return self::instance(true, true, false, true);
+    }
+
+    /**
+     * Create an instance with all borders except the top.
+     */
+    public static function notTop(): self
+    {
+        return self::instance(true, false, true, true);
     }
 
     /**
@@ -202,7 +232,7 @@ class PdfBorder
      */
     public function or(self $other): self
     {
-        return new self(
+        return self::instance(
             $this->left || $other->left,
             $this->top || $other->top,
             $this->right || $other->right,
@@ -215,47 +245,7 @@ class PdfBorder
      */
     public static function right(): self
     {
-        return new self(false, false, true, false);
-    }
-
-    /**
-     * Sets a value indicating if the bottom border is set.
-     */
-    public function setBottom(bool $bottom = true): self
-    {
-        $this->bottom = $bottom;
-
-        return $this;
-    }
-
-    /**
-     * Sets a value indicating if the left border is set.
-     */
-    public function setLeft(bool $left = true): self
-    {
-        $this->left = $left;
-
-        return $this;
-    }
-
-    /**
-     * Sets a value indicating if the right border is set.
-     */
-    public function setRight(bool $right = true): self
-    {
-        $this->right = $right;
-
-        return $this;
-    }
-
-    /**
-     * Sets a value indicating if the top border is set.
-     */
-    public function setTop(bool $top = true): self
-    {
-        $this->top = $top;
-
-        return $this;
+        return self::instance(false, false, true, false);
     }
 
     /**
@@ -263,7 +253,7 @@ class PdfBorder
      */
     public static function top(): self
     {
-        return new self(false, true, false, false);
+        return self::instance(false, true, false, false);
     }
 
     /**
@@ -271,6 +261,6 @@ class PdfBorder
      */
     public static function topBottom(): self
     {
-        return new self(false, true, false, true);
+        return self::instance(false, true, false, true);
     }
 }

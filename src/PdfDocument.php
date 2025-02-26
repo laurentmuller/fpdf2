@@ -1387,11 +1387,11 @@ class PdfDocument
 
         $border ??= PdfBorder::none();
         if ($border->isAll()) {
-            $border1 = PdfBorder::all()->setBottom(false);
+            $border1 = PdfBorder::notBottom();
             $border2 = PdfBorder::leftRight();
         } else {
-            $border1 = new PdfBorder($border->isLeft(), $border->isTop(), $border->isRight(), false);
-            $border2 = new PdfBorder($border->isLeft(), false, $border->isRight(), false);
+            $border1 = PdfBorder::instance($border->left, $border->top, $border->right, false);
+            $border2 = PdfBorder::instance($border->left, false, $border->right, false);
         }
 
         $firstKey = \array_key_first($lines);
@@ -1403,7 +1403,7 @@ class PdfDocument
             $line = $entry[0];
             // last line?
             if ($lastKey === $key) {
-                $border1->setBottom($border->isBottom());
+                $border1->bottom = $border->bottom;
                 if ($this->wordSpacing > 0) {
                     $this->updateWordSpacing();
                 }
@@ -2479,16 +2479,16 @@ class PdfDocument
         $top = $this->scale($this->getPageHeight() - $y);
         $right = $this->scale($x + $width);
         $bottom = $this->scale($this->getPageHeight() - ($y + $height));
-        if ($border->isLeft()) {
+        if ($border->left) {
             $output .= \sprintf('%.2F %.2F m %.2F %.2F l S ', $left, $top, $left, $bottom);
         }
-        if ($border->isTop()) {
+        if ($border->top) {
             $output .= \sprintf('%.2F %.2F m %.2F %.2F l S ', $left, $top, $right, $top);
         }
-        if ($border->isRight()) {
+        if ($border->right) {
             $output .= \sprintf('%.2F %.2F m %.2F %.2F l S ', $right, $top, $right, $bottom);
         }
-        if ($border->isBottom()) {
+        if ($border->bottom) {
             $output .= \sprintf('%.2F %.2F m %.2F %.2F l S ', $left, $bottom, $right, $bottom);
         }
 

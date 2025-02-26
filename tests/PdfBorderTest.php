@@ -37,19 +37,19 @@ class PdfBorderTest extends TestCase
         $actual = PdfBorder::all();
         self::assertTrue($actual->isAll());
         self::assertFalse($actual->isNone());
-        self::assertTrue($actual->isLeft());
-        self::assertTrue($actual->isRight());
-        self::assertTrue($actual->isTop());
-        self::assertTrue($actual->isBottom());
+        self::assertTrue($actual->left);
+        self::assertTrue($actual->right);
+        self::assertTrue($actual->top);
+        self::assertTrue($actual->bottom);
     }
 
     public function testBottom(): void
     {
         $actual = PdfBorder::bottom();
-        self::assertFalse($actual->isLeft());
-        self::assertFalse($actual->isRight());
-        self::assertFalse($actual->isTop());
-        self::assertTrue($actual->isBottom());
+        self::assertFalse($actual->left);
+        self::assertFalse($actual->right);
+        self::assertFalse($actual->top);
+        self::assertTrue($actual->bottom);
     }
 
     #[DataProvider('getBorders')]
@@ -63,13 +63,29 @@ class PdfBorderTest extends TestCase
         self::assertSame(1, $document->getPage());
     }
 
+    public function testEquals(): void
+    {
+        $actual = PdfBorder::all();
+        self::assertTrue($actual->equals($actual));
+        $other = PdfBorder::all();
+        self::assertTrue($actual->equals($other));
+        $other = PdfBorder::none();
+        self::assertFalse($actual->equals($other));
+    }
+
+    public function testInstance(): void
+    {
+        $actual = PdfBorder::instance(true, true, true, true);
+        self::assertTrue($actual->isAll());
+    }
+
     public function testIsAll(): void
     {
         $actual = PdfBorder::none();
         self::assertFalse($actual->isAll());
         $actual = PdfBorder::all();
         self::assertTrue($actual->isAll());
-        $actual = new PdfBorder(true, true, true, true);
+        $actual = PdfBorder::instance(true, true, true, true);
         self::assertTrue($actual->isAll());
     }
 
@@ -86,19 +102,19 @@ class PdfBorderTest extends TestCase
     public function testLeft(): void
     {
         $actual = PdfBorder::left();
-        self::assertTrue($actual->isLeft());
-        self::assertFalse($actual->isRight());
-        self::assertFalse($actual->isTop());
-        self::assertFalse($actual->isBottom());
+        self::assertTrue($actual->left);
+        self::assertFalse($actual->right);
+        self::assertFalse($actual->top);
+        self::assertFalse($actual->bottom);
     }
 
     public function testLeftRight(): void
     {
         $actual = PdfBorder::leftRight();
-        self::assertTrue($actual->isLeft());
-        self::assertTrue($actual->isRight());
-        self::assertFalse($actual->isTop());
-        self::assertFalse($actual->isBottom());
+        self::assertTrue($actual->left);
+        self::assertTrue($actual->right);
+        self::assertFalse($actual->top);
+        self::assertFalse($actual->bottom);
     }
 
     public function testMerge(): void
@@ -112,85 +128,81 @@ class PdfBorderTest extends TestCase
     public function testNone(): void
     {
         $actual = PdfBorder::none();
-        self::assertFalse($actual->isLeft());
-        self::assertFalse($actual->isRight());
-        self::assertFalse($actual->isTop());
-        self::assertFalse($actual->isBottom());
+        self::assertFalse($actual->left);
+        self::assertFalse($actual->right);
+        self::assertFalse($actual->top);
+        self::assertFalse($actual->bottom);
+    }
+
+    public function testNotBottom(): void
+    {
+        $actual = PdfBorder::notBottom();
+        self::assertTrue($actual->left);
+        self::assertTrue($actual->right);
+        self::assertTrue($actual->top);
+        self::assertFalse($actual->bottom);
+    }
+
+    public function testNotLeft(): void
+    {
+        $actual = PdfBorder::notLeft();
+        self::assertFalse($actual->left);
+        self::assertTrue($actual->right);
+        self::assertTrue($actual->top);
+        self::assertTrue($actual->bottom);
+    }
+
+    public function testNotRight(): void
+    {
+        $actual = PdfBorder::notRight();
+        self::assertTrue($actual->left);
+        self::assertFalse($actual->right);
+        self::assertTrue($actual->top);
+        self::assertTrue($actual->bottom);
+    }
+
+    public function testNotTop(): void
+    {
+        $actual = PdfBorder::notTop();
+        self::assertTrue($actual->left);
+        self::assertTrue($actual->right);
+        self::assertFalse($actual->top);
+        self::assertTrue($actual->bottom);
     }
 
     public function testOr(): void
     {
         $actual = PdfBorder::none()->or(PdfBorder::leftRight());
-        self::assertTrue($actual->isLeft());
-        self::assertTrue($actual->isRight());
-        self::assertFalse($actual->isTop());
-        self::assertFalse($actual->isBottom());
+        self::assertTrue($actual->left);
+        self::assertTrue($actual->right);
+        self::assertFalse($actual->top);
+        self::assertFalse($actual->bottom);
     }
 
     public function testRight(): void
     {
         $actual = PdfBorder::right();
-        self::assertFalse($actual->isLeft());
-        self::assertTrue($actual->isRight());
-        self::assertFalse($actual->isTop());
-        self::assertFalse($actual->isBottom());
-    }
-
-    public function testSetBottom(): void
-    {
-        $actual = PdfBorder::none();
-        self::assertFalse($actual->isBottom());
-        $actual->setBottom(false);
-        self::assertFalse($actual->isBottom());
-        $actual->setBottom();
-        self::assertTrue($actual->isBottom());
-    }
-
-    public function testSetLeft(): void
-    {
-        $actual = PdfBorder::none();
-        self::assertFalse($actual->isLeft());
-        $actual->setLeft(false);
-        self::assertFalse($actual->isLeft());
-        $actual->setLeft();
-        self::assertTrue($actual->isLeft());
-    }
-
-    public function testSetRight(): void
-    {
-        $actual = PdfBorder::none();
-        self::assertFalse($actual->isRight());
-        $actual->setRight(false);
-        self::assertFalse($actual->isRight());
-        $actual->setRight();
-        self::assertTrue($actual->isRight());
-    }
-
-    public function testSetTop(): void
-    {
-        $actual = PdfBorder::none();
-        self::assertFalse($actual->isTop());
-        $actual->setTop(false);
-        self::assertFalse($actual->isTop());
-        $actual->setTop();
-        self::assertTrue($actual->isTop());
+        self::assertFalse($actual->left);
+        self::assertTrue($actual->right);
+        self::assertFalse($actual->top);
+        self::assertFalse($actual->bottom);
     }
 
     public function testTop(): void
     {
         $actual = PdfBorder::top();
-        self::assertFalse($actual->isLeft());
-        self::assertFalse($actual->isRight());
-        self::assertTrue($actual->isTop());
-        self::assertFalse($actual->isBottom());
+        self::assertFalse($actual->left);
+        self::assertFalse($actual->right);
+        self::assertTrue($actual->top);
+        self::assertFalse($actual->bottom);
     }
 
     public function testTopBottom(): void
     {
         $actual = PdfBorder::topBottom();
-        self::assertFalse($actual->isLeft());
-        self::assertFalse($actual->isRight());
-        self::assertTrue($actual->isTop());
-        self::assertTrue($actual->isBottom());
+        self::assertFalse($actual->left);
+        self::assertFalse($actual->right);
+        self::assertTrue($actual->top);
+        self::assertTrue($actual->bottom);
     }
 }
