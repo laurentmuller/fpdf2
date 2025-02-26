@@ -43,6 +43,7 @@ class PdfCompareBasicTest extends AbstractCompareTestCase
     #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void
     {
+        $doc->setCompression(false);
         $doc->setFont('Arial', PdfFontStyle::BOLD, 16);
         $doc->cell(text: 'This is  test 3456.', move: PdfMove::BELOW);
         $doc->setFont('ZapfDingbats', PdfFontStyle::BOLD, 12);
@@ -102,12 +103,14 @@ class PdfCompareBasicTest extends AbstractCompareTestCase
         $doc->setZoom(PdfZoom::FULL_PAGE);
         $doc->setLayout(PdfLayout::SINGLE_PAGE);
 
+        $doc->addPage();
         $doc->multiCell(text: self::COMMENT);
     }
 
     #[\Override]
     protected function updateOldDocument(FPDF $doc): void
     {
+        $doc->SetCompression(false);
         $doc->SetFont('Arial', 'B', 16);
         $doc->Cell(0.0, 5.0, 'This is  test 3456.', ln: 1);
         $doc->SetFont('ZapfDingbats', 'B', 12);
@@ -172,6 +175,7 @@ class PdfCompareBasicTest extends AbstractCompareTestCase
 
         $doc->SetDisplayMode('fullpage', 'single');
 
+        $doc->AddPage();
         $doc->MultiCell(0.0, 5.0, self::COMMENT);
     }
 }

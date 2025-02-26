@@ -83,6 +83,13 @@ class PdfDocMultiCellTest extends AbstractPdfDocTestCase
         self::assertSame(1, $doc->getPage());
     }
 
+    public function testMultiCellDefault(): void
+    {
+        $doc = $this->createDocument();
+        $doc->multiCell();
+        self::assertSame(1, $doc->getPage());
+    }
+
     public function testMultiCellNoFont(): void
     {
         self::expectException(PdfException::class);

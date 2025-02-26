@@ -1380,13 +1380,10 @@ class PdfDocument
         PdfTextAlignment $align = PdfTextAlignment::JUSTIFIED,
         bool $fill = false
     ): static {
-        if (null === $this->currentFont) {
-            throw PdfException::instance('No font has been set.');
+        $lines = $this->splitText($text, $width);
+        if ([] === $lines) {
+            return $this;
         }
-
-        $charWidths = $this->currentFont['cw'];
-        $width ??= $this->getRemainingWidth();
-        $widthMax = ($width - 2.0 * $this->cellMargin) * 1000.0 / $this->fontSize;
 
         $border ??= PdfBorder::none();
         if ($border->isAll()) {
@@ -1397,114 +1394,39 @@ class PdfDocument
             $border2 = new PdfBorder($border->isLeft(), false, $border->isRight(), false);
         }
 
-        $text = $this->cleanText($text);
-        $len = \strlen($text);
+        $firstKey = \array_key_first($lines);
+        $lastKey = \array_key_last($lines);
+        $width ??= $this->getRemainingWidth();
+        $widthMax = $width - 2.0 * $this->cellMargin;
 
-        $index = 0;
-        $newLine = 1;
-        $lastIndex = 0;
-        $sepIndex = -1;
-        $newSeparator = 0;
-        $lineSpace = 0.0;
-        $currentWidth = 0.0;
-
-        while ($index < $len) {
-            $ch = $text[$index];
-            if (self::NEW_LINE === $ch) {
-                // explicit line break
+        foreach ($lines as $key => $entry) {
+            $line = $entry[0];
+            // last line?
+            if ($lastKey === $key) {
+                $border1->setBottom($border->isBottom());
                 if ($this->wordSpacing > 0) {
                     $this->updateWordSpacing();
                 }
-                $this->cell(
-                    $width,
-                    $height,
-                    \substr($text, $lastIndex, $index - $lastIndex),
-                    $border1,
-                    PdfMove::BELOW,
-                    $align,
-                    $fill
-                );
-                ++$index;
-                $sepIndex = -1;
-                $lastIndex = $index;
-                $currentWidth = 0.0;
-                $newSeparator = 0;
-                ++$newLine;
-                if (2 === $newLine) {
-                    $border1 = clone $border2;
-                }
-                continue;
-            }
-            if (' ' === $ch) {
-                $sepIndex = $index;
-                $lineSpace = $currentWidth;
-                ++$newSeparator;
-            }
-            $currentWidth += (float) $charWidths[$ch];
-            if ($currentWidth > $widthMax) {
-                // automatic line break
-                if (-1 === $sepIndex) {
-                    if ($index === $lastIndex) {
-                        ++$index;
-                    }
-                    if ($this->wordSpacing > 0) {
-                        $this->updateWordSpacing();
-                    }
-                    $this->cell(
-                        $width,
-                        $height,
-                        \substr($text, $lastIndex, $index - $lastIndex),
-                        $border1,
-                        PdfMove::BELOW,
-                        $align,
-                        $fill
-                    );
-                } else {
-                    if (PdfTextAlignment::JUSTIFIED === $align) {
-                        $wordSpacing = ($newSeparator > 1)
-                            ? ($widthMax - $lineSpace) / 1000.0 * $this->fontSize / (float) ($newSeparator - 1)
-                            : 0.0;
+            } elseif (!$entry[1] && PdfTextAlignment::JUSTIFIED === $align) {
+                $separators = \substr_count($line, ' ');
+                if ($separators > 0) {
+                    $textWidth = $this->getStringWidth($line);
+                    $wordSpacing = ($widthMax - $textWidth) / (float) $separators;
+                    if ($wordSpacing > 0.0) {
                         $this->updateWordSpacing($wordSpacing, true);
                     }
-                    $this->cell(
-                        $width,
-                        $height,
-                        \substr($text, $lastIndex, $sepIndex - $lastIndex),
-                        $border1,
-                        PdfMove::BELOW,
-                        $align,
-                        $fill
-                    );
-                    $index = $sepIndex + 1;
                 }
-                $sepIndex = -1;
-                $lastIndex = $index;
-                $currentWidth = 0.0;
-                $newSeparator = 0;
-                ++$newLine;
-                if (2 === $newLine) {
-                    $border1 = clone $border2;
-                }
-            } else {
-                ++$index;
+            } elseif ($entry[1] && $this->wordSpacing > 0.0) {
+                $this->updateWordSpacing();
+            }
+
+            $this->cell($width, $height, $line, $border1, PdfMove::BELOW, $align, $fill);
+
+            // first line?
+            if ($firstKey === $key) {
+                $border1 = $border2;
             }
         }
-        // last chunk
-        if ($this->wordSpacing > 0) {
-            $this->updateWordSpacing();
-        }
-        if ($border->isBottom()) {
-            $border1->setBottom();
-        }
-        $this->cell(
-            $width,
-            $height,
-            \substr($text, $lastIndex, $index - $lastIndex),
-            $border1,
-            PdfMove::NEW_LINE,
-            $align,
-            $fill
-        );
 
         return $this;
     }
@@ -2271,7 +2193,8 @@ class PdfDocument
      * This method prints text from the current position.
      *
      * When the right margin is reached, or the line feed character ("\n") is met, a line break occurs and the text
-     * continues from the left margin. Upon method exit, the current position is left just at the end of the text.
+     * continues from the left margin.
+     * Upon method exit, the current position is left just at the end of the text.
      * It is possible to put a link on the text.
      *
      * Do nothing if the text is empty.
@@ -2284,121 +2207,36 @@ class PdfDocument
      *
      * @see PdfDocument::text()
      */
-    public function write(string $text, float $height = self::LINE_HEIGHT, string|int|null $link = null): static
+    public function write(string $text, float $height = self::LINE_HEIGHT, int|string|null $link = null): static
     {
-        $text = $this->cleanText($text);
-        if ('' === $text) {
+        $lines = $this->splitText(text: $text, resetWidth: true);
+        if ([] === $lines) {
             return $this;
         }
-        if (null === $this->currentFont) {
-            throw PdfException::instance('No font has been set.');
-        }
 
-        $len = \strlen($text);
+        $move = PdfMove::BELOW;
         $width = $this->getRemainingWidth();
-        $charWidths = $this->currentFont['cw'];
-        $widthMax = ($width - 2.0 * $this->cellMargin) * 1000.0 / $this->fontSize;
+        $firstKey = \array_key_first($lines);
+        $lastKey = \array_key_last($lines);
+        $multiline = $firstKey !== $lastKey;
 
-        $index = 0;
-        $newLine = 1;
-        $sepIndex = -1;
-        $currentIndex = 0;
-        $currentWidth = 0.0;
-        $border = PdfBorder::none();
-        while ($index < $len) {
-            $ch = $text[$index];
-            if (self::NEW_LINE === $ch) {
-                // explicit line break
-                $this->cell(
-                    $width,
-                    $height,
-                    \substr($text, $currentIndex, $index - $currentIndex),
-                    $border,
-                    PdfMove::BELOW,
-                    PdfTextAlignment::LEFT,
-                    false,
-                    $link
-                );
-                ++$index;
-                $sepIndex = -1;
-                $currentIndex = $index;
-                $currentWidth = 0.0;
-                if (1 === $newLine) {
-                    $this->x = $this->margins->left;
-                    $width = $this->getRemainingWidth();
-                    $widthMax = ($width - 2.0 * $this->cellMargin) * 1000.0 / $this->fontSize;
-                }
-                ++$newLine;
-                continue;
+        foreach ($lines as $key => $entry) {
+            $line = $entry[0];
+            if ($lastKey === $key) {
+                $width = $this->getStringWidth($line);
+                $move = PdfMove::RIGHT;
             }
-            if (' ' === $ch) {
-                $sepIndex = $index;
-            }
-            $currentWidth += (float) $charWidths[$ch];
-            if ($currentWidth > $widthMax) {
-                // automatic line break
-                if (-1 === $sepIndex) {
-                    if ($this->x > $this->margins->left) {
-                        // Move to the next line
-                        $this->x = $this->margins->left;
-                        $this->y += $height;
-                        $width = $this->getRemainingWidth();
-                        $widthMax = ($width - 2.0 * $this->cellMargin) * 1000.0 / $this->fontSize;
-                        ++$index;
-                        ++$newLine;
-                        continue;
-                    }
-                    if ($index === $currentIndex) {
-                        ++$index;
-                    }
-                    $this->cell(
-                        $width,
-                        $height,
-                        \substr($text, $currentIndex, $index - $currentIndex),
-                        $border,
-                        PdfMove::BELOW,
-                        PdfTextAlignment::LEFT,
-                        false,
-                        $link
-                    );
-                } else {
-                    $this->cell(
-                        $width,
-                        $height,
-                        \substr($text, $currentIndex, $sepIndex - $currentIndex),
-                        $border,
-                        PdfMove::BELOW,
-                        PdfTextAlignment::LEFT,
-                        false,
-                        $link
-                    );
-                    $index = $sepIndex + 1;
-                }
-                $sepIndex = -1;
-                $currentIndex = $index;
-                $currentWidth = 0.0;
-                if (1 === $newLine) {
-                    $this->x = $this->margins->left;
-                    $width = $this->getRemainingWidth();
-                    $widthMax = ($width - 2.0 * $this->cellMargin) * 1000.0 / $this->fontSize;
-                }
-                ++$newLine;
-            } else {
-                ++$index;
-            }
-        }
-        // last chunk
-        if ($index !== $currentIndex) {
             $this->cell(
-                $currentWidth / 1000.0 * $this->fontSize,
-                $height,
-                \substr($text, $currentIndex),
-                $border,
-                PdfMove::RIGHT,
-                PdfTextAlignment::LEFT,
-                false,
-                $link
+                width: $width,
+                height: $height,
+                text: $line,
+                move: $move,
+                link: $link
             );
+            if ($multiline && $firstKey === $key) {
+                $this->x = $this->margins->left;
+                $width = $this->getPrintableWidth();
+            }
         }
 
         return $this;
@@ -3411,18 +3249,25 @@ class PdfDocument
      * Split the given text for the given width.
      *
      * @param ?string    $text       the text to split
-     * @param float|null $width      the desired width. If <code>null</code>, the width extends up to the right margin.
+     * @param float|null $width      the desired width or <code>null</code> to use the width extends up to the right
+     *                               margin
      * @param ?float     $cellMargin the desired cell margin or <code>null</code> to use the current cell margin
+     * @param bool       $resetWidth a value indicating if the second line, if any; use all the printable width
+     *                               (<code>true</code>) or keep with the desired width (<code>false</code>)
      *
      * @return array<array{0: string, 1: bool}> an array where each entry contains the line text and a flag indicating
      *                                          if the end line is explicit (<code>true</code>) or if caused by text
      *                                          overflow (<code>false</code>).
-     *                                          Returns an empty array if the text is null or empty
+     *                                          Returns an empty array if the text is <code>null</code> or empty
      *
      * @throws PdfException if the given text is not empty and no font is set
      */
-    protected function splitText(?string $text = '', ?float $width = null, ?float $cellMargin = null): array
-    {
+    protected function splitText(
+        ?string $text = '',
+        ?float $width = null,
+        ?float $cellMargin = null,
+        bool $resetWidth = false
+    ): array {
         if (null === $text || '' === $text) {
             return [];
         }
@@ -3456,6 +3301,9 @@ class PdfDocument
                 $sepIndex = -1;
                 $lastIndex = $index;
                 $currentWidth = 0.0;
+                if ($resetWidth) {
+                    $maxWidth = ($this->getPrintableWidth() - 2.0 * $cellMargin) * 1000.0 / $this->fontSize;
+                }
                 continue;
             }
             if (' ' === $ch) {
@@ -3476,6 +3324,9 @@ class PdfDocument
                 $sepIndex = -1;
                 $lastIndex = $index;
                 $currentWidth = 0.0;
+                if ($resetWidth) {
+                    $maxWidth = ($this->getPrintableWidth() - 2.0 * $cellMargin) * 1000.0 / $this->fontSize;
+                }
             } else {
                 ++$index;
             }

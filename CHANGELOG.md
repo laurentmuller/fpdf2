@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Updated unit tests.
+- Simplified `multiCell()` and `write()` functions.
 - Reworked `splitText()` function.
 - Updated `getLinesCount()` function to the `PdfDocument` class.
 - Added `splitText()` function to the `PdfDocument` class.

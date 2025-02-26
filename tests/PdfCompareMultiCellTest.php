@@ -30,6 +30,7 @@ class PdfCompareMultiCellTest extends AbstractCompareTestCase
     #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void
     {
+        $doc->setCompression(false);
         $doc->multiCell(width: self::TEXT_WIDTH, text: 'ALL: ' . self::CONTENT, border: PdfBorder::all());
         $doc->lineBreak();
         $doc->multiCell(text: 'NONE: ' . self::CONTENT, border: PdfBorder::none());
@@ -50,6 +51,7 @@ class PdfCompareMultiCellTest extends AbstractCompareTestCase
     #[\Override]
     protected function updateOldDocument(FPDF $doc): void
     {
+        $doc->SetCompression(false);
         $doc->MultiCell(w: self::TEXT_WIDTH, h: 5.0, txt: 'ALL: ' . self::CONTENT, border: 'LRTB');
         $doc->Ln();
         $doc->MultiCell(w: 0.0, h: 5.0, txt: 'NONE: ' . self::CONTENT, border: 0);

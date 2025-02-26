@@ -31,6 +31,7 @@ class PdfCompareVersionTest extends AbstractCompareTestCase
                 parent::_enddoc();
             }
         };
+        $doc->SetCompression(false);
         $doc->SetFont('Arial', '', 9.0);
         $doc->AddPage();
 
