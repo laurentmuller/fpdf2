@@ -477,13 +477,9 @@ class PdfDocument
             $this->setFont($fontFamily, $fontStyle, $fontSizeInPoint);
         }
         $this->drawColor = $drawColor;
-        if (self::EMPTY_COLOR !== $drawColor) {
-            $this->out($drawColor);
-        }
+        $this->outDrawColor();
         $this->fillColor = $fillColor;
-        if (self::EMPTY_COLOR !== $fillColor) {
-            $this->out($fillColor);
-        }
+        $this->outFillColor();
         $this->textColor = $textColor;
         $this->colorFlag = $colorFlag;
 
@@ -502,11 +498,11 @@ class PdfDocument
         }
         if ($this->drawColor !== $drawColor) {
             $this->drawColor = $drawColor;
-            $this->out($drawColor);
+            $this->outDrawColor(true);
         }
         if ($this->fillColor !== $fillColor) {
             $this->fillColor = $fillColor;
-            $this->out($fillColor);
+            $this->outFillColor(true);
         }
         $this->textColor = $textColor;
         $this->colorFlag = $colorFlag;
@@ -523,7 +519,7 @@ class PdfDocument
      * @param float            $height the cell height
      * @param string           $text   the cell text
      * @param ?PdfBorder       $border indicates how borders must be drawn around the cell. If <code>null</code>, or
-     *                                 <code>none()</code>, no border is drawn.
+     *                                 <code>PdfBorder::none()</code>, no border is drawn.
      * @param PdfMove          $move   indicates where the current position should go after the call
      * @param PdfTextAlignment $align  the text alignment
      * @param bool             $fill   indicates if the cell background must be painted (<code>true</code>) or
@@ -692,10 +688,8 @@ class PdfDocument
      * This method is used to render the page footer.
      *
      * It is automatically called before <code>addPage()</code> and <code>close()</code> methods and should not be
-     * called directly by the application.
-     *
-     * The implementation is empty, so you have to subclass it and override the method if you want specific
-     * processing.
+     * called directly by the application. The implementation is empty, so you have to subclass it and override the
+     * method if you want specific processing.
      *
      * @see PdfDocument::header()
      */
@@ -804,7 +798,7 @@ class PdfDocument
      *
      * @param ?string $text       the text to compute
      * @param ?float  $width      the desired width. If <code>null</code>, the width extends up to the right margin.
-     * @param ?float  $cellMargin the desired cell margin or <code>null</code> to use the current value
+     * @param ?float  $cellMargin the desired cell margin or <code>null</code> to use the current cell margin
      *
      * @return int the number of lines
      *
@@ -826,7 +820,7 @@ class PdfDocument
     /**
      * Gets the margins in user unit.
      *
-     * Note: Return a copy (clone) of the actual margins. Modify values does not affect the current margins.
+     * <b>Note:</b> Return a copy (clone) of the actual margins. Modify values does not affect the current margins.
      */
     public function getMargins(): PdfMargins
     {
@@ -860,7 +854,7 @@ class PdfDocument
     /**
      * Gets the page size in user unit.
      *
-     * Note: Return a copy (clone) of the actual page size. Modify values does not affect the current page size.
+     * <b>Note:</b> Return a copy (clone) of the actual page size. Modify values does not affect the current page size.
      */
     public function getPageSize(): PdfSize
     {
@@ -1009,10 +1003,8 @@ class PdfDocument
      * This method is used to render the page header.
      *
      * It is automatically called after <code>addPage()</code> method and should not be called directly by the
-     * application.
-     *
-     * The implementation is empty, so you have to subclass it and override the method if you want specific
-     * processing.
+     * application. The implementation is empty, so you have to subclass it and override the method if you want
+     * specific processing.
      *
      * @see PdfDocument::footer()
      */
@@ -1380,8 +1372,8 @@ class PdfDocument
         PdfTextAlignment $align = PdfTextAlignment::JUSTIFIED,
         bool $fill = false
     ): static {
-        $lines = $this->splitText($text, $width);
-        if ([] === $lines) {
+        $entries = $this->splitText($text, $width);
+        if ([] === $entries) {
             return $this;
         }
 
@@ -1394,12 +1386,12 @@ class PdfDocument
             $border2 = PdfBorder::instance($border->left, false, $border->right, false);
         }
 
-        $firstKey = \array_key_first($lines);
-        $lastKey = \array_key_last($lines);
+        $firstKey = \array_key_first($entries);
+        $lastKey = \array_key_last($entries);
         $width ??= $this->getRemainingWidth();
         $widthMax = $width - 2.0 * $this->cellMargin;
 
-        foreach ($lines as $key => $entry) {
+        foreach ($entries as $key => $entry) {
             $line = $entry[0];
             // last line?
             if ($lastKey === $key) {
@@ -1699,9 +1691,7 @@ class PdfDocument
     public function setDrawColor(PdfColorInterface $color): static
     {
         $this->drawColor = \strtoupper($color->getOutput());
-        if ($this->page > 0) {
-            $this->out($this->drawColor);
-        }
+        $this->outDrawColor(true);
 
         return $this;
     }
@@ -1718,9 +1708,7 @@ class PdfDocument
     {
         $this->fillColor = \strtolower($color->getOutput());
         $this->colorFlag = $this->fillColor !== $this->textColor;
-        if ($this->page > 0) {
-            $this->out($this->fillColor);
-        }
+        $this->outFillColor(true);
 
         return $this;
     }
@@ -2193,8 +2181,7 @@ class PdfDocument
      * This method prints text from the current position.
      *
      * When the right margin is reached, or the line feed character ("\n") is met, a line break occurs and the text
-     * continues from the left margin.
-     * Upon method exit, the current position is left just at the end of the text.
+     * continues from the left margin. Upon method exit, the current position is left just at the end of the text.
      * It is possible to put a link on the text.
      *
      * Do nothing if the text is empty.
@@ -2209,18 +2196,18 @@ class PdfDocument
      */
     public function write(string $text, float $height = self::LINE_HEIGHT, int|string|null $link = null): static
     {
-        $lines = $this->splitText(text: $text, resetWidth: true);
-        if ([] === $lines) {
+        $entries = $this->splitText(text: $text, resetWidth: true);
+        if ([] === $entries) {
             return $this;
         }
 
         $move = PdfMove::BELOW;
         $width = $this->getRemainingWidth();
-        $firstKey = \array_key_first($lines);
-        $lastKey = \array_key_last($lines);
+        $firstKey = \array_key_first($entries);
+        $lastKey = \array_key_last($entries);
         $multiline = $firstKey !== $lastKey;
 
-        foreach ($lines as $key => $entry) {
+        foreach ($entries as $key => $entry) {
             $line = $entry[0];
             if ($lastKey === $key) {
                 $width = $this->getStringWidth($line);
@@ -2677,11 +2664,39 @@ class PdfDocument
     }
 
     /**
+     * Output the draw color.
+     *
+     * Do nothing if no page is added.
+     *
+     * @param bool $force <code>true</code> to output even if the draw color is empty; <code>false</code> otherwise
+     */
+    protected function outDrawColor(bool $force = false): void
+    {
+        if ($this->page > 0 && ($force || self::EMPTY_COLOR !== $this->drawColor)) {
+            $this->out($this->drawColor);
+        }
+    }
+
+    /**
      * Output a formatted string.
      */
     protected function outf(string $format, string|int|float ...$values): void
     {
         $this->out(\sprintf($format, ...$values));
+    }
+
+    /**
+     * Output the fill color.
+     *
+     * Do nothing if no page is added.
+     *
+     * @param bool $force <code>true</code> to output even if the fill color is empty; <code>false</code> otherwise
+     */
+    protected function outFillColor(bool $force = false): void
+    {
+        if ($this->page > 0 && ($force || self::EMPTY_COLOR !== $this->fillColor)) {
+            $this->out($this->fillColor);
+        }
     }
 
     /**
@@ -2720,7 +2735,7 @@ class PdfDocument
         }
     }
 
-    /**
+   /**
      * Parse the page size.
      */
     protected function parsePageSize(PdfPageSize|PdfSize $size): PdfSize
