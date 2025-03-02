@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Added `outDrawColor()` and `outFillColor()` functions to 
+- Added `outDrawColor()` and `outFillColor()` functions to
   the `PdfDocument` class.
 
 ## 3.0.8 - 2025-02-26

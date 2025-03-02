@@ -2735,7 +2735,7 @@ class PdfDocument
         }
     }
 
-   /**
+    /**
      * Parse the page size.
      */
     protected function parsePageSize(PdfPageSize|PdfSize $size): PdfSize
