@@ -466,9 +466,7 @@ class PdfDocument
 
         // set line cap and line join
         $this->outLineCap();
-        if (!$this->lineJoin->isDefault()) {
-            $this->outLineJoin();
-        }
+        $this->outLineJoin();
 
         // restore context
         $this->lineWidth = $lineWidth;
@@ -1885,7 +1883,7 @@ class PdfDocument
     {
         if ($this->lineJoin !== $lineJoin) {
             $this->lineJoin = $lineJoin;
-            $this->outLineJoin();
+            $this->outLineJoin(true);
         }
 
         return $this;
@@ -2715,10 +2713,13 @@ class PdfDocument
      * Output the current line join.
      *
      * Do nothing if no page is added.
+     *
+     * @param bool $force <code>true</code> to output even if the line join is the default value;
+     *                    <code>false</code> otherwise
      */
-    protected function outLineJoin(): void
+    protected function outLineJoin(bool $force = false): void
     {
-        if ($this->page > 0) {
+        if ($this->page > 0 && ($force || !$this->lineJoin->isDefault())) {
             $this->outf('%s j', $this->lineJoin->value);
         }
     }
