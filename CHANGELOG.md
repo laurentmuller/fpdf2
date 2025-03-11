@@ -2,11 +2,9 @@
 
 ## Unreleased
 
-- `PdfDocument`: Reworked `output()` function.
-
-## Unreleased
-
+- Added test for CMYK image.
 - `PdfCmykColor`: Added static colors for each component.
+- `PdfDocument`: Reworked `output()` function.
 
 ## 3.0.9 - 2025-03-11
 
