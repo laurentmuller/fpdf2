@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- `PdfDocument`: Reworked `output()` function.
+
 ## 3.0.9 - 2025-03-11
 
 - `PdfDocument`: Updated `outLineJoin()` function.

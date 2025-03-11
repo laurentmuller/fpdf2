@@ -1448,6 +1448,8 @@ class PdfDocument
         $this->close();
         $name ??= 'doc.pdf';
         switch ($destination) {
+            case PdfDestination::STRING:
+                return $this->buffer;
             case PdfDestination::INLINE:
                 $this->checkOutput();
                 if (\PHP_SAPI !== 'cli') {
@@ -1464,9 +1466,6 @@ class PdfDocument
                 if (false === \file_put_contents($name, $this->buffer)) {
                     throw PdfException::format('Unable to create output file: %s.', $name);
                 }
-                break;
-            case PdfDestination::STRING:
-                return $this->buffer;
         }
 
         return '';
