@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 3.0.9 - 2025-03-11
 
 - `PdfDocument`: Updated `outLineJoin()` function.
 - `PdfDocument`: Added `outDrawColor()` and `outFillColor()` functions.
