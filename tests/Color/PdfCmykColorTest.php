@@ -20,6 +20,18 @@ use PHPUnit\Framework\TestCase;
 
 class PdfCmykColorTest extends TestCase
 {
+    public function testBlack(): void
+    {
+        $actual = PdfCmykColor::black();
+        self::assertSameColor($actual, 0, 0, 0, 100);
+    }
+
+    public function testCyan(): void
+    {
+        $actual = PdfCmykColor::cyan();
+        self::assertSameColor($actual, 100, 0, 0, 0);
+    }
+
     public function testEquals(): void
     {
         $source = PdfCmykColor::instance(10, 20, 30, 40);
@@ -33,10 +45,13 @@ class PdfCmykColorTest extends TestCase
     public function testInstance(): void
     {
         $actual = PdfCmykColor::instance(10, 20, 30, 40);
-        self::assertSame(10, $actual->cyan);
-        self::assertSame(20, $actual->magenta);
-        self::assertSame(30, $actual->yellow);
-        self::assertSame(40, $actual->black);
+        self::assertSameColor($actual, 10, 20, 30, 40);
+    }
+
+    public function testMagenta(): void
+    {
+        $actual = PdfCmykColor::magenta();
+        self::assertSameColor($actual, 0, 100, 0, 0);
     }
 
     public function testOutput(): void
@@ -64,5 +79,24 @@ class PdfCmykColorTest extends TestCase
         $color = PdfCmykColor::instance(10, 20, 30, 40);
         $actual = (string) $color;
         self::assertSame('PdfCmykColor(10,20,30,40)', $actual);
+    }
+
+    public function testYellow(): void
+    {
+        $actual = PdfCmykColor::yellow();
+        self::assertSameColor($actual, 0, 0, 100, 0);
+    }
+
+    protected static function assertSameColor(
+        PdfCmykColor $actual,
+        int $cyan,
+        int $magenta,
+        int $yellow,
+        int $black
+    ): void {
+        self::assertSame($cyan, $actual->cyan);
+        self::assertSame($magenta, $actual->magenta);
+        self::assertSame($yellow, $actual->yellow);
+        self::assertSame($black, $actual->black);
     }
 }

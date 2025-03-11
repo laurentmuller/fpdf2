@@ -4,6 +4,10 @@
 
 - `PdfDocument`: Reworked `output()` function.
 
+## Unreleased
+
+- `PdfCmykColor`: Added static colors for each component.
+
 ## 3.0.9 - 2025-03-11
 
 - `PdfDocument`: Updated `outLineJoin()` function.

@@ -42,6 +42,26 @@ readonly class PdfCmykColor implements PdfColorInterface
         );
     }
 
+    /**
+     * Gets the black color.
+     *
+     * The value is CMYK(0, 0, 0, 100).
+     */
+    public static function black(): self
+    {
+        return self::instance(0, 0, 0, 100);
+    }
+
+    /**
+     * Gets the cyan color.
+     *
+     * The value is CMYK(100, 0, 0, 0).
+     */
+    public static function cyan(): self
+    {
+        return self::instance(100, 0, 0, 0);
+    }
+
     #[\Override]
     public function equals(PdfColorInterface $other): bool
     {
@@ -78,6 +98,16 @@ readonly class PdfCmykColor implements PdfColorInterface
     }
 
     /**
+     * Gets the magenta color.
+     *
+     * The value is CMYK(0, 100, 0, 0).
+     */
+    public static function magenta(): self
+    {
+        return self::instance(0, 100, 0, 0);
+    }
+
+    /**
      * Convert this color to an RGB color.
      *
      * @see PdfRgbColor::toCmykColor()
@@ -95,6 +125,16 @@ readonly class PdfCmykColor implements PdfColorInterface
             $this->asInt($magenta, $multiplier),
             $this->asInt($yellow, $multiplier)
         );
+    }
+
+    /**
+     * Gets the yellow color.
+     *
+     * The value is CMYK(0, 0, 100, 0).
+     */
+    public static function yellow(): self
+    {
+        return self::instance(0, 0, 100, 0);
     }
 
     private function asFloat(int $value): float
