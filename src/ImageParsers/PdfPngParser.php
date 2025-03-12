@@ -106,20 +106,20 @@ class PdfPngParser implements PdfImageParserInterface
             switch ($type) {
                 case 'PLTE': // palette
                     $palette = $this->getPalette($stream, $length);
-                    $this->readString($stream, 4); // CRC
                     break;
                 case 'tRNS': // transparency
                     $transparencies = $this->getTransparencies($stream, $length, $colorType);
-                    $this->readString($stream, 4); // CRC
                     break;
                 case 'IDAT': // image data
                     $data .= $this->readString($stream, $length);
-                    $this->readString($stream, 4); // CRC
                     break;
-                default: // skip content and CRC
-                    $this->readString($stream, $length + 4);
+                default: // skip content
+                    if ($length > 0) {
+                        $this->readString($stream, $length);
+                    }
                     break;
             }
+            $this->readString($stream, 4); // CRC
         } while ($length);
 
         if ('Indexed' === $colorSpace && '' === $palette) {
