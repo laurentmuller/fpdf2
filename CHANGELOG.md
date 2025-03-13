@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Reworked tests.
 - `PdfPngParser`: Reworked `parseStream()` function.
 - Added test for CMYK image.
 - `PdfCmykColor`: Added static colors for each component.

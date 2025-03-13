@@ -14,14 +14,9 @@ declare(strict_types=1);
 namespace fpdf\Tests\ImageParsers;
 
 use fpdf\ImageParsers\PdfPngParser;
-use fpdf\PdfDocument;
 use fpdf\PdfException;
-use PHPUnit\Framework\TestCase;
 
-/**
- * @phpstan-import-type ImageType from PdfDocument
- */
-class PdfPngParserTest extends TestCase
+class PdfPngParserTest extends AbstractPdfParserTestCase
 {
     public function testColorType0(): void
     {
@@ -144,14 +139,9 @@ class PdfPngParserTest extends TestCase
         self::assertSame(173, $image['height']);
     }
 
-    /**
-     * @phpstan-return ImageType
-     */
-    private function parseFile(string $file): array
+    #[\Override]
+    protected function createParser(): PdfPngParser
     {
-        $parent = new PdfDocument();
-        $parser = new PdfPngParser();
-
-        return $parser->parse($parent, __DIR__ . '/../images/' . $file);
+        return new PdfPngParser();
     }
 }

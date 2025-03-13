@@ -155,10 +155,8 @@ class PdfRgbColorTest extends TestCase
 
     public function testInstance(): void
     {
-        $color = PdfRgbColor::instance(10, 20, 30);
-        self::assertSame(10, $color->red);
-        self::assertSame(20, $color->green);
-        self::assertSame(30, $color->blue);
+        $actual = PdfRgbColor::instance(10, 20, 30);
+        self::assertSameColor($actual, 10, 20, 30);
     }
 
     public function testOutput(): void

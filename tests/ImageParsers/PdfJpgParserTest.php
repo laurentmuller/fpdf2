@@ -14,14 +14,9 @@ declare(strict_types=1);
 namespace fpdf\Tests\ImageParsers;
 
 use fpdf\ImageParsers\PdfJpgParser;
-use fpdf\PdfDocument;
 use fpdf\PdfException;
-use PHPUnit\Framework\TestCase;
 
-/**
- * @phpstan-import-type ImageType from PdfDocument
- */
-class PdfJpgParserTest extends TestCase
+class PdfJpgParserTest extends AbstractPdfParserTestCase
 {
     public function testImageCmyk(): void
     {
@@ -63,14 +58,9 @@ class PdfJpgParserTest extends TestCase
         self::assertSame(684, $image['height']);
     }
 
-    /**
-     * @phpstan-return ImageType
-     */
-    private function parseFile(string $file): array
+    #[\Override]
+    protected function createParser(): PdfJpgParser
     {
-        $parent = new PdfDocument();
-        $parser = new PdfJpgParser();
-
-        return $parser->parse($parent, __DIR__ . '/../images/' . $file);
+        return new PdfJpgParser();
     }
 }

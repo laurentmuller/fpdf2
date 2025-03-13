@@ -14,14 +14,9 @@ declare(strict_types=1);
 namespace fpdf\Tests\ImageParsers;
 
 use fpdf\ImageParsers\PdfGifParser;
-use fpdf\PdfDocument;
 use fpdf\PdfException;
-use PHPUnit\Framework\TestCase;
 
-/**
- * @phpstan-import-type ImageType from PdfDocument
- */
-class PdfGifParserTest extends TestCase
+class PdfGifParserTest extends AbstractPdfParserTestCase
 {
     public function testInvalid(): void
     {
@@ -40,14 +35,9 @@ class PdfGifParserTest extends TestCase
         self::assertSame(400, $image['height']);
     }
 
-    /**
-     * @phpstan-return ImageType
-     */
-    private function parseFile(string $file): array
+    #[\Override]
+    protected function createParser(): PdfGifParser
     {
-        $parent = new PdfDocument();
-        $parser = new PdfGifParser();
-
-        return $parser->parse($parent, __DIR__ . '/../images/' . $file);
+        return new PdfGifParser();
     }
 }

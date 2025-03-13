@@ -21,9 +21,8 @@ class PdfGrayColorTest extends TestCase
 {
     public function testBlack(): void
     {
-        $color = PdfGrayColor::black();
-        $actual = $color->level;
-        self::assertSame(0, $actual);
+        $actual = PdfGrayColor::black();
+        self::assertSameColor($actual, 0);
     }
 
     public function testEquals(): void
@@ -37,10 +36,8 @@ class PdfGrayColorTest extends TestCase
 
     public function testInstance(): void
     {
-        $expected = 125;
-        $color = PdfGrayColor::instance($expected);
-        $actual = $color->level;
-        self::assertSame($expected, $actual);
+        $actual = PdfGrayColor::instance(125);
+        self::assertSameColor($actual, 125);
     }
 
     public function testOutput(): void
@@ -63,8 +60,12 @@ class PdfGrayColorTest extends TestCase
 
     public function testWhite(): void
     {
-        $color = PdfGrayColor::white();
-        $actual = $color->level;
-        self::assertSame(255, $actual);
+        $actual = PdfGrayColor::white();
+        self::assertSameColor($actual, 255);
+    }
+
+    protected static function assertSameColor(PdfGrayColor $actual, int $level): void
+    {
+        self::assertSame($level, $actual->level);
     }
 }

@@ -14,13 +14,8 @@ declare(strict_types=1);
 namespace fpdf\Tests\ImageParsers;
 
 use fpdf\ImageParsers\PdfBmpParser;
-use fpdf\PdfDocument;
-use PHPUnit\Framework\TestCase;
 
-/**
- * @phpstan-import-type ImageType from PdfDocument
- */
-class PdfBmpParserTest extends TestCase
+class PdfBmpParserTest extends AbstractPdfParserTestCase
 {
     public function testValid(): void
     {
@@ -32,14 +27,9 @@ class PdfBmpParserTest extends TestCase
         self::assertSame(256, $image['height']);
     }
 
-    /**
-     * @phpstan-return ImageType
-     */
-    private function parseFile(string $file): array
+    #[\Override]
+    protected function createParser(): PdfBmpParser
     {
-        $parent = new PdfDocument();
-        $parser = new PdfBmpParser();
-
-        return $parser->parse($parent, __DIR__ . '/../images/' . $file);
+        return new PdfBmpParser();
     }
 }
