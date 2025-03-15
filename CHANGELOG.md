@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `PdfPngParser`: Added internal `skip()` function, updated `parseStream()`
+  and `checkHeader()` functions.
 - Reworked tests.
 - `PdfPngParser`: Reworked `parseStream()` function.
 - Added test for CMYK image.

@@ -94,6 +94,13 @@ class PdfPngParserTest extends AbstractPdfParserTestCase
         $this->parseFile($file);
     }
 
+    public function testInvalidHeaderLength(): void
+    {
+        self::expectException(PdfException::class);
+        $file = 'invalid_header_length.png';
+        $this->parseFile($file);
+    }
+
     public function testInvalidInterlacing(): void
     {
         self::expectException(PdfException::class);

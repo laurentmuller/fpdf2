@@ -63,13 +63,13 @@ class PdfPngParser implements PdfImageParserInterface
      */
     protected function parseStream(PdfDocument $parent, mixed $stream, string $file): array
     {
-        // check header signature
+        // check signature
         $this->checkSignature($stream, $file);
 
         // check header chunk
         $this->checkHeader($stream, $file);
 
-        // get first block values
+        // get header values
         $width = $this->readInt($stream);
         $height = $this->readInt($stream);
         $bitsPerComponent = $this->getBitsPerComponent($stream, $file);
@@ -87,7 +87,7 @@ class PdfPngParser implements PdfImageParserInterface
         $this->checkCompression($stream, $file);
         $this->checkFilter($stream, $file);
         $this->checkInterlacing($stream, $file);
-        $this->readString($stream, 4); // CRC
+        $this->skip($stream, 4); // CRC
 
         $decodeParams = \sprintf(
             '/Predictor 15 /Colors %d /BitsPerComponent %d /Columns %d',
@@ -113,13 +113,14 @@ class PdfPngParser implements PdfImageParserInterface
                 case 'IDAT': // image data
                     $data .= $this->readString($stream, $length);
                     break;
-                default: // skip content
-                    if ($length > 0) {
-                        $this->readString($stream, $length);
-                    }
+                case 'IEND': // image end
+                    $length = 0;
+                    break;
+                default: // skip other content
+                    $this->skip($stream, $length);
                     break;
             }
-            $this->readString($stream, 4); // CRC
+            $this->skip($stream, 4); // CRC
         } while ($length);
 
         if ('Indexed' === $colorSpace && '' === $palette) {
@@ -191,7 +192,10 @@ class PdfPngParser implements PdfImageParserInterface
      */
     private function checkHeader(mixed $stream, string $file): void
     {
-        $this->readString($stream, 4); // type
+        $size = $this->readInt($stream);
+        if (13 !== $size) {
+            throw PdfException::format('Incorrect PNG header length (%d): %s.', $size, $file);
+        }
         if ('IHDR' !== $this->readString($stream, 4)) {
             throw PdfException::format('Incorrect PNG header chunk (IHDR): %s.', $file);
         }
@@ -372,5 +376,20 @@ class PdfPngParser implements PdfImageParserInterface
         }
 
         return $result;
+    }
+
+    /**
+     * Skip the given number of bytes. Do nothing if the given length is smaller than or equal to 0.
+     *
+     * @param resource $stream the stream to skip from
+     * @param int      $len    the number of bytes to skip
+     *
+     * @throws PdfException if the end of the stream is reached
+     */
+    private function skip(mixed $stream, int $len): void
+    {
+        if ($len > 0) {
+            $this->readString($stream, $len);
+        }
     }
 }
