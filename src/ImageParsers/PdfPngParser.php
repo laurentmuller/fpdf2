@@ -74,14 +74,8 @@ class PdfPngParser implements PdfImageParserInterface
         $height = $this->readInt($stream);
         $bitsPerComponent = $this->getBitsPerComponent($stream, $file);
         $colorType = $this->readByte($stream);
-
-        $colorSpace = match ($colorType) {
-            0, 4 => 'DeviceGray',
-            2, 6 => 'DeviceRGB',
-            3 => 'Indexed',
-            default => throw PdfException::format('Color type %d not supported: %s.', $colorType, $file),
-        };
-        $colors = 'DeviceRGB' === $colorSpace ? 3 : 1;
+        $colorSpace = $this->getColorSpace($colorType, $file);
+        $colors = $this->getColors($colorSpace);
 
         // check other values
         $this->checkCompression($stream, $file);
@@ -238,6 +232,8 @@ class PdfPngParser implements PdfImageParserInterface
     }
 
     /**
+     * Extract the alpha channel.
+     *
      * @return array{0: string, 1: string}
      */
     private function extractAlphaChannel(int $width, int $height, int $colorType, string $data): array
@@ -279,6 +275,29 @@ class PdfPngParser implements PdfImageParserInterface
         }
 
         return $bcp;
+    }
+
+    /**
+     * Gets the number of colors.
+     */
+    private function getColors(string $colorSpace): int
+    {
+        return 'DeviceRGB' === $colorSpace ? 3 : 1;
+    }
+
+    /**
+     * Gets the color space.
+     *
+     * @throws PdfException if the color type is not supported
+     */
+    private function getColorSpace(int $colorType, string $file): string
+    {
+        return match ($colorType) {
+            0, 4 => 'DeviceGray',
+            2, 6 => 'DeviceRGB',
+            3 => 'Indexed',
+            default => throw PdfException::format('Color type %d not supported: %s.', $colorType, $file),
+        };
     }
 
     /**

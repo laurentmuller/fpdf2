@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- **BC Break!**: `PdfAttachmentTrait`: Renamed the `$desc` parameter
+  to `$description`.
+- `PdfPngParser`: Added internal `getColorSpace()` and `getColors()` functions.
 - `PdfPngParser`: Added internal `skip()` function, updated `parseStream()`
   and `checkHeader()` functions.
 - Reworked tests.

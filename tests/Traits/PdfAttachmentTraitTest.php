@@ -27,7 +27,7 @@ class PdfAttachmentTraitTest extends TestCase
 
         $document = new PdfDocumentAttachment();
         $document->addPage();
-        $document->addAttachment(file: $file, desc: 'Attached File.');
+        $document->addAttachment(file: $file, description: 'Attached File.');
         $document->output(PdfDestination::STRING);
         self::assertSame(1, $document->getPage());
         self::assertSame(PdfVersion::VERSION_1_6, $document->getPdfVersion());
