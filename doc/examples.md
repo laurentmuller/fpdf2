@@ -14,6 +14,7 @@ Below is a list of examples:
 - [Sector](tuto_10.md)
 - [Attachments](tuto_11.md)
 - [Dash lines](tuto_12.md)
+- [Polygon](tuto_13.md)
 
 **See also:**
 

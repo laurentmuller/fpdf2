@@ -9,7 +9,7 @@ Okita Yukihiro.
 **Definition:**
 
 ```php
-setDash(float $dashes, float $gaps)
+setDashPattern(float $dashes, float $gaps)
 ```
 
 **Parameters:**

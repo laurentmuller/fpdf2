@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- Added `PdfPolygonTrait` trait.
+
 ## 3.0.11 - 205-03-23
 
 - `PdfDashTrait`: Added `dashedRect()` and `dashedRectangle()` functions.
