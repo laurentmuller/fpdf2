@@ -34,7 +34,7 @@ class DashDocument extends PdfDocument
 $pdf = new DashDocument();
 $pdf->addPage();
 $pdf->setLineWidth(0.5);
-$pdf->setDash(3.0, 2.0);
+$pdf->setDashPattern(3.0, 2.0);
 $pdf->line(10, 10, 72, 10);
 $pdf->rect(10, 15, 62, 20);
 ```
@@ -42,12 +42,39 @@ $pdf->rect(10, 15, 62, 20);
 To restore normal drawing, call:
 
 ```php
-$pdf->resetDash()
+$pdf->resetDashPattern();
 ```
 
 **Result:**
 
 ![Result](images/dashes.png)
+
+**Shortcut:**
+
+A method allows drawing a dashed rectangle within a single call:
+
+```php
+dashedRect(
+    float $x,
+    float $y,
+    float $w,
+    float $h,
+    float $dashes,
+    ?float $lineWidth = null
+)
+```
+
+After this call, the dashed pattern and the line width are restored.
+
+**Parameters:**
+
+- `$x`: the abscissa of the upper-left corner.
+- `$y`: the ordinate of the upper-left corner.
+- `$w`: the width.
+- `$h`: the height.
+- `$dashes`: the length of dashes and gaps.
+- `$lineWidth`: the line width or `null` to use the current line
+  width.
 
 **See also:**
 

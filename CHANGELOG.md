@@ -1,6 +1,12 @@
 # Change log
 
-## Unreleased
+## 3.0.11 - 205-03-23
+
+- `PdfDashTrait`: Added `dashedRect()` and `dashedRectangle()` functions.
+- **BC Break!**: `PdfDashTrait`: Renamed the `setDash()` function
+  to `setDashPattern()` and the `resetDash()` function to `resetDashPattern()`.
+
+## 3.0.10 - 205-03-23
 
 - Added `PdfDashTrait` trait.
 - **BC Break!**: `PdfAttachmentTrait`: Renamed the `$desc` parameter
