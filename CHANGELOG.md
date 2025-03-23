@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Renamed example files.
 - Added `PdfPolygonTrait` trait.
 
 ## 3.0.11 - 205-03-23

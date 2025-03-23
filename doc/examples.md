@@ -2,19 +2,19 @@
 
 Below is a list of examples:
 
-- [Minimal example](tuto_1.md)
-- [Header, footer, page break and image](tuto_2.md)
-- [Line breaks and colors](tuto_3.md)
-- [Multi-columns](tuto_4.md)
-- [Tables](tuto_5.md)
-- [Bookmarks](tuto_6.md)
-- [Transparency](tuto_7.md)
-- [Circles and ellipses](tuto_8.md)
-- [Rotation](tuto_9.md)
-- [Sector](tuto_10.md)
-- [Attachments](tuto_11.md)
-- [Dash lines](tuto_12.md)
-- [Polygon](tuto_13.md)
+- [Minimal example](minimal_example.md)
+- [Header and footer](header_and_footer.md)
+- [Line breaks and colors](line_breaks_and_colors.md)
+- [Multi-columns](multi_columns.md)
+- [Tables](tables.md)
+- [Bookmarks](bookmarks.md)
+- [Transparency](transparency.md)
+- [Circles and ellipses](circles_and_ellipses.md)
+- [Rotation](rotation.md)
+- [Sector](sector.md)
+- [Attachments](attachments.md)
+- [Dash lines](dash_lines.md)
+- [Polygon](polygon.md)
 
 **See also:**
 

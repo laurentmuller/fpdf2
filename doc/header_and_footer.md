@@ -1,6 +1,6 @@
-# Header, footer, page break and image
+# Header and footer
 
-Here's a two-page example with a header, a footer and a logo:
+Here's an example with a custom header and footer:
 
 ```php
 use fpdf\Enums\PdfFontName;
