@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `PdfDashTrait` trait.
 - **BC Break!**: `PdfAttachmentTrait`: Renamed the `$desc` parameter
   to `$description`.
 - `PdfPngParser`: Added internal `getColorSpace()` and `getColors()` functions.
