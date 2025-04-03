@@ -56,6 +56,7 @@ class PdfDocWriteTest extends AbstractPdfDocTestCase
     public function testWithoutFont(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessage('No font is set.');
         $doc = $this->createDocument(true, false);
         $doc->write('fake');
     }

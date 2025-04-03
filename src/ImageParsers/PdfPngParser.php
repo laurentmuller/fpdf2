@@ -190,8 +190,9 @@ class PdfPngParser implements PdfImageParserInterface
         if (13 !== $size) {
             throw PdfException::format('Incorrect PNG header length (%d): %s.', $size, $file);
         }
-        if ('IHDR' !== $this->readString($stream, 4)) {
-            throw PdfException::format('Incorrect PNG header chunk (IHDR): %s.', $file);
+        $header = $this->readString($stream, 4);
+        if ('IHDR' !== $header) {
+            throw PdfException::format('Incorrect PNG header chunk (%s): %s.', $header, $file);
         }
     }
 
@@ -345,7 +346,7 @@ class PdfPngParser implements PdfImageParserInterface
     {
         $stream = \fopen($file, 'r');
         if (!\is_resource($stream)) {
-            throw PdfException::format('Can not open image file: %s.', $file);
+            throw PdfException::format('Unable to open image file: %s.', $file);
         }
 
         return $stream;

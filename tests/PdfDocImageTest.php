@@ -28,6 +28,7 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
     public function testEmpty(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessage('Image file name is empty.');
         $doc = $this->createDocument();
         $doc->image('');
     }
@@ -35,6 +36,7 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
     public function testEmptyType(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessageMatches('/Image file has no extension and no type was specified:.*/');
         $doc = $this->createDocument();
         $doc->image(__DIR__);
     }
@@ -82,6 +84,7 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
     public function testInvalid(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessage('Unsupported image type: php.');
         $doc = $this->createDocument();
         $doc->image(__FILE__);
     }
@@ -89,6 +92,7 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
     public function testInvalidBPC(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessageMatches('/Bits per component 16 not supported:.*invalid_bpc.png.$/');
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/images/invalid_bpc.png');
     }
@@ -96,6 +100,7 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
     public function testInvalidColorType(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessageMatches('/Color type 12 not supported:.*invalid_color_type.png.$/');
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/images/invalid_color_type.png');
     }
@@ -103,6 +108,7 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
     public function testInvalidCompression(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessageMatches('/Compression method 16 not supported:.*invalid_compression.png.$/');
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/images/invalid_compression.png');
     }
@@ -110,6 +116,7 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
     public function testInvalidFilter(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessageMatches('/Filter method 16 not supported:.*invalid_filter.png.$/');
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/images/invalid_filter.png');
     }
@@ -117,6 +124,7 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
     public function testInvalidGif(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessageMatches('/Missing or incorrect image file:.*fake.txt.$/');
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/fake.txt', type: 'gif');
     }
@@ -124,6 +132,7 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
     public function testInvalidHeaderChunk(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessageMatches('/Incorrect PNG header chunk \(.*\):.*invalid_header_chunk.png.$/');
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/images/invalid_header_chunk.png');
     }
@@ -131,6 +140,7 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
     public function testInvalidInterlacing(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessageMatches('/Interlacing 16 not supported:.*invalid_interlacing.png.$/');
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/images/invalid_interlacing.png');
     }
@@ -138,6 +148,7 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
     public function testInvalidJpeg(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessageMatches('/Missing or invalid image size:.*fake.txt.$/');
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/fake.txt', type: 'jpg');
     }
@@ -145,6 +156,7 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
     public function testInvalidPng(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessageMatches('/Unable to open image file:.*fake.txt.$/');
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/fake.txt', type: 'png');
     }
@@ -152,6 +164,7 @@ class PdfDocImageTest extends AbstractPdfDocTestCase
     public function testInvalidSignature(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessageMatches('/Incorrect PNG header signature:.*invalid_signature.png.$/');
         $doc = $this->createDocument();
         $doc->image(__DIR__ . '/images/invalid_signature.png');
     }

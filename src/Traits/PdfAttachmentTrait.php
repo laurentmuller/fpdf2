@@ -102,7 +102,7 @@ trait PdfAttachmentTrait
 
             $contents = \file_get_contents($file);
             if (false === $contents) {
-                throw PdfException::format('Cannot get content of the file: "%s".', $file);
+                throw PdfException::format('Unable to get content of the file: %s.', $file);
             }
             $size = \strlen($contents);
             $time = \filemtime($file);

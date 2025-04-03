@@ -50,6 +50,7 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
     public function testAddPageClosed(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessage('The document is closed.');
         $doc = $this->createDocument(false, false);
         $doc->close();
         $doc->addPage();
@@ -83,6 +84,7 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
     public function testCellWithoutFont(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessage('No font is set.');
         $doc = $this->createDocument(true, false);
         $doc->cell(text: 'fake');
     }
@@ -227,6 +229,7 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
     public function testLineCountWithoutFont(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessage('No font is set.');
         $doc = $this->createDocument(false, false);
         $doc->getLinesCount('fake');
     }
@@ -359,6 +362,7 @@ class PdfDocPropertiesTest extends AbstractPdfDocTestCase
     public function testSetFontInvalid(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessage('Undefined font: fake.');
         $doc = $this->createDocument(false, false);
         $doc->setFont('Fake');
     }

@@ -50,6 +50,7 @@ class PdfAttachmentTraitTest extends TestCase
         $file = __DIR__ . '/fake.txt';
 
         self::expectException(PdfException::class);
+        self::expectExceptionMessageMatches('/Unable to get content of the file:.*fake.txt.$/');
         $document = new PdfDocumentAttachment();
         $document->addPage();
         $document->addAttachment(file: $file);

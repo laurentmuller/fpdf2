@@ -20,8 +20,9 @@ class PdfDocOutputTest extends AbstractPdfDocTestCase
 {
     public function testOutputDownloadInvalid(): void
     {
-        $this->expectOutputString('fake');
         self::expectException(PdfException::class);
+        self::expectExceptionMessage('Some data has already been output, can not send PDF file.');
+        $this->expectOutputString('fake');
         $doc = $this->createDocument();
         echo 'fake';
         $doc->output(PdfDestination::DOWNLOAD);
@@ -38,14 +39,16 @@ class PdfDocOutputTest extends AbstractPdfDocTestCase
     public function testOutputFileInvalid(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessageMatches('/Unable to create output file:.*/');
         $doc = $this->createDocument();
         $doc->output(PdfDestination::FILE, 'https://www.bibi.nu/file.doc');
     }
 
     public function testOutputInlineInvalid(): void
     {
-        $this->expectOutputString('fake');
         self::expectException(PdfException::class);
+        self::expectExceptionMessage('Some data has already been output, can not send PDF file.');
+        $this->expectOutputString('fake');
         $doc = $this->createDocument();
         echo 'fake';
         $doc->output();

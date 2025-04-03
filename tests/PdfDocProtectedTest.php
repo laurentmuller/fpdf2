@@ -43,6 +43,7 @@ class PdfDocProtectedTest extends TestCase
     public function testOutClosed(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessage('Invalid call: The document is closed.');
         $doc = new class() extends PdfDocument {
             public function __construct(
                 PdfOrientation $orientation = PdfOrientation::PORTRAIT,
@@ -55,12 +56,12 @@ class PdfDocProtectedTest extends TestCase
             }
         };
         $doc->addPage();
-        self::assertSame(1, $doc->getPage());
     }
 
     public function testOutEndPage(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessage('Invalid call: End page.');
         $doc = new class() extends PdfDocument {
             public function __construct(
                 PdfOrientation $orientation = PdfOrientation::PORTRAIT,
@@ -73,12 +74,12 @@ class PdfDocProtectedTest extends TestCase
             }
         };
         $doc->addPage();
-        self::assertSame(1, $doc->getPage());
     }
 
     public function testOutNoPage(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessage('Invalid call: No page added.');
         $doc = new class() extends PdfDocument {
             public function __construct(
                 PdfOrientation $orientation = PdfOrientation::PORTRAIT,
@@ -90,7 +91,6 @@ class PdfDocProtectedTest extends TestCase
             }
         };
         $doc->addPage();
-        self::assertSame(1, $doc->getPage());
     }
 
     public function testUTF8(): void

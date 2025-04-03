@@ -43,6 +43,7 @@ class PdfCompareFontTest extends AbstractCompareTestCase
     public function testInvalidFontName(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessage('Incorrect font definition file name: Invalid character/');
         $doc = new PdfDocument();
         $doc->addFont('Fake', file: 'Invalid character/');
     }

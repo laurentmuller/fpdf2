@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `PdfDocument`: Added `checkCurrentFont()` function.
+- Added message assertions to unit tests.
 - Renamed example files.
 - Added `PdfPolygonTrait` trait.
 

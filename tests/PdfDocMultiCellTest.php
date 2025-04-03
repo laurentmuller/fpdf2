@@ -28,6 +28,7 @@ class PdfDocMultiCellTest extends AbstractPdfDocTestCase
     public function testCellNoFont(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessage('No font is set.');
         $doc = $this->createDocument(false, false);
         $text = \str_repeat('This is a very long text to use for multi lines. ', 10);
         $doc->cell(text: $text);
@@ -62,6 +63,7 @@ class PdfDocMultiCellTest extends AbstractPdfDocTestCase
     public function testLineCountNoFont(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessage('No font is set.');
         $doc = $this->createDocument(false, false);
         $text = \str_repeat('This is a very long text to use for multi lines. ', 10);
         $doc->getLinesCount($text);
@@ -93,6 +95,7 @@ class PdfDocMultiCellTest extends AbstractPdfDocTestCase
     public function testMultiCellNoFont(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessage('No font is set.');
         $doc = $this->createDocument(false, false);
         $text = \str_repeat('This is a very long text to use for multi lines. ', 10);
         $doc->multiCell(text: $text);

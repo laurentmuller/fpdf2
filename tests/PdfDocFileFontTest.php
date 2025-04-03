@@ -48,6 +48,7 @@ class PdfDocFileFontTest extends AbstractPdfDocTestCase
     public function testFontNotExist(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessageMatches('/Unable to find the font file:.*fake.php.$/');
         $doc = $this->createDocument();
         $doc->addFont(
             family: 'Test',
@@ -59,6 +60,7 @@ class PdfDocFileFontTest extends AbstractPdfDocTestCase
     public function testNoNameFont(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessageMatches('/No font name defined in file:.*font_no_name.php.$/');
         $doc = $this->createDocument();
         $doc->addFont(
             family: 'Test',
@@ -81,6 +83,7 @@ class PdfDocFileFontTest extends AbstractPdfDocTestCase
     public function testOtherType(): void
     {
         self::expectException(PdfException::class);
+        self::expectExceptionMessage('Unsupported font type: Test.');
         $doc = $this->createDocument();
         $doc->addFont(
             family: 'Test',

@@ -575,9 +575,7 @@ class PdfDocument
         }
         $text = $this->cleanText($text);
         if ('' !== $text) {
-            if (null === $this->currentFont) {
-                throw PdfException::instance('No font has been set.');
-            }
+            $this->checkCurrentFont();
             $textWidth = $this->getStringWidth($text);
             $dx = match ($align) {
                 PdfTextAlignment::RIGHT => $width - $this->cellMargin - $textWidth,
@@ -1775,7 +1773,7 @@ class PdfDocument
             }
             $name = PdfFontName::tryFromFamily($family);
             if (!$name instanceof PdfFontName) {
-                throw PdfException::format('Undefined font: %s %s.', $family, $style->value);
+                throw PdfException::format('Undefined font: %s.', $family);
             }
             if (PdfFontName::SYMBOL === $name || PdfFontName::ZAPFDINGBATS === $name) {
                 $style = PdfFontStyle::REGULAR;
@@ -2124,9 +2122,7 @@ class PdfDocument
         if ('' === $text) {
             return $this;
         }
-        if (null === $this->currentFont) {
-            throw PdfException::instance('No font has been set.');
-        }
+        $this->checkCurrentFont();
         $output = \sprintf(
             'BT %.2F %.2F Td (%s) Tj ET',
             $this->scale($x),
@@ -2286,6 +2282,20 @@ class PdfDocument
         }
         if (PdfRotation::DEFAULT !== $this->currentRotation) {
             $this->pageInfos[$this->page]['rotation'] = $this->currentRotation;
+        }
+    }
+
+    /**
+     * Check if the current font is set.
+     *
+     * @throws PdfException if no font is set
+     *
+     * @phpstan-assert FontType $this->currentFont
+     */
+    protected function checkCurrentFont(): void
+    {
+        if (null === $this->currentFont) {
+            throw PdfException::instance('No font is set.');
         }
     }
 
@@ -2637,11 +2647,11 @@ class PdfDocument
     {
         switch ($this->state) {
             case PdfState::NO_PAGE:
-                throw PdfException::instance('No page has been added yet.');
+                throw PdfException::instance('Invalid call: No page added.');
             case PdfState::END_PAGE:
-                throw PdfException::instance('Invalid call (end page).');
+                throw PdfException::instance('Invalid call: End page.');
             case PdfState::CLOSED:
-                throw PdfException::instance('The document is closed.');
+                throw PdfException::instance('Invalid call: The document is closed.');
             case PdfState::PAGE_STARTED:
                 $this->pages[$this->page] .= $output . self::NEW_LINE;
                 break;
@@ -3291,10 +3301,7 @@ class PdfDocument
         if (0 === $len) {
             return [];
         }
-
-        if (null === $this->currentFont) {
-            throw PdfException::instance('No font has been set.');
-        }
+        $this->checkCurrentFont();
 
         $lines = [];
         $cellMargin ??= $this->cellMargin;
