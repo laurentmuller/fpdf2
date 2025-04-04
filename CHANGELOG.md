@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Updated exception message.
+- Removed unused comment.
+- Updated license year.
 - `PdfDocument`: Added `checkCurrentFont()` function.
 - Added message assertions to unit tests.
 - Renamed example files.

@@ -2651,7 +2651,7 @@ class PdfDocument
             case PdfState::END_PAGE:
                 throw PdfException::instance('Invalid call: End page.');
             case PdfState::CLOSED:
-                throw PdfException::instance('Invalid call: The document is closed.');
+                throw PdfException::instance('Invalid call: Document closed.');
             case PdfState::PAGE_STARTED:
                 $this->pages[$this->page] .= $output . self::NEW_LINE;
                 break;

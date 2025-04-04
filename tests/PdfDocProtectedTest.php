@@ -43,7 +43,7 @@ class PdfDocProtectedTest extends TestCase
     public function testOutClosed(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessage('Invalid call: The document is closed.');
+        self::expectExceptionMessage('Invalid call: Document closed.');
         $doc = new class() extends PdfDocument {
             public function __construct(
                 PdfOrientation $orientation = PdfOrientation::PORTRAIT,

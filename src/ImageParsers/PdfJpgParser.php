@@ -37,7 +37,6 @@ class PdfJpgParser implements PdfImageParserInterface
         }
 
         if (\IMG_JPG !== $size[2]) {
-            // Interlacing %d not supported: %s.
             throw PdfException::format('Invalid JPEG image type (%d): %s.', $size[2], $file);
         }
 
