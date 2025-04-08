@@ -19,6 +19,9 @@ use PHPUnit\Framework\TestCase;
 
 class PdfFontNameTest extends TestCase
 {
+    /**
+     * @psalm-return \Generator<int, array{0: string, 1: PdfFontName|null}>
+     */
     public static function getTryFromFamily(): \Generator
     {
         yield ['', null];
@@ -28,6 +31,32 @@ class PdfFontNameTest extends TestCase
         yield ['ARIAL', PdfFontName::ARIAL];
     }
 
+    /**
+     * @psalm-return \Generator<int, array{0: PdfFontName, 1: bool}>
+     */
+    public static function getUseRegular(): \Generator
+    {
+        yield [PdfFontName::ARIAL, false];
+        yield [PdfFontName::COURIER, false];
+        yield [PdfFontName::HELVETICA, false];
+        yield [PdfFontName::SYMBOL, true];
+        yield [PdfFontName::TIMES, false];
+        yield [PdfFontName::ZAPFDINGBATS, true];
+    }
+
+    /**
+     * @psalm-return \Generator<int, array{0: PdfFontName, 1: string}>
+     */
+    public static function getValues(): \Generator
+    {
+        yield [PdfFontName::ARIAL, 'Arial'];
+        yield [PdfFontName::COURIER, 'Courier'];
+        yield [PdfFontName::HELVETICA, 'Helvetica'];
+        yield [PdfFontName::SYMBOL, 'Symbol'];
+        yield [PdfFontName::TIMES, 'Times'];
+        yield [PdfFontName::ZAPFDINGBATS, 'ZapfDingbats'];
+    }
+
     #[DataProvider('getTryFromFamily')]
     public function testTryFromFamily(string $family, ?PdfFontName $expected): void
     {
@@ -35,13 +64,17 @@ class PdfFontNameTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public function testValue(): void
+    #[DataProvider('getUseRegular')]
+    public function testUseRegular(PdfFontName $name, bool $expected): void
     {
-        self::assertSame('Arial', PdfFontName::ARIAL->value);
-        self::assertSame('Courier', PdfFontName::COURIER->value);
-        self::assertSame('Helvetica', PdfFontName::HELVETICA->value);
-        self::assertSame('Symbol', PdfFontName::SYMBOL->value);
-        self::assertSame('Times', PdfFontName::TIMES->value);
-        self::assertSame('ZapfDingbats', PdfFontName::ZAPFDINGBATS->value);
+        $actual = $name->useRegular();
+        self::assertSame($expected, $actual);
+    }
+
+    #[DataProvider('getValues')]
+    public function testValue(PdfFontName $name, string $expected): void
+    {
+        $actual = $name->value;
+        self::assertSame($expected, $actual);
     }
 }

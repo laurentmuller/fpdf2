@@ -342,7 +342,7 @@ class PdfPngParser implements PdfImageParserInterface
      *
      * @throws PdfException if the image file cannot be open
      */
-    private function openStream(string $file)
+    private function openStream(string $file): mixed
     {
         $stream = \fopen($file, 'r');
         if (!\is_resource($stream)) {

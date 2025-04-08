@@ -19,6 +19,9 @@ use PHPUnit\Framework\TestCase;
 
 class PdfBlendModeTest extends TestCase
 {
+    /**
+     * @psalm-return \Generator<int, array{0: PdfBlendMode, 1: string}>
+     */
     public static function getValues(): \Generator
     {
         yield [PdfBlendMode::COLOR, 'Color'];

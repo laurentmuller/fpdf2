@@ -68,4 +68,16 @@ enum PdfFontName: string
 
         return null;
     }
+
+    /**
+     * Returns a value indicating if this font name uses the regular style only.
+     */
+    public function useRegular(): bool
+    {
+        return match ($this) {
+            self::SYMBOL,
+            self::ZAPFDINGBATS => true,
+            default => false
+        };
+    }
 }

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Added php unit plugin to Psalm.
+- Added type-coverage to PHP Stan.
+- `PdfFontName`: Added `useRegular()` function.
 - Renamed `fixture` directory to `Fixture`.
 - Updated exception message.
 - Removed unused comment.

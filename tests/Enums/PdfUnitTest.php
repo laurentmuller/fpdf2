@@ -19,6 +19,9 @@ use PHPUnit\Framework\TestCase;
 
 class PdfUnitTest extends TestCase
 {
+    /**
+     * @psalm-return \Generator<int, array{0: float, 1: PdfUnit, 2: PdfUnit, 3: float}>
+     */
     public static function getConverts(): \Generator
     {
         $value = 123.123456;
@@ -39,6 +42,9 @@ class PdfUnitTest extends TestCase
         yield [$value, PdfUnit::INCH, PdfUnit::POINT, $value * 72.0];
     }
 
+    /**
+     * @psalm-return \Generator<int, array{0: PdfUnit, 1: float}>
+     */
     public static function getScaleFactors(): \Generator
     {
         yield [PdfUnit::CENTIMETER, 28.34];
@@ -47,6 +53,9 @@ class PdfUnitTest extends TestCase
         yield [PdfUnit::POINT, 1.0];
     }
 
+    /**
+     * @psalm-return \Generator<int, array{0: PdfUnit, 1: string}>
+     */
     public static function getValues(): \Generator
     {
         yield [PdfUnit::CENTIMETER, 'cm'];

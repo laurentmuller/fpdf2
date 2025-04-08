@@ -19,7 +19,10 @@ use PHPUnit\Framework\TestCase;
 
 class PdfFontStyleTest extends TestCase
 {
-    public static function getFrom(): \Iterator
+    /**
+     * @psalm-return \Generator<int, array{0: string, 1: PdfFontStyle, 2?: true}>
+     */
+    public static function getFrom(): \Generator
     {
         yield ['b', PdfFontStyle::BOLD];
         yield ['bi', PdfFontStyle::BOLD_ITALIC];
@@ -33,7 +36,10 @@ class PdfFontStyleTest extends TestCase
         yield ['Z', PdfFontStyle::REGULAR, true];
     }
 
-    public static function getFromString(): \Iterator
+    /**
+     * @psalm-return \Generator<int, array{0: string|null, 1: PdfFontStyle}>
+     */
+    public static function getFromString(): \Generator
     {
         yield ['b', PdfFontStyle::BOLD];
         yield ['B', PdfFontStyle::BOLD];
@@ -59,6 +65,36 @@ class PdfFontStyleTest extends TestCase
         yield ['bibi', PdfFontStyle::BOLD_ITALIC];
     }
 
+    /**
+     * @psalm-return \Generator<int, array{0: PdfFontStyle, 1: bool}>
+     */
+    public static function getIsUnderline(): \Generator
+    {
+        yield [PdfFontStyle::BOLD, false];
+        yield [PdfFontStyle::BOLD_ITALIC, false];
+        yield [PdfFontStyle::BOLD_ITALIC_UNDERLINE, true];
+        yield [PdfFontStyle::BOLD_UNDERLINE, true];
+        yield [PdfFontStyle::ITALIC, false];
+        yield [PdfFontStyle::ITALIC_UNDERLINE, true];
+        yield [PdfFontStyle::REGULAR, false];
+        yield [PdfFontStyle::UNDERLINE, true];
+    }
+
+    /**
+     * @psalm-return \Generator<int, array{0: PdfFontStyle, 1: PdfFontStyle}>
+     */
+    public static function getRemoveUnderline(): \Generator
+    {
+        yield [PdfFontStyle::BOLD, PdfFontStyle::BOLD];
+        yield [PdfFontStyle::BOLD_ITALIC, PdfFontStyle::BOLD_ITALIC];
+        yield [PdfFontStyle::BOLD_ITALIC_UNDERLINE, PdfFontStyle::BOLD_ITALIC];
+        yield [PdfFontStyle::BOLD_UNDERLINE, PdfFontStyle::BOLD];
+        yield [PdfFontStyle::ITALIC, PdfFontStyle::ITALIC];
+        yield [PdfFontStyle::ITALIC_UNDERLINE, PdfFontStyle::ITALIC];
+        yield [PdfFontStyle::REGULAR, PdfFontStyle::REGULAR];
+        yield [PdfFontStyle::UNDERLINE, PdfFontStyle::REGULAR];
+    }
+
     #[DataProvider('getFrom')]
     public function testFrom(string $style, PdfFontStyle $expected, bool $exception = false): void
     {
@@ -76,25 +112,17 @@ class PdfFontStyleTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public function testIsUnderline(): void
+    #[DataProvider('getIsUnderline')]
+    public function testIsUnderline(PdfFontStyle $style, bool $expected): void
     {
-        self::assertFalse(PdfFontStyle::BOLD->isUnderLine());
-        self::assertFalse(PdfFontStyle::BOLD_ITALIC->isUnderLine());
-        self::assertTrue(PdfFontStyle::BOLD_ITALIC_UNDERLINE->isUnderLine());
-        self::assertTrue(PdfFontStyle::BOLD_UNDERLINE->isUnderLine());
-        self::assertFalse(PdfFontStyle::ITALIC->isUnderLine());
-        self::assertTrue(PdfFontStyle::ITALIC_UNDERLINE->isUnderLine());
-        self::assertFalse(PdfFontStyle::REGULAR->isUnderLine());
+        $actual = $style->isUnderLine();
+        self::assertSame($expected, $actual);
     }
 
-    public function testRemoveUnderline(): void
+    #[DataProvider('getRemoveUnderline')]
+    public function testRemoveUnderline(PdfFontStyle $style, PdfFontStyle $expected): void
     {
-        self::assertSame(PdfFontStyle::BOLD, PdfFontStyle::BOLD->removeUnderLine());
-        self::assertSame(PdfFontStyle::BOLD_ITALIC, PdfFontStyle::BOLD_ITALIC->removeUnderLine());
-        self::assertSame(PdfFontStyle::BOLD_ITALIC, PdfFontStyle::BOLD_ITALIC_UNDERLINE->removeUnderLine());
-        self::assertSame(PdfFontStyle::BOLD, PdfFontStyle::BOLD_UNDERLINE->removeUnderLine());
-        self::assertSame(PdfFontStyle::ITALIC, PdfFontStyle::ITALIC->removeUnderLine());
-        self::assertSame(PdfFontStyle::ITALIC, PdfFontStyle::ITALIC_UNDERLINE->removeUnderLine());
-        self::assertSame(PdfFontStyle::REGULAR, PdfFontStyle::REGULAR->removeUnderLine());
+        $actual = $style->removeUnderLine();
+        self::assertSame($expected, $actual);
     }
 }

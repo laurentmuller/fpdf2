@@ -1775,7 +1775,7 @@ class PdfDocument
             if (!$name instanceof PdfFontName) {
                 throw PdfException::format('Undefined font: %s.', $family);
             }
-            if (PdfFontName::SYMBOL === $name || PdfFontName::ZAPFDINGBATS === $name) {
+            if ($name->useRegular()) {
                 $style = PdfFontStyle::REGULAR;
             }
             $fontKey = $family . $style->value;

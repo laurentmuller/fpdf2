@@ -12,6 +12,11 @@ parameters:
         - tests/resources/*.php
         - vendor
 
+    type_coverage:
+        param: 100
+        return: 100
+        property: 100
+
     reportUnmatchedIgnoredErrors: true
     checkUninitializedProperties: true
 

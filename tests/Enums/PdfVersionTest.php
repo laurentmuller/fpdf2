@@ -19,6 +19,9 @@ use PHPUnit\Framework\TestCase;
 
 class PdfVersionTest extends TestCase
 {
+    /**
+     * @psalm-return \Generator<int, array{0: PdfVersion, 1: PdfVersion, 2: bool}>
+     */
     public static function getSmallerVersions(): \Generator
     {
         yield [PdfVersion::VERSION_1_3, PdfVersion::VERSION_1_3, false];
@@ -30,6 +33,9 @@ class PdfVersionTest extends TestCase
         yield [PdfVersion::VERSION_1_6, PdfVersion::VERSION_1_7, true];
     }
 
+    /**
+     * @psalm-return \Generator<int, array{0: PdfVersion, 1: string}>
+     */
     public static function getValues(): \Generator
     {
         yield [PdfVersion::VERSION_1_3, '1.3'];

@@ -21,7 +21,10 @@ use PHPUnit\Framework\TestCase;
 
 class PdfRgbColorTest extends TestCase
 {
-    public static function getHexColors(): \Iterator
+    /**
+     * @psalm-return \Generator<int, array{0: int<0, 255>, 1: int<0, 255>, 2: int<0, 255>, 3: string, 4?: string}>
+     */
+    public static function getHexColors(): \Generator
     {
         $rgb = [0x00, 0x00, 0x00];
         yield [$rgb[0], $rgb[1], $rgb[2], '000000'];

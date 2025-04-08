@@ -22,6 +22,9 @@ use PHPUnit\Framework\TestCase;
 
 class PdfBorderTest extends TestCase
 {
+    /**
+     * @psalm-return \Generator<int, array{0: PdfBorder}>
+     */
     public static function getBorders(): \Generator
     {
         yield [PdfBorder::none()];
