@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace fpdf\Tests\Traits;
 
-use fpdf\Tests\fixture\PdfDocumentSector;
+use fpdf\Tests\Fixture\PdfDocumentSector;
 use PHPUnit\Framework\TestCase;
 
 class PdfSectorTraitTest extends TestCase

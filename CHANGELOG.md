@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Renamed `fixture` directory to `Fixture`.
 - Updated exception message.
 - Removed unused comment.
 - Updated license year.

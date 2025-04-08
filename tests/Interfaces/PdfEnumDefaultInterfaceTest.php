@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace fpdf\Tests\Interfaces;
 
-use fpdf\Tests\fixture\PdfInvalidEnumDefault;
+use fpdf\Tests\Fixture\PdfInvalidEnumDefault;
 use PHPUnit\Framework\TestCase;
 
 class PdfEnumDefaultInterfaceTest extends TestCase
@@ -21,7 +21,7 @@ class PdfEnumDefaultInterfaceTest extends TestCase
     public function testNoDefaultFound(): void
     {
         self::expectException(\LogicException::class);
-        self::expectExceptionMessage('No default value found for "fpdf\Tests\fixture\PdfInvalidEnumDefault" enumeration.');
+        self::expectExceptionMessage('No default value found for "fpdf\Tests\Fixture\PdfInvalidEnumDefault" enumeration.');
         PdfInvalidEnumDefault::getDefault();
     }
 }

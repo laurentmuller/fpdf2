@@ -16,7 +16,7 @@ namespace fpdf\Tests\Traits;
 use fpdf\Enums\PdfDestination;
 use fpdf\Enums\PdfFontName;
 use fpdf\PdfException;
-use fpdf\Tests\fixture\PdfDocumentBookmark;
+use fpdf\Tests\Fixture\PdfDocumentBookmark;
 use PHPUnit\Framework\TestCase;
 
 class PdfBookmarkTraitTest extends TestCase

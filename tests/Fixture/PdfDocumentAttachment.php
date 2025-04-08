@@ -11,12 +11,12 @@
 
 declare(strict_types=1);
 
-namespace fpdf\Tests\fixture;
+namespace fpdf\Tests\Fixture;
 
 use fpdf\PdfDocument;
-use fpdf\Traits\PdfBookmarkTrait;
+use fpdf\Traits\PdfAttachmentTrait;
 
-class PdfDocumentBookmark extends PdfDocument
+class PdfDocumentAttachment extends PdfDocument
 {
-    use PdfBookmarkTrait;
+    use PdfAttachmentTrait;
 }

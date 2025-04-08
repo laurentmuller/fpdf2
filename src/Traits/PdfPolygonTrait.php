@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace fpdf\Traits;
 
 use fpdf\Enums\PdfRectangleStyle;
+use fpdf\PdfDocument;
 use fpdf\PdfPoint;
 
 /**
@@ -22,7 +23,7 @@ use fpdf\PdfPoint;
  *  The code is inspired from FPDF script
  *  <a href="https://www.fpdf.org/en/script/script60.php" target="_blank">Polygons</a>.
  *
- * @phpstan-require-extends \fpdf\PdfDocument
+ * @phpstan-require-extends PdfDocument
  */
 trait PdfPolygonTrait
 {

@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace fpdf\Tests\fixture;
+namespace fpdf\Tests\Fixture;
 
 use fpdf\PdfDocument;
 use fpdf\Traits\PdfSectorTrait;

@@ -16,7 +16,7 @@ namespace fpdf\Tests\Traits;
 use fpdf\Enums\PdfDestination;
 use fpdf\Enums\PdfVersion;
 use fpdf\PdfException;
-use fpdf\Tests\fixture\PdfDocumentAttachment;
+use fpdf\Tests\Fixture\PdfDocumentAttachment;
 use PHPUnit\Framework\TestCase;
 
 class PdfAttachmentTraitTest extends TestCase
