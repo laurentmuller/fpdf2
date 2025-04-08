@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 class PdfLayoutTest extends TestCase
 {
     /**
-     * @psalm-return \Generator<int, array{0: PdfLayout, 1: PdfVersion}>
+     * @psalm-return \Generator<int, array{PdfLayout, PdfVersion}>
      */
     public static function getVersions(): \Generator
     {

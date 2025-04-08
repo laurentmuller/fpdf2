@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 class PdfVersionTest extends TestCase
 {
     /**
-     * @psalm-return \Generator<int, array{0: PdfVersion, 1: PdfVersion, 2: bool}>
+     * @psalm-return \Generator<int, array{PdfVersion, PdfVersion, bool}>
      */
     public static function getSmallerVersions(): \Generator
     {
@@ -34,7 +34,7 @@ class PdfVersionTest extends TestCase
     }
 
     /**
-     * @psalm-return \Generator<int, array{0: PdfVersion, 1: string}>
+     * @psalm-return \Generator<int, array{PdfVersion, string}>
      */
     public static function getValues(): \Generator
     {

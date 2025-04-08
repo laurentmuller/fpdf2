@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 class PdfUnitTest extends TestCase
 {
     /**
-     * @psalm-return \Generator<int, array{0: float, 1: PdfUnit, 2: PdfUnit, 3: float}>
+     * @psalm-return \Generator<int, array{float, PdfUnit, PdfUnit, float}>
      */
     public static function getConverts(): \Generator
     {
@@ -43,7 +43,7 @@ class PdfUnitTest extends TestCase
     }
 
     /**
-     * @psalm-return \Generator<int, array{0: PdfUnit, 1: float}>
+     * @psalm-return \Generator<int, array{PdfUnit, float}>
      */
     public static function getScaleFactors(): \Generator
     {
@@ -54,7 +54,7 @@ class PdfUnitTest extends TestCase
     }
 
     /**
-     * @psalm-return \Generator<int, array{0: PdfUnit, 1: string}>
+     * @psalm-return \Generator<int, array{PdfUnit, string}>
      */
     public static function getValues(): \Generator
     {
