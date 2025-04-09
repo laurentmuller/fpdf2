@@ -51,7 +51,7 @@
     },
     "config": {
         "platform": {
-            "php": "8.2.19"
+            "php": "8.2.27"
         },
         "optimize-autoloader": true,
         "preferred-install": {
