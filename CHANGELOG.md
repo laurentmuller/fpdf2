@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `PhpCsFixer`: Added Symfony rule sets.
+- `composer.json`: Added composer validate script.
 - Added php unit plugin to Psalm.
 - Added type-coverage to PHP Stan.
 - `PdfFontName`: Added `useRegular()` function.

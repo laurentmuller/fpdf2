@@ -65,6 +65,7 @@
         }
     },
     "scripts": {
+        "app-validate": "@composer validate --strict",
         "app-fixer": "vendor-bin/php-cs-fixer/vendor/bin/php-cs-fixer fix --diff --dry-run",
         "app-fixer-fix": "vendor-bin/php-cs-fixer/vendor/bin/php-cs-fixer fix --diff",
         "app-rector": "vendor-bin/rector/vendor/bin/rector process --dry-run --config rector.php",
@@ -74,6 +75,7 @@
         "app-test": "vendor/bin/phpunit",
         "app-markdown": "markdownlint-cli2",
         "app-all": [
+            "@app-validate",
             "@app-fixer",
             "@app-rector",
             "@app-psalm",
