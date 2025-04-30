@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `PdfDocument`: Added `parseImage()` and `scaleImage()` functions.
 - `PhpCsFixer`: Added Symfony rule sets.
 - `composer.json`: Added composer validate script.
 - Added php unit plugin to Psalm.

@@ -1081,8 +1081,8 @@ class PdfDocument
      *                                is used.
      * @param ?float          $y      the ordinate of the upper-left corner. If <code>null</code>, the current
      *                                ordinate is used. Moreover, a page break is triggered first if necessary (in case
-     *                                automatic page breaking enabled). After the call, the current ordinate moved to
-     *                                the bottom of the image.
+     *                                automatic page breaking is enabled). After the call, the current ordinate
+     *                                moved to the bottom of the image.
      * @param float           $width  the width of the image in the page. There are three cases:
      *                                <ul>
      *                                <li>If the value is positive, it represents the width in user unit.</li>
@@ -1116,47 +1116,11 @@ class PdfDocument
         if ('' === $file) {
             throw PdfException::instance('Image file name is empty.');
         }
-        if (!isset($this->images[$file])) {
-            // first use of this image, get info
-            if ('' === $type) {
-                $type = \pathinfo($file, \PATHINFO_EXTENSION);
-                if ('' === $type) {
-                    throw PdfException::format('Image file has no extension and no type was specified: %s.', $file);
-                }
-            }
-            $type = \strtolower($type);
-            $parser = $this->getImageParser($type);
-            if (!$parser instanceof PdfImageParserInterface) {
-                throw PdfException::format('Unsupported image type: %s.', $type);
-            }
-            $image = $parser->parse($this, $file);
-            $image['index'] = \count($this->images) + 1;
-            $this->images[$file] = $image;
-        } else {
-            $image = $this->images[$file];
-        }
+        // get or parse image
+        $image = $this->images[$file] ?? $this->parseImage($file, $type);
 
-        // automatic width and height calculation if needed
-        if (0.0 === $width && 0.0 === $height) {
-            // Put image at 96 dpi
-            $width = -96.0;
-            $height = -96.0;
-        }
-
-        $infoWidth = (float) $image['width'];
-        $infoHeight = (float) $image['height'];
-        if ($width < 0.0) {
-            $width = $this->divide(-$infoWidth * 72.0 / $width);
-        }
-        if ($height < 0.0) {
-            $height = $this->divide(-$infoHeight * 72.0 / $height);
-        }
-        if (0.0 === $width) {
-            $width = $height * $infoWidth / $infoHeight;
-        }
-        if (0.0 === $height) {
-            $height = $width * $infoHeight / $infoWidth;
-        }
+        // scale image
+        [$width, $height] = $this->scaleImage($image, $width, $height);
 
         // flowing mode
         if (null === $y) {
@@ -2746,6 +2710,39 @@ class PdfDocument
     }
 
     /**
+     * Parse the given image file and add to this list of images.
+     *
+     * @param string $file the path or the URL of the image
+     * @param string $type the image format. If not specified, the type is inferred from the file extension.
+     *
+     * @return array the parsed image
+     *
+     * @throws PdfException if the image cannot be processed
+     *
+     * @phpstan-return ImageType
+     */
+    protected function parseImage(string $file, string $type): array
+    {
+        if ('' === $type) {
+            $type = \pathinfo($file, \PATHINFO_EXTENSION);
+            if ('' === $type) {
+                throw PdfException::format('Image file has no extension and no type was specified: %s.', $file);
+            }
+        }
+        $type = \strtolower($type);
+        $parser = $this->getImageParser($type);
+        if (!$parser instanceof PdfImageParserInterface) {
+            throw PdfException::format('Unsupported image type: %s.', $type);
+        }
+
+        $image = $parser->parse($this, $file);
+        $image['index'] = \count($this->images) + 1;
+        $this->images[$file] = $image;
+
+        return $image;
+    }
+
+    /**
      * Parse the page size.
      */
     protected function parsePageSize(PdfPageSize|PdfSize $size): PdfSize
@@ -3268,6 +3265,42 @@ class PdfDocument
     protected function scale(float $value): float
     {
         return $value * $this->scaleFactor;
+    }
+
+    /**
+     * Scale the given image.
+     *
+     * @param array $image  the parsed image
+     * @param float $width  the desired width of the image
+     * @param float $height the desired height of the image
+     *
+     * @return array{0: float, 1: float} the scaled image
+     *
+     * @phpstan-param ImageType $image
+     */
+    protected function scaleImage(array $image, float $width, float $height): array
+    {
+        if (0.0 === $width && 0.0 === $height) {
+            // put image at 96 dpi
+            $width = $height = -96.0;
+        }
+
+        $imageWidth = (float) $image['width'];
+        $imageHeight = (float) $image['height'];
+        if ($width < 0.0) {
+            $width = $this->divide(-$imageWidth * 72.0 / $width);
+        }
+        if ($height < 0.0) {
+            $height = $this->divide(-$imageHeight * 72.0 / $height);
+        }
+        if (0.0 === $width) {
+            $width = $height * $imageWidth / $imageHeight;
+        }
+        if (0.0 === $height) {
+            $height = $width * $imageHeight / $imageWidth;
+        }
+
+        return [$width, $height];
     }
 
     /**
