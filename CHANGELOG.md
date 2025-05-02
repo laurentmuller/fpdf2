@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- `PdfBorderTest`: Added `assertBorderEquals()` function.
+
+## 3.0.12 - 2025-03-30
+
 - `PdfDocument`: Added `parseImage()` and `scaleImage()` functions.
 - `PhpCsFixer`: Added Symfony rule sets.
 - `composer.json`: Added composer validate script.
@@ -17,7 +21,7 @@
 - Renamed example files.
 - Added `PdfPolygonTrait` trait.
 
-## 3.0.11 - 205-03-23
+## 3.0.11 - 2025-03-23
 
 - `PdfDashTrait`: Added `dashedRect()` and `dashedRectangle()` functions.
 - **BC Break!**: `PdfDashTrait`: Renamed the `setDash()` function
