@@ -37,7 +37,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 class PdfDocPropertiesTest extends AbstractPdfDocTestCase
 {
     /**
-     * @psalm-return \Generator<int, array{string|int|null, bool}>
+     * @phpstan-return \Generator<int, array{string|int|null, bool}>
      */
     public static function getIsLinks(): \Generator
     {

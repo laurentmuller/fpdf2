@@ -17,7 +17,7 @@ use fpdf\Enums\PdfRectangleStyle;
 use fpdf\PdfDocument;
 
 /**
- * Trait to draw sector of a circle.
+ * Trait to draw a sector of a circle.
  *
  * It can be used, for example, to render a pie chart.
  *
@@ -44,7 +44,7 @@ trait PdfSectorTrait
      * @param float             $endAngle   the ending angle in degrees
      * @param PdfRectangleStyle $style      the style of rendering
      * @param bool              $clockwise  indicates whether to go clockwise (true) or counter-clockwise (false)
-     * @param float             $origin     the origin,in degrees, of angles (0=right, 90=top, 180=left, 270=for bottom)
+     * @param float             $origin     the origin, in degrees, of angles (0=right, 90=top, 180=left, 270=for bottom)
      */
     public function sector(
         float $centerX,

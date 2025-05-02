@@ -72,11 +72,12 @@ class PdfBookmarkTraitTest extends TestCase
      */
     public function testLevelNegative(): void
     {
+        $level = -1;
         self::expectException(PdfException::class);
         self::expectExceptionMessage('Invalid bookmark level: -1. Allowed value: 0.');
         $doc = $this->createDocument();
         // @phpstan-ignore argument.type
-        $doc->addBookmark('Negative Level', level: -1);
+        $doc->addBookmark('Negative Level', level: $level);
     }
 
     public function testLongBookmark(): void

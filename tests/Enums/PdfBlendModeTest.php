@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 class PdfBlendModeTest extends TestCase
 {
     /**
-     * @psalm-return \Generator<int, array{PdfBlendMode, string}>
+     * @phpstan-return \Generator<int, array{PdfBlendMode, string}>
      */
     public static function getValues(): \Generator
     {

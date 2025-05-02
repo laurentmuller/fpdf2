@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Replaced `@psalm` annotations by `@phpstan`.
 - `PdfBorderTest`: Added `assertBorderEquals()` function.
 
 ## 3.0.12 - 2025-03-30

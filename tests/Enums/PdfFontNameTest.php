@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 class PdfFontNameTest extends TestCase
 {
     /**
-     * @psalm-return \Generator<int, array{string, PdfFontName|null}>
+     * @phpstan-return \Generator<int, array{string, PdfFontName|null}>
      */
     public static function getTryFromFamily(): \Generator
     {
@@ -32,7 +32,7 @@ class PdfFontNameTest extends TestCase
     }
 
     /**
-     * @psalm-return \Generator<int, array{PdfFontName, bool}>
+     * @phpstan-return \Generator<int, array{PdfFontName, bool}>
      */
     public static function getUseRegular(): \Generator
     {
@@ -45,7 +45,7 @@ class PdfFontNameTest extends TestCase
     }
 
     /**
-     * @psalm-return \Generator<int, array{PdfFontName, string}>
+     * @phpstan-return \Generator<int, array{PdfFontName, string}>
      */
     public static function getValues(): \Generator
     {

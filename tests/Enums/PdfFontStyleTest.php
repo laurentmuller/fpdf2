@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 class PdfFontStyleTest extends TestCase
 {
     /**
-     * @psalm-return \Generator<int, array{0: string, 1: PdfFontStyle, 2?: true}>
+     * @phpstan-return \Generator<int, array{0: string, 1: PdfFontStyle, 2?: true}>
      */
     public static function getFrom(): \Generator
     {
@@ -37,7 +37,7 @@ class PdfFontStyleTest extends TestCase
     }
 
     /**
-     * @psalm-return \Generator<int, array{string|null, PdfFontStyle}>
+     * @phpstan-return \Generator<int, array{string|null, PdfFontStyle}>
      */
     public static function getFromString(): \Generator
     {
@@ -66,7 +66,7 @@ class PdfFontStyleTest extends TestCase
     }
 
     /**
-     * @psalm-return \Generator<int, array{PdfFontStyle, bool}>
+     * @phpstan-return \Generator<int, array{PdfFontStyle, bool}>
      */
     public static function getIsUnderline(): \Generator
     {
@@ -81,7 +81,7 @@ class PdfFontStyleTest extends TestCase
     }
 
     /**
-     * @psalm-return \Generator<int, array{PdfFontStyle, PdfFontStyle}>
+     * @phpstan-return \Generator<int, array{PdfFontStyle, PdfFontStyle}>
      */
     public static function getRemoveUnderline(): \Generator
     {

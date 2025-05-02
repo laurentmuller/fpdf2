@@ -28,7 +28,7 @@ interface PdfEnumDefaultInterface
     /**
      * Gets the default enumeration.
      *
-     * @psalm-return T
+     * @phpstan-return T
      *
      * @throws \LogicException if the default enumeration is not found
      */

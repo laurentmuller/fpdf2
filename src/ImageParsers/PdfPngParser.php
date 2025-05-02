@@ -95,6 +95,7 @@ class PdfPngParser implements PdfImageParserInterface
         $palette = '';
         $transparencies = [];
         do {
+            /** @var positive-int $length */
             $length = $this->readInt($stream);
             $type = $this->readString($stream, 4);
             switch ($type) {
@@ -302,7 +303,8 @@ class PdfPngParser implements PdfImageParserInterface
     }
 
     /**
-     * @param resource $stream
+     * @param resource     $stream
+     * @param positive-int $length
      *
      * @throws PdfException if the end of the stream is reached
      */
@@ -312,7 +314,8 @@ class PdfPngParser implements PdfImageParserInterface
     }
 
     /**
-     * @param resource $stream
+     * @param resource     $stream
+     * @param positive-int $length
      *
      * @return int[]
      *
@@ -382,16 +385,15 @@ class PdfPngParser implements PdfImageParserInterface
     /**
      * Read a string from the given stream.
      *
-     * @param resource $stream the stream to read string from
-     * @param int      $len    the number of bytes to read
+     * @param resource     $stream the stream to read string from
+     * @param positive-int $length the number of bytes to read
      *
      * @throws PdfException if the end of the stream is reached
      */
-    private function readString(mixed $stream, int $len): string
+    private function readString(mixed $stream, int $length): string
     {
-        /** @psalm-var int<1, max> $len */
-        $result = \fread($stream, $len);
-        if (!\is_string($result) || $len !== \strlen($result)) {
+        $result = \fread($stream, $length);
+        if (!\is_string($result) || $length !== \strlen($result)) {
             throw PdfException::instance('Unexpected end of stream.');
         }
 
@@ -402,14 +404,14 @@ class PdfPngParser implements PdfImageParserInterface
      * Skip the given number of bytes. Do nothing if the given length is smaller than or equal to 0.
      *
      * @param resource $stream the stream to skip from
-     * @param int      $len    the number of bytes to skip
+     * @param int      $length the number of bytes to skip
      *
      * @throws PdfException if the end of the stream is reached
      */
-    private function skip(mixed $stream, int $len): void
+    private function skip(mixed $stream, int $length): void
     {
-        if ($len > 0) {
-            $this->readString($stream, $len);
+        if ($length > 0) {
+            $this->readString($stream, $length);
         }
     }
 }
