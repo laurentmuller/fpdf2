@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace fpdf;
 
+use fpdf\Enums\PdfAnnotationName;
 use fpdf\Enums\PdfDestination;
 use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
@@ -84,12 +85,20 @@ use fpdf\Interfaces\PdfImageParserInterface;
  *     palette: string,
  *     transparencies?: int[]}
  * @phpstan-type PageLinkType = array{
- *     0: float,
- *     1: float,
- *     2: float,
- *     3: float,
- *     4: string|int,
- *     5: int}
+ *     x: float,
+ *     y: float,
+ *     width: float,
+ *     height: float,
+ *     link: string|int,
+ *     number: int}
+ * @phpstan-type PageAnnotationType = array{
+ *      x: float,
+ *      y: float,
+ *      width: float,
+ *      height: float,
+ *      text: string,
+ *      name: string,
+ *      number: int}
  * @phpstan-type LinkType = array{
  *     0: int,
  *     1: float}
@@ -175,7 +184,7 @@ class PdfDocument
      * @phpstan-var array<string, FontType>
      */
     protected array $fonts = [];
-    /** The current font size in user unit. */
+    /** The current font size in the user unit. */
     protected float $fontSize;
     /** The current font size in points. */
     protected float $fontSizeInPoint = 9.0;
@@ -225,6 +234,12 @@ class PdfDocument
     protected array $offsets = [];
     /** The current page number. */
     protected int $page = 0;
+    /**
+     * The annotations in pages.
+     *
+     * @phpstan-var array<int, PageAnnotationType[]>
+     */
+    protected array $pageAnnotations = [];
     /** The threshold used to trigger page breaks. */
     protected float $pageBreakTrigger = 0.0;
     /**
@@ -504,6 +519,43 @@ class PdfDocument
         }
         $this->textColor = $textColor;
         $this->colorFlag = $colorFlag;
+
+        return $this;
+    }
+
+    /**
+     * Add an annotation to the current page.
+     *
+     * @param string            $text   the annotation text
+     * @param float|null        $x      the abscissa of the upper-left corner or <code>null</code> to use the current abscissa
+     * @param float|null        $y      the ordinate of the upper-left corner or <code>null</code> to use the current ordinate
+     * @param float|null        $width  the width of the annotation or <code>null</code>, to compute the text width
+     * @param float|null        $height the height of the annotation or <code>null</code> to use the default line height
+     * @param PdfAnnotationName $name   the annotation name (icon)
+     */
+    public function annotation(
+        string $text,
+        ?float $x = null,
+        ?float $y = null,
+        ?float $width = null,
+        ?float $height = null,
+        PdfAnnotationName $name = PdfAnnotationName::NOTE,
+    ): static {
+        $x ??= $this->x;
+        $y ??= $this->y;
+        $width ??= $this->getStringWidth($text);
+        $height ??= self::LINE_HEIGHT;
+
+        $heightInPoint = $this->currentPageSizeInPoint->height;
+        $this->pageAnnotations[$this->page][] = [
+            'x' => $this->scale($x),
+            'y' => $heightInPoint - $this->scale($y),
+            'width' => $this->scale($width),
+            'height' => $this->scale($height),
+            'text' => $text,
+            'name' => $name->value,
+            'number' => 0,
+        ];
 
         return $this;
     }
@@ -1257,7 +1309,7 @@ class PdfDocument
     }
 
     /**
-     * Puts a link on a rectangular area of the page.
+     * Puts a link on a rectangular area of the current page.
      *
      * Text or image links are generally put via <code>cell()</code>, <code>write()</code> or <code>image()</code>, but
      * this method can be useful, for instance, to define a clickable area inside an image.
@@ -1276,12 +1328,12 @@ class PdfDocument
     {
         $heightInPoint = $this->currentPageSizeInPoint->height;
         $this->pageLinks[$this->page][] = [
-            $this->scale($x),
-            $heightInPoint - $this->scale($y),
-            $this->scale($width),
-            $this->scale($height),
-            $link,
-            0,
+            'x' => $this->scale($x),
+            'y' => $heightInPoint - $this->scale($y),
+            'width' => $this->scale($width),
+            'height' => $this->scale($height),
+            'link' => $link,
+            'number' => 0,
         ];
 
         return $this;
@@ -2223,6 +2275,7 @@ class PdfDocument
         ++$this->page;
         $this->pages[$this->page] = '';
         $this->pageLinks[$this->page] = [];
+        $this->pageAnnotations[$this->page] = [];
         $this->state = PdfState::PAGE_STARTED;
         $this->x = $this->margins->left;
         $this->y = $this->margins->top;
@@ -2767,6 +2820,30 @@ class PdfDocument
     }
 
     /**
+     * Put annotations to this buffer.
+     */
+    protected function putAnnotations(int $page): void
+    {
+        foreach ($this->pageAnnotations[$page] as $pageAnnotation) {
+            $this->putNewObj();
+            $rect = \sprintf(
+                '%.2F %.2F %.2F %.2F',
+                $pageAnnotation['x'],
+                $pageAnnotation['y'],
+                $pageAnnotation['x'] + $pageAnnotation['width'],
+                $pageAnnotation['y'] - $pageAnnotation['height']
+            );
+            $this->putf(
+                '<</Type /Annot /Subtype /Text /Rect [%s] /Name /%s /Contents %s>>',
+                $rect,
+                $pageAnnotation['name'],
+                $this->textString($pageAnnotation['text']),
+            );
+            $this->putEndObj();
+        }
+    }
+
+    /**
      * Put the catalog to this buffer.
      */
     protected function putCatalog(): void
@@ -3058,16 +3135,16 @@ class PdfDocument
             $this->putNewObj();
             $rect = \sprintf(
                 '%.2F %.2F %.2F %.2F',
-                $pageLink[0],
-                $pageLink[1],
-                $pageLink[0] + $pageLink[2],
-                $pageLink[1] - $pageLink[3]
+                $pageLink['x'],
+                $pageLink['y'],
+                $pageLink['x'] + $pageLink['width'],
+                $pageLink['y'] - $pageLink['height']
             );
             $output = \sprintf('<</Type /Annot /Subtype /Link /Rect [%s] /Border [0 0 0] ', $rect);
-            if (\is_string($pageLink[4])) {
-                $output .= \sprintf('/A <</S /URI /URI %s>>>>', $this->textString($pageLink[4]));
+            if (\is_string($pageLink['link'])) {
+                $output .= \sprintf('/A <</S /URI /URI %s>>>>', $this->textString($pageLink['link']));
             } else {
-                $link = $this->links[$pageLink[4]];
+                $link = $this->links[$pageLink['link']];
                 $index = $link[0];
                 $pageInfo = $this->pageInfos[$index] ?? [];
                 if (isset($pageInfo['size'])) {
@@ -3118,14 +3195,18 @@ class PdfDocument
         if (isset($this->pageInfos[$page]['rotation'])) {
             $this->putf('/Rotate %d', $this->pageInfos[$page]['rotation']->value);
         }
+
         $this->put('/Resources 2 0 R');
-        if ([] !== $this->pageLinks[$page]) {
-            $output = '/Annots [';
-            foreach ($this->pageLinks[$page] as $pageLink) {
-                $output .= \sprintf('%d 0 R ', $pageLink[5]);
-            }
-            $output .= ']';
-            $this->put($output);
+
+        $annotation = '';
+        foreach ($this->pageLinks[$page] as $pageLink) {
+            $annotation .= \sprintf('%d 0 R ', $pageLink['number']);
+        }
+        foreach ($this->pageAnnotations[$page] as $pageAnnotation) {
+            $annotation .= \sprintf('%d 0 R ', $pageAnnotation['number']);
+        }
+        if ('' !== $annotation) {
+            $this->putf('/Annots [%s]', $annotation);
         }
         if ($this->alphaChannel) {
             $this->put('/Group <</Type /Group /S /Transparency /CS /DeviceRGB>>');
@@ -3137,8 +3218,10 @@ class PdfDocument
             $this->pages[$page] = \str_replace($this->aliasNumberPages, (string) $this->page, $this->pages[$page]);
         }
         $this->putStreamObject($this->pages[$page]);
-        // link annotations
+        // links
         $this->putLinks($page);
+        // annotations
+        $this->putAnnotations($page);
     }
 
     /**
@@ -3152,7 +3235,10 @@ class PdfDocument
             $this->pageInfos[$i]['number'] = ++$number;
             ++$number;
             foreach ($this->pageLinks[$i] as &$pageLink) {
-                $pageLink[5] = ++$number;
+                $pageLink['number'] = ++$number;
+            }
+            foreach ($this->pageAnnotations[$i] as &$pageAnnotation) {
+                $pageAnnotation['number'] = ++$number;
             }
         }
         for ($i = 1; $i <= $page; ++$i) {

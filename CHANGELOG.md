@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `PdfDocument`: Added `annotation()` function.
 - Added `PdfAnnotationName` enumeration.
 - `PdfDocument`: Renamed internal parameter names.
 - Replaced `@psalm` annotations by `@phpstan`.
