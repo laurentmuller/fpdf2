@@ -3052,9 +3052,9 @@ class PdfDocument
     /**
      * Put links to this buffer.
      */
-    protected function putLinks(int $number): void
+    protected function putLinks(int $page): void
     {
-        foreach ($this->pageLinks[$number] as $pageLink) {
+        foreach ($this->pageLinks[$page] as $pageLink) {
             $this->putNewObj();
             $rect = \sprintf(
                 '%.2F %.2F %.2F %.2F',
@@ -3103,25 +3103,25 @@ class PdfDocument
     /**
      * Put a page to this buffer.
      */
-    protected function putPage(int $number): void
+    protected function putPage(int $page): void
     {
         $this->putNewObj();
         $this->put('<</Type /Page');
         $this->put('/Parent 1 0 R');
-        if (isset($this->pageInfos[$number]['size'])) {
+        if (isset($this->pageInfos[$page]['size'])) {
             $this->putf(
                 '/MediaBox [0 0 %.2F %.2F]',
-                $this->pageInfos[$number]['size']->width,
-                $this->pageInfos[$number]['size']->height
+                $this->pageInfos[$page]['size']->width,
+                $this->pageInfos[$page]['size']->height
             );
         }
-        if (isset($this->pageInfos[$number]['rotation'])) {
-            $this->putf('/Rotate %d', $this->pageInfos[$number]['rotation']->value);
+        if (isset($this->pageInfos[$page]['rotation'])) {
+            $this->putf('/Rotate %d', $this->pageInfos[$page]['rotation']->value);
         }
         $this->put('/Resources 2 0 R');
-        if ([] !== $this->pageLinks[$number]) {
+        if ([] !== $this->pageLinks[$page]) {
             $output = '/Annots [';
-            foreach ($this->pageLinks[$number] as $pageLink) {
+            foreach ($this->pageLinks[$page] as $pageLink) {
                 $output .= \sprintf('%d 0 R ', $pageLink[5]);
             }
             $output .= ']';
@@ -3134,11 +3134,11 @@ class PdfDocument
         $this->putEndObj();
         // page content
         if ('' !== $this->aliasNumberPages) {
-            $this->pages[$number] = \str_replace($this->aliasNumberPages, (string) $this->page, $this->pages[$number]);
+            $this->pages[$page] = \str_replace($this->aliasNumberPages, (string) $this->page, $this->pages[$page]);
         }
-        $this->putStreamObject($this->pages[$number]);
+        $this->putStreamObject($this->pages[$page]);
         // link annotations
-        $this->putLinks($number);
+        $this->putLinks($page);
     }
 
     /**

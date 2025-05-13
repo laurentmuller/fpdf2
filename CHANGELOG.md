@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added `PdfAnnotationName` enumeration.
+- `PdfDocument`: Renamed internal parameter names.
 - Replaced `@psalm` annotations by `@phpstan`.
 - `PdfBorderTest`: Added `assertBorderEquals()` function.
 
