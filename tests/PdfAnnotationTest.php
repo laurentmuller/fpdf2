@@ -47,6 +47,7 @@ class PdfAnnotationTest extends AbstractPdfDocTestCase
                 y: $y,
                 width: 18,
                 height: 18,
+                title: \sprintf('%s Title', $name->value),
                 name: $name,
                 color: $color,
             );

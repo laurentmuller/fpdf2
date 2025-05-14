@@ -140,7 +140,7 @@ class PdfPngParserTest extends AbstractPdfParserTestCase
     {
         $file = 'alpha_image.png';
         $image = $this->parseFile($file);
-        self::assertArrayHasKey('soft_mask', $image);
+        self::assertArrayHasKey('softMask', $image);
         self::assertArrayHasKey('width', $image);
         self::assertArrayHasKey('height', $image);
         self::assertSame(31, $image['width']);

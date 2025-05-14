@@ -11,6 +11,7 @@ annotation(
     ?float $y = null,
     ?float $width = null,
     ?float $height = null,
+    ?string $title = null,
     PdfAnnotationName $name = PdfAnnotationName::NOTE,
     ?PdfColorInterface $color = null
 )
@@ -26,6 +27,7 @@ annotation(
 - `$width`: The width of the annotation or `null` to compute the text width.
 - `$height`: The height of the annotation or `null` to use the default line
   height.
+- `$title`: The optional annotation title.
 - `$name`: The annotation name (icon).
 - `$color`: The annotation color or `null` for default (black).
 
@@ -57,6 +59,7 @@ foreach ($names as $name) {
         y: $y,
         width: 18,
         height: 18,
+        title: 'My Custom title',
         name: $name,
         color: $color,
     );

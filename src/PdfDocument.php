@@ -76,12 +76,12 @@ use fpdf\Interfaces\PdfImageParserInterface;
  *     number: int,
  *     width: int,
  *     height: int,
- *     color_space: string,
- *     bits_per_component: int,
+ *     colorSpace: string,
+ *     bitsPerComponent: int,
  *     filter?: string,
  *     data: string,
- *     decode_parms?: string,
- *     soft_mask?: string,
+ *     decodeParms?: string,
+ *     softMask?: string,
  *     palette: string,
  *     transparencies?: int[]}
  * @phpstan-type PageLinkType = array{
@@ -98,6 +98,7 @@ use fpdf\Interfaces\PdfImageParserInterface;
  *      height: float,
  *      text: string,
  *      name: string,
+ *      title: string|null,
  *      color: string|null,
  *      number: int}
  * @phpstan-type LinkType = array{
@@ -531,10 +532,11 @@ class PdfDocument
      * Add an annotation to the current page.
      *
      * @param string             $text   the annotation text
-     * @param float|null         $x      the abscissa of the upper-left corner or <code>null</code> to use the current abscissa
-     * @param float|null         $y      the ordinate of the upper-left corner or <code>null</code> to use the current ordinate
-     * @param float|null         $width  the width of the annotation or <code>null</code>, to compute the text width
-     * @param float|null         $height the height of the annotation or <code>null</code> to use the default line height
+     * @param ?float             $x      the abscissa of the upper-left corner or <code>null</code> to use the current abscissa
+     * @param ?float             $y      the ordinate of the upper-left corner or <code>null</code> to use the current ordinate
+     * @param ?float             $width  the width of the annotation or <code>null</code>, to compute the text width
+     * @param ?float             $height the height of the annotation or <code>null</code> to use the default line height
+     * @param ?string            $title  the optional annotation title
      * @param PdfAnnotationName  $name   the annotation name (icon)
      * @param ?PdfColorInterface $color  the annotation color or <code>null</code> for default (black)
      */
@@ -544,6 +546,7 @@ class PdfDocument
         ?float $y = null,
         ?float $width = null,
         ?float $height = null,
+        ?string $title = null,
         PdfAnnotationName $name = PdfAnnotationName::NOTE,
         ?PdfColorInterface $color = null
     ): static {
@@ -558,6 +561,7 @@ class PdfDocument
             'width' => $this->scale($width),
             'height' => $this->scale($height),
             'text' => $text,
+            'title' => $title,
             'name' => $name->value,
             'color' => $color?->getTag(),
             'number' => 0,
@@ -2839,15 +2843,17 @@ class PdfDocument
                 $pageAnnotation['x'] + $pageAnnotation['width'],
                 $pageAnnotation['y'] - $pageAnnotation['height']
             );
-            $color = \is_string($pageAnnotation['color']) ? \sprintf('/C[%s]', $pageAnnotation['color']) : '';
             $name = \sprintf('/Name/%s', $pageAnnotation['name']);
             $content = \sprintf('/Contents%s', $this->textString($pageAnnotation['text']));
+            $color = \is_string($pageAnnotation['color']) ? \sprintf('/C[%s]', $pageAnnotation['color']) : '';
+            $title = \is_string($pageAnnotation['title']) ? \sprintf('/T%s', $this->textString($pageAnnotation['title'])) : '';
             $this->putf(
-                '<</Type/Annot/Subtype/Text%s%s%s%s>>',
+                '<</Type/Annot/Subtype/Text%s%s%s%s%s>>',
                 $rect,
-                $color,
                 $name,
                 $content,
+                $color,
+                $title,
             );
             $this->putEndObj();
         }
@@ -3057,24 +3063,24 @@ class PdfDocument
         $this->put('/Subtype /Image');
         $this->putf('/Width %d', $image['width']);
         $this->putf('/Height %d', $image['height']);
-        if ('Indexed' === $image['color_space']) {
+        if ('Indexed' === $image['colorSpace']) {
             $this->putf(
                 '/ColorSpace [/Indexed /DeviceRGB %d %d 0 R]',
                 \intdiv(\strlen($image['palette']), 3) - 1,
                 $this->objectNumber + 1
             );
         } else {
-            $this->putf('/ColorSpace /%s', $image['color_space']);
-            if ('DeviceCMYK' === $image['color_space']) {
+            $this->putf('/ColorSpace /%s', $image['colorSpace']);
+            if ('DeviceCMYK' === $image['colorSpace']) {
                 $this->put('/Decode [1 0 1 0 1 0 1 0]');
             }
         }
-        $this->putf('/BitsPerComponent %d', $image['bits_per_component']);
+        $this->putf('/BitsPerComponent %d', $image['bitsPerComponent']);
         if (isset($image['filter'])) {
             $this->putf('/Filter /%s', $image['filter']);
         }
-        if (isset($image['decode_parms'])) {
-            $this->putf('/DecodeParms <<%s>>', $image['decode_parms']);
+        if (isset($image['decodeParms'])) {
+            $this->putf('/DecodeParms <<%s>>', $image['decodeParms']);
         }
         if (isset($image['transparencies']) && [] !== $image['transparencies']) {
             $transparencies = \array_reduce(
@@ -3084,7 +3090,7 @@ class PdfDocument
             );
             $this->putf('/Mask [%s]', $transparencies);
         }
-        if (isset($image['soft_mask'])) {
+        if (isset($image['softMask'])) {
             $this->putf('/SMask %d 0 R', $this->objectNumber + 1);
         }
         $this->putf('/Length %d>>', \strlen($image['data']));
@@ -3092,24 +3098,24 @@ class PdfDocument
         $this->putEndObj();
 
         // soft mask
-        if (isset($image['soft_mask'])) {
+        if (isset($image['softMask'])) {
             $decodeParms = \sprintf('/Predictor 15 /Colors 1 /BitsPerComponent 8 /Columns %.2f', $image['width']);
             $soft_image = [
                 'index' => 0,
                 'number' => 0,
                 'width' => $image['width'],
                 'height' => $image['height'],
-                'color_space' => 'DeviceGray',
-                'bits_per_component' => 8,
+                'colorSpace' => 'DeviceGray',
+                'bitsPerComponent' => 8,
                 'filter' => $image['filter'] ?? '',
-                'decode_parms' => $decodeParms,
-                'data' => $image['soft_mask'],
+                'decodeParms' => $decodeParms,
+                'data' => $image['softMask'],
                 'palette' => '',
             ];
             $this->putImage($soft_image);
         }
         // palette
-        if ('Indexed' === $image['color_space']) {
+        if ('Indexed' === $image['colorSpace']) {
             $this->putStreamObject($image['palette']);
         }
     }
@@ -3121,7 +3127,7 @@ class PdfDocument
     {
         foreach ($this->images as &$image) {
             $this->putImage($image);
-            unset($image['data'], $image['soft_mask']);
+            unset($image['data'], $image['softMask']);
         }
     }
 

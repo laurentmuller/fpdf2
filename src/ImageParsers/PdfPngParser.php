@@ -83,7 +83,7 @@ class PdfPngParser implements PdfImageParserInterface
         $this->checkInterlacing($stream, $file);
         $this->skip($stream, 4); // CRC
 
-        $decodeParams = \sprintf(
+        $decodeParms = \sprintf(
             '/Predictor 15 /Colors %d /BitsPerComponent %d /Columns %d',
             $colors,
             $bitsPerComponent,
@@ -127,10 +127,10 @@ class PdfPngParser implements PdfImageParserInterface
             'number' => 0,
             'width' => $width,
             'height' => $height,
-            'color_space' => $colorSpace,
-            'bits_per_component' => $bitsPerComponent,
+            'colorSpace' => $colorSpace,
+            'bitsPerComponent' => $bitsPerComponent,
             'filter' => 'FlateDecode',
-            'decode_parms' => $decodeParams,
+            'decodeParms' => $decodeParms,
             'palette' => $palette,
             'transparencies' => $transparencies,
             'data' => $data,
@@ -138,10 +138,10 @@ class PdfPngParser implements PdfImageParserInterface
 
         if ($colorType >= 4) {
             // extract alpha channel
-            [$data, $soft_mask] = $this->extractAlphaChannel($width, $height, $colorType, $data);
+            [$data, $softMask] = $this->extractAlphaChannel($width, $height, $colorType, $data);
             $parent->updatePdfVersion(PdfVersion::VERSION_1_4);
             $parent->setAlphaChannel(true);
-            $image['soft_mask'] = $soft_mask;
+            $image['softMask'] = $softMask;
             $image['data'] = $data;
         }
 

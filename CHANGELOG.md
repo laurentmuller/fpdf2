@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `PdfDocument`: Added `$title` parameter to the `annotation()` function.
 - `PdfDocument`: Added `$color` parameter to the `annotation()` function.
 - `PdfColorInterface`: Added `getTag()` function.
 - Updated test for the `annotation()` function.
