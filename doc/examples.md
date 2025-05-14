@@ -15,6 +15,7 @@ Below is a list of examples:
 - [Attachments](attachments.md)
 - [Dash lines](dash_lines.md)
 - [Polygon](polygon.md)
+- [Annotations](annotations.md)
 
 **See also:**
 

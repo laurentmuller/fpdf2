@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace fpdf\Tests;
 
 use fpdf\Enums\PdfAnnotationName;
+use fpdf\Enums\PdfDestination;
 
 class PdfAnnotationTest extends AbstractPdfDocTestCase
 {
@@ -40,6 +41,7 @@ class PdfAnnotationTest extends AbstractPdfDocTestCase
             $doc->text($left, $top + $y, $text);
             $y += 10.0;
         }
+        $doc->output(PdfDestination::STRING);
         self::assertSame(1, $doc->getPage());
     }
 }

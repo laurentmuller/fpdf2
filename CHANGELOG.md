@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Updated test for the `annotation()` function.
+- Added the documentation for the `annotation()` function.
 - `PdfDocument`: Added `annotation()` function.
 - Added `PdfAnnotationName` enumeration.
 - `PdfDocument`: Renamed internal parameter names.
