@@ -27,4 +27,9 @@ interface PdfColorInterface extends \Stringable
      * Gets this color, as string, when output to the document.
      */
     public function getOutput(): string;
+
+    /**
+     * Gets this color, as string, when required to be output to the dictionary.
+     */
+    public function getTag(): string;
 }

@@ -55,7 +55,13 @@ readonly class PdfGrayColor implements PdfColorInterface
     #[\Override]
     public function getOutput(): string
     {
-        return \sprintf('%.3F g', (float) $this->level / 255.0);
+        return \sprintf('%s g', $this->getTag());
+    }
+
+    #[\Override]
+    public function getTag(): string
+    {
+        return \sprintf('%.3F', (float) $this->level / 255.0);
     }
 
     /**

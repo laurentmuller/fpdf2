@@ -75,8 +75,14 @@ readonly class PdfCmykColor implements PdfColorInterface
     #[\Override]
     public function getOutput(): string
     {
+        return \sprintf('%s k', $this->getTag());
+    }
+
+    #[\Override]
+    public function getTag(): string
+    {
         return \sprintf(
-            '%.3F %.3F %.3F %.3F k',
+            '%.3F %.3F %.3F %.3F',
             $this->asFloat($this->cyan),
             $this->asFloat($this->magenta),
             $this->asFloat($this->yellow),

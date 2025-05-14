@@ -98,10 +98,11 @@ use fpdf\Interfaces\PdfImageParserInterface;
  *      height: float,
  *      text: string,
  *      name: string,
+ *      color: string|null,
  *      number: int}
  * @phpstan-type LinkType = array{
- *     0: int,
- *     1: float}
+ *     'page': int,
+ *     'y': float}
  */
 class PdfDocument
 {
@@ -156,7 +157,7 @@ class PdfDocument
     protected PdfRotation $currentRotation = PdfRotation::DEFAULT;
     /** The default orientation. */
     protected PdfOrientation $defaultOrientation;
-    /** The default page size in user unit.  */
+    /** The default page size in the user unit.  */
     protected PdfSize $defaultPageSize;
     /** The commands for drawing color. */
     protected string $drawColor = self::EMPTY_COLOR;
@@ -266,7 +267,7 @@ class PdfDocument
     protected PdfSize $pageSize;
     /** The PDF version number. */
     protected PdfVersion $pdfVersion;
-    /** The scale factor (number of points in user unit). */
+    /** The scale factor (number of points in the user unit). */
     protected float $scaleFactor;
     /** The current document state. */
     protected PdfState $state = PdfState::NO_PAGE;
@@ -280,7 +281,7 @@ class PdfDocument
     protected PdfViewerPreferences $viewerPreferences;
     /** The word spacing. */
     protected float $wordSpacing = 0.0;
-    /** The current x position in user unit. */
+    /** The current x position in the user unit. */
     protected float $x = 0.0;
     /** The current y position in user unit. */
     protected float $y = 0.0;
@@ -356,7 +357,7 @@ class PdfDocument
      *                                   family name, it will override the corresponding font.
      * @param PdfFontStyle       $style  The font style. The default value is <code>PdfFontStyle::REGULAR</code>.
      * @param ?string            $file   The name of the font definition file. By default, it is built from the family
-     *                                   and style, in lower case with no space.
+     *                                   and style, in the lower case with no space.
      * @param ?string            $dir    The directory where to load the definition file. If not specified, the default
      *                                   directory will be used.
      *
@@ -427,7 +428,10 @@ class PdfDocument
     public function addLink(): int
     {
         $index = \count($this->links) + 1;
-        $this->links[$index] = [0, 0];
+        $this->links[$index] = [
+            'page' => 0,
+            'y' => 0,
+        ];
 
         return $index;
     }
@@ -436,7 +440,7 @@ class PdfDocument
      * Adds a new page to the document.
      *
      * If a page is already present, the <code>footer()</code> method is called first to output the footer. Then the
-     * page is added, the current position set to the top-left corner according to the left and top margins and
+     * page is added, the current position set to the top-left corner according to the left margin and top margin and
      * <code>header()</code> is called to output the header. The font, which was set before calling, is automatically
      * restored. There is no need to call <code>setFont()</code> again if you want to continue with the same font. The
      * same is <code>true</code> for colors and line width.
@@ -526,12 +530,13 @@ class PdfDocument
     /**
      * Add an annotation to the current page.
      *
-     * @param string            $text   the annotation text
-     * @param float|null        $x      the abscissa of the upper-left corner or <code>null</code> to use the current abscissa
-     * @param float|null        $y      the ordinate of the upper-left corner or <code>null</code> to use the current ordinate
-     * @param float|null        $width  the width of the annotation or <code>null</code>, to compute the text width
-     * @param float|null        $height the height of the annotation or <code>null</code> to use the default line height
-     * @param PdfAnnotationName $name   the annotation name (icon)
+     * @param string             $text   the annotation text
+     * @param float|null         $x      the abscissa of the upper-left corner or <code>null</code> to use the current abscissa
+     * @param float|null         $y      the ordinate of the upper-left corner or <code>null</code> to use the current ordinate
+     * @param float|null         $width  the width of the annotation or <code>null</code>, to compute the text width
+     * @param float|null         $height the height of the annotation or <code>null</code> to use the default line height
+     * @param PdfAnnotationName  $name   the annotation name (icon)
+     * @param ?PdfColorInterface $color  the annotation color or <code>null</code> for default (black)
      */
     public function annotation(
         string $text,
@@ -540,20 +545,21 @@ class PdfDocument
         ?float $width = null,
         ?float $height = null,
         PdfAnnotationName $name = PdfAnnotationName::NOTE,
+        ?PdfColorInterface $color = null
     ): static {
         $x ??= $this->x;
         $y ??= $this->y;
         $width ??= $this->getStringWidth($text);
         $height ??= self::LINE_HEIGHT;
 
-        $heightInPoint = $this->currentPageSizeInPoint->height;
         $this->pageAnnotations[$this->page][] = [
             'x' => $this->scale($x),
-            'y' => $heightInPoint - $this->scale($y),
+            'y' => $this->scale($this->getPageHeight() - $y),
             'width' => $this->scale($width),
             'height' => $this->scale($height),
             'text' => $text,
             'name' => $name->value,
+            'color' => $color?->getTag(),
             'number' => 0,
         ];
 
@@ -766,7 +772,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the cell margin in user unit.
+     * Gets the cell margin in the user unit.
      *
      * The default value is 1 mm.
      */
@@ -810,7 +816,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the left margin in user unit.
+     * Gets the left margin in the user unit.
      *
      * The default value is 10 mm.
      */
@@ -884,7 +890,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the current page height in user unit.
+     * Gets the current page height in the user unit.
      */
     public function getPageHeight(): float
     {
@@ -1006,7 +1012,7 @@ class PdfDocument
     }
 
     /**
-     * Gets the top margin in user unit.
+     * Gets the top margin in the user unit.
      *
      * The default value is 10 mm.
      */
@@ -1326,10 +1332,9 @@ class PdfDocument
      */
     public function link(float $x, float $y, float $width, float $height, string|int $link): static
     {
-        $heightInPoint = $this->currentPageSizeInPoint->height;
         $this->pageLinks[$this->page][] = [
             'x' => $this->scale($x),
-            'y' => $heightInPoint - $this->scale($y),
+            'y' => $this->scale($this->getPageHeight() - $y),
             'width' => $this->scale($width),
             'height' => $this->scale($height),
             'link' => $link,
@@ -1442,9 +1447,9 @@ class PdfDocument
      * The method first calls <code>close()</code> if necessary to terminate the document.
      *
      * @param PdfDestination $destination The destination where to send the document
-     * @param ?string        $name        The name of the file. It is ignored in case of
-     *                                    destination <code>PdfDestination::STRING</code>. The default value
-     *                                    is 'doc.pdf'.
+     * @param ?string        $name        The name of the file. It is ignored when the destination is
+     *                                    <code>PdfDestination::STRING</code>.
+     *                                    The default value is 'doc.pdf'.
      * @param bool           $isUTF8      Indicates if the name is encoded in ISO-8859-1 (<code>false</code>) or
      *                                    UTF-8 (<code>true</code>). Only used for destinations
      *                                    <code>PdfDestination::INLINE</code> and <code>PdfDestination::DOWNLOAD</code>.
@@ -1694,7 +1699,7 @@ class PdfDocument
     /**
      * Defines the color used for all drawing operations (lines, rectangles and cell borders).
      *
-     * The method can be called before the first page is created and the value is retained from page to page.
+     * The method can be called before the first page is created, and the value is retained from page to page.
      *
      * @see PdfDocument::setFillColor()
      * @see PdfDocument::setTextColor()
@@ -1710,7 +1715,7 @@ class PdfDocument
     /**
      * Defines the color used for all filling operations (filled rectangles and cell backgrounds).
      *
-     * The method can be called before the first page is created and the value is retained from page to page.
+     * The method can be called before the first page is created, and the value is retained from page to page.
      *
      * @see PdfDocument::setDrawColor()
      * @see PdfDocument::setTextColor()
@@ -1875,7 +1880,7 @@ class PdfDocument
     /**
      * Sets the line cap.
      *
-     * The method can be called before the first page is created and the value is retained from page to page.
+     * The method can be called before the first page is created, and the value is retained from page to page.
      */
     public function setLineCap(PdfLineCap $lineCap): static
     {
@@ -1890,7 +1895,7 @@ class PdfDocument
     /**
      * Sets the line join style.
      *
-     * The method can be called before the first page is created and the value is retained from page to page.
+     * The method can be called before the first page is created, and the value is retained from page to page.
      */
     public function setLineJoin(PdfLineJoin $lineJoin): static
     {
@@ -1905,7 +1910,7 @@ class PdfDocument
     /**
      * Defines the line width.
      *
-     * By default, the value equals 0.2 mm. The method can be called before the first page is created and the value is
+     * By default, the value equals 0.2 mm. The method can be called before the first page is created, and the value is
      * retained from page to page.
      */
     public function setLineWidth(float $lineWidth): static
@@ -1917,7 +1922,7 @@ class PdfDocument
     }
 
     /**
-     * Defines the page and position a link points to.
+     * Defines the page and position a link pointing to.
      *
      * @param int        $link the link identifier returned by <code>addLink()</code>
      * @param float|null $y    the ordinate of the target position. A <code>null</code> value indicates the current
@@ -1931,9 +1936,10 @@ class PdfDocument
      */
     public function setLink(int $link, ?float $y = 0, ?int $page = null): static
     {
-        $y ??= $this->y;
-        $page ??= $this->page;
-        $this->links[$link] = [$page, $y];
+        $this->links[$link] = [
+            'page' => $page ?? $this->page,
+            'y' => $y ?? $this->y,
+        ];
 
         return $this;
     }
@@ -2015,7 +2021,7 @@ class PdfDocument
     /**
      * Defines the color used for text.
      *
-     * The method can be called before the first page is created and the value is retained from page to page.
+     * The method can be called before the first page is created, and the value is retained from page to page.
      *
      * @see PdfDocument::setDrawColor()
      * @see PdfDocument::setFillColor()
@@ -2171,7 +2177,7 @@ class PdfDocument
     }
 
     /**
-     * Set the cell margins to the given value, call the given user function and reset margins to the previous value.
+     * Set the cell margins to the given value, call the given user function, and reset margins to the previous value.
      *
      * @param callable $callable the function to call
      * @param float    $margin   the cell margin to set. The minimum value allowed is 0.
@@ -2597,7 +2603,7 @@ class PdfDocument
     }
 
     /**
-     * Join the given strings with a new line as separator and add an extra new line at the end.
+     * Join the given strings with a new line as the separator and add an extra new line at the end.
      *
      * @param string[] $values
      */
@@ -2827,17 +2833,21 @@ class PdfDocument
         foreach ($this->pageAnnotations[$page] as $pageAnnotation) {
             $this->putNewObj();
             $rect = \sprintf(
-                '%.2F %.2F %.2F %.2F',
+                '/Rect[%.2F %.2F %.2F %.2F]',
                 $pageAnnotation['x'],
                 $pageAnnotation['y'],
                 $pageAnnotation['x'] + $pageAnnotation['width'],
                 $pageAnnotation['y'] - $pageAnnotation['height']
             );
+            $color = \is_string($pageAnnotation['color']) ? \sprintf('/C[%s]', $pageAnnotation['color']) : '';
+            $name = \sprintf('/Name/%s', $pageAnnotation['name']);
+            $content = \sprintf('/Contents%s', $this->textString($pageAnnotation['text']));
             $this->putf(
-                '<</Type /Annot /Subtype /Text /Rect [%s] /Name /%s /Contents %s>>',
+                '<</Type/Annot/Subtype/Text%s%s%s%s>>',
                 $rect,
-                $pageAnnotation['name'],
-                $this->textString($pageAnnotation['text']),
+                $color,
+                $name,
+                $content,
             );
             $this->putEndObj();
         }
@@ -3145,7 +3155,7 @@ class PdfDocument
                 $output .= \sprintf('/A <</S /URI /URI %s>>>>', $this->textString($pageLink['link']));
             } else {
                 $link = $this->links[$pageLink['link']];
-                $index = $link[0];
+                $index = $link['page'];
                 $pageInfo = $this->pageInfos[$index] ?? [];
                 if (isset($pageInfo['size'])) {
                     $height = $pageInfo['size']->width;
@@ -3157,7 +3167,7 @@ class PdfDocument
                 $output .= \sprintf(
                     '/Dest [%d 0 R /XYZ 0 %.2F null]>>',
                     $pageInfo['number'] ?? 0,
-                    $height - $this->scale($link[1])
+                    $height - $this->scale($link['y'])
                 );
             }
             $this->put($output);

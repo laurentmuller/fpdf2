@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace fpdf\Tests;
 
+use fpdf\Color\PdfCmykColor;
+use fpdf\Color\PdfRgbColor;
 use fpdf\Enums\PdfAnnotationName;
 use fpdf\Enums\PdfDestination;
 
@@ -27,9 +29,18 @@ class PdfAnnotationTest extends AbstractPdfDocTestCase
         $top = $doc->getTopMargin();
         $left = $doc->getLeftMargin() + 5.0;
         $names = PdfAnnotationName::cases();
+        $colors = [
+            PdfRgbColor::red(),
+            PdfRgbColor::green(),
+            PdfRgbColor::blue(),
+            PdfCmykColor::yellow(),
+            PdfCmykColor::magenta(),
+            PdfCmykColor::cyan(),
+        ];
 
         foreach ($names as $name) {
             $text = \sprintf('Annotation with "%s" icon', $name->value);
+            $color = $colors[\array_rand($colors)];
             $doc->annotation(
                 text: $text,
                 x: 0,
@@ -37,11 +48,12 @@ class PdfAnnotationTest extends AbstractPdfDocTestCase
                 width: 18,
                 height: 18,
                 name: $name,
+                color: $color,
             );
             $doc->text($left, $top + $y, $text);
             $y += 10.0;
         }
-        $doc->output(PdfDestination::STRING);
-        self::assertSame(1, $doc->getPage());
+        $content = $doc->output(PdfDestination::STRING);
+        self::assertStringContainsString('<</Type/Annot/Subtype/Text/Rect', $content);
     }
 }

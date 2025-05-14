@@ -11,7 +11,8 @@ annotation(
     ?float $y = null,
     ?float $width = null,
     ?float $height = null,
-    PdfAnnotationName $name = PdfAnnotationName::NOTE
+    PdfAnnotationName $name = PdfAnnotationName::NOTE,
+    ?PdfColorInterface $color = null
 )
 ```
 
@@ -26,6 +27,7 @@ annotation(
 - `$height`: The height of the annotation or `null` to use the default line
   height.
 - `$name`: The annotation name (icon).
+- `$color`: The annotation color or `null` for default (black).
 
 **Example:**
 
@@ -37,9 +39,18 @@ $y = 0.0;
 $top = $doc->getTopMargin();
 $left = $doc->getLeftMargin() + 5.0;
 $names = PdfAnnotationName::cases();
+$colors = [
+    PdfRgbColor::red(),
+    PdfRgbColor::green(),
+    PdfRgbColor::blue(),
+    PdfCmykColor::cyan(),
+    PdfCmykColor::magenta(),
+    PdfCmykColor::yellow(),    
+];
 
 foreach ($names as $name) {
     $text = \sprintf('Annotation with "%s" icon', $name->value);
+    $color = $colors[\array_rand($colors)];
     $doc->annotation(
         text: $text,
         x: 0,
@@ -47,6 +58,7 @@ foreach ($names as $name) {
         width: 18,
         height: 18,
         name: $name,
+        color: $color,
     );
     $doc->text($left, $top + $y, $text);
     $y += 10.0;

@@ -139,13 +139,19 @@ readonly class PdfRgbColor implements PdfColorInterface
     #[\Override]
     public function getOutput(): string
     {
+        return \sprintf('%s %s', $this->getTag(), $this->getSuffix());
+    }
+
+    #[\Override]
+    public function getTag(): string
+    {
         // black?
-        if (0 === $this->red && 0 === $this->green && 0 === $this->blue) {
-            return \sprintf('%.3F g', 0.0);
+        if ($this->isBlack()) {
+            return \sprintf('%.3F', 0.0);
         }
 
         return \sprintf(
-            '%.3F %.3F %.3F rg',
+            '%.3F %.3F %.3F',
             $this->asFloat($this->red),
             $this->asFloat($this->green),
             $this->asFloat($this->blue)
@@ -251,6 +257,11 @@ readonly class PdfRgbColor implements PdfColorInterface
         return self::instance($red, $green, $blue);
     }
 
+    private function getSuffix(): string
+    {
+        return $this->isBlack() ? 'g' : 'rg';
+    }
+
     /**
      * @return int<0, 255>
      */
@@ -258,5 +269,10 @@ readonly class PdfRgbColor implements PdfColorInterface
     {
         /** @var int<0, 255> */
         return (int) \hexdec($value);
+    }
+
+    private function isBlack(): bool
+    {
+        return 0 === $this->red && 0 === $this->green && 0 === $this->blue;
     }
 }

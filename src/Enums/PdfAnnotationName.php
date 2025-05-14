@@ -18,7 +18,7 @@ use fpdf\Interfaces\PdfEnumDefaultInterface;
 use fpdf\Traits\PdfEnumDefaultTrait;
 
 /**
- * The PDF annotation name.
+ * The PDF annotation name enumeration.
  *
  * This is the name of an icon that shall be used in displaying annotations.
  *
