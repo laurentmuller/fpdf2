@@ -36,20 +36,24 @@ use fpdf\PdfRectangle;
 trait PdfRotationTrait
 {
     /**
+     * No rotation angle.
+     */
+    private const NO_ANGLE = 0.0;
+
+    /**
      * The current rotation, in degrees.
      */
-    private float $angle = 0.0;
+    private float $angle = self::NO_ANGLE;
 
     /**
      * Reset the rotation angle to 0.0.
      */
     public function endRotate(): void
     {
-        if (!$this->isAngle($this->angle)) {
-            return;
+        if ($this->isAngle($this->angle)) {
+            $this->out('Q');
+            $this->angle = self::NO_ANGLE;
         }
-        $this->out('Q');
-        $this->angle = 0.0;
     }
 
     /**
@@ -69,7 +73,7 @@ trait PdfRotationTrait
         $this->angle = $angle;
         $x ??= $this->getX();
         $y ??= $this->getY();
-        $angle *= \M_PI / 180.0;
+        $angle = \deg2rad($angle);
         $cos = \cos($angle);
         $sin = \sin($angle);
         $cx = $this->scale($x);
@@ -169,6 +173,6 @@ trait PdfRotationTrait
 
     private function isAngle(float $angle): bool
     {
-        return 0.0 !== \round($angle, 2);
+        return self::NO_ANGLE !== \round($angle, 2);
     }
 }

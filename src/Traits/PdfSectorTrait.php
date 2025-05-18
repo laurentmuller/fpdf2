@@ -62,16 +62,15 @@ trait PdfSectorTrait
         }
 
         // compute values
-        $height = $this->getPageHeight();
         [$startAngle, $endAngle, $deltaAngle] = $this->computeSectorAngles($startAngle, $endAngle, $clockwise, $origin);
         $arc = $this->computeSectorArc($deltaAngle, $radius);
 
         // put center
-        $this->outf('%.2F %.2F m', $this->scale($centerX), $this->scale($height - $centerY));
+        $this->outf('%.2F %.2F m', $this->scale($centerX), $this->scaleY($centerY));
 
         // put the first point
         $x = $this->scale($centerX + $radius * \cos($startAngle));
-        $y = $this->scale($height - ($centerY - $radius * \sin($startAngle)));
+        $y = $this->scaleY($centerY - $radius * \sin($startAngle));
         $this->outf('%.2F %.2F l', $x, $y);
 
         // draw arc
@@ -120,8 +119,8 @@ trait PdfSectorTrait
             $endAngle += self::FULL_ROTATION;
         }
 
-        $endAngle = $endAngle / self::FULL_ROTATION * self::TWO_PI;
-        $startAngle = $startAngle / self::FULL_ROTATION * self::TWO_PI;
+        $startAngle = \deg2rad($startAngle);
+        $endAngle = \deg2rad($endAngle);
         $deltaAngle = $endAngle - $startAngle;
         if (0.0 === $deltaAngle && 0.0 !== $angle) {
             $deltaAngle = self::TWO_PI;
@@ -160,15 +159,14 @@ trait PdfSectorTrait
         $y3 = $centerY - $radius * \sin($endAngle);
 
         // output
-        $height = $this->getPageHeight();
         $this->outf(
             '%.2F %.2F %.2F %.2F %.2F %.2F c',
             $this->scale($x1),
-            $this->scale($height - $y1),
+            $this->scaleY($y1),
             $this->scale($x2),
-            $this->scale($height - $y2),
+            $this->scaleY($y2),
             $this->scale($x3),
-            $this->scale($height - $y3)
+            $this->scaleY($y3)
         );
     }
 

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- `PdfDocument`: Added `scaleY()` function.
+- `PdfSectorTrait`: Use `deg2rad()` function.
+- `PdfRotationTrait`: Use `deg2rad()` function.
 - `PdfDocument`: Added `$title` parameter to the `annotation()` function.
 - `PdfDocument`: Added `$color` parameter to the `annotation()` function.
 - `PdfColorInterface`: Added `getTag()` function.

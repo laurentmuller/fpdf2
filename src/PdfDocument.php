@@ -557,7 +557,7 @@ class PdfDocument
 
         $this->pageAnnotations[$this->page][] = [
             'x' => $this->scale($x),
-            'y' => $this->scale($this->getPageHeight() - $y),
+            'y' => $this->scaleY($y),
             'width' => $this->scale($width),
             'height' => $this->scale($height),
             'text' => $text,
@@ -626,7 +626,7 @@ class PdfDocument
             $output .= \sprintf(
                 '%.2F %.2F %.2F %.2F re %s ',
                 $this->scale($this->x),
-                $this->scale($this->getPageHeight() - $this->y),
+                $this->scaleY($this->y),
                 $this->scale($width),
                 $this->scale(-$height),
                 $style->value
@@ -650,7 +650,7 @@ class PdfDocument
             $output .= \sprintf(
                 'BT %.2F %.2F Td (%s) Tj ET',
                 $this->scale($this->x + $dx),
-                $this->scale($this->getPageHeight() - ($this->y + 0.5 * $height + 0.3 * $this->fontSize)),
+                $this->scaleY($this->y + 0.5 * $height + 0.3 * $this->fontSize),
                 $this->escape($text)
             );
             if ($this->underline) {
@@ -1202,7 +1202,7 @@ class PdfDocument
             $this->scale($width),
             $this->scale($height),
             $this->scale($x),
-            $this->scale($this->getPageHeight() - $y - $height),
+            $this->scaleY($y + $height),
             $image['index']
         );
         if (self::isLink($link)) {
@@ -1277,9 +1277,9 @@ class PdfDocument
         $this->outf(
             '%.2F %.2F m %.2F %.2F l S',
             $this->scale($x1),
-            $this->scale($this->getPageHeight() - $y1),
+            $this->scaleY($y1),
             $this->scale($x2),
-            $this->scale($this->getPageHeight() - $y2)
+            $this->scaleY($y2)
         );
 
         return $this;
@@ -1338,7 +1338,7 @@ class PdfDocument
     {
         $this->pageLinks[$this->page][] = [
             'x' => $this->scale($x),
-            'y' => $this->scale($this->getPageHeight() - $y),
+            'y' => $this->scaleY($y),
             'width' => $this->scale($width),
             'height' => $this->scale($height),
             'link' => $link,
@@ -1570,7 +1570,7 @@ class PdfDocument
             $this->outf(
                 '%.2F %.2F %.2F %.2F re %s',
                 $this->scale($x),
-                $this->scale($this->getPageHeight() - $y),
+                $this->scaleY($y),
                 $this->scale($width),
                 $this->scale(-$height),
                 $style->value
@@ -2152,7 +2152,7 @@ class PdfDocument
         $output = \sprintf(
             'BT %.2F %.2F Td (%s) Tj ET',
             $this->scale($x),
-            $this->scale($this->getPageHeight() - $y),
+            $this->scaleY($y),
             $this->escape($text)
         );
         if ($this->underline) {
@@ -2416,7 +2416,7 @@ class PdfDocument
         return \sprintf(
             ' %.2F %.2F %.2F %.2F re f',
             $this->scale($x),
-            $this->scale($this->getPageHeight() - ($y - $up / 1000.0 * $this->fontSize)),
+            $this->scaleY($y - $up / 1000.0 * $this->fontSize),
             $this->scale($width),
             -$ut / 1000.0 * $this->fontSizeInPoint
         );
@@ -2497,9 +2497,9 @@ class PdfDocument
 
         $output = '';
         $left = $this->scale($x);
-        $top = $this->scale($this->getPageHeight() - $y);
+        $top = $this->scaleY($y);
         $right = $this->scale($x + $width);
-        $bottom = $this->scale($this->getPageHeight() - ($y + $height));
+        $bottom = $this->scaleY($y + $height);
         if ($border->left) {
             $output .= \sprintf('%.2F %.2F m %.2F %.2F l S ', $left, $top, $left, $bottom);
         }
@@ -3403,6 +3403,18 @@ class PdfDocument
         }
 
         return [$width, $height];
+    }
+
+    /**
+     * Multiply the given ordinate, from the bottom page height, by this scale factor.
+     *
+     * @param float $y the ordinate value to scale
+     *
+     * @return float the ordinate scaled value
+     */
+    protected function scaleY(float $y): float
+    {
+        return $this->scale($this->getPageHeight() - $y);
     }
 
     /**
