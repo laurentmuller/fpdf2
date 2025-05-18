@@ -77,7 +77,7 @@ trait PdfRotationTrait
         $cos = \cos($angle);
         $sin = \sin($angle);
         $cx = $this->scale($x);
-        $cy = $this->scale($this->getPageHeight() - $y);
+        $cy = $this->scaleY($y);
         $this->outf(
             'q %.5F %.5F %.5F %.5F %.2F %.2F cm 1 0 0 1 %.2F %.2F cm',
             $cos,

@@ -36,15 +36,12 @@ trait PdfPolygonTrait
     public function polygon(array $points, PdfRectangleStyle $style = PdfRectangleStyle::BORDER): void
     {
         $type = 'm';
-        $height = $this->getPageHeight();
-
         $output = '';
         foreach ($points as $point) {
-            $output .= \sprintf('%.2F %.2F %s ', $this->scale($point->x), $this->scale($height - $point->y), $type);
+            $output .= \sprintf('%.2F %.2F %s ', $this->scale($point->x), $this->scaleY($point->y), $type);
             $type = 'l';
         }
         $output .= \strtolower($style->value);
-
         $this->out($output);
     }
 }

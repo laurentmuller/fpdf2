@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- `PdfPolygonTrait`: Use `scaleY()` function.
+- `PdfRotationTrait`: Use `scaleY()` function.
+
+## 3.0.13 - 2025-05-18
+
 - `PdfTransparencyTrait`: Internal change.
 - `PdfEllipseTrait`: Use `scaleY()` function.
 - `PdfDocument`: Added `scaleY()` function.
