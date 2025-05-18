@@ -28,9 +28,9 @@ use fpdf\PdfDocument;
  *
  * @phpstan-type PdfTransparencyType = array{
  *      key: int,
- *      object: int,
  *      alpha: float,
- *      blendMode: string}
+ *      blendMode: string,
+ *      number: int}
  *
  * @phpstan-require-extends PdfDocument
  */
@@ -62,9 +62,9 @@ trait PdfTransparencyTrait
         $key = \count($this->transparencies) + 1;
         $this->transparencies[] = [
             'key' => $key,
-            'object' => 0,
             'alpha' => \max(0.0, \min($alpha, 1.0)),
             'blendMode' => $blendMode->value,
+            'number' => -1,
         ];
         $this->outf('/GS%d gs', $key);
 
@@ -87,7 +87,7 @@ trait PdfTransparencyTrait
         }
         $this->put('/ExtGState <<');
         foreach ($this->transparencies as $state) {
-            $this->putf('/GS%d %d 0 R', $state['key'], $state['object']);
+            $this->putf('/GS%d %d 0 R', $state['key'], $state['number']);
         }
         $this->put('>>');
     }
@@ -96,7 +96,7 @@ trait PdfTransparencyTrait
     {
         foreach ($this->transparencies as &$state) {
             $this->putNewObj();
-            $state['object'] = $this->objectNumber;
+            $state['number'] = $this->objectNumber;
             $this->put('<</Type /ExtGState');
             $this->putf('/ca %.3F', $state['alpha']);
             $this->putf('/CA %.3F', $state['alpha']);

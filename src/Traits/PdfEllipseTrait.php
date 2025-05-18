@@ -63,47 +63,46 @@ trait PdfEllipseTrait
         float $ry,
         PdfRectangleStyle $style = PdfRectangleStyle::BORDER
     ): void {
-        $height = $this->getPageHeight();
         $lx = 4.0 / 3.0 * (\M_SQRT2 - 1.0) * $rx;
         $ly = 4.0 / 3.0 * (\M_SQRT2 - 1.0) * $ry;
 
         $this->outf(
             '%.2F %.2F m %.2F %.2F %.2F %.2F %.2F %.2F c',
             $this->scale($x + $rx),
-            $this->scale($height - $y),
+            $this->scaleY($y),
             $this->scale($x + $rx),
-            $this->scale($height - ($y - $ly)),
+            $this->scaleY($y - $ly),
             $this->scale($x + $lx),
-            $this->scale($height - ($y - $ry)),
+            $this->scaleY($y - $ry),
             $this->scale($x),
-            $this->scale($height - ($y - $ry))
+            $this->scaleY($y - $ry)
         );
         $this->outf(
             '%.2F %.2F %.2F %.2F %.2F %.2F c',
             $this->scale($x - $lx),
-            $this->scale($height - ($y - $ry)),
+            $this->scaleY($y - $ry),
             $this->scale($x - $rx),
-            $this->scale($height - ($y - $ly)),
+            $this->scaleY($y - $ly),
             $this->scale($x - $rx),
-            $this->scale($height - $y)
+            $this->scaleY($y)
         );
         $this->outf(
             '%.2F %.2F %.2F %.2F %.2F %.2F c',
             $this->scale($x - $rx),
-            $this->scale($height - ($y + $ly)),
+            $this->scaleY($y + $ly),
             $this->scale($x - $lx),
-            $this->scale($height - ($y + $ry)),
+            $this->scaleY($y + $ry),
             $this->scale($x),
-            $this->scale($height - ($y + $ry))
+            $this->scaleY($y + $ry)
         );
         $this->outf(
             '%.2F %.2F %.2F %.2F %.2F %.2F c %s',
             $this->scale($x + $lx),
-            $this->scale($height - ($y + $ry)),
+            $this->scaleY($y + $ry),
             $this->scale($x + $rx),
-            $this->scale($height - ($y + $ly)),
+            $this->scaleY($y + $ly),
             $this->scale($x + $rx),
-            $this->scale($height - $y),
+            $this->scaleY($y),
             $style->value
         );
     }

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `PdfTransparencyTrait`: Internal change.
+- `PdfEllipseTrait`: Use `scaleY()` function.
 - `PdfDocument`: Added `scaleY()` function.
 - `PdfSectorTrait`: Use `deg2rad()` function.
 - `PdfRotationTrait`: Use `deg2rad()` function.
