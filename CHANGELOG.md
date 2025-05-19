@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 3.0.14 - 2025-05-19
 
 - `PdfPolygonTrait`: Use `scaleY()` function.
 - `PdfRotationTrait`: Use `scaleY()` function.
