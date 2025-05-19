@@ -97,11 +97,11 @@ trait PdfTransparencyTrait
         foreach ($this->transparencies as &$state) {
             $this->putNewObj();
             $state['number'] = $this->objectNumber;
-            $this->put('<</Type /ExtGState');
-            $this->putf('/ca %.3F', $state['alpha']);
-            $this->putf('/CA %.3F', $state['alpha']);
-            $this->putf('/BM /%s', $state['blendMode']);
-            $this->put('>>');
+            $this->putf(
+                '<</Type /ExtGState /ca %1$.3F /CA %1$.3F /BM /%2$s>>',
+                $state['alpha'],
+                $state['blendMode']
+            );
             $this->putEndObj();
         }
         parent::putResources();

@@ -175,19 +175,19 @@ trait PdfBookmarkTrait
             }
 
             // page text and size
-            $page_text = $this->formatBookmarkPage($bookmark['page']);
-            $page_size = $this->getStringWidth($page_text) + $space;
+            $pageText = $this->formatBookmarkPage($bookmark['page']);
+            $pageSize = $this->getStringWidth($pageText) + $space;
             // level offset
             $offset = $this->outputIndexLevel($bookmark['level'], $space);
             // text
             $link = $bookmark['link'];
-            $width = $printable_width - $offset - $page_size - $space;
-            $text_size = $this->outputIndexText($this->cleanText($bookmark['text']), $width, $height, $link, $space);
+            $width = $printable_width - $offset - $pageSize - $space;
+            $textSize = $this->outputIndexText($this->cleanText($bookmark['text']), $width, $height, $link, $space);
             // separator
-            $width -= $text_size + $space;
+            $width -= $textSize + $space;
             $this->outputIndexSeparator($separator, $width, $height, $link, $space);
             // page
-            $this->outputIndexPage($page_text, $page_size, $height, $link);
+            $this->outputIndexPage($pageText, $pageSize, $height, $link);
         }
 
         // restore font
@@ -288,19 +288,19 @@ trait PdfBookmarkTrait
         ?int $link,
         float $space
     ): float {
-        $text_width = $this->getStringWidth($text);
-        while ($text_width > $width && '' !== $text) {
+        $textWidth = $this->getStringWidth($text);
+        while ($textWidth > $width && '' !== $text) {
             $text = \substr($text, 0, -1);
-            $text_width = $this->getStringWidth($text);
+            $textWidth = $this->getStringWidth($text);
         }
         $this->cell(
-            width: $text_width + $space,
+            width: $textWidth + $space,
             height: $height,
             text: $text,
             link: $link
         );
 
-        return $text_width;
+        return $textWidth;
     }
 
     /**
