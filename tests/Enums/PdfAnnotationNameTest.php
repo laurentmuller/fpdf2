@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Enums;
+namespace fpdf\Tests\Enums;
 
 use fpdf\Enums\PdfAnnotationName;
 use PHPUnit\Framework\Attributes\DataProvider;
