@@ -2836,25 +2836,28 @@ class PdfDocument
     {
         foreach ($this->pageAnnotations[$page] as $pageAnnotation) {
             $this->putNewObj();
+            $output = '<<';
             $rect = \sprintf(
-                '/Rect[%.2F %.2F %.2F %.2F]',
+                '%.2F %.2F %.2F %.2F',
                 $pageAnnotation['x'],
                 $pageAnnotation['y'],
                 $pageAnnotation['x'] + $pageAnnotation['width'],
                 $pageAnnotation['y'] - $pageAnnotation['height']
             );
-            $name = \sprintf('/Name/%s', $pageAnnotation['name']);
-            $content = \sprintf('/Contents%s', $this->textString($pageAnnotation['text']));
-            $color = \is_string($pageAnnotation['color']) ? \sprintf('/C[%s]', $pageAnnotation['color']) : '';
-            $title = \is_string($pageAnnotation['title']) ? \sprintf('/T%s', $this->textString($pageAnnotation['title'])) : '';
-            $this->putf(
-                '<</Type/Annot/Subtype/Text%s%s%s%s%s>>',
+            $output .= \sprintf(
+                '/Type /Annot /Subtype /Text /Rect [%s] /Name %s /Contents %s',
                 $rect,
-                $name,
-                $content,
-                $color,
-                $title,
+                $pageAnnotation['name'],
+                $this->textString($pageAnnotation['text'])
             );
+            if (\is_string($pageAnnotation['color'])) {
+                $output .= \sprintf('/C [%s]', $pageAnnotation['color']);
+            }
+            if (\is_string($pageAnnotation['title'])) {
+                $output .= \sprintf('/T %s', $this->textString($pageAnnotation['title']));
+            }
+            $output .= '>>';
+            $this->put($output);
             $this->putEndObj();
         }
     }
@@ -3149,6 +3152,7 @@ class PdfDocument
     {
         foreach ($this->pageLinks[$page] as $pageLink) {
             $this->putNewObj();
+            $output = '<<';
             $rect = \sprintf(
                 '%.2F %.2F %.2F %.2F',
                 $pageLink['x'],
@@ -3156,9 +3160,9 @@ class PdfDocument
                 $pageLink['x'] + $pageLink['width'],
                 $pageLink['y'] - $pageLink['height']
             );
-            $output = \sprintf('<</Type /Annot /Subtype /Link /Rect [%s] /Border [0 0 0] ', $rect);
+            $output .= \sprintf('/Type /Annot /Subtype /Link /Rect [%s] /Border [0 0 0] ', $rect);
             if (\is_string($pageLink['link'])) {
-                $output .= \sprintf('/A <</S /URI /URI %s>>>>', $this->textString($pageLink['link']));
+                $output .= \sprintf('/A <</S /URI /URI %s>>', $this->textString($pageLink['link']));
             } else {
                 $link = $this->links[$pageLink['link']];
                 $index = $link['page'];
@@ -3171,11 +3175,12 @@ class PdfDocument
                         : $this->scale($this->defaultPageSize->width);
                 }
                 $output .= \sprintf(
-                    '/Dest [%d 0 R /XYZ 0 %.2F null]>>',
+                    '/Dest [%d 0 R /XYZ 0 %.2F null]',
                     $pageInfo['number'] ?? 0,
                     $height - $this->scale($link['y'])
                 );
             }
+            $output .= '>>';
             $this->put($output);
             $this->putEndObj();
         }

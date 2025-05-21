@@ -55,6 +55,6 @@ class PdfAnnotationTest extends AbstractPdfDocTestCase
             $y += 10.0;
         }
         $content = $doc->output(PdfDestination::STRING);
-        self::assertStringContainsString('<</Type/Annot/Subtype/Text/Rect', $content);
+        self::assertStringContainsString('<</Type /Annot /Subtype /Text /Rect', $content);
     }
 }
