@@ -1,5 +1,11 @@
 # Change log
 
+## 3.0.15 - 2025-07-10
+
+- Updated documentation.
+- Updated Rector configuration.
+- Small updates with Rector version 2.1.0.
+
 ## 3.0.14 - 2025-05-19
 
 - `PdfPolygonTrait`: Use `scaleY()` function.
@@ -443,7 +449,7 @@
 
 ## 1.8.4 - 2024-02-14
 
-- Replaced static by self as return value.
+- Replaced static by self as the return value.
 - Added clean text function.
 - Corrected put image.
 - Corrected the image soft mask.
@@ -458,7 +464,7 @@
 - Added `CHANGELOG` file.
 - Added tests.
 - Added isLink function.
-- Added new line constant.
+- Added the new line constant.
 - Updated PHP doc.
 
 ## 1.8.4-alpha-5 - 2024-02-11
@@ -470,7 +476,7 @@
 ## 1.8.4-alpha-4 - 2024-02-08
 
 - Updated font directory for tests.
-- Replaced border integer by boolean.
+- Replaced the border integer type by boolean type.
 
 ## 1.8.4-alpha-3 - 2024-02-06
 

@@ -878,7 +878,7 @@ class PdfDocument
     /**
      * Gets the margins in user unit.
      *
-     * <b>Note:</b> Return a copy (clone) of the actual margins. Modify values does not affect the current margins.
+     * <b>Note:</b> Return a copy (clone) of the actual margins. Modify values do not affect the current margins.
      */
     public function getMargins(): PdfMargins
     {
@@ -912,7 +912,7 @@ class PdfDocument
     /**
      * Gets the page size in user unit.
      *
-     * <b>Note:</b> Return a copy (clone) of the actual page size. Modify values does not affect the current page size.
+     * <b>Note:</b> Return a copy (clone) of the actual page size. Modify values do not affect the current page size.
      */
     public function getPageSize(): PdfSize
     {
@@ -2639,9 +2639,9 @@ class PdfDocument
     /**
      * Load the font from the given file path.
      *
-     * @throws PdfException if the given path does not exist, or the font name is not defined
-     *
      * @phpstan-return FontType
+     *
+     * @throws PdfException if the given path does not exist, or the font name is not defined
      */
     protected function loadFont(string $path): array
     {
@@ -2780,9 +2780,9 @@ class PdfDocument
      *
      * @return array the parsed image
      *
-     * @throws PdfException if the image cannot be processed
-     *
      * @phpstan-return ImageType
+     *
+     * @throws PdfException if the image cannot be processed
      */
     protected function parseImage(string $file, string $type): array
     {
@@ -3381,9 +3381,9 @@ class PdfDocument
      * @param float $width  the desired width of the image
      * @param float $height the desired height of the image
      *
-     * @return array{0: float, 1: float} the scaled image
-     *
      * @phpstan-param ImageType $image
+     *
+     * @return array{0: float, 1: float} the scaled image
      */
     protected function scaleImage(array $image, float $width, float $height): array
     {

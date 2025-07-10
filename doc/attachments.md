@@ -9,7 +9,7 @@ Oliver.
 **Definition:**
 
 ```php
-addAttachment(string $file, string $name = '', string $desc = '')
+addAttachment(string $file, string $name = '', string $description = '')
 ```
 
 **Parameters:**
@@ -17,7 +17,7 @@ addAttachment(string $file, string $name = '', string $desc = '')
 - `$file`: The path to the file to be attached.
 - `$name`: An optional alternative file name to be used for the attachment
   The default value is the base name of the file.
-- `$desc`: An optional description for the file contents.
+- `$description`: An optional description for the file contents.
 
 **Usage:**
 

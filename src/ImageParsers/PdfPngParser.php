@@ -57,9 +57,9 @@ class PdfPngParser implements PdfImageParserInterface
      *
      * @param resource $stream
      *
-     * @throws PdfException if an error occurs while reading the stream
-     *
      * @phpstan-return ImageType
+     *
+     * @throws PdfException if an error occurs while reading the stream
      */
     protected function parseStream(PdfDocument $parent, mixed $stream, string $file): array
     {

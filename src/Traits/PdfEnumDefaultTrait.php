@@ -37,7 +37,7 @@ trait PdfEnumDefaultTrait
                 return $value;
             }
         }
-        throw new \LogicException(\sprintf('No default value found for "%s" enumeration.', __CLASS__));
+        throw new \LogicException(\sprintf('No default value found for "%s" enumeration.', self::class));
     }
 
     public function isDefault(): bool

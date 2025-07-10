@@ -31,9 +31,9 @@ interface PdfImageParserInterface
      *
      * @return array the parsed image
      *
-     * @throws PdfException if the image cannot be parsed
-     *
      * @phpstan-return ImageType
+     *
+     * @throws PdfException if the image cannot be parsed
      */
     public function parse(PdfDocument $parent, string $file): array;
 }

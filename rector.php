@@ -12,6 +12,7 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\SetList;
@@ -28,6 +29,8 @@ return RectorConfig::configure()
         __DIR__ . '/src/font',
         __DIR__ . '/tests/FPDF.php',
         __DIR__ . '/tests/font',
+    ])->withConfiguredRule(ClassPropertyAssignToConstructorPromotionRector::class, [
+        'rename_property' => false,
     ])->withSets([
         // global
         SetList::PHP_82,

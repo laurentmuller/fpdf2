@@ -72,14 +72,14 @@ trait PdfBookmarkTrait
      *                           is the current position (true) or the top of the page (false)
      * @param bool   $createLink true to create and add a link at the given ordinate position and page
      *
+     * @phpstan-param non-negative-int $level
+     *
      * @throws PdfException if the given level is invalid. A level is not valid if:
      *                      <ul>
      *                      <li>Is smaller than 0.</li>
      *                      <li>Is greater than the level of the previous bookmark plus 1. For example, if the previous
      *                      bookmark is 2, the allowed values are 0..3.</li>
      *                      </ul>
-     *
-     * @phpstan-param non-negative-int $level
      */
     public function addBookmark(
         string $text,
@@ -114,7 +114,7 @@ trait PdfBookmarkTrait
     /**
      * Add an index page (as the new page) containing all bookmarks.
      *
-     * The title and content use the given font name and font sizes. For title, the bold style is used.
+     * The title and content use the given font name and font sizes. For the title, the bold style is used.
      * Each line contains the text on the left, the page number on the right and is separated by
      * the given separator characters.
      *

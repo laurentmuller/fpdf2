@@ -75,7 +75,7 @@ addPageIndex(
 - `$title`: The index title. If empty (''), the title is not rendered.
 - `$fontName`: The title and content font name.
   It can be a font name enumeration or a name defined by `addFont()`.
-  If null, the current font name is kept.
+  If `null`, the current font name is kept.
 - `$titleSize`: The title font size in points.
 - `$contentSize`: The content font size in points.
 - `$addBookmark`: true to add the index page itself in the list of the
