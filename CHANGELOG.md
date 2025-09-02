@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- Updated GitHub Actions.
+
 ## 3.0.15 - 2025-07-10
 
 - Updated documentation.
