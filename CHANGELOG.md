@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Updated Style CI configuration.
 - **BC Break!**: Replaced the PHP font definitions by the
   [JSON](https://www.json.org/json-en.html) format.
 - Updated GitHub Actions.

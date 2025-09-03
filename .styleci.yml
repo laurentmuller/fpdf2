@@ -5,13 +5,13 @@ monolithic: true
 finder:
     exclude:
         - "docs"
-        - "vendor"
         - "makefont"
-        - "src/font"
         - "tests/fonts"
+        - "tests/Legacy"
+        - "tests/Legacy/font"
+        - "tests/resources"
+        - "vendor"
     name: "*.php"
-    not-name:
-        - "FPDF.php"
 enabled:
     - native_function_invocation
     - concat_with_spaces
