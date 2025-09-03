@@ -20,7 +20,7 @@ class PdfDocFontCompressedTest extends AbstractPdfDocTestCase
     public function testAddFont(): void
     {
         $name = 'Comic';
-        $file = 'ComicNeue-Regular.php';
+        $file = 'ComicNeue-Regular.json';
         $dir = __DIR__ . '/fonts';
         $doc = $this->createDocument();
         $doc->addFont(

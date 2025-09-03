@@ -15,6 +15,7 @@ namespace fpdf\Tests;
 
 use fpdf\Enums\PdfVersion;
 use fpdf\PdfDocument;
+use fpdf\Tests\Legacy\FPDF;
 
 class PdfCompareVersionTest extends AbstractCompareTestCase
 {

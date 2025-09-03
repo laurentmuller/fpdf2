@@ -17,6 +17,7 @@ use fpdf\Enums\PdfMove;
 use fpdf\PdfBorder;
 use fpdf\PdfDocument;
 use fpdf\PdfException;
+use fpdf\Tests\Legacy\FPDF;
 
 class PdfCompareBorderTest extends AbstractCompareTestCase
 {

@@ -66,9 +66,12 @@ $finder = Finder::create()
         __FILE__,
         __DIR__ . '/rector.php',
     ])
-    ->notPath('tests/resources')
-    ->notPath('font')
-    ->notName('FPDF.php');
+    ->notPath([
+        'font',
+        'fonts',
+        'Legacy',
+        'resources',
+    ]);
 
 $config = new Config();
 

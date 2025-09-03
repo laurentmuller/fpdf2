@@ -17,6 +17,7 @@ use fpdf\Enums\PdfDestination;
 use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
 use fpdf\PdfDocument;
+use fpdf\Tests\Legacy\FPDF;
 use PHPUnit\Framework\TestCase;
 
 abstract class AbstractCompareTestCase extends TestCase
@@ -28,14 +29,6 @@ abstract class AbstractCompareTestCase extends TestCase
         '/\/CreationDate.*\)/mi',
         '/\/Producer \(FPDF.*\)/mi',
     ];
-
-    #[\Override]
-    public static function setUpBeforeClass(): void
-    {
-        if (!\defined('FPDF_FONTPATH')) {
-            \define('FPDF_FONTPATH', __DIR__ . '/../src/font/');
-        }
-    }
 
     public function testEqual(): void
     {

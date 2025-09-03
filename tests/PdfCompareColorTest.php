@@ -19,6 +19,7 @@ use fpdf\Enums\PdfMove;
 use fpdf\Enums\PdfTextAlignment;
 use fpdf\PdfBorder;
 use fpdf\PdfDocument;
+use fpdf\Tests\Legacy\FPDF;
 
 class PdfCompareColorTest extends AbstractCompareTestCase
 {

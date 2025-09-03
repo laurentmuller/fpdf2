@@ -26,11 +26,23 @@ class PdfDocFileFontTest extends AbstractPdfDocTestCase
         $doc = $this->createDocument();
         $doc->addFont(
             family: 'Diff',
-            file: 'font_diff.php',
+            file: 'font_diff.json',
             dir: self::FONTS_DIR
         );
         $doc->output(PdfDestination::STRING);
         self::assertSame(1, $doc->getPage());
+    }
+
+    public function testFontInvalidJson(): void
+    {
+        self::expectException(PdfException::class);
+        self::expectExceptionMessageMatches('/Unable to parse the font file:.*font_no_name.php.$/');
+        $doc = $this->createDocument();
+        $doc->addFont(
+            family: 'Test',
+            file: 'font_no_name.php',
+            dir: self::FONTS_DIR
+        );
     }
 
     public function testFontLength2(): void
@@ -38,7 +50,7 @@ class PdfDocFileFontTest extends AbstractPdfDocTestCase
         $doc = $this->createDocument();
         $doc->addFont(
             family: 'Length2',
-            file: 'font_length2.php',
+            file: 'font_length2.json',
             dir: self::FONTS_DIR
         );
         $doc->output(PdfDestination::STRING);
@@ -48,11 +60,11 @@ class PdfDocFileFontTest extends AbstractPdfDocTestCase
     public function testFontNotExist(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessageMatches('/Unable to find the font file:.*fake.php.$/');
+        self::expectExceptionMessageMatches('/Unable to find the font file:.*fake.json.$/');
         $doc = $this->createDocument();
         $doc->addFont(
             family: 'Test',
-            file: 'fake.php',
+            file: 'fake.json',
             dir: self::FONTS_DIR
         );
     }
@@ -60,11 +72,11 @@ class PdfDocFileFontTest extends AbstractPdfDocTestCase
     public function testNoNameFont(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessageMatches('/No font name defined in file:.*font_no_name.php.$/');
+        self::expectExceptionMessageMatches('/No font name defined in file:.*font_no_name.json.$/');
         $doc = $this->createDocument();
         $doc->addFont(
             family: 'Test',
-            file: 'font_no_name.php',
+            file: 'font_no_name.json',
             dir: self::FONTS_DIR
         );
     }
@@ -74,7 +86,7 @@ class PdfDocFileFontTest extends AbstractPdfDocTestCase
         $doc = $this->createDocument();
         $doc->addFont(
             family: 'Test',
-            file: 'font_test.php',
+            file: 'font_test.json',
             dir: self::FONTS_DIR
         );
         self::assertSame(1, $doc->getPage());
@@ -87,7 +99,7 @@ class PdfDocFileFontTest extends AbstractPdfDocTestCase
         $doc = $this->createDocument();
         $doc->addFont(
             family: 'Test',
-            file: 'font_other.php',
+            file: 'font_other.json',
             dir: self::FONTS_DIR
         );
         $doc->output(PdfDestination::STRING);
@@ -102,7 +114,7 @@ class PdfDocFileFontTest extends AbstractPdfDocTestCase
         };
         $doc->addFont(
             family: 'Test',
-            file: 'font_other.php',
+            file: 'font_other.json',
             dir: self::FONTS_DIR
         );
         $doc->output(PdfDestination::STRING);

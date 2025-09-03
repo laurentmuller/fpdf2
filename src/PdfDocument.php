@@ -48,7 +48,6 @@ use fpdf\Interfaces\PdfImageParserInterface;
  *     number: int,
  *     type: string,
  *     name: string,
- *     path: string,
  *     file?: string,
  *     enc?: string,
  *     subsetted: bool,
@@ -56,7 +55,7 @@ use fpdf\Interfaces\PdfImageParserInterface;
  *     ut: int,
  *     uv?: UvType,
  *     desc: array<string, string>,
- *     cw: array<string, int>,
+ *     cw: array<int, int>,
  *     diff?: string,
  *     originalsize: int,
  *     size1: int,
@@ -377,7 +376,7 @@ class PdfDocument
             $family = $family->value;
         }
         $family = \strtolower($family);
-        $file ??= \str_replace(' ', '', $family) . $style->value . '.php';
+        $file ??= \str_replace(' ', '', $family) . $style->value . '.json';
         $fontKey = $family . $style->value;
         if (isset($this->fonts[$fontKey])) {
             return $this;
@@ -1001,7 +1000,7 @@ class PdfDocument
         $width = 0.0;
         $charWidths = $this->currentFont['cw'];
         for ($i = 0, $len = \strlen($str); $i < $len; ++$i) {
-            $width += (float) $charWidths[$str[$i]];
+            $width += (float) $charWidths[\ord($str[$i])];
         }
 
         return $width * $this->fontSize / 1000.0;
@@ -2649,13 +2648,17 @@ class PdfDocument
             throw PdfException::format('Unable to find the font file: %s.', $path);
         }
 
-        include $path;
-        /** @phpstan-var array{name?: string, enc?: string, subsetted?: bool} $font */
-        $font = \get_defined_vars();
+        try {
+            $content = (string) \file_get_contents($path);
+            /** @phpstan-var array{name?: string, enc?: string, subsetted?: bool} $font */
+            $font = \json_decode(json: $content, associative: true, flags: \JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            throw PdfException::instance(\sprintf('Unable to parse the font file: %s.', $path), $e);
+        }
+
         if (!isset($font['name'])) {
             throw PdfException::format('No font name defined in file: %s.', $path);
         }
-
         if (isset($font['enc'])) {
             $font['enc'] = \strtolower($font['enc']);
         }
@@ -3010,8 +3013,8 @@ class PdfDocument
                     $this->putNewObj();
                     $charWidths = $font['cw'];
                     $output = \array_reduce(
-                        \range(\chr(32), \chr(255)),
-                        fn (string $carry, string $ch): string => $carry . \sprintf('%d ', $charWidths[$ch]),
+                        \range(32, 255),
+                        fn (string $carry, int $ch): string => $carry . \sprintf('%d ', $charWidths[$ch]),
                         ''
                     );
                     $this->putf('[%s]', $output);
@@ -3483,7 +3486,7 @@ class PdfDocument
             if (' ' === $ch) {
                 $sepIndex = $index;
             }
-            $currentWidth += (float) $charWidths[$ch];
+            $currentWidth += (float) $charWidths[\ord($ch)];
             if ($currentWidth > $maxWidth) {
                 // automatic line break
                 if (-1 === $sepIndex) {
