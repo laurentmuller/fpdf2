@@ -115,8 +115,6 @@ readonly class PdfCmykColor implements PdfColorInterface
 
     /**
      * Convert this color to an RGB color.
-     *
-     * @see PdfRgbColor::toCmykColor()
      */
     public function toRgbColor(): PdfRgbColor
     {

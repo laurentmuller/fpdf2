@@ -51,6 +51,25 @@ class PdfGrayColorTest extends TestCase
         self::assertSame('0.392 g', $actual);
     }
 
+    public function testToCmykColor(): void
+    {
+        $color = PdfGrayColor::instance(128);
+        $actual = $color->toCmykColor();
+        self::assertSame(0, $actual->cyan);
+        self::assertSame(0, $actual->magenta);
+        self::assertSame(0, $actual->yellow);
+        self::assertSame(50, $actual->black);
+    }
+
+    public function testToRgbColor(): void
+    {
+        $color = PdfGrayColor::instance(128);
+        $actual = $color->toRgbColor();
+        self::assertSame(128, $actual->red);
+        self::assertSame(128, $actual->green);
+        self::assertSame(128, $actual->blue);
+    }
+
     public function testToString(): void
     {
         $color = PdfGrayColor::white();
