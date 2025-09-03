@@ -35,6 +35,7 @@
         "ext-gd": "*",
         "ext-iconv": "*",
         "ext-intl": "*",
+        "ext-mbstring": "*",
         "ext-zlib": "*",
         "elao/enum": "^2.0"
     },

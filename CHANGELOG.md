@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- `PdfDocument`: Use `unpack()` for the `getStringWidth()` function.
+- Set arrow functions as static.
+- Updated rector configuration.
 - Updated Style CI configuration.
 - **BC Break!**: Replaced the PHP font definitions by the
   [JSON](https://www.json.org/json-en.html) format.
@@ -591,7 +594,7 @@
 ## 1.53 - 2004-12-31
 
 - When the font subdirectory is in the same directory as fpdf.php, it is no
-  longer necessary to define the FPDF_FONTPATH constant.
+  longer necessary to define the `FPDF_FONTPATH` constant.
 - The array $HTTP_SERVER_VARS is no longer used. It could cause trouble on
   PHP5-based configurations with the register_long_arrays option disabled.
 - Fixed a problem related to Type1 font embedding, which caused trouble to some

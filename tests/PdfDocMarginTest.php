@@ -53,7 +53,7 @@ class PdfDocMarginTest extends AbstractPdfDocTestCase
     {
         $doc = $this->createDocument();
         $oldMargin = $doc->getCellMargin();
-        $doc->useCellMargin(function () use ($doc): void {
+        $doc->useCellMargin(static function () use ($doc): void {
             self::assertSame(0.0, $doc->getCellMargin());
         });
         $newMargin = $doc->getCellMargin();

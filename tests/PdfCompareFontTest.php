@@ -55,7 +55,7 @@ class PdfCompareFontTest extends AbstractCompareTestCase
     #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void
     {
-        $callback = function (string $base_name, string $file_name, bool $add_page) use ($doc): void {
+        $callback = static function (string $base_name, string $file_name, bool $add_page) use ($doc): void {
             $style = match (true) {
                 \str_ends_with($file_name, 'BoldItalic') => PdfFontStyle::BOLD_ITALIC,
                 \str_ends_with($file_name, 'Italic') => PdfFontStyle::ITALIC,
@@ -82,7 +82,7 @@ class PdfCompareFontTest extends AbstractCompareTestCase
     #[\Override]
     protected function updateOldDocument(FPDF $doc): void
     {
-        $callback = function (string $base_name, string $file_name, bool $add_page) use ($doc): void {
+        $callback = static function (string $base_name, string $file_name, bool $add_page) use ($doc): void {
             $style = match (true) {
                 \str_ends_with($file_name, 'BoldItalic') => 'BI',
                 \str_ends_with($file_name, 'Italic') => 'I',

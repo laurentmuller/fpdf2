@@ -997,13 +997,12 @@ class PdfDocument
             return 0.0;
         }
 
-        $width = 0.0;
+        /** @phpstan-var int[] $keys */
+        $keys = \unpack('C*', $str);
         $charWidths = $this->currentFont['cw'];
-        for ($i = 0, $len = \strlen($str); $i < $len; ++$i) {
-            $width += (float) $charWidths[\ord($str[$i])];
-        }
+        $width = \array_sum(\array_map(static fn (int $key): int => $charWidths[$key], $keys));
 
-        return $width * $this->fontSize / 1000.0;
+        return (float) $width * $this->fontSize / 1000.0;
     }
 
     /**
@@ -3014,7 +3013,7 @@ class PdfDocument
                     $charWidths = $font['cw'];
                     $output = \array_reduce(
                         \range(32, 255),
-                        fn (string $carry, int $ch): string => $carry . \sprintf('%d ', $charWidths[$ch]),
+                        static fn (string $carry, int $key): string => $carry . \sprintf('%d ', $charWidths[$key]),
                         ''
                     );
                     $this->putf('[%s]', $output);
@@ -3091,7 +3090,7 @@ class PdfDocument
         if (isset($image['transparencies']) && [] !== $image['transparencies']) {
             $transparencies = \array_reduce(
                 $image['transparencies'],
-                fn (string $carry, int $value): string => $carry . \sprintf('%1$d %1$d ', $value),
+                static fn (string $carry, int $value): string => $carry . \sprintf('%1$d %1$d ', $value),
                 ''
             );
             $this->putf('/Mask [%s]', $transparencies);
