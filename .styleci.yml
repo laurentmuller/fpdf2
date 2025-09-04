@@ -5,7 +5,6 @@ monolithic: true
 finder:
     exclude:
         - "docs"
-        - "makefont"
         - "tests/fonts"
         - "tests/Legacy"
         - "tests/Legacy/font"

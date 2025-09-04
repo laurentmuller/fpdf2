@@ -344,7 +344,7 @@ class PdfDocument
     /**
      * Imports a TrueType, an OpenType, or a Type1 font and makes it available.
      *
-     * It is necessary to generate a font definition file first with the <code>MakeFont</code> utility.
+     * It is necessary to generate a JSON font definition file first with the <code>MakeFont</code> utility.
      *
      * The definition file (and the font file itself in case of embedding) must be present in:
      * <ul>

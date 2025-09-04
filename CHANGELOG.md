@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Removed `makefont` directory.
 - `PdfDocument`: Use `unpack()` for the `getStringWidth()` function.
 - Set arrow functions as static.
 - Updated rector configuration.
