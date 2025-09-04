@@ -7,7 +7,7 @@
 * Author:  Olivier PLATHEY                                                     *
 *******************************************************************************/
 
-namespace fpdf\Tests;
+namespace fpdf\Tests\Legacy;
 
 class FPDF
 {
@@ -266,7 +266,7 @@ function AliasNbPages($alias='{nb}')
 function Error($msg)
 {
 	// Fatal error
-	throw new \Exception('FPDF error: '.$msg);
+	throw new Exception('FPDF error: '.$msg);
 }
 
 function Close()
@@ -928,13 +928,7 @@ function Image($file, $x=null, $y=null, $w=0, $h=0, $type='', $link='')
 
 	if($x===null)
 		$x = $this->x;
-	$this->_out(sprintf(
-		'q %.2F 0 0 %.2F %.2F %.2F cm /I%d Do Q',
-		$w*$this->k,
-		$h*$this->k,
-		$x*$this->k,
-		($this->h-($y+$h))*$this->k,
-		$info['i']));
+	$this->_out(sprintf('q %.2F 0 0 %.2F %.2F %.2F cm /I%d Do Q',$w*$this->k,$h*$this->k,$x*$this->k,($this->h-($y+$h))*$this->k,$info['i']));
 	if($link)
 		$this->Link($x,$y,$w,$h,$link);
 }

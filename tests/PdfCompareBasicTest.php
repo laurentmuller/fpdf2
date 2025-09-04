@@ -25,6 +25,7 @@ use fpdf\Enums\PdfZoom;
 use fpdf\PdfBorder;
 use fpdf\PdfDocument;
 use fpdf\PdfException;
+use fpdf\Tests\Legacy\FPDF;
 
 class PdfCompareBasicTest extends AbstractCompareTestCase
 {

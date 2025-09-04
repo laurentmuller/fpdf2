@@ -18,6 +18,7 @@ use fpdf\Enums\PdfPageSize;
 use fpdf\Enums\PdfRotation;
 use fpdf\PdfDocument;
 use fpdf\PdfSize;
+use fpdf\Tests\Legacy\FPDF;
 
 class PdfCompareOrientationTest extends AbstractCompareTestCase
 {

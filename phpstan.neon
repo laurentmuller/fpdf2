@@ -6,10 +6,10 @@ parameters:
         - tests
 
     excludePaths:
-        - src/font
         - tests/fonts
-        - tests/FPDF.php
-        - tests/resources/*.php
+        - tests/Legacy
+        - tests/Legacy/font
+        - tests/resources
         - vendor
 
     type_coverage:

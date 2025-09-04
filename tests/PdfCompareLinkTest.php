@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace fpdf\Tests;
 
 use fpdf\PdfDocument;
+use fpdf\Tests\Legacy\FPDF;
 
 class PdfCompareLinkTest extends AbstractCompareTestCase
 {

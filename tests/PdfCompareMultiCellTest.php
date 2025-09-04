@@ -15,6 +15,7 @@ namespace fpdf\Tests;
 
 use fpdf\PdfBorder;
 use fpdf\PdfDocument;
+use fpdf\Tests\Legacy\FPDF;
 
 class PdfCompareMultiCellTest extends AbstractCompareTestCase
 {

@@ -14,16 +14,16 @@
         <directory name="src"/>
         <directory name="tests"/>
         <ignoreFiles>
-            <directory name="src/font"/>
             <directory name="tests/fonts"/>
-            <file name="tests/FPDF.php"/>
-            <file name="tests/resources/*.php"/>
+            <directory name="tests/Legacy"/>
+            <directory name="tests/Legacy/font"/>
+            <directory name="tests/resources"/>
             <directory name="vendor"/>
         </ignoreFiles>
     </projectFiles>
 
     <issueHandlers>
-        <ClassMustBeFinal errorLevel="suppress" />
+        <ClassMustBeFinal errorLevel="suppress"/>
     </issueHandlers>
 
     <plugins>

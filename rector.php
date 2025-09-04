@@ -11,6 +11,8 @@
 
 declare(strict_types=1);
 
+use Rector\CodingStyle\Rector\ArrowFunction\StaticArrowFunctionRector;
+use Rector\CodingStyle\Rector\Closure\StaticClosureRector;
 use Rector\Config\RectorConfig;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector;
@@ -27,8 +29,8 @@ return RectorConfig::configure()
     ])->withSkip([
         PreferPHPUnitThisCallRector::class,
         __DIR__ . '/src/font',
-        __DIR__ . '/tests/FPDF.php',
         __DIR__ . '/tests/font',
+        __DIR__ . '/tests/Legacy',
     ])->withConfiguredRule(ClassPropertyAssignToConstructorPromotionRector::class, [
         'rename_property' => false,
     ])->withSets([
@@ -42,4 +44,7 @@ return RectorConfig::configure()
         PHPUnitSetList::PHPUNIT_110,
         PHPUnitSetList::PHPUNIT_CODE_QUALITY,
         PHPUnitSetList::ANNOTATIONS_TO_ATTRIBUTES,
+    ])->withRules([
+        StaticClosureRector::class,
+        StaticArrowFunctionRector::class,
     ]);

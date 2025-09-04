@@ -4,7 +4,6 @@
 /.github                 export-ignore
 /cache                   export-ignore
 /doc                     export-ignore
-/makefont                export-ignore
 /tests                   export-ignore
 /vendor-bin              export-ignore
 /.gitattributes          export-ignore

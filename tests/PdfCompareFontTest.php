@@ -18,6 +18,7 @@ use fpdf\Enums\PdfFontStyle;
 use fpdf\Enums\PdfMove;
 use fpdf\PdfDocument;
 use fpdf\PdfException;
+use fpdf\Tests\Legacy\FPDF;
 
 class PdfCompareFontTest extends AbstractCompareTestCase
 {
@@ -27,7 +28,7 @@ class PdfCompareFontTest extends AbstractCompareTestCase
     {
         $doc = new PdfDocument();
         $dir = __DIR__ . '/../src/font';
-        $doc->addFont(PdfFontName::COURIER, file: 'courier.php', dir: $dir);
+        $doc->addFont(PdfFontName::COURIER, file: 'courier.json', dir: $dir);
         self::assertTrue($doc->isAutoPageBreak());
     }
 
@@ -54,7 +55,7 @@ class PdfCompareFontTest extends AbstractCompareTestCase
     #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void
     {
-        $callback = function (string $base_name, string $file_name, bool $add_page) use ($doc): void {
+        $callback = static function (string $base_name, string $file_name, bool $add_page) use ($doc): void {
             $style = match (true) {
                 \str_ends_with($file_name, 'BoldItalic') => PdfFontStyle::BOLD_ITALIC,
                 \str_ends_with($file_name, 'Italic') => PdfFontStyle::ITALIC,
@@ -75,13 +76,13 @@ class PdfCompareFontTest extends AbstractCompareTestCase
                 );
             }
         };
-        $this->applyFonts($callback);
+        $this->applyFonts($callback, 'json');
     }
 
     #[\Override]
     protected function updateOldDocument(FPDF $doc): void
     {
-        $callback = function (string $base_name, string $file_name, bool $add_page) use ($doc): void {
+        $callback = static function (string $base_name, string $file_name, bool $add_page) use ($doc): void {
             $style = match (true) {
                 \str_ends_with($file_name, 'BoldItalic') => 'BI',
                 \str_ends_with($file_name, 'Italic') => 'I',
@@ -102,15 +103,15 @@ class PdfCompareFontTest extends AbstractCompareTestCase
                 );
             }
         };
-        $this->applyFonts($callback);
+        $this->applyFonts($callback, 'php');
     }
 
     /**
      * @phpstan-param callable(string, string, bool):void $callable
      */
-    private function applyFonts(callable $callable): void
+    private function applyFonts(callable $callable, string $extension): void
     {
-        $pattern = self::FONTS_DIR . '*.php';
+        $pattern = \sprintf('%s*.%s', self::FONTS_DIR, $extension);
         $files = \glob($pattern);
         self::assertIsArray($files);
         self::assertNotEmpty($files);
