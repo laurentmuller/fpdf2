@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 3.1.0 - 2025-09-04
 
 - Removed `makefont` directory.
 - `PdfDocument`: Use `unpack()` for the `getStringWidth()` function.
