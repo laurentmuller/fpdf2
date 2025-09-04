@@ -9,6 +9,7 @@
 - Updated Style CI configuration.
 - **BC Break!**: Replaced the PHP font definitions by the
   [JSON](https://www.json.org/json-en.html) format.
+- Updated colors conversions.
 - Updated GitHub Actions.
 
 ## 3.0.15 - 2025-07-10

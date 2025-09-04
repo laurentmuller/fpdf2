@@ -76,16 +76,6 @@ class PdfRgbColorTest extends TestCase
         self::assertSameColor($actual, 0, 0, 255);
     }
 
-    public function testCmykColor(): void
-    {
-        $color = PdfRgbColor::instance(10, 20, 30);
-        $actual = $color->toCmykColor();
-        self::assertSame(67, $actual->cyan);
-        self::assertSame(33, $actual->magenta);
-        self::assertSame(0, $actual->yellow);
-        self::assertSame(88, $actual->black);
-    }
-
     public function testCreate(): void
     {
         $actual = PdfRgbColor::create(null);
@@ -181,6 +171,31 @@ class PdfRgbColorTest extends TestCase
     {
         $actual = PdfRgbColor::red();
         self::assertSameColor($actual, 255, 0, 0);
+    }
+
+    public function testToCmykColor(): void
+    {
+        $color = PdfRgbColor::instance(10, 20, 30);
+        $actual = $color->toCmykColor();
+        self::assertSame(67, $actual->cyan);
+        self::assertSame(33, $actual->magenta);
+        self::assertSame(0, $actual->yellow);
+        self::assertSame(88, $actual->black);
+    }
+
+    public function testToGrayColor(): void
+    {
+        $color = PdfRgbColor::instance(0, 0, 0);
+        $actual = $color->toGrayColor();
+        self::assertSame(0, $actual->level);
+
+        $color = PdfRgbColor::instance(255, 255, 255);
+        $actual = $color->toGrayColor();
+        self::assertSame(255, $actual->level);
+
+        $color = PdfRgbColor::instance(128, 128, 128);
+        $actual = $color->toGrayColor();
+        self::assertSame(127, $actual->level);
     }
 
     public function testToString(): void

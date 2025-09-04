@@ -61,7 +61,7 @@ readonly class PdfGrayColor implements PdfColorInterface
     #[\Override]
     public function getTag(): string
     {
-        return \sprintf('%.3F', (float) $this->level / 255.0);
+        return \sprintf('%.3F', $this->asFloat());
     }
 
     /**
@@ -75,6 +75,25 @@ readonly class PdfGrayColor implements PdfColorInterface
     }
 
     /**
+     * Convert this color to a Cmyk color.
+     */
+    public function toCmykColor(): PdfCmykColor
+    {
+        /** @phpstan-var int<0, 100> $black */
+        $black = (int) (100.0 * $this->asFloat());
+
+        return PdfCmykColor::instance(0, 0, 0, $black);
+    }
+
+    /**
+     * Convert this color to an RGB color.
+     */
+    public function toRgbColor(): PdfRgbColor
+    {
+        return PdfRgbColor::instance($this->level, $this->level, $this->level);
+    }
+
+    /**
      * Gets the white color.
      *
      * The value is Gray(255).
@@ -82,5 +101,10 @@ readonly class PdfGrayColor implements PdfColorInterface
     public static function white(): self
     {
         return new self(255);
+    }
+
+    private function asFloat(): float
+    {
+        return (float) $this->level / 255.0;
     }
 }
