@@ -1697,7 +1697,7 @@ protected function _putfonts()
 			$s = '[';
 			for($i=32;$i<=255;$i++)
 				$s .= $cw[chr($i)].' ';
-			$this->_put($s.']');
+			$this->_put(rtrim($s).']');
 			$this->_put('endobj');
 			// Descriptor
 			$this->_newobj();

@@ -1,5 +1,11 @@
 # Change log
 
+## Unreleased
+
+- Updated tests.
+- `PdfDocument`: Added internal font type constants.
+- `PdfDocument`: Simplified `putFonts()` function for character widths.
+
 ## 3.1.0 - 2025-09-04
 
 - Removed `makefont` directory.

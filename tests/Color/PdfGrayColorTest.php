@@ -13,31 +13,32 @@ declare(strict_types=1);
 
 namespace fpdf\Tests\Color;
 
+use fpdf\Color\PdfCmykColor;
 use fpdf\Color\PdfGrayColor;
 use fpdf\Color\PdfRgbColor;
-use PHPUnit\Framework\TestCase;
 
-class PdfGrayColorTest extends TestCase
+class PdfGrayColorTest extends AbstractColorTestCase
 {
     public function testBlack(): void
     {
         $actual = PdfGrayColor::black();
-        self::assertSameColor($actual, 0);
+        self::assertSameGrayColor($actual, 0);
     }
 
     public function testEquals(): void
     {
         $source = PdfGrayColor::instance(50);
-        self::assertTrue($source->equals($source));
-        self::assertTrue($source->equals(PdfGrayColor::instance(50)));
-        self::assertFalse($source->equals(PdfGrayColor::black()));
-        self::assertFalse($source->equals(PdfRgbColor::black()));
+        self::assertEqualsColor($source, $source);
+        self::assertEqualsColor($source, PdfGrayColor::instance(50));
+        self::assertNotEqualsColor($source, PdfCmykColor::black());
+        self::assertNotEqualsColor($source, PdfGrayColor::black());
+        self::assertNotEqualsColor($source, PdfRgbColor::black());
     }
 
     public function testInstance(): void
     {
         $actual = PdfGrayColor::instance(125);
-        self::assertSameColor($actual, 125);
+        self::assertSameGrayColor($actual, 125);
     }
 
     public function testOutput(): void
@@ -55,19 +56,14 @@ class PdfGrayColorTest extends TestCase
     {
         $color = PdfGrayColor::instance(128);
         $actual = $color->toCmykColor();
-        self::assertSame(0, $actual->cyan);
-        self::assertSame(0, $actual->magenta);
-        self::assertSame(0, $actual->yellow);
-        self::assertSame(50, $actual->black);
+        self::assertSameCmykColor($actual, 0, 0, 0, 50);
     }
 
     public function testToRgbColor(): void
     {
         $color = PdfGrayColor::instance(128);
         $actual = $color->toRgbColor();
-        self::assertSame(128, $actual->red);
-        self::assertSame(128, $actual->green);
-        self::assertSame(128, $actual->blue);
+        self::assertSameRgbColor($actual, 128, 128, 128);
     }
 
     public function testToString(): void
@@ -80,11 +76,6 @@ class PdfGrayColorTest extends TestCase
     public function testWhite(): void
     {
         $actual = PdfGrayColor::white();
-        self::assertSameColor($actual, 255);
-    }
-
-    protected static function assertSameColor(PdfGrayColor $actual, int $level): void
-    {
-        self::assertSame($level, $actual->level);
+        self::assertSameGrayColor($actual, 255);
     }
 }

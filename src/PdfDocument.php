@@ -118,6 +118,12 @@ class PdfDocument
 
     // the empty color
     private const EMPTY_COLOR = '0 G';
+    // the true type font type
+    private const FONT_TRUE_TYPE = 'TrueType';
+    // the type 1 font type
+    private const FONT_TYPE_1 = 'Type1';
+    // the core font type
+    private const FONT_TYPE_CORE = 'Core';
     // the new line separator
     private const NEW_LINE = "\n";
 
@@ -394,7 +400,7 @@ class PdfDocument
             // Embedded font
             $key = $dir . $font['file'];
             $font['file'] = $key;
-            if ('TrueType' === $font['type']) {
+            if (self::FONT_TRUE_TYPE === $font['type']) {
                 $this->fontFiles[$key] = [
                     'number' => 0,
                     'length1' => $font['originalsize'],
@@ -2973,7 +2979,7 @@ class PdfDocument
             }
             $type = $font['type'];
             switch ($type) {
-                case 'Core':
+                case self::FONT_TYPE_CORE:
                     // core font
                     $this->putNewObj();
                     $this->put('<</Type /Font');
@@ -2988,8 +2994,8 @@ class PdfDocument
                     $this->put('>>');
                     $this->putEndObj();
                     break;
-                case 'Type1':
-                case 'TrueType':
+                case self::FONT_TYPE_1:
+                case self::FONT_TRUE_TYPE:
                     // Type1 or TrueType/OpenType font
                     $this->putNewObj();
                     $this->put('<</Type /Font');
@@ -3010,13 +3016,7 @@ class PdfDocument
                     $this->putEndObj();
                     // widths
                     $this->putNewObj();
-                    $charWidths = $font['cw'];
-                    $output = \array_reduce(
-                        \range(32, 255),
-                        static fn (string $carry, int $key): string => $carry . \sprintf('%d ', $charWidths[$key]),
-                        ''
-                    );
-                    $this->putf('[%s]', $output);
+                    $this->putf('[%s]', \implode(' ', \array_slice($font['cw'], 32)));
                     $this->putEndObj();
                     // descriptor
                     $this->putNewObj();
@@ -3025,8 +3025,9 @@ class PdfDocument
                         $output .= \sprintf(' /%s %s', $descKey, $descValue);
                     }
                     if (isset($font['file']) && '' !== $font['file']) {
-                        $n = $this->fontFiles[$font['file']]['number'];
-                        $output .= \sprintf(' /FontFile%s %d 0 R', 'Type1' === $type ? '' : '2', $n);
+                        $fontFile = self::FONT_TYPE_1 === $type ? '' : '2';
+                        $number = $this->fontFiles[$font['file']]['number'];
+                        $output .= \sprintf(' /FontFile%s %d 0 R', $fontFile, $number);
                     }
                     $output .= '>>';
                     $this->put($output);
