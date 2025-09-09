@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace fpdf\Tests;
 
 use fpdf\Enums\PdfDestination;
-use fpdf\PdfDocument;
 use fpdf\PdfException;
 
 class PdfDocFileFontTest extends AbstractPdfDocTestCase
@@ -103,21 +102,5 @@ class PdfDocFileFontTest extends AbstractPdfDocTestCase
             dir: self::FONTS_DIR
         );
         $doc->output(PdfDestination::STRING);
-    }
-
-    public function testPutFontWithCallback(): void
-    {
-        $doc = new class() extends PdfDocument {
-            public function putTest(): void
-            {
-            }
-        };
-        $doc->addFont(
-            family: 'Test',
-            file: 'font_other.json',
-            dir: self::FONTS_DIR
-        );
-        $doc->output(PdfDestination::STRING);
-        self::assertSame(1, $doc->getPage());
     }
 }

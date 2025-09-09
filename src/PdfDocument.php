@@ -3034,15 +3034,7 @@ class PdfDocument
                     $this->putEndObj();
                     break;
                 default:
-                    // allow for additional types
-                    $method = 'put' . \ucfirst(\strtolower($type));
-                    if (!\method_exists($this, $method)) {
-                        throw PdfException::format('Unsupported font type: %s.', $type);
-                    }
-                    /** @phpstan-var callable $callback */
-                    $callback = [$this, $method];
-                    \call_user_func($callback);
-                    break;
+                    throw PdfException::format('Unsupported font type: %s.', $type);
             }
         }
     }

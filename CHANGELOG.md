@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `PdfDocument`: Removed custom function to put font.
 - Updated tests.
 - `PdfDocument`: Added internal font type constants.
 - `PdfDocument`: Simplified `putFonts()` function for character widths.
