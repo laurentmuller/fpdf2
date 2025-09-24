@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 3.2.0 - 2025-09-24
 
 - `PdfDocument`: Added classes instead of arrays.
 - `PdfDocument`: Removed custom function to put font.
