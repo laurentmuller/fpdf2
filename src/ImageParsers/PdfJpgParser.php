@@ -14,21 +14,17 @@ declare(strict_types=1);
 namespace fpdf\ImageParsers;
 
 use fpdf\Interfaces\PdfImageParserInterface;
+use fpdf\Internal\PdfImage;
 use fpdf\PdfDocument;
 use fpdf\PdfException;
 
 /**
  * Parser for JPEG images.
- *
- * @phpstan-import-type ImageType from PdfDocument
  */
 class PdfJpgParser implements PdfImageParserInterface
 {
-    /**
-     * @phpstan-return ImageType
-     */
     #[\Override]
-    public function parse(PdfDocument $parent, string $file): array
+    public function parse(PdfDocument $parent, string $file): PdfImage
     {
         /* @phpstan-var array{0: int, 1: int, 2: int, channels?: int, bits?: int}|false $size */
         $size = \getimagesize($file);
@@ -50,16 +46,24 @@ class PdfJpgParser implements PdfImageParserInterface
         $bitsPerComponent = $size['bits'] ?? 8;
         $data = (string) \file_get_contents($file);
 
-        return [
-            'index' => 0,
-            'number' => 0,
-            'width' => $size[0],
-            'height' => $size[1],
-            'colorSpace' => $colorSpace,
-            'bitsPerComponent' => $bitsPerComponent,
-            'filter' => 'DCTDecode',
-            'data' => $data,
-            'palette' => '',
-        ];
+        return new PdfImage(
+            width: $size[0],
+            height: $size[1],
+            colorSpace: $colorSpace,
+            bitsPerComponent: $bitsPerComponent,
+            data: $data,
+            filter: 'DCTDecode'
+        );
+        //        return [
+        //            'index' => 0,
+        //            'number' => 0,
+        //            'width' => $size[0],
+        //            'height' => $size[1],
+        //            'colorSpace' => $colorSpace,
+        //            'bitsPerComponent' => $bitsPerComponent,
+        //            'filter' => 'DCTDecode',
+        //            'data' => $data,
+        //            'palette' => '',
+        //        ];
     }
 }

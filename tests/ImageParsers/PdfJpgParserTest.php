@@ -22,16 +22,16 @@ class PdfJpgParserTest extends AbstractPdfParserTestCase
     {
         $file = 'cmyk_image.jpg';
         $image = $this->parseFile($file);
-        self::assertArrayHasKey('width', $image);
-        self::assertArrayHasKey('height', $image);
+        self::assertSame(500, $image->width);
+        self::assertSame(333, $image->height);
     }
 
     public function testImageGray(): void
     {
         $file = 'grey_image.jpg';
         $image = $this->parseFile($file);
-        self::assertArrayHasKey('width', $image);
-        self::assertArrayHasKey('height', $image);
+        self::assertSame(124, $image->width);
+        self::assertSame(147, $image->height);
     }
 
     public function testInvalid(): void
@@ -54,10 +54,8 @@ class PdfJpgParserTest extends AbstractPdfParserTestCase
     {
         $file = 'image.jpg';
         $image = $this->parseFile($file);
-        self::assertArrayHasKey('width', $image);
-        self::assertArrayHasKey('height', $image);
-        self::assertSame(960, $image['width']);
-        self::assertSame(684, $image['height']);
+        self::assertSame(960, $image->width);
+        self::assertSame(684, $image->height);
     }
 
     #[\Override]

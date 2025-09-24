@@ -38,71 +38,17 @@ use fpdf\ImageParsers\PdfPngParser;
 use fpdf\ImageParsers\PdfWebpParser;
 use fpdf\Interfaces\PdfColorInterface;
 use fpdf\Interfaces\PdfImageParserInterface;
+use fpdf\Internal\PdfFont;
+use fpdf\Internal\PdfFontFile;
+use fpdf\Internal\PdfFontParser;
+use fpdf\Internal\PdfImage;
+use fpdf\Internal\PdfLink;
+use fpdf\Internal\PdfPageAnnotation;
+use fpdf\Internal\PdfPageInfo;
+use fpdf\Internal\PdfPageLink;
 
 /**
  * Represent a PDF document.
- *
- * @phpstan-type UvType = array<int, int|int[]>
- * @phpstan-type FontType = array{
- *     index: int,
- *     number: int,
- *     type: string,
- *     name: string,
- *     file?: string,
- *     enc?: string,
- *     subsetted: bool,
- *     up: int,
- *     ut: int,
- *     uv?: UvType,
- *     desc: array<string, string>,
- *     cw: array<int, int>,
- *     diff?: string,
- *     originalsize: int,
- *     size1: int,
- *     size2: int,
- *     length1: int,
- *     length2?: int}
- * @phpstan-type FontFileType = array{
- *     number: int,
- *     length1: int,
- *     length2?: int}
- * @phpstan-type PageInfoType = array{
- *     number: int,
- *     rotation?: PdfRotation,
- *     size?: PdfSize}
- * @phpstan-type ImageType = array{
- *     index: int,
- *     number: int,
- *     width: int,
- *     height: int,
- *     colorSpace: string,
- *     bitsPerComponent: int,
- *     filter?: string,
- *     data: string,
- *     decodeParms?: string,
- *     softMask?: string,
- *     palette: string,
- *     transparencies?: int[]}
- * @phpstan-type PageLinkType = array{
- *     x: float,
- *     y: float,
- *     width: float,
- *     height: float,
- *     link: string|int,
- *     number: int}
- * @phpstan-type PageAnnotationType = array{
- *      x: float,
- *      y: float,
- *      width: float,
- *      height: float,
- *      text: string,
- *      name: string,
- *      title: string|null,
- *      color: string|null,
- *      number: int}
- * @phpstan-type LinkType = array{
- *     'page': int,
- *     'y': float}
  */
 class PdfDocument
 {
@@ -147,12 +93,8 @@ class PdfDocument
     protected bool $colorFlag = false;
     /** The compression flag. */
     protected bool $compression = true;
-    /**
-     * The current font info.
-     *
-     * @phpstan-var FontType|null array
-     */
-    protected ?array $currentFont = null;
+    /** The current font. */
+    protected ?PdfFont $currentFont = null;
     /** The current orientation. */
     protected PdfOrientation $currentOrientation;
     /** The current page size in user unit. */
@@ -180,7 +122,7 @@ class PdfDocument
     /**
      * The font files.
      *
-     * @phpstan-var array<string, FontFileType>
+     * @phpstan-var array<string, PdfFontFile>
      */
     protected array $fontFiles = [];
     /** The directory containing fonts. */
@@ -188,7 +130,7 @@ class PdfDocument
     /**
      * The used fonts.
      *
-     * @phpstan-var array<string, FontType>
+     * @phpstan-var array<string, PdfFont>
      */
     protected array $fonts = [];
     /** The current font size in the user unit. */
@@ -200,7 +142,7 @@ class PdfDocument
     /**
      * Used images.
      *
-     * @phpstan-var array<string, ImageType>
+     * @phpstan-var array<string, PdfImage>
      */
     protected array $images = [];
     /** The flag set when processing footer. */
@@ -220,7 +162,7 @@ class PdfDocument
     /**
      * The internal links.
      *
-     * @phpstan-var array<int, LinkType>
+     * @phpstan-var array<int, PdfLink>
      */
     protected array $links = [];
     /** The margins in user unit. */
@@ -244,7 +186,7 @@ class PdfDocument
     /**
      * The annotations in pages.
      *
-     * @phpstan-var array<int, PageAnnotationType[]>
+     * @phpstan-var array<int, PdfPageAnnotation[]>
      */
     protected array $pageAnnotations = [];
     /** The threshold used to trigger page breaks. */
@@ -252,13 +194,13 @@ class PdfDocument
     /**
      * The page-related data.
      *
-     * @phpstan-var array<int, PageInfoType>
+     * @phpstan-var array<int, PdfPageInfo>
      */
     protected array $pageInfos = [];
     /**
      * The links in pages.
      *
-     * @phpstan-var array<int, PageLinkType[]>
+     * @phpstan-var array<int, PdfPageLink[]>
      */
     protected array $pageLinks = [];
     /** The displayed page mode */
@@ -394,23 +336,17 @@ class PdfDocument
         if (!\str_ends_with($dir, '/') && !\str_ends_with($dir, '\\')) {
             $dir .= \DIRECTORY_SEPARATOR;
         }
-        $font = $this->loadFont($dir . $file);
-        $font['index'] = \count($this->fonts) + 1;
-        if (isset($font['file']) && '' !== $font['file']) {
+        $parser = new PdfFontParser();
+        $font = $parser->parse($dir . $file);
+        $font->index = \count($this->fonts) + 1;
+        if ($font->isFile()) {
             // Embedded font
-            $key = $dir . $font['file'];
-            $font['file'] = $key;
-            if (self::FONT_TRUE_TYPE === $font['type']) {
-                $this->fontFiles[$key] = [
-                    'number' => 0,
-                    'length1' => $font['originalsize'],
-                ];
+            $key = $dir . $font->file;
+            $font->file = $key;
+            if (self::FONT_TRUE_TYPE === $font->type) {
+                $this->fontFiles[$key] = new PdfFontFile($font->originalsize);
             } else {
-                $this->fontFiles[$key] = [
-                    'number' => 0,
-                    'length1' => $font['size1'],
-                    'length2' => $font['size2'],
-                ];
+                $this->fontFiles[$key] = new PdfFontFile($font->size1, $font->size2);
             }
         }
         $this->fonts[$fontKey] = $font;
@@ -434,10 +370,7 @@ class PdfDocument
     public function addLink(): int
     {
         $index = \count($this->links) + 1;
-        $this->links[$index] = [
-            'page' => 0,
-            'y' => 0,
-        ];
+        $this->links[$index] = new PdfLink();
 
         return $index;
     }
@@ -559,18 +492,19 @@ class PdfDocument
         $y ??= $this->y;
         $width ??= $this->getStringWidth($text);
         $height ??= self::LINE_HEIGHT;
-
-        $this->pageAnnotations[$this->page][] = [
-            'x' => $this->scale($x),
-            'y' => $this->scaleY($y),
-            'width' => $this->scale($width),
-            'height' => $this->scale($height),
-            'text' => $text,
-            'title' => $title,
-            'name' => $name->value,
-            'color' => $color?->getTag(),
-            'number' => 0,
-        ];
+        $rect = PdfRectangle::instance(
+            $this->scale($x),
+            $this->scaleY($y),
+            $this->scale($width),
+            $this->scale($height)
+        );
+        $this->pageAnnotations[$this->page][] = new PdfPageAnnotation(
+            rect: $rect,
+            text: $text,
+            title: $title,
+            name: $name,
+            color: $color
+        );
 
         return $this;
     }
@@ -995,7 +929,7 @@ class PdfDocument
      */
     public function getStringWidth(string $str): float
     {
-        if (null === $this->currentFont || '' === $str) {
+        if (!$this->currentFont instanceof PdfFont || '' === $str) {
             return 0.0;
         }
         $str = $this->cleanText($str);
@@ -1005,7 +939,7 @@ class PdfDocument
 
         /** @phpstan-var int[] $keys */
         $keys = \unpack('C*', $str);
-        $charWidths = $this->currentFont['cw'];
+        $charWidths = $this->currentFont->cw;
         $width = \array_sum(\array_map(static fn (int $key): int => $charWidths[$key], $keys));
 
         return (float) $width * $this->fontSize / 1000.0;
@@ -1207,7 +1141,7 @@ class PdfDocument
             $this->scale($height),
             $this->scale($x),
             $this->scaleY($y + $height),
-            $image['index']
+            $image->index
         );
         if (self::isLink($link)) {
             $this->link($x, $y, $width, $height, $link);
@@ -1340,14 +1274,13 @@ class PdfDocument
      */
     public function link(float $x, float $y, float $width, float $height, string|int $link): static
     {
-        $this->pageLinks[$this->page][] = [
-            'x' => $this->scale($x),
-            'y' => $this->scaleY($y),
-            'width' => $this->scale($width),
-            'height' => $this->scale($height),
-            'link' => $link,
-            'number' => 0,
-        ];
+        $rect = PdfRectangle::instance(
+            $this->scale($x),
+            $this->scaleY($y),
+            $this->scale($width),
+            $this->scale($height)
+        );
+        $this->pageLinks[$this->page][] = new PdfPageLink($rect, $link);
 
         return $this;
     }
@@ -1501,7 +1434,7 @@ class PdfDocument
     /**
      * Converts the given pixels to millimeters using the given dot per each (DPI).
      *
-     * If the dot per inch is equal to 0, return the pixels value.
+     * If the dot per inch is equal to 0, return the given pixels value.
      *
      * @param float|int $pixels the pixels to convert
      * @param float     $dpi    the dot per inch
@@ -1944,10 +1877,7 @@ class PdfDocument
      */
     public function setLink(int $link, ?float $y = 0, ?int $page = null): static
     {
-        $this->links[$link] = [
-            'page' => $page ?? $this->page,
-            'y' => $y ?? $this->y,
-        ];
+        $this->links[$link] = new PdfLink($page ?? $this->page, $y ?? $this->y);
 
         return $this;
     }
@@ -2305,15 +2235,17 @@ class PdfDocument
             $this->currentOrientation = $orientation;
             $this->currentPageSize = clone $size;
         }
-        if ($orientation !== $this->defaultOrientation || !$size->equals($this->defaultPageSize)) {
-            $this->pageInfos[$this->page]['size'] = clone $this->currentPageSizeInPoint;
-        }
         if ($rotation instanceof PdfRotation) {
             $this->currentRotation = $rotation;
         }
-        if (PdfRotation::DEFAULT !== $this->currentRotation) {
-            $this->pageInfos[$this->page]['rotation'] = $this->currentRotation;
+        $pageInfo = new PdfPageInfo();
+        if ($orientation !== $this->defaultOrientation || !$size->equals($this->defaultPageSize)) {
+            $pageInfo->size = clone $this->currentPageSizeInPoint;
         }
+        if (PdfRotation::DEFAULT !== $this->currentRotation) {
+            $pageInfo->rotation = $this->currentRotation;
+        }
+        $this->pageInfos[$this->page] = $pageInfo;
     }
 
     /**
@@ -2321,11 +2253,11 @@ class PdfDocument
      *
      * @throws PdfException if no font is set
      *
-     * @phpstan-assert FontType $this->currentFont
+     * @phpstan-assert PdfFont $this->currentFont
      */
     protected function checkCurrentFont(): void
     {
-        if (null === $this->currentFont) {
+        if (!$this->currentFont instanceof PdfFont) {
             throw PdfException::instance('No font is set.');
         }
     }
@@ -2410,10 +2342,10 @@ class PdfDocument
      */
     protected function doUnderline(float $x, float $y, string $str, ?float $textWidth = null): string
     {
-        /** @phpstan-var FontType $font */
+        /** @phpstan-var PdfFont $font */
         $font = $this->currentFont;
-        $up = (float) $font['up'];
-        $ut = (float) $font['ut'];
+        $up = (float) $font->up;
+        $ut = (float) $font->ut;
         $textWidth ??= $this->getStringWidth($str);
         $width = $textWidth + $this->wordSpacing * (float) \substr_count($str, ' ');
 
@@ -2641,39 +2573,6 @@ class PdfDocument
     }
 
     /**
-     * Load the font from the given file path.
-     *
-     * @phpstan-return FontType
-     *
-     * @throws PdfException if the given path does not exist, or the font name is not defined
-     */
-    protected function loadFont(string $path): array
-    {
-        if (!\file_exists($path)) {
-            throw PdfException::format('Unable to find the font file: %s.', $path);
-        }
-
-        try {
-            $content = (string) \file_get_contents($path);
-            /** @phpstan-var array{name?: string, enc?: string, subsetted?: bool} $font */
-            $font = \json_decode(json: $content, associative: true, flags: \JSON_THROW_ON_ERROR);
-        } catch (\JsonException $e) {
-            throw PdfException::instance(\sprintf('Unable to parse the font file: %s.', $path), $e);
-        }
-
-        if (!isset($font['name'])) {
-            throw PdfException::format('No font name defined in file: %s.', $path);
-        }
-        if (isset($font['enc'])) {
-            $font['enc'] = \strtolower($font['enc']);
-        }
-        $font['subsetted'] ??= false;
-
-        /** @phpstan-var FontType */
-        return $font; // @phpstan-ignore varTag.type
-    }
-
-    /**
      * Output the given string.
      *
      * @throws PdfException if no page has been added, if the end page has been called or if the document is closed
@@ -2700,8 +2599,8 @@ class PdfDocument
      */
     protected function outCurrentFont(): void
     {
-        if ($this->page > 0 && null !== $this->currentFont) {
-            $this->outf('BT /F%d %.2F Tf ET', $this->currentFont['index'], $this->fontSizeInPoint);
+        if ($this->page > 0 && $this->currentFont instanceof PdfFont) {
+            $this->outf('BT /F%d %.2F Tf ET', $this->currentFont->index, $this->fontSizeInPoint);
         }
     }
 
@@ -2786,13 +2685,11 @@ class PdfDocument
      * @param string $file the path or the URL of the image
      * @param string $type the image format. If not specified, the type is inferred from the file extension.
      *
-     * @return array the parsed image
-     *
-     * @phpstan-return ImageType
+     * @return PdfImage the parsed image
      *
      * @throws PdfException if the image cannot be processed
      */
-    protected function parseImage(string $file, string $type): array
+    protected function parseImage(string $file, string $type): PdfImage
     {
         if ('' === $type) {
             $type = \pathinfo($file, \PATHINFO_EXTENSION);
@@ -2807,7 +2704,7 @@ class PdfDocument
         }
 
         $image = $parser->parse($this, $file);
-        $image['index'] = \count($this->images) + 1;
+        $image->index = \count($this->images) + 1;
         $this->images[$file] = $image;
 
         return $image;
@@ -2845,24 +2742,18 @@ class PdfDocument
         foreach ($this->pageAnnotations[$page] as $pageAnnotation) {
             $this->putNewObj();
             $output = '<<';
-            $rect = \sprintf(
-                '%.2F %.2F %.2F %.2F',
-                $pageAnnotation['x'],
-                $pageAnnotation['y'],
-                $pageAnnotation['x'] + $pageAnnotation['width'],
-                $pageAnnotation['y'] - $pageAnnotation['height']
-            );
+            $rect = $pageAnnotation->formatRectangle();
             $output .= \sprintf(
                 '/Type /Annot /Subtype /Text /Rect [%s] /Name %s /Contents %s',
                 $rect,
-                $pageAnnotation['name'],
-                $this->textString($pageAnnotation['text'])
+                $pageAnnotation->getNameValue(),
+                $this->textString($pageAnnotation->text)
             );
-            if (\is_string($pageAnnotation['color'])) {
-                $output .= \sprintf('/C [%s]', $pageAnnotation['color']);
+            if ($pageAnnotation->isColor()) {
+                $output .= \sprintf('/C [%s]', $pageAnnotation->getColorTag());
             }
-            if (\is_string($pageAnnotation['title'])) {
-                $output .= \sprintf('/T %s', $this->textString($pageAnnotation['title']));
+            if ($pageAnnotation->isTitle()) {
+                $output .= \sprintf('/T %s', $this->textString($pageAnnotation->title));
             }
             $output .= '>>';
             $this->put($output);
@@ -2875,7 +2766,7 @@ class PdfDocument
      */
     protected function putCatalog(): void
     {
-        $number = $this->pageInfos[1]['number'];
+        $number = $this->pageInfos[1]->number;
         $this->put('/Type /Catalog');
         $this->put('/Pages 1 0 R');
 
@@ -2928,21 +2819,21 @@ class PdfDocument
         // embedding font file
         foreach ($this->fontFiles as $file => $info) {
             $this->putNewObj();
-            $this->fontFiles[$file]['number'] = $this->objectNumber;
+            $this->fontFiles[$file]->number = $this->objectNumber;
             $content = (string) \file_get_contents($file);
             $compressed = \str_ends_with($file, '.z');
-            if (!$compressed && isset($info['length2'])) {
-                $length1 = $info['length1'];
-                $length2 = $info['length2'];
+            $length1 = $info->length1;
+            $length2 = $info->length2;
+            if (!$compressed && $info->isLength2()) {
                 $content = \substr($content, 6, $length1) . \substr($content, 6 + $length1 + 6, $length2);
             }
             $this->putf('<</Length %d', \strlen($content));
             if ($compressed) {
                 $this->put('/Filter /FlateDecode');
             }
-            $this->putf('/Length1 %d', $info['length1']);
-            if (isset($info['length2'])) {
-                $this->putf('/Length2 %d /Length3 0', $info['length2']);
+            $this->putf('/Length1 %d', $length1);
+            if ($info->isLength2()) {
+                $this->putf('/Length2 %d /Length3 0', $length2 ?? 0);
             }
             $this->put('>>');
             $this->putStream($content);
@@ -2952,32 +2843,32 @@ class PdfDocument
         // fonts
         foreach ($this->fonts as $key => $font) {
             // encoding
-            if (isset($font['diff'])) {
-                $enc = $font['enc'] ?? '';
-                if (!isset($this->encodings[$enc])) {
+            if ($font->isDiff()) {
+                $encoding = $font->encoding ?? '';
+                if (!isset($this->encodings[$encoding])) {
                     $this->putNewObj();
-                    $this->putf('<</Type /Encoding /BaseEncoding /WinAnsiEncoding /Differences [%s]>>', $font['diff']);
+                    $this->putf('<</Type /Encoding /BaseEncoding /WinAnsiEncoding /Differences [%s]>>', $font->diff);
                     $this->putEndObj();
-                    $this->encodings[$enc] = $this->objectNumber;
+                    $this->encodings[$encoding] = $this->objectNumber;
                 }
             }
             // ToUnicode CMap
             $mapKey = '';
-            $name = $font['name'];
-            if (isset($font['uv'])) {
-                $mapKey = $font['enc'] ?? $name;
+            $name = $font->name;
+            if ($font->isUv()) {
+                $mapKey = $font->encoding ?? $name;
                 if (!isset($this->charMaps[$mapKey])) {
-                    $map = $this->toUnicodeCmap($font['uv']);
+                    $map = $this->toUnicodeCmap($font->uv);
                     $this->putStreamObject($map);
                     $this->charMaps[$mapKey] = $this->objectNumber;
                 }
             }
             // font object
-            $this->fonts[$key]['number'] = $this->objectNumber + 1;
-            if ($font['subsetted']) {
+            $this->fonts[$key]->number = $this->objectNumber + 1;
+            if ($font->subsetted) {
                 $name = 'AAAAAA+' . $name;
             }
-            $type = $font['type'];
+            $type = $font->type;
             switch ($type) {
                 case self::FONT_TYPE_CORE:
                     // core font
@@ -2988,7 +2879,7 @@ class PdfDocument
                     if ('Symbol' !== $name && 'ZapfDingbats' !== $name) {
                         $this->put('/Encoding /WinAnsiEncoding');
                     }
-                    if (isset($font['uv'])) {
+                    if ($font->isUv()) {
                         $this->putf('/ToUnicode %d 0 R', $this->charMaps[$mapKey]);
                     }
                     $this->put('>>');
@@ -3004,29 +2895,32 @@ class PdfDocument
                     $this->put('/FirstChar 32 /LastChar 255');
                     $this->putf('/Widths %d 0 R', $this->objectNumber + 1);
                     $this->putf('/FontDescriptor %d 0 R', $this->objectNumber + 2);
-                    if (isset($font['diff']) && isset($font['enc'])) {
-                        $this->putf('/Encoding %d 0 R', $this->encodings[$font['enc']]);
+                    if ($font->isEncoding() && $font->isDiff()) {
+                        $this->putf('/Encoding %d 0 R', $this->encodings[$font->encoding]);
                     } else {
                         $this->put('/Encoding /WinAnsiEncoding');
                     }
-                    if (isset($font['uv'])) {
+                    if ($font->isUv()) {
                         $this->putf('/ToUnicode %d 0 R', $this->charMaps[$mapKey]);
                     }
                     $this->put('>>');
                     $this->putEndObj();
                     // widths
                     $this->putNewObj();
-                    $this->putf('[%s]', \implode(' ', \array_slice($font['cw'], 32)));
+                    $this->putf('[%s]', \implode(' ', \array_slice($font->cw, 32)));
                     $this->putEndObj();
                     // descriptor
                     $this->putNewObj();
                     $output = \sprintf('<</Type /FontDescriptor /FontName /%s', $name);
-                    foreach ($font['desc'] as $descKey => $descValue) {
+                    foreach ($font->desc as $descKey => $descValue) {
+                        if (\is_array($descValue)) { // FontBBox
+                            $descValue = \sprintf('[%s]', \implode(' ', $descValue));
+                        }
                         $output .= \sprintf(' /%s %s', $descKey, $descValue);
                     }
-                    if (isset($font['file']) && '' !== $font['file']) {
+                    if ($font->isFile()) {
                         $fontFile = self::FONT_TYPE_1 === $type ? '' : '2';
-                        $number = $this->fontFiles[$font['file']]['number'];
+                        $number = $this->fontFiles[$font->file]->number;
                         $output .= \sprintf(' /FontFile%s %d 0 R', $fontFile, $number);
                     }
                     $output .= '>>';
@@ -3050,71 +2944,66 @@ class PdfDocument
 
     /**
      * Put an image to this buffer.
-     *
-     * @phpstan-param ImageType $image
      */
-    protected function putImage(array &$image): void
+    protected function putImage(PdfImage $image): void
     {
         $this->putNewObj();
-        $image['number'] = $this->objectNumber;
+        $image->number = $this->objectNumber;
         $this->put('<</Type /XObject');
         $this->put('/Subtype /Image');
-        $this->putf('/Width %d', $image['width']);
-        $this->putf('/Height %d', $image['height']);
-        if ('Indexed' === $image['colorSpace']) {
+        $this->putf('/Width %d', $image->width);
+        $this->putf('/Height %d', $image->height);
+        if ('Indexed' === $image->colorSpace) {
             $this->putf(
                 '/ColorSpace [/Indexed /DeviceRGB %d %d 0 R]',
-                \intdiv(\strlen($image['palette']), 3) - 1,
+                \intdiv(\strlen($image->palette), 3) - 1,
                 $this->objectNumber + 1
             );
         } else {
-            $this->putf('/ColorSpace /%s', $image['colorSpace']);
-            if ('DeviceCMYK' === $image['colorSpace']) {
+            $this->putf('/ColorSpace /%s', $image->colorSpace);
+            if ('DeviceCMYK' === $image->colorSpace) {
                 $this->put('/Decode [1 0 1 0 1 0 1 0]');
             }
         }
-        $this->putf('/BitsPerComponent %d', $image['bitsPerComponent']);
-        if (isset($image['filter'])) {
-            $this->putf('/Filter /%s', $image['filter']);
+        $this->putf('/BitsPerComponent %d', $image->bitsPerComponent);
+        if ($image->isFilter()) {
+            $this->putf('/Filter /%s', $image->filter);
         }
-        if (isset($image['decodeParms'])) {
-            $this->putf('/DecodeParms <<%s>>', $image['decodeParms']);
+        if ($image->isDecodeParms()) {
+            $this->putf('/DecodeParms <<%s>>', $image->decodeParms);
         }
-        if (isset($image['transparencies']) && [] !== $image['transparencies']) {
+        if ($image->isTransparencies()) {
             $transparencies = \array_reduce(
-                $image['transparencies'],
+                $image->transparencies,
                 static fn (string $carry, int $value): string => $carry . \sprintf('%1$d %1$d ', $value),
                 ''
             );
             $this->putf('/Mask [%s]', $transparencies);
         }
-        if (isset($image['softMask'])) {
+        if ($image->isSoftMask()) {
             $this->putf('/SMask %d 0 R', $this->objectNumber + 1);
         }
-        $this->putf('/Length %d>>', \strlen($image['data']));
-        $this->putStream($image['data']);
+        $this->putf('/Length %d>>', \strlen($image->data));
+        $this->putStream($image->data);
         $this->putEndObj();
 
         // soft mask
-        if (isset($image['softMask'])) {
-            $decodeParms = \sprintf('/Predictor 15 /Colors 1 /BitsPerComponent 8 /Columns %.2f', $image['width']);
-            $soft_image = [
-                'index' => 0,
-                'number' => 0,
-                'width' => $image['width'],
-                'height' => $image['height'],
-                'colorSpace' => 'DeviceGray',
-                'bitsPerComponent' => 8,
-                'filter' => $image['filter'] ?? '',
-                'decodeParms' => $decodeParms,
-                'data' => $image['softMask'],
-                'palette' => '',
-            ];
-            $this->putImage($soft_image);
+        if ($image->isSoftMask()) {
+            $decodeParms = \sprintf('/Predictor 15 /Colors 1 /BitsPerComponent 8 /Columns %.2f', $image->width);
+            $softImage = new PdfImage(
+                width: $image->width,
+                height: $image->height,
+                colorSpace: 'DeviceGray',
+                bitsPerComponent: 8,
+                data: $image->softMask,
+                filter: $image->filter ?? '',
+                decodeParms: $decodeParms
+            );
+            $this->putImage($softImage);
         }
         // palette
-        if ('Indexed' === $image['colorSpace']) {
-            $this->putStreamObject($image['palette']);
+        if ('Indexed' === $image->colorSpace) {
+            $this->putStreamObject($image->palette);
         }
     }
 
@@ -3123,9 +3012,10 @@ class PdfDocument
      */
     protected function putImages(): void
     {
-        foreach ($this->images as &$image) {
+        foreach ($this->images as $image) {
             $this->putImage($image);
-            unset($image['data'], $image['softMask']);
+            $image->data = '';
+            $image->softMask = null;
         }
     }
 
@@ -3148,22 +3038,15 @@ class PdfDocument
         foreach ($this->pageLinks[$page] as $pageLink) {
             $this->putNewObj();
             $output = '<<';
-            $rect = \sprintf(
-                '%.2F %.2F %.2F %.2F',
-                $pageLink['x'],
-                $pageLink['y'],
-                $pageLink['x'] + $pageLink['width'],
-                $pageLink['y'] - $pageLink['height']
-            );
+            $rect = $pageLink->formatRectangle();
             $output .= \sprintf('/Type /Annot /Subtype /Link /Rect [%s] /Border [0 0 0] ', $rect);
-            if (\is_string($pageLink['link'])) {
-                $output .= \sprintf('/A <</S /URI /URI %s>>', $this->textString($pageLink['link']));
+            if (\is_string($pageLink->link)) {
+                $output .= \sprintf('/A <</S /URI /URI %s>>', $this->textString($pageLink->link));
             } else {
-                $link = $this->links[$pageLink['link']];
-                $index = $link['page'];
-                $pageInfo = $this->pageInfos[$index] ?? [];
-                if (isset($pageInfo['size'])) {
-                    $height = $pageInfo['size']->width;
+                $link = $this->links[$pageLink->link];
+                $pageInfo = $this->pageInfos[$link->page] ?? new PdfPageInfo();
+                if ($pageInfo->isSize()) {
+                    $height = $pageInfo->size->width;
                 } else {
                     $height = (PdfOrientation::PORTRAIT === $this->defaultOrientation)
                         ? $this->scale($this->defaultPageSize->height)
@@ -3171,8 +3054,8 @@ class PdfDocument
                 }
                 $output .= \sprintf(
                     '/Dest [%d 0 R /XYZ 0 %.2F null]',
-                    $pageInfo['number'] ?? 0,
-                    $height - $this->scale($link['y'])
+                    $pageInfo->number,
+                    $height - $this->scale($link->y)
                 );
             }
             $output .= '>>';
@@ -3201,25 +3084,26 @@ class PdfDocument
         $this->putNewObj();
         $this->put('<</Type /Page');
         $this->put('/Parent 1 0 R');
-        if (isset($this->pageInfos[$page]['size'])) {
+        $pageInfo = $this->pageInfos[$page];
+        if ($pageInfo->isSize()) {
             $this->putf(
                 '/MediaBox [0 0 %.2F %.2F]',
-                $this->pageInfos[$page]['size']->width,
-                $this->pageInfos[$page]['size']->height
+                $pageInfo->size->width,
+                $pageInfo->size->height
             );
         }
-        if (isset($this->pageInfos[$page]['rotation'])) {
-            $this->putf('/Rotate %d', $this->pageInfos[$page]['rotation']->value);
+        if ($pageInfo->isRotation()) {
+            $this->putf('/Rotate %d', $pageInfo->rotation->value);
         }
 
         $this->put('/Resources 2 0 R');
 
         $annotation = '';
         foreach ($this->pageLinks[$page] as $pageLink) {
-            $annotation .= \sprintf('%d 0 R ', $pageLink['number']);
+            $annotation .= \sprintf('%d 0 R ', $pageLink->number);
         }
         foreach ($this->pageAnnotations[$page] as $pageAnnotation) {
-            $annotation .= \sprintf('%d 0 R ', $pageAnnotation['number']);
+            $annotation .= \sprintf('%d 0 R ', $pageAnnotation->number);
         }
         if ('' !== $annotation) {
             $this->putf('/Annots [%s]', $annotation);
@@ -3248,13 +3132,13 @@ class PdfDocument
         $page = $this->page;
         $number = $this->objectNumber;
         for ($i = 1; $i <= $page; ++$i) {
-            $this->pageInfos[$i]['number'] = ++$number;
+            $this->pageInfos[$i]->number = ++$number;
             ++$number;
-            foreach ($this->pageLinks[$i] as &$pageLink) {
-                $pageLink['number'] = ++$number;
+            foreach ($this->pageLinks[$i] as $pageLink) {
+                $pageLink->number = ++$number;
             }
-            foreach ($this->pageAnnotations[$i] as &$pageAnnotation) {
-                $pageAnnotation['number'] = ++$number;
+            foreach ($this->pageAnnotations[$i] as $pageAnnotation) {
+                $pageAnnotation->number = ++$number;
             }
         }
         for ($i = 1; $i <= $page; ++$i) {
@@ -3265,7 +3149,7 @@ class PdfDocument
         $this->put('<</Type /Pages');
         $kids = '/Kids [';
         for ($i = 1; $i <= $page; ++$i) {
-            $kids .= \sprintf('%d 0 R ', $this->pageInfos[$i]['number']);
+            $kids .= \sprintf('%d 0 R ', $this->pageInfos[$i]->number);
         }
         $kids .= ']';
         $this->put($kids);
@@ -3291,14 +3175,14 @@ class PdfDocument
         $this->put('/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]');
         $this->put('/Font <<');
         foreach ($this->fonts as $font) {
-            $this->putf('/F%d %d 0 R', $font['index'], $font['number']);
+            $this->putf('/F%d %d 0 R', $font->index, $font->number);
         }
         $this->put('>>');
 
         // images
         $this->put('/XObject <<');
         foreach ($this->images as $image) {
-            $this->putf('/I%d %d 0 R', $image['index'], $image['number']);
+            $this->putf('/I%d %d 0 R', $image->index, $image->number);
         }
         $this->put('>>');
     }
@@ -3372,23 +3256,21 @@ class PdfDocument
     /**
      * Scale the given image.
      *
-     * @param array $image  the parsed image
-     * @param float $width  the desired width of the image
-     * @param float $height the desired height of the image
-     *
-     * @phpstan-param ImageType $image
+     * @param PdfImage $image  the parsed image
+     * @param float    $width  the desired width of the image
+     * @param float    $height the desired height of the image
      *
      * @return array{0: float, 1: float} the scaled image
      */
-    protected function scaleImage(array $image, float $width, float $height): array
+    protected function scaleImage(PdfImage $image, float $width, float $height): array
     {
         if (0.0 === $width && 0.0 === $height) {
             // put image at 96 dpi
             $width = $height = -96.0;
         }
 
-        $imageWidth = (float) $image['width'];
-        $imageHeight = (float) $image['height'];
+        $imageWidth = (float) $image->width;
+        $imageHeight = (float) $image->height;
         if ($width < 0.0) {
             $width = $this->divide(-$imageWidth * 72.0 / $width);
         }
@@ -3453,7 +3335,7 @@ class PdfDocument
         $lines = [];
         $cellMargin ??= $this->cellMargin;
         $width ??= $this->getRemainingWidth();
-        $charWidths = $this->currentFont['cw'];
+        $charWidths = $this->currentFont->cw;
         $maxWidth = ($width - 2.0 * $cellMargin) * 1000.0 / $this->fontSize;
 
         $index = 0;
@@ -3522,7 +3404,7 @@ class PdfDocument
     /**
      * Convert the V type array to the Unicode character map.
      *
-     * @phpstan-param UvType $uv
+     * @phpstan-param array<int, int|int[]> $uv
      */
     protected function toUnicodeCmap(array $uv): string
     {

@@ -30,10 +30,8 @@ class PdfGifParserTest extends AbstractPdfParserTestCase
     {
         $file = 'image.gif';
         $image = $this->parseFile($file);
-        self::assertArrayHasKey('width', $image);
-        self::assertArrayHasKey('height', $image);
-        self::assertSame(400, $image['width']);
-        self::assertSame(400, $image['height']);
+        self::assertSame(400, $image->width);
+        self::assertSame(400, $image->height);
     }
 
     #[\Override]

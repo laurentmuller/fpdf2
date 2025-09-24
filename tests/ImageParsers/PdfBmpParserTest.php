@@ -21,10 +21,8 @@ class PdfBmpParserTest extends AbstractPdfParserTestCase
     {
         $file = 'image.bmp';
         $image = $this->parseFile($file);
-        self::assertArrayHasKey('width', $image);
-        self::assertArrayHasKey('height', $image);
-        self::assertSame(256, $image['width']);
-        self::assertSame(256, $image['height']);
+        self::assertSame(256, $image->width);
+        self::assertSame(256, $image->height);
     }
 
     #[\Override]

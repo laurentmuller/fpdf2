@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace fpdf\ImageParsers;
 
+use fpdf\Internal\PdfImage;
 use fpdf\PdfDocument;
 use fpdf\PdfException;
 
@@ -22,7 +23,7 @@ use fpdf\PdfException;
 abstract class AbstractGdImageParser extends PdfPngParser
 {
     #[\Override]
-    public function parse(PdfDocument $parent, string $file): array
+    public function parse(PdfDocument $parent, string $file): PdfImage
     {
         $image = $this->createImageFromFile($file);
         if (!$image instanceof \GdImage) {

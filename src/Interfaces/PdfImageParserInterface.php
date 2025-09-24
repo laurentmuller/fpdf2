@@ -13,13 +13,12 @@ declare(strict_types=1);
 
 namespace fpdf\Interfaces;
 
+use fpdf\Internal\PdfImage;
 use fpdf\PdfDocument;
 use fpdf\PdfException;
 
 /**
  * Class implementing this interface parse image.
- *
- * @phpstan-import-type ImageType from PdfDocument
  */
 interface PdfImageParserInterface
 {
@@ -29,11 +28,9 @@ interface PdfImageParserInterface
      * @param PdfDocument $parent the parent document
      * @param string      $file   the image file to parse
      *
-     * @return array the parsed image
-     *
-     * @phpstan-return ImageType
+     * @return PdfImage the parsed image
      *
      * @throws PdfException if the image cannot be parsed
      */
-    public function parse(PdfDocument $parent, string $file): array;
+    public function parse(PdfDocument $parent, string $file): PdfImage;
 }

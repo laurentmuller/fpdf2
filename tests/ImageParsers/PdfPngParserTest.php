@@ -22,20 +22,16 @@ class PdfPngParserTest extends AbstractPdfParserTestCase
     {
         $file = 'image_color_type_0.png';
         $image = $this->parseFile($file);
-        self::assertArrayHasKey('width', $image);
-        self::assertArrayHasKey('height', $image);
-        self::assertSame(124, $image['width']);
-        self::assertSame(147, $image['height']);
+        self::assertSame(124, $image->width);
+        self::assertSame(147, $image->height);
     }
 
     public function testColorType2(): void
     {
         $file = 'image_color_type_2.png';
         $image = $this->parseFile($file);
-        self::assertArrayHasKey('width', $image);
-        self::assertArrayHasKey('height', $image);
-        self::assertSame(124, $image['width']);
-        self::assertSame(147, $image['height']);
+        self::assertSame(124, $image->width);
+        self::assertSame(147, $image->height);
     }
 
     public function testEndOfStream(): void
@@ -130,31 +126,25 @@ class PdfPngParserTest extends AbstractPdfParserTestCase
     {
         $file = 'image.png';
         $image = $this->parseFile($file);
-        self::assertArrayHasKey('width', $image);
-        self::assertArrayHasKey('height', $image);
-        self::assertSame(124, $image['width']);
-        self::assertSame(147, $image['height']);
+        self::assertSame(124, $image->width);
+        self::assertSame(147, $image->height);
     }
 
     public function testValidAlpha(): void
     {
         $file = 'alpha_image.png';
         $image = $this->parseFile($file);
-        self::assertArrayHasKey('softMask', $image);
-        self::assertArrayHasKey('width', $image);
-        self::assertArrayHasKey('height', $image);
-        self::assertSame(31, $image['width']);
-        self::assertSame(32, $image['height']);
+        self::assertNotNull($image->softMask);
+        self::assertSame(31, $image->width);
+        self::assertSame(32, $image->height);
     }
 
     public function testValidGrey(): void
     {
         $file = 'grey_image.png';
         $image = $this->parseFile($file);
-        self::assertArrayHasKey('width', $image);
-        self::assertArrayHasKey('height', $image);
-        self::assertSame(349, $image['width']);
-        self::assertSame(173, $image['height']);
+        self::assertSame(349, $image->width);
+        self::assertSame(173, $image->height);
     }
 
     #[\Override]

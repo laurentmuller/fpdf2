@@ -14,20 +14,15 @@ declare(strict_types=1);
 namespace fpdf\Tests\ImageParsers;
 
 use fpdf\Interfaces\PdfImageParserInterface;
+use fpdf\Internal\PdfImage;
 use fpdf\PdfDocument;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @phpstan-import-type ImageType from PdfDocument
- */
 abstract class AbstractPdfParserTestCase extends TestCase
 {
     abstract protected function createParser(): PdfImageParserInterface;
 
-    /**
-     * @phpstan-return ImageType
-     */
-    protected function parseFile(string $file): array
+    protected function parseFile(string $file): PdfImage
     {
         $parent = new PdfDocument();
         $parser = $this->createParser();

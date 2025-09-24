@@ -15,21 +15,17 @@ namespace fpdf\ImageParsers;
 
 use fpdf\Enums\PdfVersion;
 use fpdf\Interfaces\PdfImageParserInterface;
+use fpdf\Internal\PdfImage;
 use fpdf\PdfDocument;
 use fpdf\PdfException;
 
 /**
  * Parser for PNG images.
- *
- * @phpstan-import-type ImageType from PdfDocument
  */
 class PdfPngParser implements PdfImageParserInterface
 {
-    /**
-     * @phpstan-return ImageType
-     */
     #[\Override]
-    public function parse(PdfDocument $parent, string $file): array
+    public function parse(PdfDocument $parent, string $file): PdfImage
     {
         $stream = $this->openStream($file);
 
@@ -57,11 +53,9 @@ class PdfPngParser implements PdfImageParserInterface
      *
      * @param resource $stream
      *
-     * @phpstan-return ImageType
-     *
      * @throws PdfException if an error occurs while reading the stream
      */
-    protected function parseStream(PdfDocument $parent, mixed $stream, string $file): array
+    protected function parseStream(PdfDocument $parent, mixed $stream, string $file): PdfImage
     {
         // check signature
         $this->checkSignature($stream, $file);
@@ -122,27 +116,25 @@ class PdfPngParser implements PdfImageParserInterface
             throw PdfException::format('Missing palette: %s.', $file);
         }
 
-        $image = [
-            'index' => 0,
-            'number' => 0,
-            'width' => $width,
-            'height' => $height,
-            'colorSpace' => $colorSpace,
-            'bitsPerComponent' => $bitsPerComponent,
-            'filter' => 'FlateDecode',
-            'decodeParms' => $decodeParms,
-            'palette' => $palette,
-            'transparencies' => $transparencies,
-            'data' => $data,
-        ];
+        $image = new PdfImage(
+            width: $width,
+            height: $height,
+            colorSpace: $colorSpace,
+            bitsPerComponent: $bitsPerComponent,
+            data: $data,
+            filter: 'FlateDecode',
+            decodeParms: $decodeParms,
+            palette: $palette,
+            transparencies: $transparencies
+        );
 
         if ($colorType >= 4) {
             // extract alpha channel
             [$data, $softMask] = $this->extractAlphaChannel($width, $height, $colorType, $data);
             $parent->updatePdfVersion(PdfVersion::VERSION_1_4);
             $parent->setAlphaChannel(true);
-            $image['softMask'] = $softMask;
-            $image['data'] = $data;
+            $image->softMask = $softMask;
+            $image->data = $data;
         }
 
         return $image;

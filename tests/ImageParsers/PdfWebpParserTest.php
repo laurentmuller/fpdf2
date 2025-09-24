@@ -21,10 +21,8 @@ class PdfWebpParserTest extends AbstractPdfParserTestCase
     {
         $file = 'image.webp';
         $image = $this->parseFile($file);
-        self::assertArrayHasKey('width', $image);
-        self::assertArrayHasKey('height', $image);
-        self::assertSame(320, $image['width']);
-        self::assertSame(214, $image['height']);
+        self::assertSame(320, $image->width);
+        self::assertSame(214, $image->height);
     }
 
     #[\Override]

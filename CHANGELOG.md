@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `PdfDocument`: Added classes instead of arrays.
 - `PdfDocument`: Removed custom function to put font.
 - Updated tests.
 - `PdfDocument`: Added internal font type constants.

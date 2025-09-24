@@ -338,7 +338,7 @@ trait PdfBookmarkTrait
         foreach ($bookmark['hierarchy'] as $key => $value) {
             $this->putf('/%s %d 0 R', $key, $number + $value);
         }
-        $pageNumber = $this->pageInfos[$bookmark['page']]['number'];
+        $pageNumber = $this->pageInfos[$bookmark['page']]->number;
         $this->putf('/Dest [%d 0 R /XYZ 0 %.2F null]', $pageNumber, $bookmark['y']);
         $this->put('/Count 0>>');
         $this->putEndObj();
