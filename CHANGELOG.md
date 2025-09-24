@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- Removed commented code. Updated tests.
+
 ## 3.2.0 - 2025-09-24
 
 - `PdfDocument`: Added classes instead of arrays.

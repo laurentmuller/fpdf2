@@ -54,16 +54,5 @@ class PdfJpgParser implements PdfImageParserInterface
             data: $data,
             filter: 'DCTDecode'
         );
-        //        return [
-        //            'index' => 0,
-        //            'number' => 0,
-        //            'width' => $size[0],
-        //            'height' => $size[1],
-        //            'colorSpace' => $colorSpace,
-        //            'bitsPerComponent' => $bitsPerComponent,
-        //            'filter' => 'DCTDecode',
-        //            'data' => $data,
-        //            'palette' => '',
-        //        ];
     }
 }

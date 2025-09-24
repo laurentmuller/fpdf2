@@ -20,6 +20,18 @@ class PdfDocFileFontTest extends AbstractPdfDocTestCase
 {
     private const FONTS_DIR = __DIR__ . '/resources/';
 
+    public function testFontBBoxArray(): void
+    {
+        $doc = $this->createDocument();
+        $doc->addFont(
+            family: 'FontBBox',
+            file: 'font_bbox.json',
+            dir: self::FONTS_DIR
+        );
+        $doc->output(PdfDestination::STRING);
+        self::assertSame(1, $doc->getPage());
+    }
+
     public function testFontDiff(): void
     {
         $doc = $this->createDocument();
@@ -44,6 +56,19 @@ class PdfDocFileFontTest extends AbstractPdfDocTestCase
         );
     }
 
+    public function testFontInvalidType(): void
+    {
+        self::expectException(PdfException::class);
+        self::expectExceptionMessage('Unsupported font type: Test.');
+        $doc = $this->createDocument();
+        $doc->addFont(
+            family: 'Test',
+            file: 'font_other.json',
+            dir: self::FONTS_DIR
+        );
+        $doc->output(PdfDestination::STRING);
+    }
+
     public function testFontLength2(): void
     {
         $doc = $this->createDocument();
@@ -54,6 +79,18 @@ class PdfDocFileFontTest extends AbstractPdfDocTestCase
         );
         $doc->output(PdfDestination::STRING);
         self::assertSame(1, $doc->getPage());
+    }
+
+    public function testFontNoName(): void
+    {
+        self::expectException(PdfException::class);
+        self::expectExceptionMessageMatches('/No font name defined in file:.*font_no_name.json.$/');
+        $doc = $this->createDocument();
+        $doc->addFont(
+            family: 'Test',
+            file: 'font_no_name.json',
+            dir: self::FONTS_DIR
+        );
     }
 
     public function testFontNotExist(): void
@@ -68,19 +105,7 @@ class PdfDocFileFontTest extends AbstractPdfDocTestCase
         );
     }
 
-    public function testNoNameFont(): void
-    {
-        self::expectException(PdfException::class);
-        self::expectExceptionMessageMatches('/No font name defined in file:.*font_no_name.json.$/');
-        $doc = $this->createDocument();
-        $doc->addFont(
-            family: 'Test',
-            file: 'font_no_name.json',
-            dir: self::FONTS_DIR
-        );
-    }
-
-    public function testOtherFont(): void
+    public function testFontOther(): void
     {
         $doc = $this->createDocument();
         $doc->addFont(
@@ -89,18 +114,5 @@ class PdfDocFileFontTest extends AbstractPdfDocTestCase
             dir: self::FONTS_DIR
         );
         self::assertSame(1, $doc->getPage());
-    }
-
-    public function testOtherType(): void
-    {
-        self::expectException(PdfException::class);
-        self::expectExceptionMessage('Unsupported font type: Test.');
-        $doc = $this->createDocument();
-        $doc->addFont(
-            family: 'Test',
-            file: 'font_other.json',
-            dir: self::FONTS_DIR
-        );
-        $doc->output(PdfDestination::STRING);
     }
 }

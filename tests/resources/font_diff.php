@@ -17,7 +17,7 @@ $size1 = 25;
 $size2 = 30;
 $up = -100;
 $ut = 50;
-$diff = 10;
+$diff = "138 /.notdef 142 /.notdef 154 /.notdef 158 /.notdef 195 /Abreve 204 /gravecomb 208 /Dcroat 210 /hookabovecomb 213 /Ohorn 221 /Uhorn /tildecomb 227 /abreve 236 /acutecomb 240 /dcroat 242 /dotbelowcomb 245 /ohorn 253 /uhorn /dong";
 for ($i = 0; $i <= 255; ++$i) {
     $cw[\chr($i)] = 600;
 }
