@@ -20,3 +20,4 @@ disabled:
     - concat_without_spaces
     - phpdoc_to_comment
     - function_declaration
+    - symfony_braces
