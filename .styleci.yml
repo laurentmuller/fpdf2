@@ -1,6 +1,6 @@
 risky: true
 version: 8.2
-preset: symfony2023
+preset: symfony2025
 monolithic: true
 finder:
     exclude:
@@ -19,3 +19,4 @@ disabled:
     - native_function_invocation_symfony
     - concat_without_spaces
     - phpdoc_to_comment
+    - function_declaration
