@@ -24,7 +24,7 @@ class PdfCompareVersionTest extends AbstractCompareTestCase
     #[\Override]
     protected function createOldDocument(): FPDF
     {
-        $doc = new class() extends FPDF {
+        $doc = new class () extends FPDF {
             #[\Override]
             public function _enddoc(): void
             {
@@ -46,7 +46,5 @@ class PdfCompareVersionTest extends AbstractCompareTestCase
     }
 
     #[\Override]
-    protected function updateOldDocument(FPDF $doc): void
-    {
-    }
+    protected function updateOldDocument(FPDF $doc): void {}
 }

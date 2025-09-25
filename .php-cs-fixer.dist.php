@@ -28,11 +28,11 @@ $rules = [
     // --------------------------------------------------------------
     //  Rule sets
     // --------------------------------------------------------------
-    '@Symfony' => true,
-    '@Symfony:risky' => true,
-    '@PHP82Migration' => true,
-    '@PHP80Migration:risky' => true,
-    '@PHPUnit100Migration:risky' => true,
+    '@auto' => true,
+    '@auto:risky' => true,
+    '@PHP8x2Migration' => true,
+    '@PHP8x2Migration:risky' => true,
+    '@PHPUnit10x0Migration:risky' => true,
 
     // --------------------------------------------------------------
     //  Rules override

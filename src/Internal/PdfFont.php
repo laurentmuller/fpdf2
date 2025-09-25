@@ -88,9 +88,7 @@ final class PdfFont extends AbstractPdfNumber
     /**
      * @param string $name the font name
      */
-    public function __construct(public readonly string $name)
-    {
-    }
+    public function __construct(public readonly string $name) {}
 
     /**
      * @phpstan-assert-if-true non-empty-string $this->diff

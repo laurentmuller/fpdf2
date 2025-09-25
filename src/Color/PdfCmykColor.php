@@ -26,9 +26,7 @@ readonly class PdfCmykColor implements PdfColorInterface
      * @param int<0, 100> $yellow  the yellow component (0 to 100)
      * @param int<0, 100> $black   the black component (0 to 100)
      */
-    public function __construct(public int $cyan, public int $magenta, public int $yellow, public int $black)
-    {
-    }
+    public function __construct(public int $cyan, public int $magenta, public int $yellow, public int $black) {}
 
     public function __toString(): string
     {

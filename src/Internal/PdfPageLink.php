@@ -29,8 +29,7 @@ final class PdfPageLink extends AbstractPdfNumber
     public function __construct(
         public readonly PdfRectangle $rect,
         public readonly string|int $link
-    ) {
-    }
+    ) {}
 
     /**
      * Format this rectangular area.

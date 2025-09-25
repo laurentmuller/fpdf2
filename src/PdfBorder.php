@@ -33,8 +33,7 @@ class PdfBorder
         public bool $top,
         public bool $right,
         public bool $bottom,
-    ) {
-    }
+    ) {}
 
     /**
      * Create an instance with all borders set.

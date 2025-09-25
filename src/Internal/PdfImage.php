@@ -45,8 +45,7 @@ final class PdfImage extends AbstractPdfNumber
         public readonly string $palette = '',
         public readonly ?array $transparencies = null,
         public int $index = 0,
-    ) {
-    }
+    ) {}
 
     /**
      * @phpstan-assert-if-true non-empty-string $this->decodeParms

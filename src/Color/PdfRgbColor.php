@@ -25,9 +25,7 @@ readonly class PdfRgbColor implements PdfColorInterface
      * @param int<0, 255> $green the green component (0 to 255)
      * @param int<0, 255> $blue  the blue component (0 to 255)
      */
-    final public function __construct(public int $red, public int $green, public int $blue)
-    {
-    }
+    final public function __construct(public int $red, public int $green, public int $blue) {}
 
     public function __toString(): string
     {

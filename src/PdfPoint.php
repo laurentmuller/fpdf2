@@ -22,9 +22,7 @@ class PdfPoint
      * @param float $x the abscissa
      * @param float $y the ordinate
      */
-    public function __construct(public float $x, public float $y)
-    {
-    }
+    public function __construct(public float $x, public float $y) {}
 
     /**
      * Returns these x and y values as an array.

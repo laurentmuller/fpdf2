@@ -27,8 +27,7 @@ final class PdfFontFile extends AbstractPdfNumber
     public function __construct(
         public readonly int $length1,
         public readonly ?int $length2 = null,
-    ) {
-    }
+    ) {}
 
     /**
      * @phpstan-assert-if-true int $this->length2

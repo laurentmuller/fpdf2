@@ -37,8 +37,7 @@ final class PdfPageAnnotation extends AbstractPdfNumber
         public ?string $title = null,
         public PdfAnnotationName $name = PdfAnnotationName::NOTE,
         public ?PdfColorInterface $color = null
-    ) {
-    }
+    ) {}
 
     /**
      * Format this rectangular area.

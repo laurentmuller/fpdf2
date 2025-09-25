@@ -22,9 +22,7 @@ class PdfSize
      * @param float $width  the width
      * @param float $height the height
      */
-    public function __construct(public float $width, public float $height)
-    {
-    }
+    public function __construct(public float $width, public float $height) {}
 
     /**
      * Returns these width and height values as an array.

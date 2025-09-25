@@ -27,6 +27,5 @@ final readonly class PdfLink
     public function __construct(
         public int $page = 0,
         public float $y = 0,
-    ) {
-    }
+    ) {}
 }

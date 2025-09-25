@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- Updated `PHP-CS-Fixer` to version 3.88.0 and the configuration.
+
 ## 3.2.1 - 2025-09-25
 
 - Updated tests.
