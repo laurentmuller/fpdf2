@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 3.2.1 - 2025-09-25
 
 - Updated tests.
 - Removed `@phpstan-*` documentation.
