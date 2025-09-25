@@ -26,7 +26,7 @@ class PdfCompareHeaderFooterTest extends AbstractCompareTestCase
     #[\Override]
     protected function createNewDocument(): PdfDocument
     {
-        $doc = new class () extends PdfDocument {
+        $doc = new class extends PdfDocument {
             #[\Override]
             public function header(): void
             {
@@ -67,7 +67,7 @@ class PdfCompareHeaderFooterTest extends AbstractCompareTestCase
     #[\Override]
     protected function createOldDocument(): FPDF
     {
-        $doc = new class () extends FPDF {
+        $doc = new class extends FPDF {
             #[\Override]
             public function Header(): void
             {

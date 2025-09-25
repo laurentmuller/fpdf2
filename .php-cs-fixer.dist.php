@@ -53,7 +53,7 @@ $rules = [
     'phpdoc_to_comment' => ['allow_before_return_statement' => true],
     'php_unit_test_case_static_method_calls' => ['call_type' => 'self'],
     'native_function_invocation' => ['include' => ['@internal', 'all']],
-    'new_with_braces' => ['anonymous_class' => true, 'named_class' => true],
+    'new_with_braces' => ['anonymous_class' => false, 'named_class' => true],
     'ordered_imports' => ['imports_order' => ['const', 'class', 'function']],
     'blank_line_before_statement' => ['statements' => ['declare', 'try', 'return']],
     'header_comment' => ['header' => $comment, 'location' => 'after_open', 'separate' => 'bottom'],

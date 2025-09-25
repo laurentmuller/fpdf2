@@ -26,7 +26,7 @@ class PdfDocProtectedTest extends TestCase
 {
     public function testFormatBorder(): void
     {
-        $doc = new class () extends PdfDocument {
+        $doc = new class extends PdfDocument {
             public function __construct(
                 PdfOrientation $orientation = PdfOrientation::PORTRAIT,
                 PdfUnit $unit = PdfUnit::MILLIMETER,
@@ -44,7 +44,7 @@ class PdfDocProtectedTest extends TestCase
     {
         self::expectException(PdfException::class);
         self::expectExceptionMessage('Invalid call: Document closed.');
-        $doc = new class () extends PdfDocument {
+        $doc = new class extends PdfDocument {
             public function __construct(
                 PdfOrientation $orientation = PdfOrientation::PORTRAIT,
                 PdfUnit $unit = PdfUnit::MILLIMETER,
@@ -62,7 +62,7 @@ class PdfDocProtectedTest extends TestCase
     {
         self::expectException(PdfException::class);
         self::expectExceptionMessage('Invalid call: End page.');
-        $doc = new class () extends PdfDocument {
+        $doc = new class extends PdfDocument {
             public function __construct(
                 PdfOrientation $orientation = PdfOrientation::PORTRAIT,
                 PdfUnit $unit = PdfUnit::MILLIMETER,
@@ -80,7 +80,7 @@ class PdfDocProtectedTest extends TestCase
     {
         self::expectException(PdfException::class);
         self::expectExceptionMessage('Invalid call: No page added.');
-        $doc = new class () extends PdfDocument {
+        $doc = new class extends PdfDocument {
             public function __construct(
                 PdfOrientation $orientation = PdfOrientation::PORTRAIT,
                 PdfUnit $unit = PdfUnit::MILLIMETER,
@@ -95,7 +95,7 @@ class PdfDocProtectedTest extends TestCase
 
     public function testUTF8(): void
     {
-        $doc = new class () extends PdfDocument {
+        $doc = new class extends PdfDocument {
             public function __construct(
                 PdfOrientation $orientation = PdfOrientation::PORTRAIT,
                 PdfUnit $unit = PdfUnit::MILLIMETER,

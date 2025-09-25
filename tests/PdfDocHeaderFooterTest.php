@@ -35,7 +35,7 @@ class PdfDocHeaderFooterTest extends TestCase
 
     private function getDocument(): PdfDocument
     {
-        return new class () extends PdfDocument {
+        return new class extends PdfDocument {
             #[\Override]
             public function header(): void
             {
