@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace fpdf\Traits;
 
 use fpdf\Enums\PdfVersion;
+use fpdf\Internal\PdfAttachment;
 use fpdf\PdfDocument;
 use fpdf\PdfException;
 
@@ -24,12 +25,6 @@ use fpdf\PdfException;
  * <a href="http://www.fpdf.org/en/script/script95.php" target="_blank">Attachment</a>.
  *
  * @author Andreas Müller <hello@devmount.com>
- *
- * @phpstan-type PdfAttachedFileType = array{
- *      file: string,
- *      name: string,
- *      description: string,
- *      number: int}
  *
  * @phpstan-require-extends PdfDocument
  */
@@ -43,7 +38,7 @@ trait PdfAttachmentTrait
     /**
      * The attached files.
      *
-     * @phpstan-var array<int, PdfAttachedFileType>
+     * @var array<int, PdfAttachment>
      */
     private array $attachments = [];
 
@@ -57,12 +52,11 @@ trait PdfAttachmentTrait
      */
     public function addAttachment(string $file, string $name = '', string $description = ''): static
     {
-        $this->attachments[] = [
-            'file' => $file,
-            'name' => '' === $name ? \basename($file) : $name,
-            'description' => $description,
-            'number' => -1,
-        ];
+        $this->attachments[] = new PdfAttachment(
+            file: $file,
+            name: '' === $name ? \basename($file) : $name,
+            description: $description
+        );
         $this->updatePdfVersion('' === $description ? PdfVersion::VERSION_1_4 : PdfVersion::VERSION_1_6);
 
         return $this;
@@ -76,7 +70,7 @@ trait PdfAttachmentTrait
         }
         $this->putf('/Names <</EmbeddedFiles %d 0 R>>', $this->attachmentNumber);
         $array = \array_map(
-            static fn (array $attachment): string => \sprintf('%d 0 R', $attachment['number']),
+            static fn (PdfAttachment $attachment): string => \sprintf('%d 0 R', $attachment->number),
             $this->attachments
         );
         $this->putf('/AF [%s]', \implode(' ', $array));
@@ -95,10 +89,9 @@ trait PdfAttachmentTrait
      */
     private function putAttachments(): void
     {
-        foreach ($this->attachments as &$info) {
-            $file = $info['file'];
-            $name = $info['name'];
-            $description = $info['description'];
+        foreach ($this->attachments as $attachment) {
+            $file = $attachment->file;
+            $name = $attachment->name;
 
             $contents = \file_get_contents($file);
             if (false === $contents) {
@@ -109,14 +102,14 @@ trait PdfAttachmentTrait
             $date = $this->formatDate(\is_int($time) ? $time : null);
 
             $this->putNewObj();
-            $info['number'] = $this->objectNumber;
+            $attachment->number = $this->objectNumber;
             $this->put('<<');
             $this->put('/Type /Filespec');
             $this->putf('/F (%s)', $this->escape($name));
             $this->putf('/UF %s', $this->textString($name));
             $this->putf('/EF <</F %d 0 R>>', $this->objectNumber + 1);
-            if ('' !== $description) {
-                $this->putf('/Desc %s', $this->textString($description));
+            if ($attachment->isDescription()) {
+                $this->putf('/Desc %s', $this->textString($attachment->description));
             }
             $this->put('/AFRelationship /Unspecified');
             $this->put('>>');
@@ -136,7 +129,7 @@ trait PdfAttachmentTrait
         $this->putNewObj();
         $this->attachmentNumber = $this->objectNumber;
         $array = \array_map(
-            fn (int $index, array $info): string => $this->textString(\sprintf('%03d %d 0 R', $index, $info['number'])),
+            fn (int $index, PdfAttachment $attachment): string => $this->textString(\sprintf('%03d %d 0 R', $index, $attachment->number)),
             \array_keys($this->attachments),
             \array_values($this->attachments)
         );

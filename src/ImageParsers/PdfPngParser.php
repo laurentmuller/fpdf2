@@ -219,7 +219,7 @@ class PdfPngParser implements PdfImageParserInterface
                 . \chr(0x0D) . \chr(0x0A) . \chr(0x1A) . \chr(0x0A);
         }
 
-        /** @phpstan-var non-empty-string $signature */
+        /** @var non-empty-string $signature */
         if ($this->readString($stream, \strlen($signature)) !== $signature) {
             throw PdfException::format('Incorrect PNG header signature: %s.', $file);
         }

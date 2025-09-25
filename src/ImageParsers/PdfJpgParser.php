@@ -26,7 +26,7 @@ class PdfJpgParser implements PdfImageParserInterface
     #[\Override]
     public function parse(PdfDocument $parent, string $file): PdfImage
     {
-        /* @phpstan-var array{0: int, 1: int, 2: int, channels?: int, bits?: int}|false $size */
+        /* @var array{0: int, 1: int, 2: int, channels?: int, bits?: int}|false $size */
         $size = \getimagesize($file);
         if (!\is_array($size)) {
             throw PdfException::format('Missing or invalid image size: %s.', $file);
@@ -36,7 +36,7 @@ class PdfJpgParser implements PdfImageParserInterface
             throw PdfException::format('Invalid JPEG image type (%d): %s.', $size[2], $file);
         }
 
-        /** @phpstan-var int<3,5> $channels */
+        /** @var int<3,5> $channels */
         $channels = $size['channels'] ?? 3;
         $colorSpace = match ($channels) {
             3 => 'DeviceRGB',

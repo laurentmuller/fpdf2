@@ -86,7 +86,7 @@ class PdfDocument
     /**
      * The map character codes to character glyphs.
      *
-     * @phpstan-var array<string, int>
+     * @var array<string, int>
      */
     protected array $charMaps = [];
     /** Indicates whether fill and text colors are different. */
@@ -112,7 +112,7 @@ class PdfDocument
     /**
      * The font encodings.
      *
-     * @phpstan-var array<string, int>
+     * @var array<string, int>
      */
     protected array $encodings = [];
     /** The commands for filling color. */
@@ -122,7 +122,7 @@ class PdfDocument
     /**
      * The font files.
      *
-     * @phpstan-var array<string, PdfFontFile>
+     * @var array<string, PdfFontFile>
      */
     protected array $fontFiles = [];
     /** The directory containing fonts. */
@@ -130,7 +130,7 @@ class PdfDocument
     /**
      * The used fonts.
      *
-     * @phpstan-var array<string, PdfFont>
+     * @var array<string, PdfFont>
      */
     protected array $fonts = [];
     /** The current font size in the user unit. */
@@ -142,7 +142,7 @@ class PdfDocument
     /**
      * Used images.
      *
-     * @phpstan-var array<string, PdfImage>
+     * @var array<string, PdfImage>
      */
     protected array $images = [];
     /** The flag set when processing footer. */
@@ -162,7 +162,7 @@ class PdfDocument
     /**
      * The internal links.
      *
-     * @phpstan-var array<int, PdfLink>
+     * @var array<int, PdfLink>
      */
     protected array $links = [];
     /** The margins in user unit. */
@@ -170,7 +170,7 @@ class PdfDocument
     /**
      * The document properties.
      *
-     * @phpstan-var array<string, string>
+     * @var array<string, string>
      */
     protected array $metadata = [];
     /** The current object number. */
@@ -178,7 +178,7 @@ class PdfDocument
     /**
      * The object offsets.
      *
-     * @phpstan-var array<int, int>
+     * @var array<int, int>
      */
     protected array $offsets = [];
     /** The current page number. */
@@ -186,7 +186,7 @@ class PdfDocument
     /**
      * The annotations in pages.
      *
-     * @phpstan-var array<int, PdfPageAnnotation[]>
+     * @var array<int, PdfPageAnnotation[]>
      */
     protected array $pageAnnotations = [];
     /** The threshold used to trigger page breaks. */
@@ -194,13 +194,13 @@ class PdfDocument
     /**
      * The page-related data.
      *
-     * @phpstan-var array<int, PdfPageInfo>
+     * @var array<int, PdfPageInfo>
      */
     protected array $pageInfos = [];
     /**
      * The links in pages.
      *
-     * @phpstan-var array<int, PdfPageLink[]>
+     * @var array<int, PdfPageLink[]>
      */
     protected array $pageLinks = [];
     /** The displayed page mode */
@@ -208,7 +208,7 @@ class PdfDocument
     /**
      * The pages.
      *
-     * @phpstan-var array<int, string>
+     * @var array<int, string>
      */
     protected array $pages = [];
     /** The page size in user unit.  */
@@ -937,7 +937,7 @@ class PdfDocument
             return 0.0;
         }
 
-        /** @phpstan-var int[] $keys */
+        /** @var int[] $keys */
         $keys = \unpack('C*', $str);
         $charWidths = $this->currentFont->cw;
         $width = \array_sum(\array_map(static fn (int $key): int => $charWidths[$key], $keys));
@@ -2303,7 +2303,7 @@ class PdfDocument
      */
     protected function convertEncoding(string $str, string $to_encoding, array|string $from_encoding): string
     {
-        /** @phpstan-var string */
+        /** @var string */
         return \mb_convert_encoding($str, $to_encoding, $from_encoding);
     }
 
@@ -2342,7 +2342,7 @@ class PdfDocument
      */
     protected function doUnderline(float $x, float $y, string $str, ?float $textWidth = null): string
     {
-        /** @phpstan-var PdfFont $font */
+        /** @var PdfFont $font */
         $font = $this->currentFont;
         $up = (float) $font->up;
         $ut = (float) $font->ut;
@@ -2473,7 +2473,7 @@ class PdfDocument
     protected function getFontPath(): string
     {
         if (\defined('FPDF_FONTPATH')) {
-            /** @phpstan-var string */
+            /** @var string */
             return FPDF_FONTPATH;
         }
 

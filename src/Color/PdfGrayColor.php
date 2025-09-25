@@ -79,7 +79,7 @@ readonly class PdfGrayColor implements PdfColorInterface
      */
     public function toCmykColor(): PdfCmykColor
     {
-        /** @phpstan-var int<0, 100> $black */
+        /** @var int<0, 100> $black */
         $black = (int) (100.0 * $this->asFloat());
 
         return PdfCmykColor::instance(0, 0, 0, $black);

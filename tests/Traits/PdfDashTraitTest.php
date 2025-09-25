@@ -14,18 +14,15 @@ declare(strict_types=1);
 namespace fpdf\Tests\Traits;
 
 use fpdf\Enums\PdfDestination;
-use fpdf\PdfDocument;
 use fpdf\PdfRectangle;
-use fpdf\Traits\PdfDashTrait;
+use fpdf\Tests\Fixture\PdfDocumentDash;
 use PHPUnit\Framework\TestCase;
 
 class PdfDashTraitTest extends TestCase
 {
     public function testDashedRect(): void
     {
-        $document = new class() extends PdfDocument {
-            use PdfDashTrait;
-        };
+        $document = new PdfDocumentDash();
         $document->addPage();
         $document->dashedRect(10, 15, 62, 20, 2.0, 0.5);
         $document->output(PdfDestination::STRING);
@@ -34,9 +31,7 @@ class PdfDashTraitTest extends TestCase
 
     public function testDashedRectangle(): void
     {
-        $document = new class() extends PdfDocument {
-            use PdfDashTrait;
-        };
+        $document = new PdfDocumentDash();
         $document->addPage();
         $rectangle = new PdfRectangle(10, 15, 62, 20);
         $document->dashedRectangle($rectangle, 2.0, 0.5);
@@ -46,9 +41,7 @@ class PdfDashTraitTest extends TestCase
 
     public function testLine(): void
     {
-        $document = new class() extends PdfDocument {
-            use PdfDashTrait;
-        };
+        $document = new PdfDocumentDash();
         $document->addPage();
         $document->setLineWidth(0.5);
         $document->setDashPattern(3.0, 2.0);

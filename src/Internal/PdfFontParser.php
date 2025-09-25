@@ -85,7 +85,7 @@ final class PdfFontParser
         try {
             $content = (string) \file_get_contents($path);
 
-            /** @phpstan-var FontType */
+            /** @var FontType */
             return \json_decode(json: $content, associative: true, flags: \JSON_THROW_ON_ERROR);
         } catch (\JsonException $e) {
             throw PdfException::instance(\sprintf('Unable to parse the font file: %s.', $path), $e);

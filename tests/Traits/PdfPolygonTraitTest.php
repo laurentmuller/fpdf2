@@ -16,9 +16,8 @@ namespace fpdf\Tests\Traits;
 use fpdf\Color\PdfRgbColor;
 use fpdf\Enums\PdfDestination;
 use fpdf\Enums\PdfRectangleStyle;
-use fpdf\PdfDocument;
 use fpdf\PdfPoint;
-use fpdf\Traits\PdfPolygonTrait;
+use fpdf\Tests\Fixture\PdfDocumentPolygon;
 use PHPUnit\Framework\TestCase;
 
 class PdfPolygonTraitTest extends TestCase
@@ -31,10 +30,7 @@ class PdfPolygonTraitTest extends TestCase
             new PdfPoint(100, 20),
         ];
 
-        $document = new class() extends PdfDocument {
-            use PdfPolygonTrait;
-        };
-
+        $document = new PdfDocumentPolygon();
         $document->addPage();
         $document->setLineWidth(2.0);
         $document->setDrawColor(PdfRgbColor::red());

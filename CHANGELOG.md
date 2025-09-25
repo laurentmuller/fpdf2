@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Updated tests.
+- Removed `@phpstan-*` documentation.
+- Added classes instead of arrays for `PdfAttachmentTrait`, `PdfBookmarkTrait`
+  and `PdfTransparencyTrait` classes.
 - Removed commented code. Updated tests.
 
 ## 3.2.0 - 2025-09-24
@@ -21,7 +25,7 @@
 - Updated Style CI configuration.
 - **BC Break!**: Replaced the PHP font definitions by the
   [JSON](https://www.json.org/json-en.html) format.
-- Updated colors conversions.
+- Updated color conversions.
 - Updated GitHub Actions.
 
 ## 3.0.15 - 2025-07-10

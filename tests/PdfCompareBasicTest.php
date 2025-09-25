@@ -127,9 +127,9 @@ class PdfCompareBasicTest extends AbstractCompareTestCase
         $doc->Ln(5.0);
         $doc->Image(__DIR__ . '/images/image.gif', link: 1);
 
-        /** @phpstan-var float $x */
+        /** @var float $x */
         $x = $doc->GetX();
-        /** @phpstan-var float $y */
+        /** @var float $y */
         $y = $doc->GetY();
         $doc->SetLineWidth(1.0);
         $doc->Line($x, $y, $x + 100.0, $y);
@@ -147,18 +147,18 @@ class PdfCompareBasicTest extends AbstractCompareTestCase
         $doc->Cell(0.0, 5.0, 'This is  test 3456.', ln: 1);
 
         $doc->SetDrawColor(255, 0, 0);
-        /** @phpstan-var float $x */
+        /** @var float $x */
         $x = $doc->GetX();
-        /** @phpstan-var float $y */
+        /** @var float $y */
         $y = $doc->GetY();
         $doc->SetLineWidth(0.5);
         $doc->Line($x, $y, $x + 100.0, $y);
 
         $doc->SetFillColor(0, 255, 0);
         $doc->SetTextColor(0, 0, 255);
-        /** @phpstan-var float $x */
+        /** @var float $x */
         $x = $doc->GetX();
-        /** @phpstan-var float $y */
+        /** @var float $y */
         $y = $doc->GetY();
         $y += 10.0;
         $doc->Rect($x, $y, 100, 100, 'FD');

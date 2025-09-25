@@ -70,7 +70,7 @@ abstract class AbstractGdImageParser extends PdfPngParser
      */
     private function openDataStream(string $data): mixed
     {
-        /** @phpstan-var resource $stream */
+        /** @var resource $stream */
         $stream = \fopen('php://temp', 'rb+');
         \fwrite($stream, $data);
         \rewind($stream);

@@ -221,7 +221,7 @@ readonly class PdfRgbColor implements PdfColorInterface
         $red = 0.299 * (float) $this->red;
         $green = 0.587 * (float) $this->green;
         $blue = 0.114 * (float) $this->blue;
-        /** @phpstan-var int<0, 255> $level */
+        /** @var int<0, 255> $level */
         $level = (int) ($red + $green + $blue);
 
         return PdfGrayColor::instance($level);

@@ -156,7 +156,7 @@ enum PdfPageSize: string
      */
     public function getHeight(): float
     {
-        /** @phpstan-var float */
+        /** @var float */
         return $this->getExtra('height', true);
     }
 
@@ -177,7 +177,7 @@ enum PdfPageSize: string
      */
     public function getUnit(): PdfUnit
     {
-        /** @phpstan-var string $unit */
+        /** @var string $unit */
         $unit = $this->getExtra('unit', true);
 
         return PdfUnit::from($unit);
@@ -188,7 +188,7 @@ enum PdfPageSize: string
      */
     public function getWidth(): float
     {
-        /** @phpstan-var float */
+        /** @var float */
         return $this->getExtra('width', true);
     }
 }

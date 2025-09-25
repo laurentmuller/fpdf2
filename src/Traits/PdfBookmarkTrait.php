@@ -19,6 +19,7 @@ use fpdf\Enums\PdfMove;
 use fpdf\Enums\PdfPageMode;
 use fpdf\Enums\PdfTextAlignment;
 use fpdf\Enums\PdfUnit;
+use fpdf\Internal\PdfBookmark;
 use fpdf\PdfDocument;
 use fpdf\PdfException;
 
@@ -27,14 +28,6 @@ use fpdf\PdfException;
  *
  * The code is inspired from FPDF script
  * <a href="http://www.fpdf.org/en/script/script1.php" target="_blank">Bookmarks</a>.
- *
- * @phpstan-type PdfBookmarkType = array{
- *      text: string,
- *      level: non-negative-int,
- *      y: float,
- *      page: int,
- *      link: int|null,
- *      hierarchy: array<string, int>}
  *
  * @phpstan-require-extends PdfDocument
  */
@@ -53,7 +46,7 @@ trait PdfBookmarkTrait
     /**
      * The bookmarks.
      *
-     * @phpstan-var array<int, PdfBookmarkType>
+     * @var array<int, PdfBookmark>
      */
     private array $bookmarks = [];
 
@@ -99,14 +92,14 @@ trait PdfBookmarkTrait
         $y = $currentY ? $this->y : 0.0;
         $link = $createLink ? $this->createLink($y, $page) : null;
         $y = $this->scaleY($y);
-        $this->bookmarks[] = [
-            'text' => $text,
-            'level' => $level,
-            'y' => $y,
-            'page' => $page,
-            'link' => $link,
-            'hierarchy' => [],
-        ];
+
+        $this->bookmarks[] = new PdfBookmark(
+            text: $text,
+            level: $level,
+            y: $y,
+            page: $page,
+            link: $link,
+        );
 
         return $this;
     }
@@ -175,14 +168,14 @@ trait PdfBookmarkTrait
             }
 
             // page text and size
-            $pageText = $this->formatBookmarkPage($bookmark['page']);
+            $pageText = $this->formatBookmarkPage($bookmark->page);
             $pageSize = $this->getStringWidth($pageText) + $space;
             // level offset
-            $offset = $this->outputIndexLevel($bookmark['level'], $space);
+            $offset = $this->outputIndexLevel($bookmark->level, $space);
             // text
-            $link = $bookmark['link'];
+            $link = $bookmark->link;
             $width = $printable_width - $offset - $pageSize - $space;
-            $textSize = $this->outputIndexText($this->cleanText($bookmark['text']), $width, $height, $link, $space);
+            $textSize = $this->outputIndexText($this->cleanText($bookmark->text), $width, $height, $link, $space);
             // separator
             $width -= $textSize + $space;
             $this->outputIndexSeparator($separator, $width, $height, $link, $space);
@@ -305,14 +298,12 @@ trait PdfBookmarkTrait
 
     /**
      * @phpstan-param non-empty-string $title
-     *
-     * @phpstan-return PdfBookmarkType|false
      */
     private function outputIndexTitle(
         string $title,
         bool $addBookmark,
         float $space
-    ): array|false {
+    ): PdfBookmark|false {
         $result = false;
         if ($addBookmark) {
             $this->addBookmark($title, currentY: false);
@@ -328,18 +319,15 @@ trait PdfBookmarkTrait
         return $result;
     }
 
-    /**
-     * @phpstan-param PdfBookmarkType $bookmark
-     */
-    private function putBookmark(array $bookmark, int $number): void
+    private function putBookmark(PdfBookmark $bookmark, int $number): void
     {
         $this->putNewObj();
-        $this->putf('<</Title %s', $this->textString($bookmark['text']));
-        foreach ($bookmark['hierarchy'] as $key => $value) {
+        $this->putf('<</Title %s', $this->textString($bookmark->text));
+        foreach ($bookmark->hierarchy as $key => $value) {
             $this->putf('/%s %d 0 R', $key, $number + $value);
         }
-        $pageNumber = $this->pageInfos[$bookmark['page']]->number;
-        $this->putf('/Dest [%d 0 R /XYZ 0 %.2F null]', $pageNumber, $bookmark['y']);
+        $pageNumber = $this->pageInfos[$bookmark->page]->number;
+        $this->putf('/Dest [%d 0 R /XYZ 0 %.2F null]', $pageNumber, $bookmark->y);
         $this->put('/Count 0>>');
         $this->putEndObj();
     }
@@ -349,22 +337,22 @@ trait PdfBookmarkTrait
         $level = 0;
         $references = [];
         $count = \count($this->bookmarks);
-        foreach ($this->bookmarks as $index => &$bookmark) {
-            $currentLevel = $bookmark['level'];
+        foreach ($this->bookmarks as $index => $bookmark) {
+            $currentLevel = $bookmark->level;
             if ($currentLevel > 0) {
                 $parent = $references[$currentLevel - 1];
-                $bookmark['hierarchy']['Parent'] = $parent;
-                $this->bookmarks[$parent]['hierarchy']['Last'] = $index;
+                $bookmark->hierarchy['Parent'] = $parent;
+                $this->bookmarks[$parent]->hierarchy['Last'] = $index;
                 if ($currentLevel > $level) {
-                    $this->bookmarks[$parent]['hierarchy']['First'] = $index;
+                    $this->bookmarks[$parent]->hierarchy['First'] = $index;
                 }
             } else {
-                $bookmark['hierarchy']['Parent'] = $count;
+                $bookmark->hierarchy['Parent'] = $count;
             }
             if ($currentLevel <= $level && $index > 0) {
                 $prev = $references[$currentLevel];
-                $bookmark['hierarchy']['Prev'] = $prev;
-                $this->bookmarks[$prev]['hierarchy']['Next'] = $index;
+                $bookmark->hierarchy['Prev'] = $prev;
+                $this->bookmarks[$prev]->hierarchy['Next'] = $index;
             }
             $references[$currentLevel] = $index;
             $level = $currentLevel;
@@ -381,7 +369,7 @@ trait PdfBookmarkTrait
         $maxLevel = 0;
         if ([] !== $this->bookmarks) {
             $bookmark = \end($this->bookmarks);
-            $maxLevel = $bookmark['level'] + 1;
+            $maxLevel = $bookmark->level + 1;
         }
         if ($level < 0 || $level > $maxLevel) {
             $allowed = \implode('...', \array_unique([0, $maxLevel]));

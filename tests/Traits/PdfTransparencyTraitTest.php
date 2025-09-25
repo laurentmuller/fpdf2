@@ -14,17 +14,14 @@ declare(strict_types=1);
 namespace fpdf\Tests\Traits;
 
 use fpdf\Enums\PdfDestination;
-use fpdf\PdfDocument;
-use fpdf\Traits\PdfTransparencyTrait;
+use fpdf\Tests\Fixture\PdfDocumentTransparency;
 use PHPUnit\Framework\TestCase;
 
 class PdfTransparencyTraitTest extends TestCase
 {
     public function testEmptyTransparency(): void
     {
-        $document = new class() extends PdfDocument {
-            use PdfTransparencyTrait;
-        };
+        $document = new PdfDocumentTransparency();
         $document->addPage();
         $document->output(PdfDestination::STRING);
         self::assertSame(1, $document->getPage());
@@ -32,9 +29,7 @@ class PdfTransparencyTraitTest extends TestCase
 
     public function testRender(): void
     {
-        $document = new class() extends PdfDocument {
-            use PdfTransparencyTrait;
-        };
+        $document = new PdfDocumentTransparency();
         $document->addPage();
         $document->setAlpha(0.5);
         $document->resetAlpha();

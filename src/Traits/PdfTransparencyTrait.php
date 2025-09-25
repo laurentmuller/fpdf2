@@ -15,6 +15,7 @@ namespace fpdf\Traits;
 
 use fpdf\Enums\PdfBlendMode;
 use fpdf\Enums\PdfVersion;
+use fpdf\Internal\PdfTransparency;
 use fpdf\PdfDocument;
 
 /**
@@ -26,12 +27,6 @@ use fpdf\PdfDocument;
  * The code is inspired from FPDF script
  * <a href="http://www.fpdf.org/en/script/script74.php" target="_blank">Transparency</a>.
  *
- * @phpstan-type PdfTransparencyType = array{
- *      key: int,
- *      alpha: float,
- *      blendMode: string,
- *      number: int}
- *
  * @phpstan-require-extends PdfDocument
  */
 trait PdfTransparencyTrait
@@ -39,7 +34,7 @@ trait PdfTransparencyTrait
     /**
      * The transparencies.
      *
-     * @phpstan-var PdfTransparencyType[]
+     * @var PdfTransparency[]
      */
     private array $transparencies = [];
 
@@ -59,14 +54,13 @@ trait PdfTransparencyTrait
      */
     public function setAlpha(float $alpha, PdfBlendMode $blendMode = PdfBlendMode::NORMAL): static
     {
-        $key = \count($this->transparencies) + 1;
-        $this->transparencies[] = [
-            'key' => $key,
-            'alpha' => \max(0.0, \min($alpha, 1.0)),
-            'blendMode' => $blendMode->value,
-            'number' => -1,
-        ];
-        $this->outf('/GS%d gs', $key);
+        $index = \count($this->transparencies) + 1;
+        $this->transparencies[] = new PdfTransparency(
+            index: $index,
+            alpha: \max(0.0, \min($alpha, 1.0)),
+            blendMode: $blendMode,
+        );
+        $this->outf('/GS%d gs', $index);
 
         return $this;
     }
@@ -86,21 +80,21 @@ trait PdfTransparencyTrait
             return;
         }
         $this->put('/ExtGState <<');
-        foreach ($this->transparencies as $state) {
-            $this->putf('/GS%d %d 0 R', $state['key'], $state['number']);
+        foreach ($this->transparencies as $transparency) {
+            $this->putf('/GS%d %d 0 R', $transparency->index, $transparency->number);
         }
         $this->put('>>');
     }
 
     protected function putResources(): void
     {
-        foreach ($this->transparencies as &$state) {
+        foreach ($this->transparencies as $transparency) {
             $this->putNewObj();
-            $state['number'] = $this->objectNumber;
+            $transparency->number = $this->objectNumber;
             $this->putf(
                 '<</Type /ExtGState /ca %1$.3F /CA %1$.3F /BM /%2$s>>',
-                $state['alpha'],
-                $state['blendMode']
+                $transparency->alpha,
+                $transparency->getBlendModeValue()
             );
             $this->putEndObj();
         }

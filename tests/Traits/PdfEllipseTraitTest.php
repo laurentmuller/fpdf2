@@ -14,17 +14,14 @@ declare(strict_types=1);
 namespace fpdf\Tests\Traits;
 
 use fpdf\Enums\PdfDestination;
-use fpdf\PdfDocument;
-use fpdf\Traits\PdfEllipseTrait;
+use fpdf\Tests\Fixture\PdfDocumentEllipse;
 use PHPUnit\Framework\TestCase;
 
 class PdfEllipseTraitTest extends TestCase
 {
     public function testRender(): void
     {
-        $document = new class() extends PdfDocument {
-            use PdfEllipseTrait;
-        };
+        $document = new PdfDocumentEllipse();
         $document->addPage();
         $document->circle(100, 100, 25);
         $document->ellipse(100, 100, 25, 50);

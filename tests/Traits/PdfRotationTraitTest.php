@@ -15,18 +15,15 @@ namespace fpdf\Tests\Traits;
 
 use fpdf\Enums\PdfDestination;
 use fpdf\Enums\PdfFontName;
-use fpdf\PdfDocument;
 use fpdf\PdfRectangle;
-use fpdf\Traits\PdfRotationTrait;
+use fpdf\Tests\Fixture\PdfDocumentRotation;
 use PHPUnit\Framework\TestCase;
 
 class PdfRotationTraitTest extends TestCase
 {
     public function testRender(): void
     {
-        $document = new class() extends PdfDocument {
-            use PdfRotationTrait;
-        };
+        $document = new PdfDocumentRotation();
         $document->addPage();
         $document->setFont(PdfFontName::ARIAL);
 
