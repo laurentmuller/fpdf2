@@ -21,74 +21,46 @@ namespace fpdf\Internal;
 final class PdfFont extends AbstractPdfNumber
 {
     /**
-     * @var array<int, int> the character widths
-     */
-    public array $cw = [];
-    /**
-     * @var array<string, string|int[]> the font descriptions
-     */
-    public array $desc = [];
-    /**
-     * The optional font difference.
-     */
-    public ?string $diff = null;
-    /**
-     * The optional font encoding.
-     */
-    public ?string $encoding = null;
-    /**
-     * The optional font file path.
-     */
-    public ?string $file = null;
-    /**
      * The font index.
      */
     public int $index = 0;
-    /**
-     * The first length.
-     */
-    public int $length1 = 0;
-    /**
-     * The second length.
-     */
-    public int $length2 = 0;
-    /**
-     * The original size.
-     */
-    public int $originalsize = 0;
-    /**
-     * The first size.
-     */
-    public int $size1 = 0;
-    /**
-     * The second size.
-     */
-    public int $size2 = 0;
-    /**
-     * The sub-setting characters state.
-     */
-    public bool $subsetted = false;
-    /**
-     * The font type.
-     */
-    public string $type = '';
-    /**
-     * The upper underline position.
-     */
-    public int $up = 0;
-    /**
-     * The utter underline position.
-     */
-    public int $ut = 0;
-    /**
-     * @var array<int, int|int[]>|null the optional Unicode mapping
-     */
-    public ?array $uv = null;
 
     /**
-     * @param string $name the font name
+     * @param non-empty-string $name The font name.
+     * @param string $type The font type.
+     * @param ?string $file The optional font file path.
+     * @param ?string $encoding The optional font encoding.
+     * @param array<int, int> $cw The character widths.
+     * @param int $up The upper underline position.
+     * @param int $ut The utter underline position.
+     * @param array<int, int|int[]>|null $uv The optional Unicode mapping.
+     * @param array<string, string|int[]> $desc The font descriptions.
+     * @param ?string $diff The optional font difference.
+     * @param int $length1 The first length.
+     * @param int $length2 The second length.
+     * @param int $originalsize The original size.
+     * @param int $size1 The first size.
+     * @param int $size2 The second size.
+     * @param bool $subsetted The sub-setting characters state.
      */
-    public function __construct(public readonly string $name) {}
+    public function __construct(
+        public readonly string $name,
+        public readonly string $type,
+        public ?string $file,
+        public readonly ?string $encoding,
+        public readonly array $cw,
+        public readonly int $up,
+        public readonly int $ut,
+        public readonly ?array $uv,
+        public readonly array $desc,
+        public readonly ?string $diff,
+        public readonly int $length1,
+        public readonly int $length2,
+        public readonly int $originalsize,
+        public readonly int $size1,
+        public readonly int $size2,
+        public readonly bool $subsetted,
+    ) {}
 
     /**
      * @phpstan-assert-if-true non-empty-string $this->diff

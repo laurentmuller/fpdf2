@@ -21,29 +21,29 @@ use fpdf\PdfException;
  * @internal
  *
  * @phpstan-type FontType = array{
- *      name?: string,
- *      type: string,
- *      file?: string,
- *      enc?: string,
- *      subsetted?: bool,
- *      up: int,
- *      ut: int,
- *      uv?: array<int, int|int[]>,
- *      desc?: array<string, string>,
- *      cw: array<int, int>,
- *      diff?: string,
- *      originalsize?: int,
- *      size1?: int,
- *      size2?: int,
- *      length1?: int,
- *      length2?: int}
+ *     name?: non-empty-string,
+ *     type: string,
+ *     file?: string,
+ *     cw: array<int, int>,
+ *     desc?: array<string, string>,
+ *     diff?: string,
+ *     enc?: string,
+ *     length1?: int,
+ *     length2?: int,
+ *     originalsize?: int,
+ *     size1?: int,
+ *     size2?: int,
+ *     subsetted?: bool,
+ *     up: int,
+ *     ut: int,
+ *     uv?: array<int, int|int[]>}
  */
 final class PdfFontParser
 {
     /**
-     * Create a PDF font from the given file path.
+     * Create a PDF font from the given JSON file path.
      *
-     * @throws PdfException if the given path does not exist, or the font name is not defined
+     * @throws PdfException if the given path does not exist, or if the font name is not defined
      */
     public function parse(string $path): PdfFont
     {
@@ -52,29 +52,32 @@ final class PdfFontParser
         }
 
         $data = $this->decodeJson($path);
+        /** @phpstan-var non-empty-string|null $name */
         $name = $this->getString($data, 'name');
         if (null === $name) {
             throw PdfException::format('No font name defined in file: %s.', $path);
         }
 
-        $font = new PdfFont($name);
-        $font->cw = $data['cw'];
-        $font->desc = $data['desc'] ?? [];
-        $font->diff = $this->getString($data, 'diff');
-        $font->encoding = $this->getEncoding($data);
-        $font->file = $this->getString($data, 'file');
-        $font->length1 = $this->getInt($data, 'length1');
-        $font->length2 = $this->getInt($data, 'length2');
-        $font->originalsize = $this->getInt($data, 'originalsize');
-        $font->size1 = $this->getInt($data, 'size1');
-        $font->size2 = $this->getInt($data, 'size2');
-        $font->subsetted = $data['subsetted'] ?? false;
-        $font->type = $data['type'];
-        $font->up = $this->getInt($data, 'up');
-        $font->ut = $this->getInt($data, 'ut');
-        $font->uv = $data['uv'] ?? null;
-
-        return $font;
+        return new PdfFont(
+            // common properties
+            name: $name,
+            type: $data['type'],
+            file: $this->getString($data, 'file'),
+            encoding: $this->getEncoding($data),
+            cw: $data['cw'],
+            up: $this->getInt($data, 'up'),
+            ut: $this->getInt($data, 'ut'),
+            uv: $data['uv'] ?? null,
+            // generate font properties
+            desc: $data['desc'] ?? [],
+            diff: $this->getString($data, 'diff'),
+            length1: $this->getInt($data, 'length1'),
+            length2: $this->getInt($data, 'length2'),
+            originalsize: $this->getInt($data, 'originalsize'),
+            size1: $this->getInt($data, 'size1'),
+            size2: $this->getInt($data, 'size2'),
+            subsetted: $data['subsetted'] ?? false,
+        );
     }
 
     /**
