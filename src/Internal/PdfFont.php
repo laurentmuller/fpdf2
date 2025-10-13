@@ -26,22 +26,22 @@ final class PdfFont extends AbstractPdfNumber
     public int $index = 0;
 
     /**
-     * @param non-empty-string            $name         The font name.
-     * @param string                      $type         The font type.
-     * @param ?string                     $file         The optional font file path.
-     * @param ?string                     $encoding     The optional font encoding.
-     * @param array<int, int>             $cw           The character widths.
-     * @param int                         $up           The upper underline position.
-     * @param int                         $ut           The utter underline position.
-     * @param array<int, int|int[]>|null  $uv           The optional Unicode mapping.
-     * @param array<string, string|int[]> $desc         The font descriptions.
-     * @param ?string                     $diff         The optional font difference.
-     * @param int                         $length1      The first length.
-     * @param int                         $length2      The second length.
-     * @param int                         $originalsize The original size.
-     * @param int                         $size1        The first size.
-     * @param int                         $size2        The second size.
-     * @param bool                        $subsetted    The sub-setting characters state.
+     * @param non-empty-string            $name         the font name
+     * @param string                      $type         the font type
+     * @param ?string                     $file         the optional font file path
+     * @param ?string                     $encoding     the optional font encoding
+     * @param array<int, int>             $cw           the character widths
+     * @param int                         $up           the upper underline position
+     * @param int                         $ut           the utter underline position
+     * @param array<int, int|int[]>|null  $uv           the optional Unicode mapping
+     * @param array<string, string|int[]> $desc         the font descriptions
+     * @param ?string                     $diff         the optional font difference
+     * @param int                         $length1      the first length
+     * @param int                         $length2      the second length
+     * @param int                         $originalsize the original size
+     * @param int                         $size1        the first size
+     * @param int                         $size2        the second size
+     * @param bool                        $subsetted    the sub-setting characters state
      */
     public function __construct(
         public readonly string $name,

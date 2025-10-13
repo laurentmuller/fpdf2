@@ -56,7 +56,7 @@ $rules = [
     'new_with_braces' => ['anonymous_class' => false, 'named_class' => true],
     'ordered_imports' => ['imports_order' => ['const', 'class', 'function']],
     'blank_line_before_statement' => ['statements' => ['declare', 'try', 'return']],
-    'header_comment' => ['header' => $comment, 'location' => 'after_open', 'separate' => 'bottom'],
+    'header_comment' => ['header' => $comment, 'location' => 'after_open'],
 ];
 
 $finder = Finder::create()
