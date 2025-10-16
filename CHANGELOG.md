@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 3.2.2 - 2025-10-16
 
 - `PdfDocument`: Updated `checkOutput()`, `getFontPath()` and
   `getImageParser()` functions.
