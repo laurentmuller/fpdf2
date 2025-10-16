@@ -23,7 +23,7 @@ class PdfSapiHeadersDocument extends PdfDocument
     }
 
     #[\Override]
-    protected function isHeadersSent(string &$filename = null, int &$line = null): bool
+    protected function isHeadersSent(?string &$filename = null, ?int &$line = null): bool
     {
         // for code coverage
         parent::isHeadersSent($filename, $line);

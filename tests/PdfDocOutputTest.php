@@ -70,6 +70,7 @@ class PdfDocOutputTest extends AbstractPdfDocTestCase
         $value = $doc->output(PdfDestination::STRING);
         self::assertNotEmpty($value);
     }
+
     public function testOutputWithBomContent(): void
     {
         echo "\xEF\xBB\xBF";
@@ -77,6 +78,7 @@ class PdfDocOutputTest extends AbstractPdfDocTestCase
         $doc->output(PdfDestination::DOWNLOAD);
         self::assertSame(1, $doc->getPage());
     }
+
     public function testOutputWithHeadersSent(): void
     {
         $doc = new PdfSapiHeadersDocument(false, true);

@@ -2569,7 +2569,7 @@ class PdfDocument
      * @param-out string $filename the source file name where output started
      * @param-out int    $line      the line number where output started
      */
-    protected function isHeadersSent(string &$filename = null, int &$line = null): bool
+    protected function isHeadersSent(?string &$filename = null, ?int &$line = null): bool
     {
         return \headers_sent($filename, $line);
     }
