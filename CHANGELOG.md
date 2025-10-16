@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- `PdfDocument`: Updated `checkOutput()` function.
+
 ## 3.2.2 - 2025-10-16
 
 - `PdfDocument`: Updated `checkOutput()`, `getFontPath()` and

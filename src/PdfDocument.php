@@ -2275,13 +2275,12 @@ class PdfDocument
 
         // the output buffer is not empty
         $content = \ob_get_contents();
-        if (\is_string($content) && 1 === \preg_match('/^(\xEF\xBB\xBF)?\s*$/', $content)) {
-            // it contains only a UTF-8 BOM and/or whitespace, let's clean it
-            \ob_clean();
-
-            return;
+        if (!\is_string($content) || 1 !== \preg_match('/^(\xEF\xBB\xBF)?\s*$/', $content)) {
+            throw PdfException::instance('Some data has already been output, can not send PDF file.');
         }
-        throw PdfException::instance('Some data has already been output, can not send PDF file.');
+
+        // it contains only a UTF-8 BOM and/or whitespace, let's clean it
+        \ob_clean();
     }
 
     /**
@@ -2567,7 +2566,7 @@ class PdfDocument
      * Checks if and where headers have been sent.
      *
      * @param-out string $filename the source file name where output started
-     * @param-out int    $line      the line number where output started
+     * @param-out int    $line     the line number where output started
      */
     protected function isHeadersSent(?string &$filename = null, ?int &$line = null): bool
     {
