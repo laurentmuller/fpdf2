@@ -2263,19 +2263,25 @@ class PdfDocument
      */
     protected function checkOutput(): void
     {
-        if (\PHP_SAPI !== 'cli' && \headers_sent($file, $line)) {
-            throw PdfException::format('Some data has already been output, can not send PDF file (output started at %s:%s).', $file, $line);
+        if (!$this->isPhpSapiCli() && $this->isHeadersSent($file, $line)) {
+            throw PdfException::format('Some data has already been output, can not send PDF file (output started at %s:%d).', $file, $line);
         }
-        if (false !== \ob_get_length()) {
-            // the output buffer is not empty
-            $content = \ob_get_contents();
-            if (\is_string($content) && 1 === \preg_match('/^(\xEF\xBB\xBF)?\s*$/', $content)) {
-                // it contains only a UTF-8 BOM and/or whitespace, let's clean it
-                \ob_clean();
-            } else {
-                throw PdfException::instance('Some data has already been output, can not send PDF file.');
-            }
+
+        // output buffer ?
+        $length = \ob_get_length();
+        if (false === $length || 0 === $length) {
+            return;
         }
+
+        // the output buffer is not empty
+        $content = \ob_get_contents();
+        if (\is_string($content) && 1 === \preg_match('/^(\xEF\xBB\xBF)?\s*$/', $content)) {
+            // it contains only a UTF-8 BOM and/or whitespace, let's clean it
+            \ob_clean();
+
+            return;
+        }
+        throw PdfException::instance('Some data has already been output, can not send PDF file.');
     }
 
     /**
@@ -2466,12 +2472,8 @@ class PdfDocument
      */
     protected function getFontPath(): string
     {
-        if (\defined('FPDF_FONTPATH')) {
-            /** @var string */
-            return FPDF_FONTPATH;
-        }
-
-        return __DIR__ . '/font/';
+        /** @var string */
+        return \defined('FPDF_FONTPATH') ? \constant('FPDF_FONTPATH') : __DIR__ . '/font/';
     }
 
     /**
@@ -2483,7 +2485,7 @@ class PdfDocument
      */
     protected function getImageParser(string $type): ?PdfImageParserInterface
     {
-        return match ($type) {
+        return match (\strtolower($type)) {
             'jpeg',
             'jpg' => new PdfJpgParser(),
             'gif' => new PdfGifParser(),
@@ -2514,7 +2516,7 @@ class PdfDocument
      */
     protected function headers(string $name, bool $isUTF8, bool $inline): void
     {
-        if ($inline && \PHP_SAPI === 'cli') {
+        if ($inline && $this->isPhpSapiCli()) {
             return;
         }
 
@@ -2559,6 +2561,25 @@ class PdfDocument
     protected function isAscii(string $str): bool
     {
         return \mb_check_encoding($str, 'ASCII');
+    }
+
+    /**
+     * Checks if and where headers have been sent.
+     *
+     * @param-out string $filename the source file name where output started
+     * @param-out int    $line      the line number where output started
+     */
+    protected function isHeadersSent(string &$filename = null, int &$line = null): bool
+    {
+        return \headers_sent($filename, $line);
+    }
+
+    /**
+     * Returns a value indicating if the <code>PHP_SAPI</code> constant is 'cli'.
+     */
+    protected function isPhpSapiCli(): bool
+    {
+        return \PHP_SAPI === 'cli';
     }
 
     /**
@@ -2696,7 +2717,7 @@ class PdfDocument
                 throw PdfException::format('Image file has no extension and no type was specified: %s.', $file);
             }
         }
-        $type = \strtolower($type);
+
         $parser = $this->getImageParser($type);
         if (!$parser instanceof PdfImageParserInterface) {
             throw PdfException::format('Unsupported image type: %s.', $type);

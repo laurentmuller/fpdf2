@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- `PdfDocument`: Updated `checkOutput()`, `getFontPath()` and
+  `getImageParser()` functions.
+- `PdfDocument`: Added `isHeadersSent()` and `isPhpSapiCli()` functions.
 - `PdfDocument`: Updated `output()` and `headers()` functions.
 - Updated `PdfFont` constructor.
 - Updated `StyleCI` configuration.
