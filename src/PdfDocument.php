@@ -1408,9 +1408,7 @@ class PdfDocument
                 return $this->buffer;
             case PdfDestination::INLINE:
                 $this->checkOutput();
-                if (\PHP_SAPI !== 'cli') {
-                    $this->headers($name, $isUTF8, true);
-                }
+                $this->headers($name, $isUTF8, true);
                 echo $this->buffer;
                 break;
             case PdfDestination::DOWNLOAD:
@@ -2507,6 +2505,8 @@ class PdfDocument
     /**
      * Send raw HTTP headers.
      *
+     * Do nothing if the inline parameter is <code>true</code> and the <code></code>PHP_SAPI</code> property is 'cli'.
+     *
      * @param string $name   the name of the file
      * @param bool   $isUTF8 indicates if the name is encoded in ISO-8859-1 (<code>false</code>)
      *                       or UTF-8 (<code>true</code>)
@@ -2514,9 +2514,12 @@ class PdfDocument
      */
     protected function headers(string $name, bool $isUTF8, bool $inline): void
     {
+        if ($inline && \PHP_SAPI === 'cli') {
+            return;
+        }
+
         $disposition = $inline ? 'inline' : 'attachment';
         $encoded = $this->httpEncode('filename', $name, $isUTF8);
-
         \header('Pragma: public');
         \header('Content-Type: application/pdf');
         \header('Cache-Control: private, max-age=0, must-revalidate');

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `PdfDocument`: Updated `output()` and `headers()` functions.
 - Updated `PdfFont` constructor.
 - Updated `StyleCI` configuration.
 - Updated `PHP-CS-Fixer` to version 3.88.0 and the configuration.
