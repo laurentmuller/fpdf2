@@ -21,50 +21,22 @@ use PHPUnit\Framework\TestCase;
 
 class PdfBookmarkTraitTest extends TestCase
 {
-    public function testBookmarkEmpty(): void
-    {
-        $doc = $this->createDocument();
-        $doc->addPageIndex();
-        $doc->output(PdfDestination::STRING);
-        self::assertSame(1, $doc->getPage());
-    }
-
-    public function testBookmarks(): void
-    {
-        $doc = $this->createDocument();
-        $doc->addBookmark('Level 0');
-        $doc->addBookmark('Level 1', level: 1);
-        $doc->addPageIndex();
-        $doc->output(PdfDestination::STRING);
-        self::assertSame(2, $doc->getPage());
-    }
-
-    public function testBookmarksWithSeparator(): void
-    {
-        $doc = $this->createDocument();
-        $doc->addBookmark('Level 0');
-        $doc->addBookmark('Level 1', level: 1);
-        $doc->addPageIndex(separator: '');
-        $doc->output(PdfDestination::STRING);
-        self::assertSame(2, $doc->getPage());
-    }
-
-    public function testIndexNoTitle(): void
-    {
-        $doc = $this->createDocument();
-        $doc->addBookmark('Level 0');
-        $doc->addBookmark('Level 1', level: 1);
-        $doc->addPageIndex(title: '');
-        $doc->output(PdfDestination::STRING);
-        self::assertSame(2, $doc->getPage());
-    }
-
-    public function testLevelInvalid(): void
+    public function testLevelInvalidRange(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessage('Invalid bookmark level: 3. Allowed value: 0.');
+        self::expectExceptionMessage('Invalid bookmark level: 3. Allowed value(s): 0 to 2.');
         $doc = $this->createDocument();
-        $doc->addBookmark('Invalid Level', level: 3);
+        $doc->addBookmark(text: 'Level 0');
+        $doc->addBookmark(text: 'Level 1', level: 1);
+        $doc->addBookmark(text: 'Invalid Level', level: 3);
+    }
+
+    public function testLevelInvalidSingle(): void
+    {
+        self::expectException(PdfException::class);
+        self::expectExceptionMessage('Invalid bookmark level: 3. Allowed value(s): 0.');
+        $doc = $this->createDocument();
+        $doc->addBookmark(text: 'Invalid Level', level: 3);
     }
 
     /**
@@ -74,17 +46,17 @@ class PdfBookmarkTraitTest extends TestCase
     {
         $level = -1;
         self::expectException(PdfException::class);
-        self::expectExceptionMessage('Invalid bookmark level: -1. Allowed value: 0.');
+        self::expectExceptionMessage('Invalid bookmark level: -1. Allowed value(s): 0.');
         $doc = $this->createDocument();
         // @phpstan-ignore argument.type
-        $doc->addBookmark('Negative Level', level: $level);
+        $doc->addBookmark(text: 'Negative Level', level: $level);
     }
 
     public function testLongBookmark(): void
     {
-        $bookmark = \str_repeat('Bookmark', 30);
+        $text = \str_repeat('Bookmark', 30);
         $doc = $this->createDocument(100);
-        $doc->addBookmark($bookmark);
+        $doc->addBookmark(text: $text);
         $doc->addPageIndex();
         $doc->output(PdfDestination::STRING);
         self::assertSame(2, $doc->getPage());
@@ -94,8 +66,46 @@ class PdfBookmarkTraitTest extends TestCase
     {
         $separator = \str_repeat('Separator', 30);
         $doc = $this->createDocument(100);
-        $doc->addBookmark('Level 0');
+        $doc->addBookmark(text: 'Level 0');
         $doc->addPageIndex(separator: $separator);
+        $doc->output(PdfDestination::STRING);
+        self::assertSame(2, $doc->getPage());
+    }
+
+    public function testPageIndexWithBookmarks(): void
+    {
+        $doc = $this->createDocument();
+        $doc->addBookmark(text: 'Level 0');
+        $doc->addBookmark(text: 'Level 1', level: 1);
+        $doc->addPageIndex();
+        $doc->output(PdfDestination::STRING);
+        self::assertSame(2, $doc->getPage());
+    }
+
+    public function testPageIndexWithoutBookmark(): void
+    {
+        $doc = $this->createDocument();
+        $doc->addPageIndex();
+        $doc->output(PdfDestination::STRING);
+        self::assertSame(1, $doc->getPage());
+    }
+
+    public function testPageIndexWithoutSeparator(): void
+    {
+        $doc = $this->createDocument();
+        $doc->addBookmark(text: 'Level 0');
+        $doc->addBookmark(text: 'Level 1', level: 1);
+        $doc->addPageIndex(separator: '');
+        $doc->output(PdfDestination::STRING);
+        self::assertSame(2, $doc->getPage());
+    }
+
+    public function testPageIndexWithoutTitle(): void
+    {
+        $doc = $this->createDocument();
+        $doc->addBookmark('Level 0');
+        $doc->addBookmark('Level 1', level: 1);
+        $doc->addPageIndex(title: '');
         $doc->output(PdfDestination::STRING);
         self::assertSame(2, $doc->getPage());
     }
@@ -105,7 +115,7 @@ class PdfBookmarkTraitTest extends TestCase
         $doc = new PdfDocumentBookmark();
         $doc->setFont(PdfFontName::ARIAL);
         if (null !== $rightMargin) {
-            $doc->setRightMargin(100);
+            $doc->setRightMargin($rightMargin);
         }
         $doc->addPage();
 

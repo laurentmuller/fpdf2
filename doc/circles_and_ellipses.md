@@ -54,13 +54,13 @@ use fpdf\Enums\PdfRectangleStyle;
 use fpdf\PdfDocument;
 use fpdf\Traits\PdfEllipseTrait;
 
-class EllipseDocument extends PdfDocument
+class PdfEllipseDocument extends PdfDocument
 {
     use PdfEllipseTrait;
 }
 
 // instanciation of inherited class
-$pdf = new EllipseDocument();
+$pdf = new PdfEllipseDocument();
 // output an ellipse and a circle with border only
 $pdf->setDrawColor(PdfRgbColor::red());
 $pdf->ellipse(30, 220, 20, 10);

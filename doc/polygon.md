@@ -25,7 +25,7 @@ To use it, create a derived class and use the `PdfPolygonTrait` trait:
 use fpdf\PdfDocument;
 use fpdf\Traits\PdfPolygonTrait;
 
-class PolygonDocument extends PdfDocument
+class PdfPolygonDocument extends PdfDocument
 {
     use PdfPolygonTrait;
 }
@@ -37,7 +37,7 @@ $points = [
 ];
 
 // instanciation of inherited class
-$pdf = new PolygonDocument();
+$pdf = new PdfPolygonDocument();
 $pdf->addPage();
 $pdf->setLineWidth(2.0);
 $pdf->setDrawColor(PdfRgbColor::red());

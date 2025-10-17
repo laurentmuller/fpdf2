@@ -25,13 +25,13 @@ To use it, create a derived class and use the `PdfDashTrait` trait:
 use fpdf\PdfDocument;
 use fpdf\Traits\PdfDashTrait;
 
-class DashDocument extends PdfDocument
+class PdfDashDocument extends PdfDocument
 {
     use PdfDashTrait;
 }
 
 // instanciation of inherited class
-$pdf = new DashDocument();
+$pdf = new PdfDashDocument();
 $pdf->addPage();
 $pdf->setLineWidth(0.5);
 $pdf->setDashPattern(3.0, 2.0);

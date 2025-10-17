@@ -64,13 +64,13 @@ use fpdf\Enum\PdfBlendMode;
 use fpdf\PdfDocument;
 use fpdf\Traits\PdfTransparencyTrait;
 
-class TransparencyDocument extends PdfDocument
+class PdfTransparencyDocument extends PdfDocument
 {
     use PdfTransparencyTrait;
 }
 
 // instanciation of inherited class
-$pdf = new TransparencyDocument();
+$pdf = new PdfTransparencyDocument();
 $pdf->addPage();
 // output an image with no transparency
 $pdf->image('logo.png', 10, 20);

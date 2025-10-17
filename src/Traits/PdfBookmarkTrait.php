@@ -63,7 +63,7 @@ trait PdfBookmarkTrait
      * @param int    $level      the outline level (0 is the top level, 1 is just below, and so on)
      * @param bool   $currentY   indicate if the ordinate of the outline destination in the current page
      *                           is the current position (true) or the top of the page (false)
-     * @param bool   $createLink true to create and add a link at the given ordinate position and page
+     * @param bool   $createLink true to create and add a link at the current position or at the top of the page
      *
      * @phpstan-param non-negative-int $level
      *
@@ -71,7 +71,7 @@ trait PdfBookmarkTrait
      *                      <ul>
      *                      <li>Is smaller than 0.</li>
      *                      <li>Is greater than the level of the previous bookmark plus 1. For example, if the previous
-     *                      bookmark is 2, the allowed values are 0..3.</li>
+     *                      bookmark is 2, the allowed values are 0 to 3 inclusive.</li>
      *                      </ul>
      */
     public function addBookmark(
@@ -366,14 +366,13 @@ trait PdfBookmarkTrait
      */
     private function validateLevel(int $level): void
     {
-        $maxLevel = 0;
-        if ([] !== $this->bookmarks) {
-            $bookmark = \end($this->bookmarks);
-            $maxLevel = $bookmark->level + 1;
-        }
+        $maxLevel = [] === $this->bookmarks ? 0 : \end($this->bookmarks)->level + 1;
         if ($level < 0 || $level > $maxLevel) {
-            $allowed = \implode('...', \array_unique([0, $maxLevel]));
-            throw PdfException::format('Invalid bookmark level: %d. Allowed value: %s.', $level, $allowed);
+            throw PdfException::format(
+                'Invalid bookmark level: %d. Allowed value(s): %s.',
+                $level,
+                \implode(' to ', \array_unique([0, $maxLevel], \SORT_NUMERIC))
+            );
         }
     }
 }

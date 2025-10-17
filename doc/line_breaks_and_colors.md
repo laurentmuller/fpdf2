@@ -13,7 +13,7 @@ use fpdf\Enums\PdfTextAlignment;
 use fpdf\PdfBorder;
 use fpdf\PdfDocument;
 
-class CustomDocument extends PdfDocument
+class PdfCustomDocument extends PdfDocument
 {
     public function header(): void
     {
@@ -82,7 +82,7 @@ class CustomDocument extends PdfDocument
     }
 }
 
-$pdf = new CustomDocument();
+$pdf = new PdfCustomDocument();
 $pdf->setAuthor('Jules Verne');
 $pdf->setTitle('20000 Leagues Under the Seas');
 $pdf->printChapter(1, 'A RUNAWAY REEF', '20k_c1.txt');

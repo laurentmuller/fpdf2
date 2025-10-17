@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Updated tests and examples.
+- `PdfBookmarkTrait`: Updated `validateLevel()` function.
 - `PdfDocument`: Updated `checkOutput()` function.
 
 ## 3.2.2 - 2025-10-16

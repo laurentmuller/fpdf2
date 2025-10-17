@@ -41,7 +41,7 @@ class PdfDocOutputTest extends AbstractPdfDocTestCase
     public function testOutputFileInvalid(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessageMatches('/Unable to create output file:.*/');
+        self::expectExceptionMessage('Unable to create output file: ///doc.pdf.');
         $doc = $this->createDocument();
         $doc->output(PdfDestination::FILE, '///doc.pdf');
     }
@@ -77,6 +77,7 @@ class PdfDocOutputTest extends AbstractPdfDocTestCase
         $doc = $this->createDocument();
         $doc->output(PdfDestination::DOWNLOAD);
         self::assertSame(1, $doc->getPage());
+        \ob_clean();
     }
 
     public function testOutputWithHeadersSent(): void
@@ -93,5 +94,6 @@ class PdfDocOutputTest extends AbstractPdfDocTestCase
         $doc = $this->createDocument();
         $doc->output(PdfDestination::DOWNLOAD);
         self::assertSame(1, $doc->getPage());
+        \ob_clean();
     }
 }

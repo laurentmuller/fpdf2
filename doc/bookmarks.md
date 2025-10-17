@@ -36,13 +36,13 @@ To use it, create a derived class and use the `PdfBookmarkTrait` trait:
 use fpdf\PdfDocument;
 use fpdf\Traits\PdfBookmarkTrait;
 
-class BookmarkDocument extends PdfDocument
+class PdfBookmarkDocument extends PdfDocument
 {
     use PdfBookmarkTrait;
 }
 
 // instanciation of inherited class
-$pdf = new BookmarkDocument();
+$pdf = new PdfBookmarkDocument();
 $pdf->addPage();
 // add root bookmark (level 0) 
 $pdf->addBookmark('Root Bookmark');

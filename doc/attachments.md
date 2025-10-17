@@ -28,14 +28,14 @@ use fpdf\Enums\PdfPageMode;
 use fpdf\PdfDocument;
 use fpdf\Traits\PdfAttachmentTrait;
 
-class AttachmentDocument extends PdfDocument
+class PdfAttachmentDocument extends PdfDocument
 {
     use PdfAttachmentTrait;
 }
 
 $file = "attached.txt";
 
-$pdf = new AttachmentDocument();
+$pdf = new PdfAttachmentDocument();
 $pdf->addPage();
 $pdf->addAttachment($file);
 // force the PDF viewer to open the attachment pane

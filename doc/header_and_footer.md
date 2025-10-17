@@ -10,7 +10,7 @@ use fpdf\Enums\PdfTextAlignment;
 use fpdf\PdfBorder;
 use fpdf\PdfDocument;
 
-class CustomDocument extends PdfDocument
+class PdfCustomDocument extends PdfDocument
 {
     // page header
     public function header(): void
@@ -40,7 +40,7 @@ class CustomDocument extends PdfDocument
 }
 
 // instanciation of inherited class
-$pdf = new CustomDocument();
+$pdf = new PdfCustomDocument();
 $pdf->setFont(PdfFontName::TIMES, PdfFontStyle::REGULAR, 12);
 $pdf->setAliasNumberPages();
 $pdf->addPage();

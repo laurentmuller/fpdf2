@@ -12,7 +12,7 @@ use fpdf\Enums\PdfTextAlignment;
 use fpdf\PdfBorder;
 use fpdf\PdfDocument;
 
-class CustomDocument extends PdfDocument
+class PdfCustomDocument extends PdfDocument
 {
 
     // load data
@@ -104,7 +104,7 @@ class CustomDocument extends PdfDocument
     }
 }
 
-$pdf = new CustomDocument();
+$pdf = new PdfCustomDocument();
 // column headings
 $header = ['Country', 'Capital', 'Area (sq km)', 'Pop. (thousands)'];
 // data loading

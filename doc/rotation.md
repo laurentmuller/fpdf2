@@ -23,13 +23,13 @@ To use it, create a derived class and use the `PdfRotationTrait` trait:
 use fpdf\PdfDocument;
 use fpdf\Traits\PdfRotationTrait;
 
-class RotationDocument extends PdfDocument
+class PdfRotationDocument extends PdfDocument
 {
     use PdfRotationTrait;
 }
 
 // instanciation of inherited class
-$pdf = new RotationDocument();
+$pdf = new PdfRotationDocument();
 $pdf->addPage();
 $pdf->setFont(PdfFontName::ARIAL);
 // rotate text by 45 degrees

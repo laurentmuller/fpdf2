@@ -44,7 +44,7 @@ use fpdf\Color\PdfRgbColor;
 use fpdf\PdfDocument;
 use fpdf\Traits\PdfSectorTrait;
 
-class SectorDocument extends PdfDocument
+class PdfSectorDocument extends PdfDocument
 {
     use PdfSectorTrait;
 }
@@ -54,7 +54,7 @@ $centerX = 105;
 $centerY = 60;
 
 // instanciation of inherited class
-$pdf = new SectorDocument();
+$pdf = new PdfSectorDocument();
 $pdf->addPage();
 // first sector
 $pdf->setFillColor(PdfRgbColor::instance(120, 120, 255));
