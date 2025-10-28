@@ -19,7 +19,7 @@ use fpdf\PdfDocument;
 use fpdf\PdfException;
 use fpdf\Tests\Legacy\FPDF;
 
-class PdfCompareBorderTest extends AbstractCompareTestCase
+final class PdfCompareBorderTest extends AbstractCompareTestCase
 {
     /**
      * @throws PdfException

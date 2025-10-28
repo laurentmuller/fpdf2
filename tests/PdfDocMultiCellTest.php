@@ -15,7 +15,7 @@ namespace fpdf\Tests;
 
 use fpdf\PdfException;
 
-class PdfDocMultiCellTest extends AbstractPdfDocTestCase
+final class PdfDocMultiCellTest extends AbstractPdfDocTestCase
 {
     public function testCell(): void
     {

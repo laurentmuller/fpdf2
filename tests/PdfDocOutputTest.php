@@ -17,7 +17,7 @@ use fpdf\Enums\PdfDestination;
 use fpdf\PdfException;
 use fpdf\Tests\Fixture\PdfSapiHeadersDocument;
 
-class PdfDocOutputTest extends AbstractPdfDocTestCase
+final class PdfDocOutputTest extends AbstractPdfDocTestCase
 {
     public function testOutputDownloadInvalid(): void
     {

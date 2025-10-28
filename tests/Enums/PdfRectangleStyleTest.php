@@ -16,7 +16,7 @@ namespace fpdf\Tests\Enums;
 use fpdf\Enums\PdfRectangleStyle;
 use PHPUnit\Framework\TestCase;
 
-class PdfRectangleStyleTest extends TestCase
+final class PdfRectangleStyleTest extends TestCase
 {
     public function testValue(): void
     {

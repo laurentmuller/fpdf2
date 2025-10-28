@@ -16,7 +16,7 @@ namespace fpdf\Tests\Enums;
 use fpdf\Enums\PdfLineJoin;
 use PHPUnit\Framework\TestCase;
 
-class PdfLineJoinTest extends TestCase
+final class PdfLineJoinTest extends TestCase
 {
     public function testDefault(): void
     {

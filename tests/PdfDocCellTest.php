@@ -20,7 +20,7 @@ use fpdf\Enums\PdfMove;
 use fpdf\Enums\PdfTextAlignment;
 use fpdf\PdfException;
 
-class PdfDocCellTest extends AbstractPdfDocTestCase
+final class PdfDocCellTest extends AbstractPdfDocTestCase
 {
     public function testColorFlag(): void
     {

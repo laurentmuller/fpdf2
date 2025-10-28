@@ -16,7 +16,7 @@ namespace fpdf\Tests\Interfaces;
 use fpdf\Tests\Fixture\PdfInvalidEnumDefault;
 use PHPUnit\Framework\TestCase;
 
-class PdfEnumDefaultInterfaceTest extends TestCase
+final class PdfEnumDefaultInterfaceTest extends TestCase
 {
     public function testNoDefaultFound(): void
     {

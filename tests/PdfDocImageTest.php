@@ -15,7 +15,7 @@ namespace fpdf\Tests;
 
 use fpdf\PdfException;
 
-class PdfDocImageTest extends AbstractPdfDocTestCase
+final class PdfDocImageTest extends AbstractPdfDocTestCase
 {
     public function testAlpha(): void
     {

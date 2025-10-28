@@ -16,7 +16,7 @@ namespace fpdf\Tests\Enums;
 use fpdf\Enums\PdfDuplex;
 use PHPUnit\Framework\TestCase;
 
-class PdfDuplexTest extends TestCase
+final class PdfDuplexTest extends TestCase
 {
     public function testDefault(): void
     {

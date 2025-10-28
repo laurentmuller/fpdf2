@@ -16,7 +16,7 @@ namespace fpdf\Tests;
 use fpdf\Enums\PdfDestination;
 use fpdf\Enums\PdfDirection;
 
-class PdfDocPreferencesTest extends AbstractPdfDocTestCase
+final class PdfDocPreferencesTest extends AbstractPdfDocTestCase
 {
     public function testPreferences(): void
     {

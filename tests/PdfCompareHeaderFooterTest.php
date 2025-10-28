@@ -21,7 +21,7 @@ use fpdf\PdfBorder;
 use fpdf\PdfDocument;
 use fpdf\Tests\Legacy\FPDF;
 
-class PdfCompareHeaderFooterTest extends AbstractCompareTestCase
+final class PdfCompareHeaderFooterTest extends AbstractCompareTestCase
 {
     #[\Override]
     protected function createNewDocument(): PdfDocument

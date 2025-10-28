@@ -17,7 +17,7 @@ use fpdf\Enums\PdfPageSize;
 use fpdf\Enums\PdfUnit;
 use PHPUnit\Framework\TestCase;
 
-class PdfPageSizeTest extends TestCase
+final class PdfPageSizeTest extends TestCase
 {
     public function testA4(): void
     {

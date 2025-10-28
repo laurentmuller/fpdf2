@@ -16,7 +16,7 @@ namespace fpdf\Tests\Enums;
 use fpdf\Enums\PdfNonFullScreenPageMode;
 use PHPUnit\Framework\TestCase;
 
-class PdfNonFullScreenPageModeTest extends TestCase
+final class PdfNonFullScreenPageModeTest extends TestCase
 {
     public function testDefault(): void
     {

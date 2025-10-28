@@ -17,7 +17,7 @@ use fpdf\Enums\PdfAnnotationName;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-class PdfAnnotationNameTest extends TestCase
+final class PdfAnnotationNameTest extends TestCase
 {
     /**
      * @phpstan-return \Generator<int, array{PdfAnnotationName, string}>

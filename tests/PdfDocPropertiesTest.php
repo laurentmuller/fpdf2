@@ -34,7 +34,7 @@ use fpdf\PdfRectangle;
 use fpdf\PdfSize;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class PdfDocPropertiesTest extends AbstractPdfDocTestCase
+final class PdfDocPropertiesTest extends AbstractPdfDocTestCase
 {
     /**
      * @phpstan-return \Generator<int, array{string|int|null, bool}>

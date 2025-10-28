@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace fpdf\Tests;
 
-class PdfDocMarginTest extends AbstractPdfDocTestCase
+final class PdfDocMarginTest extends AbstractPdfDocTestCase
 {
     public function testBottomMargin(): void
     {

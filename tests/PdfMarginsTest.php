@@ -16,7 +16,7 @@ namespace fpdf\Tests;
 use fpdf\PdfMargins;
 use PHPUnit\Framework\TestCase;
 
-class PdfMarginsTest extends TestCase
+final class PdfMarginsTest extends TestCase
 {
     public function testAsArray(): void
     {
@@ -36,13 +36,13 @@ class PdfMarginsTest extends TestCase
     public function testInstanceNotZero(): void
     {
         $actual = PdfMargins::instance(10.0, 20.0, 30.0, 40.0);
-        self::assertSameValues($actual, 10.0, 20.0, 30.0, 40.0);
+        $this->assertSameValues($actual, 10.0, 20.0, 30.0, 40.0);
     }
 
     public function testInstanceZero(): void
     {
         $actual = PdfMargins::instance();
-        self::assertSameValues($actual, 0.0, 0.0, 0.0, 0.0);
+        $this->assertSameValues($actual, 0.0, 0.0, 0.0, 0.0);
     }
 
     public function testNotEquals(): void
@@ -55,19 +55,19 @@ class PdfMarginsTest extends TestCase
     public function testReset(): void
     {
         $actual = PdfMargins::instance(10.0, 20.0, 30.0, 40.0);
-        self::assertSameValues($actual, 10.0, 20.0, 30.0, 40.0);
+        $this->assertSameValues($actual, 10.0, 20.0, 30.0, 40.0);
         $actual->reset();
-        self::assertSameValues($actual, 0.0, 0.0, 0.0, 0.0);
+        $this->assertSameValues($actual, 0.0, 0.0, 0.0, 0.0);
     }
 
     public function testSetMargins(): void
     {
         $actual = PdfMargins::instance();
         $actual->setMargins(10.0);
-        self::assertSameValues($actual, 10.0, 10.0, 10.0, 10.0);
+        $this->assertSameValues($actual, 10.0, 10.0, 10.0, 10.0);
     }
 
-    protected static function assertSameValues(
+    private function assertSameValues(
         PdfMargins $actual,
         float $left,
         float $top,

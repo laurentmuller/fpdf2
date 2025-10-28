@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Make test classes final.
 - Updated tests and examples.
 - `PdfBookmarkTrait`: Updated `validateLevel()` function.
 - `PdfDocument`: Updated `checkOutput()` function.

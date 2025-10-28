@@ -18,7 +18,7 @@ use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
 use fpdf\PdfException;
 
-class PdfDocTextTest extends AbstractPdfDocTestCase
+final class PdfDocTextTest extends AbstractPdfDocTestCase
 {
     public function testColorFlag(): void
     {

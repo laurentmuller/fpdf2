@@ -17,7 +17,7 @@ use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
 use fpdf\PdfException;
 
-class PdfDocWriteTest extends AbstractPdfDocTestCase
+final class PdfDocWriteTest extends AbstractPdfDocTestCase
 {
     public function testMultiLine(): void
     {

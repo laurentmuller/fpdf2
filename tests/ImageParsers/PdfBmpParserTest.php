@@ -15,7 +15,7 @@ namespace fpdf\Tests\ImageParsers;
 
 use fpdf\ImageParsers\PdfBmpParser;
 
-class PdfBmpParserTest extends AbstractPdfParserTestCase
+final class PdfBmpParserTest extends AbstractPdfParserTestCase
 {
     public function testValid(): void
     {

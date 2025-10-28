@@ -19,7 +19,7 @@ use fpdf\PdfRectangle;
 use fpdf\Tests\Fixture\PdfDocumentRotation;
 use PHPUnit\Framework\TestCase;
 
-class PdfRotationTraitTest extends TestCase
+final class PdfRotationTraitTest extends TestCase
 {
     public function testRender(): void
     {

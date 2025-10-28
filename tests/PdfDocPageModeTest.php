@@ -17,7 +17,7 @@ use fpdf\Enums\PdfDestination;
 use fpdf\Enums\PdfPageMode;
 use fpdf\Enums\PdfVersion;
 
-class PdfDocPageModeTest extends AbstractPdfDocTestCase
+final class PdfDocPageModeTest extends AbstractPdfDocTestCase
 {
     public function testDefault(): void
     {

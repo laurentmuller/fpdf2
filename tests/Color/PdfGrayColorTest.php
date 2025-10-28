@@ -17,7 +17,7 @@ use fpdf\Color\PdfCmykColor;
 use fpdf\Color\PdfGrayColor;
 use fpdf\Color\PdfRgbColor;
 
-class PdfGrayColorTest extends AbstractColorTestCase
+final class PdfGrayColorTest extends AbstractColorTestCase
 {
     public function testBlack(): void
     {

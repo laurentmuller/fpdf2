@@ -21,7 +21,7 @@ use fpdf\PdfBorder;
 use fpdf\PdfDocument;
 use fpdf\Tests\Legacy\FPDF;
 
-class PdfCompareColorTest extends AbstractCompareTestCase
+final class PdfCompareColorTest extends AbstractCompareTestCase
 {
     #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void

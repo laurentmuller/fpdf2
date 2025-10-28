@@ -17,7 +17,7 @@ use fpdf\Enums\PdfDestination;
 use fpdf\Enums\PdfLayout;
 use fpdf\Enums\PdfVersion;
 
-class PdfDocLayoutTest extends AbstractPdfDocTestCase
+final class PdfDocLayoutTest extends AbstractPdfDocTestCase
 {
     public function testDefault(): void
     {

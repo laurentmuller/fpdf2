@@ -18,7 +18,7 @@ use fpdf\Color\PdfGrayColor;
 use fpdf\Color\PdfRgbColor;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class PdfRgbColorTest extends AbstractColorTestCase
+final class PdfRgbColorTest extends AbstractColorTestCase
 {
     /**
      * @return \Generator<int, array{0: ?string, 1: ?PdfRgbColor}>

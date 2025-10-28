@@ -16,7 +16,7 @@ namespace fpdf\Tests\Enums;
 use fpdf\Enums\PdfScaling;
 use PHPUnit\Framework\TestCase;
 
-class PdfScalingTest extends TestCase
+final class PdfScalingTest extends TestCase
 {
     public function testDefault(): void
     {

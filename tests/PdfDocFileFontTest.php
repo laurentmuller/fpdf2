@@ -16,7 +16,7 @@ namespace fpdf\Tests;
 use fpdf\Enums\PdfDestination;
 use fpdf\PdfException;
 
-class PdfDocFileFontTest extends AbstractPdfDocTestCase
+final class PdfDocFileFontTest extends AbstractPdfDocTestCase
 {
     private const FONTS_DIR = __DIR__ . '/resources/';
 

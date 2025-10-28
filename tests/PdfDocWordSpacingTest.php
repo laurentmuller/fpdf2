@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace fpdf\Tests;
 
-class PdfDocWordSpacingTest extends AbstractPdfDocTestCase
+final class PdfDocWordSpacingTest extends AbstractPdfDocTestCase
 {
     public function testWordSpacing(): void
     {

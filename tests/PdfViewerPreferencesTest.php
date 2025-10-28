@@ -21,7 +21,7 @@ use fpdf\Enums\PdfVersion;
 use fpdf\PdfViewerPreferences;
 use PHPUnit\Framework\TestCase;
 
-class PdfViewerPreferencesTest extends TestCase
+final class PdfViewerPreferencesTest extends TestCase
 {
     public function testDefaultDirection(): void
     {

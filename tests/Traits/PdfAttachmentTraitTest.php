@@ -19,7 +19,7 @@ use fpdf\PdfException;
 use fpdf\Tests\Fixture\PdfDocumentAttachment;
 use PHPUnit\Framework\TestCase;
 
-class PdfAttachmentTraitTest extends TestCase
+final class PdfAttachmentTraitTest extends TestCase
 {
     public function testAttachmentWithDescription(): void
     {

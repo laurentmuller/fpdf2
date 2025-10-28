@@ -16,7 +16,7 @@ namespace fpdf\Tests\Enums;
 use fpdf\Enums\PdfZoom;
 use PHPUnit\Framework\TestCase;
 
-class PdfZoomTest extends TestCase
+final class PdfZoomTest extends TestCase
 {
     public function testDefault(): void
     {

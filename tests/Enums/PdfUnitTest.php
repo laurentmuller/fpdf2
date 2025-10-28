@@ -17,7 +17,7 @@ use fpdf\Enums\PdfUnit;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-class PdfUnitTest extends TestCase
+final class PdfUnitTest extends TestCase
 {
     /**
      * @phpstan-return \Generator<int, array{float, PdfUnit, PdfUnit, float}>

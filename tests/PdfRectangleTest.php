@@ -18,7 +18,7 @@ use fpdf\PdfRectangle;
 use fpdf\PdfSize;
 use PHPUnit\Framework\TestCase;
 
-class PdfRectangleTest extends TestCase
+final class PdfRectangleTest extends TestCase
 {
     public function testAsArray(): void
     {
@@ -38,7 +38,7 @@ class PdfRectangleTest extends TestCase
     public function testConstructor(): void
     {
         $actual = new PdfRectangle(10, 20, 30, 40);
-        self::assertSameValues($actual, 10, 20, 30, 40);
+        $this->assertSameValues($actual, 10, 20, 30, 40);
     }
 
     public function testContainsPoint(): void
@@ -116,55 +116,55 @@ class PdfRectangleTest extends TestCase
     {
         $actual = new PdfRectangle(10, 10, 20, 20);
         $actual->indent(5);
-        self::assertSameValues($actual, 15, 10, 15, 20);
+        $this->assertSameValues($actual, 15, 10, 15, 20);
     }
 
     public function testIndentNegative(): void
     {
         $actual = new PdfRectangle(10, 10, 20, 20);
         $actual->indent(-10);
-        self::assertSameValues($actual, 10, 10, 20, 20);
+        $this->assertSameValues($actual, 10, 10, 20, 20);
     }
 
     public function testIndentZero(): void
     {
         $actual = new PdfRectangle(10, 10, 20, 20);
         $actual->indent(0);
-        self::assertSameValues($actual, 10, 10, 20, 20);
+        $this->assertSameValues($actual, 10, 10, 20, 20);
     }
 
     public function testInflate(): void
     {
         $actual = new PdfRectangle(0, 0, 10, 10);
         $actual->inflate(5);
-        self::assertSameValues($actual, -5, -5, 20, 20);
+        $this->assertSameValues($actual, -5, -5, 20, 20);
     }
 
     public function testInflateX(): void
     {
         $actual = new PdfRectangle(0, 0, 10, 10);
         $actual->inflateX(5);
-        self::assertSameValues($actual, -5, 0, 20, 10);
+        $this->assertSameValues($actual, -5, 0, 20, 10);
     }
 
     public function testInflateXY(): void
     {
         $actual = new PdfRectangle(0, 0, 10, 10);
         $actual->inflateXY(5, 5);
-        self::assertSameValues($actual, -5, -5, 20, 20);
+        $this->assertSameValues($actual, -5, -5, 20, 20);
     }
 
     public function testInflateY(): void
     {
         $actual = new PdfRectangle(0, 0, 10, 10);
         $actual->inflateY(5);
-        self::assertSameValues($actual, 0, -5, 10, 20);
+        $this->assertSameValues($actual, 0, -5, 10, 20);
     }
 
     public function testInstance(): void
     {
         $actual = PdfRectangle::instance(10, 20, 30, 40);
-        self::assertSameValues($actual, 10, 20, 30, 40);
+        $this->assertSameValues($actual, 10, 20, 30, 40);
     }
 
     public function testIntersect(): void
@@ -187,38 +187,38 @@ class PdfRectangleTest extends TestCase
         $rect = PdfRectangle::instance(10, 20, 50, 100);
 
         $actual = $rect->scale(2);
-        self::assertSameValues($actual, 20, 40, 100, 200);
+        $this->assertSameValues($actual, 20, 40, 100, 200);
 
         $actual = $rect->scale(0.5);
-        self::assertSameValues($actual, 5, 10, 25, 50);
+        $this->assertSameValues($actual, 5, 10, 25, 50);
     }
 
     public function testSetBottom(): void
     {
         $actual = new PdfRectangle(10, 10, 20, 20);
         $actual->setBottom(40);
-        self::assertSameValues($actual, 10, 10, 20, 30);
+        $this->assertSameValues($actual, 10, 10, 20, 30);
     }
 
     public function testSetOrigin(): void
     {
         $actual = new PdfRectangle(0, 0, 100, 100);
         $actual->setOrigin(new PdfPoint(10, 20));
-        self::assertSameValues($actual, 10, 20, 100, 100);
+        $this->assertSameValues($actual, 10, 20, 100, 100);
     }
 
     public function testSetRight(): void
     {
         $actual = new PdfRectangle(10, 10, 20, 20);
         $actual->setRight(40);
-        self::assertSameValues($actual, 10, 10, 30, 20);
+        $this->assertSameValues($actual, 10, 10, 30, 20);
     }
 
     public function testSetSize(): void
     {
         $actual = new PdfRectangle(0, 0, 20, 20);
         $actual->setSize(new PdfSize(10, 10));
-        self::assertSameValues($actual, 0, 0, 10, 10);
+        $this->assertSameValues($actual, 0, 0, 10, 10);
     }
 
     public function testUnion(): void
@@ -226,7 +226,7 @@ class PdfRectangleTest extends TestCase
         $rect1 = new PdfRectangle(0, 0, 20, 20);
         $rect2 = new PdfRectangle(10, 10, 20, 20);
         $actual = $rect1->union($rect2);
-        self::assertSameValues($actual, 0, 0, 30, 30);
+        $this->assertSameValues($actual, 0, 0, 30, 30);
     }
 
     public function testWidth(): void
@@ -253,7 +253,7 @@ class PdfRectangleTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    protected static function assertSameValues(PdfRectangle $actual, float $x, float $y, float $w, float $h): void
+    private function assertSameValues(PdfRectangle $actual, float $x, float $y, float $w, float $h): void
     {
         self::assertSame($x, $actual->x);
         self::assertSame($y, $actual->y);

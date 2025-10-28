@@ -16,7 +16,7 @@ namespace fpdf\Tests;
 use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
 
-class PdfDocFontStyleTest extends AbstractPdfDocTestCase
+final class PdfDocFontStyleTest extends AbstractPdfDocTestCase
 {
     public function testFonts(): void
     {

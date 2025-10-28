@@ -17,7 +17,7 @@ use fpdf\Enums\PdfVersion;
 use fpdf\PdfDocument;
 use fpdf\Tests\Legacy\FPDF;
 
-class PdfCompareVersionTest extends AbstractCompareTestCase
+final class PdfCompareVersionTest extends AbstractCompareTestCase
 {
     public const PDF_VERSION = PdfVersion::VERSION_1_6;
 

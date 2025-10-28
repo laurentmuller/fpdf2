@@ -15,7 +15,7 @@ namespace fpdf\Tests\ImageParsers;
 
 use fpdf\ImageParsers\PdfWebpParser;
 
-class PdfWebpParserTest extends AbstractPdfParserTestCase
+final class PdfWebpParserTest extends AbstractPdfParserTestCase
 {
     public function testValid(): void
     {

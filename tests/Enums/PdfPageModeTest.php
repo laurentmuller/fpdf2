@@ -18,7 +18,7 @@ use fpdf\Enums\PdfVersion;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-class PdfPageModeTest extends TestCase
+final class PdfPageModeTest extends TestCase
 {
     /**
      * @phpstan-return \Generator<int, array{PdfPageMode, PdfVersion}>

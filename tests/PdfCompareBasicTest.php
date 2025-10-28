@@ -27,7 +27,7 @@ use fpdf\PdfDocument;
 use fpdf\PdfException;
 use fpdf\Tests\Legacy\FPDF;
 
-class PdfCompareBasicTest extends AbstractCompareTestCase
+final class PdfCompareBasicTest extends AbstractCompareTestCase
 {
     private const COMMENT = <<<COMMENT
         This file is part of the 'fpdf' package.

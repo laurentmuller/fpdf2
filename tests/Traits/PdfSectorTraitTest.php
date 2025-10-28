@@ -16,7 +16,7 @@ namespace fpdf\Tests\Traits;
 use fpdf\Tests\Fixture\PdfDocumentSector;
 use PHPUnit\Framework\TestCase;
 
-class PdfSectorTraitTest extends TestCase
+final class PdfSectorTraitTest extends TestCase
 {
     public function testDeltaAngleZero(): void
     {

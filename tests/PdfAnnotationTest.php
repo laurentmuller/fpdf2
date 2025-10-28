@@ -18,7 +18,7 @@ use fpdf\Color\PdfRgbColor;
 use fpdf\Enums\PdfAnnotationName;
 use fpdf\Enums\PdfDestination;
 
-class PdfAnnotationTest extends AbstractPdfDocTestCase
+final class PdfAnnotationTest extends AbstractPdfDocTestCase
 {
     public function testAnnotation(): void
     {

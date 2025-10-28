@@ -18,7 +18,7 @@ use fpdf\PdfRectangle;
 use fpdf\Tests\Fixture\PdfDocumentDash;
 use PHPUnit\Framework\TestCase;
 
-class PdfDashTraitTest extends TestCase
+final class PdfDashTraitTest extends TestCase
 {
     public function testDashedRect(): void
     {

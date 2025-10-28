@@ -17,7 +17,7 @@ use fpdf\Enums\PdfFontName;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-class PdfFontNameTest extends TestCase
+final class PdfFontNameTest extends TestCase
 {
     /**
      * @phpstan-return \Generator<int, array{string, PdfFontName|null}>

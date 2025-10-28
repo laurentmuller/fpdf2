@@ -20,7 +20,7 @@ use fpdf\PdfDocument;
 use fpdf\PdfSize;
 use fpdf\Tests\Legacy\FPDF;
 
-class PdfCompareOrientationTest extends AbstractCompareTestCase
+final class PdfCompareOrientationTest extends AbstractCompareTestCase
 {
     public function testLandscape(): void
     {

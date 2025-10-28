@@ -20,7 +20,7 @@ use fpdf\PdfRectangle;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-class PdfBorderTest extends TestCase
+final class PdfBorderTest extends TestCase
 {
     /**
      * @phpstan-return \Generator<int, array{PdfBorder}>
@@ -40,13 +40,13 @@ class PdfBorderTest extends TestCase
         $actual = PdfBorder::all();
         self::assertTrue($actual->isAll());
         self::assertFalse($actual->isNone());
-        self::assertBorderEquals($actual, true, true, true, true);
+        $this->assertBorderEquals($actual, true, true, true, true);
     }
 
     public function testBottom(): void
     {
         $actual = PdfBorder::bottom();
-        self::assertBorderEquals($actual, false, false, false, true);
+        $this->assertBorderEquals($actual, false, false, false, true);
     }
 
     #[DataProvider('getBorders')]
@@ -99,13 +99,13 @@ class PdfBorderTest extends TestCase
     public function testLeft(): void
     {
         $actual = PdfBorder::left();
-        self::assertBorderEquals($actual, true, false, false, false);
+        $this->assertBorderEquals($actual, true, false, false, false);
     }
 
     public function testLeftRight(): void
     {
         $actual = PdfBorder::leftRight();
-        self::assertBorderEquals($actual, true, false, true, false);
+        $this->assertBorderEquals($actual, true, false, true, false);
     }
 
     public function testMerge(): void
@@ -119,58 +119,58 @@ class PdfBorderTest extends TestCase
     public function testNone(): void
     {
         $actual = PdfBorder::none();
-        self::assertBorderEquals($actual, false, false, false, false);
+        $this->assertBorderEquals($actual, false, false, false, false);
     }
 
     public function testNotBottom(): void
     {
         $actual = PdfBorder::notBottom();
-        self::assertBorderEquals($actual, true, true, true, false);
+        $this->assertBorderEquals($actual, true, true, true, false);
     }
 
     public function testNotLeft(): void
     {
         $actual = PdfBorder::notLeft();
-        self::assertBorderEquals($actual, false, true, true, true);
+        $this->assertBorderEquals($actual, false, true, true, true);
     }
 
     public function testNotRight(): void
     {
         $actual = PdfBorder::notRight();
-        self::assertBorderEquals($actual, true, true, false, true);
+        $this->assertBorderEquals($actual, true, true, false, true);
     }
 
     public function testNotTop(): void
     {
         $actual = PdfBorder::notTop();
-        self::assertBorderEquals($actual, true, false, true, true);
+        $this->assertBorderEquals($actual, true, false, true, true);
     }
 
     public function testOr(): void
     {
         $actual = PdfBorder::none()->or(PdfBorder::leftRight());
-        self::assertBorderEquals($actual, true, false, true, false);
+        $this->assertBorderEquals($actual, true, false, true, false);
     }
 
     public function testRight(): void
     {
         $actual = PdfBorder::right();
-        self::assertBorderEquals($actual, false, false, true, false);
+        $this->assertBorderEquals($actual, false, false, true, false);
     }
 
     public function testTop(): void
     {
         $actual = PdfBorder::top();
-        self::assertBorderEquals($actual, false, true, false, false);
+        $this->assertBorderEquals($actual, false, true, false, false);
     }
 
     public function testTopBottom(): void
     {
         $actual = PdfBorder::topBottom();
-        self::assertBorderEquals($actual, false, true, false, true);
+        $this->assertBorderEquals($actual, false, true, false, true);
     }
 
-    protected static function assertBorderEquals(
+    private function assertBorderEquals(
         PdfBorder $actual,
         bool $expectedLeft,
         bool $expectedTop,

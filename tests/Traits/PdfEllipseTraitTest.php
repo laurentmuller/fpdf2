@@ -17,7 +17,7 @@ use fpdf\Enums\PdfDestination;
 use fpdf\Tests\Fixture\PdfDocumentEllipse;
 use PHPUnit\Framework\TestCase;
 
-class PdfEllipseTraitTest extends TestCase
+final class PdfEllipseTraitTest extends TestCase
 {
     public function testRender(): void
     {

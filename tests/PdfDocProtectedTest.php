@@ -22,7 +22,7 @@ use fpdf\PdfException;
 use fpdf\PdfSize;
 use PHPUnit\Framework\TestCase;
 
-class PdfDocProtectedTest extends TestCase
+final class PdfDocProtectedTest extends TestCase
 {
     public function testFormatBorder(): void
     {

@@ -20,7 +20,7 @@ use fpdf\PdfPoint;
 use fpdf\Tests\Fixture\PdfDocumentPolygon;
 use PHPUnit\Framework\TestCase;
 
-class PdfPolygonTraitTest extends TestCase
+final class PdfPolygonTraitTest extends TestCase
 {
     public function testRender(): void
     {

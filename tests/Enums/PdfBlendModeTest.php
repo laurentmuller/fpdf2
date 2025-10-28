@@ -17,7 +17,7 @@ use fpdf\Enums\PdfBlendMode;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-class PdfBlendModeTest extends TestCase
+final class PdfBlendModeTest extends TestCase
 {
     /**
      * @phpstan-return \Generator<int, array{PdfBlendMode, string}>

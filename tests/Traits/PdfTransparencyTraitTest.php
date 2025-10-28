@@ -17,7 +17,7 @@ use fpdf\Enums\PdfDestination;
 use fpdf\Tests\Fixture\PdfDocumentTransparency;
 use PHPUnit\Framework\TestCase;
 
-class PdfTransparencyTraitTest extends TestCase
+final class PdfTransparencyTraitTest extends TestCase
 {
     public function testEmptyTransparency(): void
     {

@@ -16,7 +16,7 @@ namespace fpdf\Tests\ImageParsers;
 use fpdf\ImageParsers\PdfPngParser;
 use fpdf\PdfException;
 
-class PdfPngParserTest extends AbstractPdfParserTestCase
+final class PdfPngParserTest extends AbstractPdfParserTestCase
 {
     public function testColorType0(): void
     {

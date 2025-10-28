@@ -17,7 +17,7 @@ use fpdf\PdfBorder;
 use fpdf\PdfDocument;
 use fpdf\Tests\Legacy\FPDF;
 
-class PdfCompareMultiCellTest extends AbstractCompareTestCase
+final class PdfCompareMultiCellTest extends AbstractCompareTestCase
 {
     private const CONTENT = <<<_TEXT
         First Line with a big text to be sure that a new line is reached.

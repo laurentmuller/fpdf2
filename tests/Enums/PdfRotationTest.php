@@ -16,7 +16,7 @@ namespace fpdf\Tests\Enums;
 use fpdf\Enums\PdfRotation;
 use PHPUnit\Framework\TestCase;
 
-class PdfRotationTest extends TestCase
+final class PdfRotationTest extends TestCase
 {
     public function testValues(): void
     {

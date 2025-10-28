@@ -19,7 +19,7 @@ use fpdf\PdfException;
 use fpdf\Tests\Fixture\PdfDocumentBookmark;
 use PHPUnit\Framework\TestCase;
 
-class PdfBookmarkTraitTest extends TestCase
+final class PdfBookmarkTraitTest extends TestCase
 {
     public function testLevelInvalidRange(): void
     {

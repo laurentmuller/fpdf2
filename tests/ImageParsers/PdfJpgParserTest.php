@@ -16,7 +16,7 @@ namespace fpdf\Tests\ImageParsers;
 use fpdf\ImageParsers\PdfJpgParser;
 use fpdf\PdfException;
 
-class PdfJpgParserTest extends AbstractPdfParserTestCase
+final class PdfJpgParserTest extends AbstractPdfParserTestCase
 {
     public function testImageCmyk(): void
     {

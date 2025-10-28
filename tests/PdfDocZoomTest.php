@@ -16,7 +16,7 @@ namespace fpdf\Tests;
 use fpdf\Enums\PdfDestination;
 use fpdf\Enums\PdfZoom;
 
-class PdfDocZoomTest extends AbstractPdfDocTestCase
+final class PdfDocZoomTest extends AbstractPdfDocTestCase
 {
     public function testDefault(): void
     {

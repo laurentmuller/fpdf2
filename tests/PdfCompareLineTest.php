@@ -16,7 +16,7 @@ namespace fpdf\Tests;
 use fpdf\PdfDocument;
 use fpdf\Tests\Legacy\FPDF;
 
-class PdfCompareLineTest extends AbstractCompareTestCase
+final class PdfCompareLineTest extends AbstractCompareTestCase
 {
     #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void

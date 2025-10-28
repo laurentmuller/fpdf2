@@ -16,7 +16,7 @@ namespace fpdf\Tests;
 use fpdf\PdfSize;
 use PHPUnit\Framework\TestCase;
 
-class PdfSizeTest extends TestCase
+final class PdfSizeTest extends TestCase
 {
     public function testAsArray(): void
     {
@@ -28,7 +28,7 @@ class PdfSizeTest extends TestCase
     public function testConstructor(): void
     {
         $actual = new PdfSize(10, 15);
-        self::assertSameValues($actual, 10, 15);
+        $this->assertSameValues($actual, 10, 15);
     }
 
     public function testEquals(): void
@@ -50,25 +50,25 @@ class PdfSizeTest extends TestCase
     public function testInstance(): void
     {
         $actual = PdfSize::instance(10, 15);
-        self::assertSameValues($actual, 10, 15);
+        $this->assertSameValues($actual, 10, 15);
     }
 
     public function testScale(): void
     {
         $actual = PdfSize::instance(10, 15)->scale(2.0);
-        self::assertSameValues($actual, 20, 30);
+        $this->assertSameValues($actual, 20, 30);
 
         $actual = PdfSize::instance(10, 15)->scale(0.5);
-        self::assertSameValues($actual, 5, 7.5);
+        $this->assertSameValues($actual, 5, 7.5);
     }
 
     public function testSwap(): void
     {
         $actual = PdfSize::instance(10, 15)->swap();
-        self::assertSameValues($actual, 15, 10);
+        $this->assertSameValues($actual, 15, 10);
     }
 
-    protected static function assertSameValues(PdfSize $actual, float $width, float $height): void
+    private function assertSameValues(PdfSize $actual, float $width, float $height): void
     {
         self::assertSame($width, $actual->width);
         self::assertSame($height, $actual->height);

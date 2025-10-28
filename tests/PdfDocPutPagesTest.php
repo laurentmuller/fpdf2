@@ -15,7 +15,7 @@ namespace fpdf\Tests;
 
 use fpdf\Enums\PdfOrientation;
 
-class PdfDocPutPagesTest extends AbstractPdfDocTestCase
+final class PdfDocPutPagesTest extends AbstractPdfDocTestCase
 {
     public function testPutPages(): void
     {

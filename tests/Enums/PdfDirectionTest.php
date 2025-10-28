@@ -16,7 +16,7 @@ namespace fpdf\Tests\Enums;
 use fpdf\Enums\PdfDirection;
 use PHPUnit\Framework\TestCase;
 
-class PdfDirectionTest extends TestCase
+final class PdfDirectionTest extends TestCase
 {
     public function testDefault(): void
     {

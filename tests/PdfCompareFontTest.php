@@ -20,7 +20,7 @@ use fpdf\PdfDocument;
 use fpdf\PdfException;
 use fpdf\Tests\Legacy\FPDF;
 
-class PdfCompareFontTest extends AbstractCompareTestCase
+final class PdfCompareFontTest extends AbstractCompareTestCase
 {
     private const FONTS_DIR = __DIR__ . '/fonts/';
 

@@ -18,7 +18,7 @@ use fpdf\Enums\PdfPageSize;
 use fpdf\PdfDocument;
 use fpdf\PdfSize;
 
-class PdfDocPageSizeTest extends AbstractPdfDocTestCase
+final class PdfDocPageSizeTest extends AbstractPdfDocTestCase
 {
     public function testDefaultPageSize(): void
     {

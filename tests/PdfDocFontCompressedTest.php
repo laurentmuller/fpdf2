@@ -15,7 +15,7 @@ namespace fpdf\Tests;
 
 use fpdf\Enums\PdfDestination;
 
-class PdfDocFontCompressedTest extends AbstractPdfDocTestCase
+final class PdfDocFontCompressedTest extends AbstractPdfDocTestCase
 {
     public function testAddFont(): void
     {
