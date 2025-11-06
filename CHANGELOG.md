@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Removed Psalm dependency.
 - Make test classes final.
 - Updated tests and examples.
 - `PdfBookmarkTrait`: Updated `validateLevel()` function.

@@ -39,9 +39,6 @@ final class PdfBookmarkTraitTest extends TestCase
         $doc->addBookmark(text: 'Invalid Level', level: 3);
     }
 
-    /**
-     * @psalm-suppress InvalidArgument
-     */
     public function testLevelNegative(): void
     {
         $level = -1;

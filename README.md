@@ -43,7 +43,6 @@ See other [examples](doc/examples.md) in the dedicated documents.
 [![SymfonyInsight](https://insight.symfony.com/projects/1db4f28c-c07c-4a5f-8006-2c63eb1e8851/mini.svg)](https://insight.symfony.com/projects/1db4f28c-c07c-4a5f-8006-2c63eb1e8851)
 [![Codacy](https://app.codacy.com/project/badge/Grade/a70c684f21c446fb88658acf29fdafd5)](https://app.codacy.com/gh/laurentmuller/fpdf2/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![PHP-Stan](https://img.shields.io/badge/PHPStan-Level%2010-brightgreen.svg?style=flat&logo=php)](https://phpstan.org/blog/find-bugs-in-your-code-without-writing-tests)
-[![Psalm](https://img.shields.io/badge/Psalm-Level%201-brightgreen.svg?style=flat)](https://psalm.dev/docs/running_psalm/installation/)
 [![CodeFactor](https://www.codefactor.io/repository/github/laurentmuller/fpdf2/badge)](https://www.codefactor.io/repository/github/laurentmuller/fpdf2)
 [![Codecov](https://codecov.io/gh/laurentmuller/fpdf2/graph/badge.svg?token=16I8LCYRRS)](https://codecov.io/gh/laurentmuller/fpdf2)
 

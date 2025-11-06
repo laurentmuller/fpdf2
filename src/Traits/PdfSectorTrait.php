@@ -139,8 +139,6 @@ trait PdfSectorTrait
 
     /**
      * Compute and output arc.
-     *
-     * @psalm-suppress InvalidOperand
      */
     private function outputSectorArc(
         float $centerX,
