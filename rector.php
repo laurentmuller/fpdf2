@@ -12,39 +12,60 @@
 declare(strict_types=1);
 
 use Rector\CodingStyle\Rector\ArrowFunction\StaticArrowFunctionRector;
+use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
+use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
 use Rector\CodingStyle\Rector\Closure\StaticClosureRector;
+use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\Config\RectorConfig;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\SetList;
 
+$paths = [
+    __DIR__ . '/src',
+    __DIR__ . '/tests',
+    __DIR__ . '/rector.php',
+];
+
+$skips = [
+    __DIR__ . '/src/font',
+    __DIR__ . '/tests/fonts',
+    __DIR__ . '/tests/Legacy',
+    PreferPHPUnitThisCallRector::class,
+    // CODING STYLE
+    NewlineAfterStatementRector::class,
+    NewlineBeforeNewAssignSetRector::class,
+    CatchExceptionNameMatchingTypeRector::class,
+];
+
+$sets = [
+    // global
+    SetList::PHP_82,
+    SetList::CODE_QUALITY,
+    SetList::CODING_STYLE,
+    SetList::PRIVATIZATION,
+    SetList::INSTANCEOF,
+
+    // PHP-Unit
+    PHPUnitSetList::PHPUNIT_110,
+    PHPUnitSetList::PHPUNIT_CODE_QUALITY,
+    PHPUnitSetList::ANNOTATIONS_TO_ATTRIBUTES,
+];
+
+$rules = [
+    // static closure and arrow functions
+    StaticClosureRector::class,
+    StaticArrowFunctionRector::class,
+];
+
 return RectorConfig::configure()
     ->withCache(__DIR__ . '/cache/rector')
     ->withRootFiles()
-    ->withPaths([
-        __DIR__ . '/src',
-        __DIR__ . '/tests',
-        __DIR__ . '/rector.php',
-    ])->withSkip([
-        PreferPHPUnitThisCallRector::class,
-        __DIR__ . '/src/font',
-        __DIR__ . '/tests/font',
-        __DIR__ . '/tests/Legacy',
-    ])->withConfiguredRule(ClassPropertyAssignToConstructorPromotionRector::class, [
+    ->withPaths($paths)
+    ->withSkip($skips)
+    ->withSets($sets)
+    ->withRules($rules)
+    ->withConfiguredRule(ClassPropertyAssignToConstructorPromotionRector::class, [
         'rename_property' => false,
-    ])->withSets([
-        // global
-        SetList::PHP_82,
-        SetList::CODE_QUALITY,
-        SetList::PRIVATIZATION,
-        SetList::INSTANCEOF,
-        SetList::STRICT_BOOLEANS,
-        // PHP-Unit
-        PHPUnitSetList::PHPUNIT_110,
-        PHPUnitSetList::PHPUNIT_CODE_QUALITY,
-        PHPUnitSetList::ANNOTATIONS_TO_ATTRIBUTES,
-    ])->withRules([
-        StaticClosureRector::class,
-        StaticArrowFunctionRector::class,
     ]);

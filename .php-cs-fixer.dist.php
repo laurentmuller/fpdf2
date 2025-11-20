@@ -59,25 +59,34 @@ $rules = [
     'header_comment' => ['header' => $comment, 'location' => 'after_open'],
 ];
 
+$paths = [
+    __DIR__ . '/src',
+    __DIR__ . '/tests',
+];
+
+$files = [
+    __FILE__,
+    __DIR__ . '/rector.php',
+];
+
+$skippedPaths = [
+    'font',
+    'fonts',
+    'Legacy',
+    'resources',
+];
+
 $finder = Finder::create()
-    ->in(__DIR__ . '/src')
-    ->in(__DIR__ . '/tests')
-    ->append([
-        __FILE__,
-        __DIR__ . '/rector.php',
-    ])
-    ->notPath([
-        'font',
-        'fonts',
-        'Legacy',
-        'resources',
-    ]);
+    ->in($paths)
+    ->append($files)
+    ->notPath($skippedPaths);
 
 $config = new Config();
 
 return $config
     ->setParallelConfig(ParallelConfigFactory::detect())
     ->setCacheFile(__DIR__ . '/cache/php-cs-fixer/.php-cs-fixer.cache')
+    ->setUnsupportedPhpVersionAllowed(false)
     ->setRiskyAllowed(true)
     ->setFinder($finder)
     ->setRules($rules);

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Updated Rector and PhpCsFixer configurations.
 - Removed Psalm dependency.
 - Make test classes final.
 - Updated tests and examples.

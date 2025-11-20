@@ -3285,7 +3285,8 @@ class PdfDocument
     {
         if (0.0 === $width && 0.0 === $height) {
             // put image at 96 dpi
-            $width = $height = -96.0;
+            $width = -96.0;
+            $height = -96.0;
         }
 
         $imageWidth = (float) $image->width;
