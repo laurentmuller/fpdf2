@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 use Rector\CodingStyle\Rector\ArrowFunction\StaticArrowFunctionRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
+use Rector\CodingStyle\Rector\ClassLike\NewlineBetweenClassLikeStmtsRector;
 use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
 use Rector\CodingStyle\Rector\Closure\StaticClosureRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
@@ -33,9 +34,12 @@ $skips = [
     __DIR__ . '/tests/fonts',
     __DIR__ . '/tests/Legacy',
     PreferPHPUnitThisCallRector::class,
-    // CODING STYLE
+    // no space before or after statements
     NewlineAfterStatementRector::class,
     NewlineBeforeNewAssignSetRector::class,
+    // don't separate constants
+    NewlineBetweenClassLikeStmtsRector::class,
+    // don't rename exception
     CatchExceptionNameMatchingTypeRector::class,
 ];
 

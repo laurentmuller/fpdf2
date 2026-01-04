@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Updated Rector to version 2.3.0 and configuration.
 - Updated Rector and PhpCsFixer configurations.
 - Removed Psalm dependency.
 - Make test classes final.

@@ -1,7 +1,7 @@
 # FPDF2
 
-This repository is clone of [fpdf.org](http://www.fpdf.org) with typed variables,
-enumerations and PHP 8.2 dependencies.
+This repository is a clone of [fpdf.org](http://www.fpdf.org) with typed
+variables, enumerations and PHP 8.2 dependencies.
 
 `PdfDocument` is a PHP class, which allows generating PDF files with pure PHP.
 **F** from FPDF2 stands for **Free**: you may use it for any kind of usage and
@@ -18,9 +18,9 @@ composer require laurentmuller/fpdf2
 
 Alternatively, you can add the requirement `"laurentmuller/fpdf2":"^3.0"` to
 your `composer.json` file and run `composer update`. This could be useful when
-the installation of FPDF2 is not compatible with some currently installed
-dependencies. Anyway, the previous option is the preferred way, since the
-composer can pick the best requirement constraint for you.
+the installation of FPDF2 is not compatible with some installed dependencies.
+Anyway, the previous option is the preferred way, since the composer can pick
+the best requirement constraint for you.
 
 ## Basic Usage
 
@@ -51,7 +51,6 @@ See other [examples](doc/examples.md) in the dedicated documents.
 [![PHP-CS-Fixer](https://github.com/laurentmuller/fpdf2/actions/workflows/php-cs-fixer.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/php-cs-fixer.yaml)
 [![PHPStan](https://github.com/laurentmuller/fpdf2/actions/workflows/php_stan.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/php_stan.yaml)
 [![PHPUnit](https://github.com/laurentmuller/fpdf2/actions/workflows/php_unit.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/php_unit.yaml)
-[![Psalm](https://github.com/laurentmuller/fpdf2/actions/workflows/psalm.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/psalm.yaml)
 [![Rector](https://github.com/laurentmuller/fpdf2/actions/workflows/rector.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/rector.yaml)
 [![Lint](https://github.com/laurentmuller/fpdf2/actions/workflows/lint.yaml/badge.svg)](https://github.com/laurentmuller/fpdf2/actions/workflows/lint.yaml)
 [![StyleCI](https://github.styleci.io/repos/752676081/shield?branch=main)](https://github.styleci.io/repos/752676081?branch=main)
