@@ -13,9 +13,11 @@ parameters:
         - vendor
 
     type_coverage:
+        constant: 0 # PHP 8.3
+        declare: 100
         param: 100
-        return: 100
         property: 100
+        return: 100
 
     reportUnmatchedIgnoredErrors: true
     checkUninitializedProperties: true

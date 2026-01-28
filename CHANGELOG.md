@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Updated PHPStan configuration.
 - Updated Rector to version 2.3.0 and configuration.
 - Updated Rector and PhpCsFixer configurations.
 - Removed Psalm dependency.
@@ -83,7 +84,7 @@
 - `PhpCsFixer`: Added Symfony rule sets.
 - `composer.json`: Added composer validate script.
 - Added php unit plugin to Psalm.
-- Added type-coverage to PHP Stan.
+- Added type-coverage to PHPStan.
 - `PdfFontName`: Added `useRegular()` function.
 - Renamed `fixture` directory to `Fixture`.
 - Updated exception message.
@@ -210,7 +211,7 @@
 - Updated `PHPunit` continuous integration action.
 - Updated `PHPStan` level to 10.
 - Split dependencies in dedicated folders using `bamarni/composer-bin-plugin`.
-- Added bleeding edge before update `phpstan` to version 2.0.
+- Added bleeding edge before update `PHPStan` to version 2.0.
 - Added badges to `README.md`.
 - Updated Symfony to version 7.1.7.
 - Updated `.gitattributes` file.
@@ -326,7 +327,7 @@
 
 - Updated `PdfDocument` class:
   - Replaced return value `self` by `static`.
-- Updated `phpstan` ignore doc.
+- Updated `PHPStan` ignore doc.
 
 ## 1.9.0.5 - 2024-05-31
 
@@ -517,7 +518,7 @@
 
 ## 1.8.4-alpha-5 - 2024-02-11
 
-- Updated PHP-Stan to level 9.
+- Updated PHPStan to level 9.
 - Added `PdfRotation` enumeration.
 - Added tests.
 
