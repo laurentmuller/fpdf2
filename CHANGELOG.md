@@ -1,5 +1,10 @@
 # Change log
 
+## Unreleased
+
+- Updated internal function of `PdfPngParser` class.
+- Updated `README.md` document.
+
 ## 4.0.0 - 2026-02-08
 
 - Updated `PdfDocument` version.

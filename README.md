@@ -1,7 +1,7 @@
 # FPDF2
 
 This repository is a clone of [fpdf.org](http://www.fpdf.org) with typed
-variables, enumerations and PHP 8.2 dependencies.
+variables, enumerations and PHP 8.3 dependencies.
 
 `PdfDocument` is a PHP class, which allows generating PDF files with pure PHP.
 **F** from FPDF2 stands for **Free**: you may use it for any kind of usage and
@@ -16,7 +16,7 @@ you can use:
 composer require laurentmuller/fpdf2
 ```
 
-Alternatively, you can add the requirement `"laurentmuller/fpdf2":"^3.0"` to
+Alternatively, you can add the requirement `"laurentmuller/fpdf2":"^4.0"` to
 your `composer.json` file and run `composer update`. This could be useful when
 the installation of FPDF2 is not compatible with some installed dependencies.
 Anyway, the previous option is the preferred way, since the composer can pick

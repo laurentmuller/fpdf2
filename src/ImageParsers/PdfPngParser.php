@@ -360,7 +360,7 @@ class PdfPngParser implements PdfImageParserInterface
     }
 
     /**
-     * Read a 4-byte integer from the given stream.
+     * Read a 4-byte unsigned long, big endian, from the given stream.
      *
      * @param resource $stream the stream to read integer from
      *
@@ -368,10 +368,11 @@ class PdfPngParser implements PdfImageParserInterface
      */
     private function readInt(mixed $stream): int
     {
-        /** @var array{i: int} $unpack */
-        $unpack = \unpack('Ni', $this->readString($stream, 4));
 
-        return $unpack['i'];
+        /** @var int[] $values */
+        $values = \unpack('N', $this->readString($stream, 4));
+
+        return $values[1];
     }
 
     /**
