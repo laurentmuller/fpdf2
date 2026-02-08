@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 4.0.0 - 2026-02-08
 
 - Updated `PdfDocument` version.
 - Migration to PHP 8.3.
