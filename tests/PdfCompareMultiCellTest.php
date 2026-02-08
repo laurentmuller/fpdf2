@@ -19,14 +19,14 @@ use fpdf\Tests\Legacy\FPDF;
 
 final class PdfCompareMultiCellTest extends AbstractCompareTestCase
 {
-    private const CONTENT = <<<_TEXT
+    private const string CONTENT = <<<_TEXT
         First Line with a big text to be sure that a new line is reached.
 
         Second Line.
         Third Line.
         _TEXT;
 
-    private const TEXT_WIDTH = 80.0;
+    private const float TEXT_WIDTH = 80.0;
 
     #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void

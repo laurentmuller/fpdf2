@@ -36,7 +36,7 @@ trait PdfBookmarkTrait
     /**
      * The space, in millimeters, between texts.
      */
-    private const SPACE = 1.25;
+    private const float SPACE = 1.25;
 
     /**
      * The bookmark root object number.

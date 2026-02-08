@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- Migration to PHP 8.3.
+
 ## 3.2.3 - 2026-02-08
 
 - Updated PHPStan configuration.

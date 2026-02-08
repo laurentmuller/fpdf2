@@ -25,7 +25,7 @@ abstract class AbstractCompareTestCase extends TestCase
     /**
      * Pattern to remove the creation date and the producer.
      */
-    private const PATTERN = [
+    private const array PATTERN = [
         '/\/CreationDate.*\)/mi',
         '/\/Producer \(FPDF.*\)/mi',
     ];

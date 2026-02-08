@@ -29,7 +29,7 @@ use fpdf\Tests\Legacy\FPDF;
 
 final class PdfCompareBasicTest extends AbstractCompareTestCase
 {
-    private const COMMENT = <<<COMMENT
+    private const string COMMENT = <<<COMMENT
         This file is part of the 'fpdf' package.
 
         For the license information, please view the LICENSE
