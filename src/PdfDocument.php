@@ -60,7 +60,7 @@ class PdfDocument
     /**
      * The FPDF version.
      */
-    final public const string VERSION = '3.0';
+    final public const string VERSION = '4.0';
 
     // the empty color
     private const string EMPTY_COLOR = '0 G';
