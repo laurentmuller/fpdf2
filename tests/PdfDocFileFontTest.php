@@ -18,7 +18,7 @@ use fpdf\PdfException;
 
 final class PdfDocFileFontTest extends AbstractPdfDocTestCase
 {
-    private const FONTS_DIR = __DIR__ . '/resources/';
+    private const string FONTS_DIR = __DIR__ . '/resources/';
 
     public function testFontBBoxArray(): void
     {

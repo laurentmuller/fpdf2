@@ -22,6 +22,13 @@ the installation of FPDF2 is not compatible with some installed dependencies.
 Anyway, the previous option is the preferred way, since the composer can pick
 the best requirement constraint for you.
 
+## Requirements
+
+| Branch | PHP Version |
+|--------|-------------|
+| master | 8.3         |
+| 3.x    | 8.2         |
+
 ## Basic Usage
 
 ```php

@@ -45,14 +45,14 @@ $skips = [
 
 $sets = [
     // global
-    SetList::PHP_82,
+    SetList::PHP_83,
     SetList::CODE_QUALITY,
     SetList::CODING_STYLE,
     SetList::PRIVATIZATION,
     SetList::INSTANCEOF,
 
     // PHP-Unit
-    PHPUnitSetList::PHPUNIT_110,
+    PHPUnitSetList::PHPUNIT_120,
     PHPUnitSetList::PHPUNIT_CODE_QUALITY,
     PHPUnitSetList::ANNOTATIONS_TO_ATTRIBUTES,
 ];

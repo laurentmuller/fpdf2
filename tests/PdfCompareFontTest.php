@@ -22,7 +22,7 @@ use fpdf\Tests\Legacy\FPDF;
 
 final class PdfCompareFontTest extends AbstractCompareTestCase
 {
-    private const FONTS_DIR = __DIR__ . '/fonts/';
+    private const string FONTS_DIR = __DIR__ . '/fonts/';
 
     public function testAddDirectoryFontName(): void
     {

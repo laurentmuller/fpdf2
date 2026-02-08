@@ -30,9 +30,9 @@ $rules = [
     // --------------------------------------------------------------
     '@auto' => true,
     '@auto:risky' => true,
-    '@PHP8x2Migration' => true,
-    '@PHP8x2Migration:risky' => true,
-    '@PHPUnit10x0Migration:risky' => true,
+    '@PHP8x3Migration' => true,
+    '@PHP8x3Migration:risky' => true,
+    '@PHPUnit11x0Migration:risky' => true,
 
     // --------------------------------------------------------------
     //  Rules override

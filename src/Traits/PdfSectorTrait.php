@@ -28,9 +28,9 @@ use fpdf\PdfDocument;
  */
 trait PdfSectorTrait
 {
-    private const FULL_ROTATION = 360.0;
-    private const HALF_PI = \M_PI / 2.0;
-    private const TWO_PI = \M_PI * 2.0;
+    private const float FULL_ROTATION = 360.0;
+    private const float HALF_PI = \M_PI / 2.0;
+    private const float TWO_PI = \M_PI * 2.0;
 
     /**
      * Draw a sector.

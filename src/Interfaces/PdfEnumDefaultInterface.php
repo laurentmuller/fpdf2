@@ -23,7 +23,7 @@ interface PdfEnumDefaultInterface
     /**
      * The default attribute name.
      */
-    public const NAME = 'default';
+    public const string NAME = 'default';
 
     /**
      * Gets the default enumeration.

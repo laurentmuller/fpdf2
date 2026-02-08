@@ -1,5 +1,10 @@
 # Change log
 
+## 4.0.0 - 2026-02-08
+
+- Updated `PdfDocument` version.
+- Migration to PHP 8.3.
+
 ## 3.2.3 - 2026-02-08
 
 - Updated PHPStan configuration.

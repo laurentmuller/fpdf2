@@ -55,23 +55,23 @@ class PdfDocument
     /**
      * The default line height in millimeters.
      */
-    final public const LINE_HEIGHT = 5.0;
+    final public const float LINE_HEIGHT = 5.0;
 
     /**
      * The FPDF version.
      */
-    final public const VERSION = '3.0';
+    final public const string VERSION = '4.0';
 
     // the empty color
-    private const EMPTY_COLOR = '0 G';
+    private const string EMPTY_COLOR = '0 G';
     // the true type font type
-    private const FONT_TRUE_TYPE = 'TrueType';
+    private const string FONT_TRUE_TYPE = 'TrueType';
     // the type 1 font type
-    private const FONT_TYPE_1 = 'Type1';
+    private const string FONT_TYPE_1 = 'Type1';
     // the core font type
-    private const FONT_TYPE_CORE = 'Core';
+    private const string FONT_TYPE_CORE = 'Core';
     // the new line separator
-    private const NEW_LINE = "\n";
+    private const string NEW_LINE = "\n";
 
     /** The alias for the total number of pages. */
     protected string $aliasNumberPages = '{nb}';

@@ -38,7 +38,7 @@ trait PdfRotationTrait
     /**
      * No rotation angle.
      */
-    private const NO_ANGLE = 0.0;
+    private const float NO_ANGLE = 0.0;
 
     /**
      * The current rotation, in degrees.

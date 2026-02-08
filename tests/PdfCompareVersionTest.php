@@ -19,7 +19,7 @@ use fpdf\Tests\Legacy\FPDF;
 
 final class PdfCompareVersionTest extends AbstractCompareTestCase
 {
-    public const PDF_VERSION = PdfVersion::VERSION_1_6;
+    public const PdfVersion PDF_VERSION = PdfVersion::VERSION_1_6;
 
     #[\Override]
     protected function createOldDocument(): FPDF
