@@ -368,7 +368,6 @@ class PdfPngParser implements PdfImageParserInterface
      */
     private function readInt(mixed $stream): int
     {
-
         /** @var int[] $values */
         $values = \unpack('N', $this->readString($stream, 4));
 
