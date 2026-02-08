@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 3.2.3 - 2026-02-08
 
 - Updated PHPStan configuration.
 - Updated Rector to version 2.3.0 and configuration.
