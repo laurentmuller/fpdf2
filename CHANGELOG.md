@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 4.0.1 - 2026-02-10
 
 - Added `PdfColorSpace` enumeration.
 - Reworked `PdfPngParser` class.
