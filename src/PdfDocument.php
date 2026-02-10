@@ -2480,9 +2480,9 @@ class PdfDocument
      *
      * @param string $type the image type (file extension)
      *
-     * @return ?PdfImageParserInterface the image parser, if any; <code>null</code> otherwise
+     * @throws PdfException if an image parser cannot be found
      */
-    protected function getImageParser(string $type): ?PdfImageParserInterface
+    protected function getImageParser(string $type): PdfImageParserInterface
     {
         return match (\strtolower($type)) {
             'jpeg',
@@ -2491,7 +2491,7 @@ class PdfDocument
             'png' => new PdfPngParser(),
             'webp' => new PdfWebpParser(),
             'bmp' => new PdfBmpParser(),
-            default => null,
+            default =>  throw PdfException::format('Unsupported image type: %s.', $type),
         };
     }
 
@@ -2718,10 +2718,6 @@ class PdfDocument
         }
 
         $parser = $this->getImageParser($type);
-        if (!$parser instanceof PdfImageParserInterface) {
-            throw PdfException::format('Unsupported image type: %s.', $type);
-        }
-
         $image = $parser->parse($this, $file);
         $image->index = \count($this->images) + 1;
         $this->images[$file] = $image;

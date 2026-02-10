@@ -25,6 +25,7 @@ readonly class PdfGrayColor implements PdfColorInterface
      */
     public function __construct(public int $level) {}
 
+    #[\Override]
     public function __toString(): string
     {
         return \sprintf(

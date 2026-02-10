@@ -27,6 +27,7 @@ readonly class PdfRgbColor implements PdfColorInterface
      */
     final public function __construct(public int $red, public int $green, public int $blue) {}
 
+    #[\Override]
     public function __toString(): string
     {
         return \sprintf(

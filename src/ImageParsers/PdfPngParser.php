@@ -21,9 +21,16 @@ use fpdf\PdfException;
 
 /**
  * Parser for PNG images.
+ *
+ * @see https://en.wikipedia.org/wiki/PNG  Documentation for PNG format.
  */
 class PdfPngParser implements PdfImageParserInterface
 {
+    /**
+     * THe PNG file header signature.
+     */
+    private const string FILE_HEADER = "\x89PNG\x0d\x0a\x1a\x0a";
+
     #[\Override]
     public function parse(PdfDocument $parent, string $file): PdfImage
     {
@@ -51,7 +58,7 @@ class PdfPngParser implements PdfImageParserInterface
     /**
      * Parse the given PNG stream.
      *
-     * @param resource $stream
+     * @param resource $stream the stream to read from
      *
      * @throws PdfException if an error occurs while reading the stream
      */
@@ -60,61 +67,55 @@ class PdfPngParser implements PdfImageParserInterface
         // check signature
         $this->checkSignature($stream, $file);
 
-        // check header chunk
-        $this->checkHeader($stream, $file);
+        // parse header chunk
+        $data = $this->parseHeader($stream, $file);
 
         // get header values
-        $width = $this->readInt($stream);
-        $height = $this->readInt($stream);
-        $bitsPerComponent = $this->getBitsPerComponent($stream, $file);
-        $colorType = $this->readByte($stream);
+        $width = $this->getInt($data, 0);
+        $height = $this->getInt($data, 4);
+        $bitsPerComponent = $this->getBitsPerComponent($data[8], $file);
+        $colorType = $this->getByte($data, 9);
         $colorSpace = $this->getColorSpace($colorType, $file);
         $colors = $this->getColors($colorSpace);
 
         // check other values
-        $this->checkCompression($stream, $file);
-        $this->checkFilter($stream, $file);
-        $this->checkInterlacing($stream, $file);
-        $this->skip($stream, 4); // CRC
+        $this->checkCompression($data[10], $file);
+        $this->checkFilter($data[11], $file);
+        $this->checkInterlacing($data[12], $file);
 
+        // scan chunks looking for the palette, transparency and image data
+        $data = '';
+        $palette = '';
+        $transparencies = [];
+
+        do {
+            [$length, $type, $content] = $this->readChunk($stream);
+            switch ($type) {
+                case 'PLTE': // palette
+                    $palette = $content;
+                    break;
+                case 'tRNS': // transparency
+                    $transparencies = $this->getTransparencies($content, $colorType);
+                    break;
+                case 'IDAT': // image data
+                    $data .= $content;
+                    break;
+                case 'IEND': // image end
+                    $length = 0;
+                    break;
+            }
+        } while ($length);
+
+        // check palette
+        $this->checkPalette($colorSpace, $palette, $file);
+
+        // the decoded parameters
         $decodeParms = \sprintf(
             '/Predictor 15 /Colors %d /BitsPerComponent %d /Columns %d',
             $colors,
             $bitsPerComponent,
             $width
         );
-
-        // scan chunks looking for the palette, transparency and image data
-        $data = '';
-        $palette = '';
-        $transparencies = [];
-        do {
-            /** @var positive-int $length */
-            $length = $this->readInt($stream);
-            $type = $this->readString($stream, 4);
-            switch ($type) {
-                case 'PLTE': // palette
-                    $palette = $this->getPalette($stream, $length);
-                    break;
-                case 'tRNS': // transparency
-                    $transparencies = $this->getTransparencies($stream, $length, $colorType);
-                    break;
-                case 'IDAT': // image data
-                    $data .= $this->readString($stream, $length);
-                    break;
-                case 'IEND': // image end
-                    $length = 0;
-                    break;
-                default: // skip other content
-                    $this->skip($stream, $length);
-                    break;
-            }
-            $this->skip($stream, 4); // CRC
-        } while ($length);
-
-        if ('Indexed' === $colorSpace && '' === $palette) {
-            throw PdfException::format('Missing palette: %s.', $file);
-        }
 
         $image = new PdfImage(
             width: $width,
@@ -131,8 +132,8 @@ class PdfPngParser implements PdfImageParserInterface
         if ($colorType >= 4) {
             // extract alpha channel
             [$data, $softMask] = $this->extractAlphaChannel($width, $height, $colorType, $data);
-            $parent->updatePdfVersion(PdfVersion::VERSION_1_4);
-            $parent->setAlphaChannel(true);
+            $parent->updatePdfVersion(PdfVersion::VERSION_1_4)
+                ->setAlphaChannel(true);
             $image->softMask = $softMask;
             $image->data = $data;
         }
@@ -143,13 +144,13 @@ class PdfPngParser implements PdfImageParserInterface
     /**
      * Check if the compression is set to 0.
      *
-     * @param resource $stream
+     * @param string $data the single character from header ('IHDR') chunk data
      *
      * @throws PdfException if the compression method is not supported
      */
-    private function checkCompression(mixed $stream, string $file): void
+    private function checkCompression(string $data, string $file): void
     {
-        $value = $this->readByte($stream);
+        $value = $this->getByte($data);
         if (0 !== $value) {
             throw PdfException::format('Compression method %d not supported: %s.', $value, $file);
         }
@@ -158,69 +159,55 @@ class PdfPngParser implements PdfImageParserInterface
     /**
      * Check if the filter is set to 0.
      *
-     * @param resource $stream
+     * @param string $data the single character from header ('IHDR') chunk data
      *
      * @throws PdfException if the filter method is not supported
      */
-    private function checkFilter(mixed $stream, string $file): void
+    private function checkFilter(string $data, string $file): void
     {
-        $value = $this->readByte($stream);
+        $value = $this->getByte($data);
         if (0 !== $value) {
             throw PdfException::format('Filter method %d not supported: %s.', $value, $file);
         }
     }
 
     /**
-     * Check the first block header.
-     *
-     * @param resource $stream
-     *
-     * @throws PdfException if the header is invalid
-     */
-    private function checkHeader(mixed $stream, string $file): void
-    {
-        $size = $this->readInt($stream);
-        if (13 !== $size) {
-            throw PdfException::format('Incorrect PNG header length (%d): %s.', $size, $file);
-        }
-        $header = $this->readString($stream, 4);
-        if ('IHDR' !== $header) {
-            throw PdfException::format('Incorrect PNG header chunk (%s): %s.', $header, $file);
-        }
-    }
-
-    /**
      * Check if the interlacing is set to 0.
      *
-     * @param resource $stream
+     * @param string $data the single character from header ('IHDR') chunk data
      *
      * @throws PdfException if the interlacing is not supported
      */
-    private function checkInterlacing(mixed $stream, string $file): void
+    private function checkInterlacing(string $data, string $file): void
     {
-        $value = $this->readByte($stream);
+        $value = $this->getByte($data);
         if (0 !== $value) {
             throw PdfException::format('Interlacing %d not supported: %s.', $value, $file);
         }
     }
 
     /**
-     * Check PNG header signature.
+     * Check if the palette is valid.
      *
-     * @param resource $stream
+     * @throws PdfException if the palette is invalid
+     */
+    private function checkPalette(string $colorSpace, string $palette, string $file): void
+    {
+        if ('Indexed' === $colorSpace && '' === $palette) {
+            throw PdfException::format('Missing palette: %s.', $file);
+        }
+    }
+
+    /**
+     * Check PNG file header signature.
+     *
+     * @param resource $stream the stream to read signature from
      *
      * @throws PdfException if the signature is invalid
      */
     private function checkSignature(mixed $stream, string $file): void
     {
-        static $signature = '';
-        if ('' === $signature) {
-            $signature = \chr(0x89) . \chr(0x50) . \chr(0x4E) . \chr(0x47)
-                . \chr(0x0D) . \chr(0x0A) . \chr(0x1A) . \chr(0x0A);
-        }
-
-        /** @var non-empty-string $signature */
-        if ($this->readString($stream, \strlen($signature)) !== $signature) {
+        if ($this->readString($stream, \strlen(self::FILE_HEADER)) !== self::FILE_HEADER) {
             throw PdfException::format('Incorrect PNG header signature: %s.', $file);
         }
     }
@@ -245,8 +232,8 @@ class PdfPngParser implements PdfImageParserInterface
             $color .= $data[$pos];
             $alpha .= $data[$pos];
             $line = \substr($data, $pos + 1, $len);
-            $color .= (string) \preg_replace($colorPattern, '$1', $line);
-            $alpha .= (string) \preg_replace($alphaPattern, '$1', $line);
+            $color .= \preg_replace($colorPattern, '$1', $line);
+            $alpha .= \preg_replace($alphaPattern, '$1', $line);
         }
         $data = (string) \gzcompress($color);
         $mask = (string) \gzcompress($alpha);
@@ -257,20 +244,29 @@ class PdfPngParser implements PdfImageParserInterface
     /**
      * Gets bits per component.
      *
-     * @param resource $stream
+     * @param string $data the header ('IHDR') chunk data
      *
      * @throws PdfException if the bits per component are greater than 8
      */
-    private function getBitsPerComponent(mixed $stream, string $file): int
+    private function getBitsPerComponent(string $data, string $file): int
     {
-        $bcp = $this->readByte($stream);
+        $bcp = $this->getByte($data);
         if ($bcp > 8) {
             throw PdfException::format('Bits per component %d not supported: %s.', $bcp, $file);
         }
 
         return $bcp;
     }
-
+    /**
+     * Gets a single character and convert to a value between 0 and 255.
+     *
+     * @param string $data   the data to get character from
+     * @param int    $offset the offset to start reading from
+     */
+    private function getByte(string $data, int $offset = 0): int
+    {
+        return \ord($data[$offset]);
+    }
     /**
      * Gets the number of colors.
      */
@@ -295,45 +291,45 @@ class PdfPngParser implements PdfImageParserInterface
     }
 
     /**
-     * @param resource     $stream
-     * @param positive-int $length
+     * Gets a 4-byte unsigned long, big endian, from the given string.
      *
-     * @throws PdfException if the end of the stream is reached
+     * @param string $data   the data to get integer from
+     * @param int    $offset the offset to start reading from
      */
-    private function getPalette(mixed $stream, int $length): string
+    private function getInt(string $data, int $offset): int
     {
-        return $this->readString($stream, $length);
+        return $this->unpack(\substr($data, $offset, 4));
     }
 
     /**
-     * @param resource     $stream
-     * @param positive-int $length
+     * Gets the transparencies.
      *
-     * @return int[]
+     * @param string $data the chunk data
      *
-     * @throws PdfException if the end of the stream is reached
+     * @return int[] the transparencies
      */
-    private function getTransparencies(mixed $stream, int $length, int $colorType): array
+    private function getTransparencies(string $data, int $colorType): array
     {
-        $transparency = $this->readString($stream, $length);
         switch ($colorType) {
             case 0:
-                return [\ord(\substr($transparency, 1, 1))];
+                return [$this->getByte($data, 1)];
             case 2:
                 return [
-                    \ord(\substr($transparency, 1, 1)),
-                    \ord(\substr($transparency, 3, 1)),
-                    \ord(\substr($transparency, 5, 1)),
+                    $this->getByte($data, 1),
+                    $this->getByte($data, 3),
+                    $this->getByte($data, 5),
                 ];
             default:
-                $pos = \strpos($transparency, \chr(0));
+                $pos = \strpos($data, \chr(0));
 
                 return false !== $pos ? [$pos] : [];
         }
     }
 
     /**
-     * @return resource
+     * Open the given file.
+     *
+     * @return resource a file pointer resource
      *
      * @throws PdfException if the image file cannot be open
      */
@@ -348,15 +344,43 @@ class PdfPngParser implements PdfImageParserInterface
     }
 
     /**
-     * Read a single character and convert to a value between 0 and 255.
+     * Parse and check the first block header ('IHDR').
      *
-     * @param resource $stream the stream to read value from
+     * @param resource $stream the stream to read chunk from
+     *
+     * @return string the chunk data
+     *
+     * @throws PdfException if the header is invalid
+     */
+    private function parseHeader(mixed $stream, string $file): string
+    {
+        [$length, $type, $data] = $this->readChunk($stream);
+        if (13 !== $length) {
+            throw PdfException::format('Incorrect PNG header length (%d): %s.', $length, $file);
+        }
+        if ('IHDR' !== $type) {
+            throw PdfException::format('Incorrect PNG header chunk (%s): %s.', $type, $file);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Reads a PNG chunk from the given stream.
+     *
+     * @param resource $stream the stream to read chunk from
+     * @return array{0: int, 1: string, 2: string} the chunk length, type, and data
      *
      * @throws PdfException if the end of the stream is reached
      */
-    private function readByte(mixed $stream): int
+    private function readChunk(mixed $stream): array
     {
-        return \ord($this->readString($stream, 1));
+        $length = $this->readInt($stream);
+        $type = $this->readString($stream, 4);
+        $data = $length > 0 ? $this->readString($stream, $length) : '';
+        $this->readString($stream, 4); // CRC
+
+        return [$length, $type, $data];
     }
 
     /**
@@ -368,10 +392,7 @@ class PdfPngParser implements PdfImageParserInterface
      */
     private function readInt(mixed $stream): int
     {
-        /** @var int[] $values */
-        $values = \unpack('N', $this->readString($stream, 4));
-
-        return $values[1];
+        return $this->unpack($this->readString($stream, 4));
     }
 
     /**
@@ -393,17 +414,13 @@ class PdfPngParser implements PdfImageParserInterface
     }
 
     /**
-     * Skip the given number of bytes. Do nothing if the given length is smaller than or equal to 0.
+     * Convert the given data to a 4-byte unsigned long, big endian.
      *
-     * @param resource $stream the stream to skip from
-     * @param int      $length the number of bytes to skip
-     *
-     * @throws PdfException if the end of the stream is reached
+     * @param string $data the data to get integer from
      */
-    private function skip(mixed $stream, int $length): void
+    private function unpack(string $data): int
     {
-        if ($length > 0) {
-            $this->readString($stream, $length);
-        }
+        /** @phpstan-var int */
+        return \unpack('N', $data)[1];
     }
 }

@@ -28,6 +28,7 @@ readonly class PdfCmykColor implements PdfColorInterface
      */
     public function __construct(public int $cyan, public int $magenta, public int $yellow, public int $black) {}
 
+    #[\Override]
     public function __toString(): string
     {
         return \sprintf(
