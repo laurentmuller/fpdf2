@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace fpdf\ImageParsers;
 
+use fpdf\Enums\PdfColorSpace;
 use fpdf\Enums\PdfVersion;
 use fpdf\Interfaces\PdfImageParserInterface;
 use fpdf\Internal\PdfImage;
@@ -191,9 +192,9 @@ class PdfPngParser implements PdfImageParserInterface
      *
      * @throws PdfException if the palette is invalid
      */
-    private function checkPalette(string $colorSpace, string $palette, string $file): void
+    private function checkPalette(PdfColorSpace $colorSpace, string $palette, string $file): void
     {
-        if ('Indexed' === $colorSpace && '' === $palette) {
+        if (PdfColorSpace::INDEXED === $colorSpace && '' === $palette) {
             throw PdfException::format('Missing palette: %s.', $file);
         }
     }
@@ -207,7 +208,7 @@ class PdfPngParser implements PdfImageParserInterface
      */
     private function checkSignature(mixed $stream, string $file): void
     {
-        if ($this->readString($stream, \strlen(self::FILE_HEADER)) !== self::FILE_HEADER) {
+        if (self::FILE_HEADER !== $this->readString($stream, \strlen(self::FILE_HEADER))) {
             throw PdfException::format('Incorrect PNG header signature: %s.', $file);
         }
     }
@@ -257,6 +258,7 @@ class PdfPngParser implements PdfImageParserInterface
 
         return $bcp;
     }
+
     /**
      * Gets a single character and convert to a value between 0 and 255.
      *
@@ -270,9 +272,9 @@ class PdfPngParser implements PdfImageParserInterface
     /**
      * Gets the number of colors.
      */
-    private function getColors(string $colorSpace): int
+    private function getColors(PdfColorSpace $colorSpace): int
     {
-        return 'DeviceRGB' === $colorSpace ? 3 : 1;
+        return PdfColorSpace::DEVICE_RGB === $colorSpace ? 3 : 1;
     }
 
     /**
@@ -280,12 +282,12 @@ class PdfPngParser implements PdfImageParserInterface
      *
      * @throws PdfException if the color type is not supported
      */
-    private function getColorSpace(int $colorType, string $file): string
+    private function getColorSpace(int $colorType, string $file): PdfColorSpace
     {
         return match ($colorType) {
-            0, 4 => 'DeviceGray',
-            2, 6 => 'DeviceRGB',
-            3 => 'Indexed',
+            0, 4 => PdfColorSpace::DEVICE_GRAY,
+            2, 6 => PdfColorSpace::DEVICE_RGB,
+            3 => PdfColorSpace::INDEXED,
             default => throw PdfException::format('Color type %d not supported: %s.', $colorType, $file),
         };
     }
@@ -369,6 +371,7 @@ class PdfPngParser implements PdfImageParserInterface
      * Reads a PNG chunk from the given stream.
      *
      * @param resource $stream the stream to read chunk from
+     *
      * @return array{0: int, 1: string, 2: string} the chunk length, type, and data
      *
      * @throws PdfException if the end of the stream is reached

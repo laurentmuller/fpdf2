@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace fpdf\Internal;
 
+use fpdf\Enums\PdfColorSpace;
+
 /**
  * Contains information about an image.
  *
@@ -21,25 +23,25 @@ namespace fpdf\Internal;
 final class PdfImage extends AbstractPdfNumber
 {
     /**
-     * @param int        $width            the image width
-     * @param int        $height           the image height
-     * @param string     $colorSpace       the color space
-     * @param int        $bitsPerComponent the bits per component
-     * @param string     $data             the image data
-     * @param ?string    $filter           the optional image filter
-     * @param ?string    $decodeParms      the optional decoded parameters
-     * @param ?string    $softMask         the optional soft mask
-     * @param string     $palette          the color palette
-     * @param int[]|null $transparencies   the optional transparencies
-     * @param int        $index            the image index
+     * @param int           $width            the image width
+     * @param int           $height           the image height
+     * @param PdfColorSpace $colorSpace       the color space
+     * @param int           $bitsPerComponent the bits per component
+     * @param string        $data             the image data
+     * @param string        $filter           the image filter
+     * @param ?string       $decodeParms      the optional decoded parameters
+     * @param ?string       $softMask         the optional soft mask
+     * @param string        $palette          the color palette
+     * @param int[]|null    $transparencies   the optional transparencies
+     * @param int           $index            the image index
      */
     public function __construct(
         public readonly int $width,
         public readonly int $height,
-        public readonly string $colorSpace,
+        public readonly PdfColorSpace $colorSpace,
         public readonly int $bitsPerComponent,
         public string $data,
-        public readonly ?string $filter = null,
+        public readonly string $filter,
         public readonly ?string $decodeParms = null,
         public ?string $softMask = null,
         public readonly string $palette = '',
@@ -47,20 +49,17 @@ final class PdfImage extends AbstractPdfNumber
         public int $index = 0,
     ) {}
 
+    public function getColorSpaceValue(): string
+    {
+        return $this->colorSpace->value;
+    }
+
     /**
      * @phpstan-assert-if-true non-empty-string $this->decodeParms
      */
     public function isDecodeParms(): bool
     {
         return $this->isString($this->decodeParms);
-    }
-
-    /**
-     * @phpstan-assert-if-true non-empty-string $this->filter
-     */
-    public function isFilter(): bool
-    {
-        return $this->isString($this->filter);
     }
 
     /**
@@ -78,4 +77,5 @@ final class PdfImage extends AbstractPdfNumber
     {
         return null !== $this->transparencies && [] !== $this->transparencies;
     }
+
 }

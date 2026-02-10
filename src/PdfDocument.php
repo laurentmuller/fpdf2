@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace fpdf;
 
 use fpdf\Enums\PdfAnnotationName;
+use fpdf\Enums\PdfColorSpace;
 use fpdf\Enums\PdfDestination;
 use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
@@ -2491,7 +2492,7 @@ class PdfDocument
             'png' => new PdfPngParser(),
             'webp' => new PdfWebpParser(),
             'bmp' => new PdfBmpParser(),
-            default =>  throw PdfException::format('Unsupported image type: %s.', $type),
+            default => throw PdfException::format('Unsupported image type: %s.', $type),
         };
     }
 
@@ -2968,22 +2969,20 @@ class PdfDocument
         $this->put('/Subtype /Image');
         $this->putf('/Width %d', $image->width);
         $this->putf('/Height %d', $image->height);
-        if ('Indexed' === $image->colorSpace) {
+        if (PdfColorSpace::INDEXED === $image->colorSpace) {
             $this->putf(
                 '/ColorSpace [/Indexed /DeviceRGB %d %d 0 R]',
                 \intdiv(\strlen($image->palette), 3) - 1,
                 $this->objectNumber + 1
             );
         } else {
-            $this->putf('/ColorSpace /%s', $image->colorSpace);
-            if ('DeviceCMYK' === $image->colorSpace) {
+            $this->putf('/ColorSpace /%s', $image->getColorSpaceValue());
+            if (PdfColorSpace::DEVICE_CMYK === $image->colorSpace) {
                 $this->put('/Decode [1 0 1 0 1 0 1 0]');
             }
         }
         $this->putf('/BitsPerComponent %d', $image->bitsPerComponent);
-        if ($image->isFilter()) {
-            $this->putf('/Filter /%s', $image->filter);
-        }
+        $this->putf('/Filter /%s', $image->filter);
         if ($image->isDecodeParms()) {
             $this->putf('/DecodeParms <<%s>>', $image->decodeParms);
         }
@@ -3004,20 +3003,20 @@ class PdfDocument
 
         // soft mask
         if ($image->isSoftMask()) {
-            $decodeParms = \sprintf('/Predictor 15 /Colors 1 /BitsPerComponent 8 /Columns %.2f', $image->width);
+            $decodeParms = \sprintf('/Predictor 15 /Colors 1 /BitsPerComponent 8 /Columns %d', $image->width);
             $softImage = new PdfImage(
                 width: $image->width,
                 height: $image->height,
-                colorSpace: 'DeviceGray',
+                colorSpace: PdfColorSpace::DEVICE_GRAY,
                 bitsPerComponent: 8,
                 data: $image->softMask,
-                filter: $image->filter ?? '',
+                filter: $image->filter,
                 decodeParms: $decodeParms
             );
             $this->putImage($softImage);
         }
         // palette
-        if ('Indexed' === $image->colorSpace) {
+        if (PdfColorSpace::INDEXED === $image->colorSpace) {
             $this->putStreamObject($image->palette);
         }
     }

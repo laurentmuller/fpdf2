@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `PdfColorSpace` enumeration.
 - Reworked `PdfPngParser` class.
 - Added missing override attribute.
 - Updated internal function of `PdfPngParser` class.

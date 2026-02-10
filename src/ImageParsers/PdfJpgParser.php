@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace fpdf\ImageParsers;
 
+use fpdf\Enums\PdfColorSpace;
 use fpdf\Interfaces\PdfImageParserInterface;
 use fpdf\Internal\PdfImage;
 use fpdf\PdfDocument;
@@ -36,12 +37,11 @@ class PdfJpgParser implements PdfImageParserInterface
             throw PdfException::format('Invalid JPEG image type (%d): %s.', $size[2], $file);
         }
 
-        /** @var int<3,5> $channels */
         $channels = $size['channels'] ?? 3;
         $colorSpace = match ($channels) {
-            3 => 'DeviceRGB',
-            4 => 'DeviceCMYK',
-            default => 'DeviceGray'
+            3 => PdfColorSpace::DEVICE_RGB,
+            4 => PdfColorSpace::DEVICE_CMYK,
+            default => PdfColorSpace::DEVICE_GRAY
         };
         $bitsPerComponent = $size['bits'] ?? 8;
         $data = (string) \file_get_contents($file);
