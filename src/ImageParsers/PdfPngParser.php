@@ -269,6 +269,7 @@ class PdfPngParser implements PdfImageParserInterface
     {
         return \ord($data[$offset]);
     }
+
     /**
      * Gets the number of colors.
      */

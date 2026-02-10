@@ -77,5 +77,4 @@ final class PdfImage extends AbstractPdfNumber
     {
         return null !== $this->transparencies && [] !== $this->transparencies;
     }
-
 }
