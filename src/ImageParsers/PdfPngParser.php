@@ -384,14 +384,23 @@ class PdfPngParser implements PdfImageParserInterface
      *
      * @return array{0: int, 1: string, 2: string} the chunk length, type, and data
      *
-     * @throws PdfException if the end of the stream is reached
+     * @throws PdfException if the end of the stream is reached or if the CRC is invalid
      */
     private function readChunk(mixed $stream): array
     {
         $length = $this->readInt($stream);
         $type = $this->readString($stream, 4);
         $data = $length > 0 ? $this->readString($stream, $length) : '';
-        $this->readString($stream, 4); // CRC
+        $crc = $this->readInt($stream);
+        $expected = \crc32($type . $data);
+        if ($crc !== $expected) {
+            throw PdfException::format(
+                'Invalid CRC for the "%s" chunk type: Expected: 0x%02X, Actual: 0x%02X.',
+                $type,
+                $expected,
+                $crc
+            );
+        }
 
         return [$length, $type, $data];
     }

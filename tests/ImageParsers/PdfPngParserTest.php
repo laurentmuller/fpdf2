@@ -82,6 +82,14 @@ final class PdfPngParserTest extends AbstractPdfParserTestCase
         $this->parseFile($file);
     }
 
+    public function testInvalidCrc(): void
+    {
+        self::expectException(PdfException::class);
+        self::expectExceptionMessageMatches('/Invalid CRC for the "IHDR" chunk type:.*Expected:.*Actual:.*$/');
+        $file = 'image_invalid_crc.png';
+        $this->parseFile($file);
+    }
+
     public function testInvalidFilter(): void
     {
         self::expectException(PdfException::class);

@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-- Added constants to `PdfPngParser` class.
+- `PdfPngParser`: Added checksum control when reading chunks.
+- `PdfPngParser`: Added internal constants.
 - Updated PhpCsFixer configurations for line span in PHPDoc blocks.
 
 ## 4.0.1 - 2026-02-10
