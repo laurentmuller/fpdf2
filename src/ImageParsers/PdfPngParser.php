@@ -394,12 +394,7 @@ class PdfPngParser implements PdfImageParserInterface
         $crc = $this->readInt($stream);
         $expected = \crc32($type . $data);
         if ($crc !== $expected) {
-            throw PdfException::format(
-                'Invalid CRC for the "%s" chunk type: Expected: 0x%02X, Actual: 0x%02X.',
-                $type,
-                $expected,
-                $crc
-            );
+            throw PdfException::format('Invalid CRC for the "%s" chunk type: Expected: 0x%02X, Actual: 0x%02X.', $type, $expected, $crc);
         }
 
         return [$length, $type, $data];
