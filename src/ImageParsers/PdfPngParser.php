@@ -27,8 +27,20 @@ use fpdf\PdfException;
  */
 class PdfPngParser implements PdfImageParserInterface
 {
-    /** The PNG file header signature. */
-    private const string FILE_HEADER = "\x89PNG\x0d\x0a\x1a\x0a";
+    /** The image data chunk type. */
+    private const string CHUNK_DATA = 'IDAT';
+    /** The image end chunk type. */
+    private const string CHUNK_END = 'IEND';
+    /** The header chunk type. */
+    private const string CHUNK_HEADER = 'IHDR';
+    /** The palette chunk type. */
+    private const string CHUNK_PALETTE = 'PLTE';
+    /** The transparency chunk type. */
+    private const string CHUNK_TRANSPARENCY = 'tRNS';
+    /** The PNG file signature. */
+    private const string FILE_SIGNATURE = "\x89PNG\x0d\x0a\x1a\x0a";
+    /** The header chunk length. */
+    private const int HEADER_LENGTH = 13;
 
     #[\Override]
     public function parse(PdfDocument $parent, string $file): PdfImage
@@ -90,16 +102,16 @@ class PdfPngParser implements PdfImageParserInterface
         do {
             [$length, $type, $content] = $this->readChunk($stream);
             switch ($type) {
-                case 'PLTE': // palette
+                case self::CHUNK_PALETTE:
                     $palette = $content;
                     break;
-                case 'tRNS': // transparency
+                case self::CHUNK_TRANSPARENCY:
                     $transparencies = $this->getTransparencies($content, $colorType);
                     break;
-                case 'IDAT': // image data
+                case self::CHUNK_DATA:
                     $data .= $content;
                     break;
-                case 'IEND': // image end
+                case self::CHUNK_END:
                     $length = 0;
                     break;
             }
@@ -143,7 +155,7 @@ class PdfPngParser implements PdfImageParserInterface
     /**
      * Check if the compression is set to 0.
      *
-     * @param string $data the single character from header ('IHDR') chunk data
+     * @param string $data the single character from the header ('IHDR') chunk data
      *
      * @throws PdfException if the compression method is not supported
      */
@@ -158,7 +170,7 @@ class PdfPngParser implements PdfImageParserInterface
     /**
      * Check if the filter is set to 0.
      *
-     * @param string $data the single character from header ('IHDR') chunk data
+     * @param string $data the single character from the header ('IHDR') chunk data
      *
      * @throws PdfException if the filter method is not supported
      */
@@ -173,7 +185,7 @@ class PdfPngParser implements PdfImageParserInterface
     /**
      * Check if the interlacing is set to 0.
      *
-     * @param string $data the single character from header ('IHDR') chunk data
+     * @param string $data the single character from the header ('IHDR') chunk data
      *
      * @throws PdfException if the interlacing is not supported
      */
@@ -198,7 +210,7 @@ class PdfPngParser implements PdfImageParserInterface
     }
 
     /**
-     * Check PNG file header signature.
+     * Check the PNG file signature.
      *
      * @param resource $stream the stream to read signature from
      *
@@ -206,7 +218,7 @@ class PdfPngParser implements PdfImageParserInterface
      */
     private function checkSignature(mixed $stream, string $file): void
     {
-        if (self::FILE_HEADER !== $this->readString($stream, \strlen(self::FILE_HEADER))) {
+        if (self::FILE_SIGNATURE !== $this->readString($stream, \strlen(self::FILE_SIGNATURE))) {
             throw PdfException::format('Incorrect PNG header signature: %s.', $file);
         }
     }
@@ -356,10 +368,10 @@ class PdfPngParser implements PdfImageParserInterface
     private function parseHeader(mixed $stream, string $file): string
     {
         [$length, $type, $data] = $this->readChunk($stream);
-        if (13 !== $length) {
+        if (self::HEADER_LENGTH !== $length) {
             throw PdfException::format('Incorrect PNG header length (%d): %s.', $length, $file);
         }
-        if ('IHDR' !== $type) {
+        if (self::CHUNK_HEADER            !== $type) {
             throw PdfException::format('Incorrect PNG header chunk (%s): %s.', $type, $file);
         }
 
