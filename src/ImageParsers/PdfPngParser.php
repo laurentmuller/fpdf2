@@ -141,7 +141,6 @@ class PdfPngParser implements PdfImageParserInterface
         );
 
         if ($colorType >= 4) {
-            // extract alpha channel
             [$data, $softMask] = $this->extractAlphaChannel($width, $height, $colorType, $data);
             $parent->updatePdfVersion(PdfVersion::VERSION_1_4)
                 ->setAlphaChannel(true);
@@ -371,7 +370,7 @@ class PdfPngParser implements PdfImageParserInterface
         if (self::HEADER_LENGTH !== $length) {
             throw PdfException::format('Incorrect PNG header length (%d): %s.', $length, $file);
         }
-        if (self::CHUNK_HEADER            !== $type) {
+        if (self::CHUNK_HEADER !== $type) {
             throw PdfException::format('Incorrect PNG header chunk (%s): %s.', $type, $file);
         }
 
