@@ -28,9 +28,7 @@ enum PdfPageMode: string implements PdfEnumDefaultInterface
 {
     use PdfEnumDefaultTrait;
 
-    /**
-     * The full-screen mode, with no menu bar, window controls, or any other window visible.
-     */
+    /** The full-screen mode, with no menu bar, window controls, or any other window visible. */
     case FULL_SCREEN = 'FullScreen';
 
     /**
@@ -40,9 +38,7 @@ enum PdfPageMode: string implements PdfEnumDefaultInterface
      */
     case USE_ATTACHMENTS = 'UseAttachments';
 
-    /**
-     * Neither document outline nor thumbnail image are visible (default value).
-     */
+    /** Neither document outline nor thumbnail image are visible (default value). */
     #[EnumCase(extras: [self::NAME => true])]
     case USE_NONE = 'UseNone';
 
@@ -53,14 +49,10 @@ enum PdfPageMode: string implements PdfEnumDefaultInterface
      */
     case USE_OC = 'UseOC';
 
-    /**
-     * The document outline is visible.
-     */
+    /** The document outline is visible. */
     case USE_OUTLINES = 'UseOutlines';
 
-    /**
-     * The thumbnail image is visible.
-     */
+    /** The thumbnail image is visible. */
     case USE_THUMBS = 'UseThumbs';
 
     /**

@@ -28,33 +28,19 @@ enum PdfAnnotationName: string implements PdfEnumDefaultInterface
 {
     use PdfEnumDefaultTrait;
 
-    /**
-     * The comment icon.
-     */
+    /** The comment icon. */
     case COMMENT = 'Comment';
-    /**
-     * The help icon.
-     */
+    /** The help icon. */
     case HELP = 'Help';
-    /**
-     * The insert icon.
-     */
+    /** The insert icon. */
     case INSERT = 'Insert';
-    /**
-     * The key icon.
-     */
+    /** The key icon. */
     case KEY = 'Key';
-    /**
-     * The new paragraph icon.
-     */
+    /** The new paragraph icon. */
     case NEW_PARAGRAPH = 'NewParagraph';
-    /**
-     * The note icon (default value).
-     */
+    /** The note icon (default value). */
     #[EnumCase(extras: [self::NAME => true])]
     case NOTE = 'Note';
-    /**
-     * The paragraph icon.
-     */
+    /** The paragraph icon. */
     case PARAGRAPH = 'Paragraph';
 }

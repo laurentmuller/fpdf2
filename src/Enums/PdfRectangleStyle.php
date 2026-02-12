@@ -22,18 +22,12 @@ namespace fpdf\Enums;
  */
 enum PdfRectangleStyle: string
 {
-    /**
-     * Draw the border around the rectangle.
-     */
+    /** Draw the border around the rectangle. */
     case BORDER = 'S';
 
-    /**
-     * Draw the border and fill the rectangle.
-     */
+    /** Draw the border and fill the rectangle. */
     case BOTH = 'B';
 
-    /**
-     * Fill the rectangle.
-     */
+    /** Fill the rectangle. */
     case FILL = 'f';
 }

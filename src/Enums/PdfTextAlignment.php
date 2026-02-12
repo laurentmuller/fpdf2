@@ -21,23 +21,15 @@ namespace fpdf\Enums;
  */
 enum PdfTextAlignment
 {
-    /**
-     * Center alignment.
-     */
+    /** Center alignment. */
     case CENTER;
 
-    /**
-     * Justified alignment (only valid when output multi-cell).
-     */
+    /** Justified alignment (only valid when output multi-cell). */
     case JUSTIFIED;
 
-    /**
-     * Left alignment.
-     */
+    /** Left alignment. */
     case LEFT;
 
-    /**
-     * Right alignment.
-     */
+    /** Right alignment. */
     case RIGHT;
 }

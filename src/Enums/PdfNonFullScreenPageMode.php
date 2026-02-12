@@ -31,21 +31,13 @@ enum PdfNonFullScreenPageMode: string implements PdfEnumDefaultInterface
 {
     use PdfEnumDefaultTrait;
 
-    /**
-     * Neither document outline nor thumbnail images should be visible (default value).
-     */
+    /** Neither document outline nor thumbnail images should be visible (default value). */
     #[EnumCase(extras: [self::NAME => true])]
     case USE_NONE = 'UseNone';
-    /**
-     * The optional content group panel should be visible.
-     */
+    /** The optional content group panel should be visible. */
     case USE_OC = 'UseOC';
-    /**
-     * The document outline should be visible.
-     */
+    /** The document outline should be visible. */
     case USE_OUTLINES = 'UseOutlines';
-    /**
-     * The thumbnail images should be visible.
-     */
+    /** The thumbnail images should be visible. */
     case USE_THUMBS = 'UseThumbs';
 }

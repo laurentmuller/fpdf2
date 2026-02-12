@@ -20,9 +20,7 @@ namespace fpdf\Internal;
  */
 final class PdfFont extends AbstractPdfNumber
 {
-    /**
-     * The font index.
-     */
+    /** The font index. */
     public int $index = 0;
 
     /**

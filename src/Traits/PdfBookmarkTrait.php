@@ -33,14 +33,10 @@ use fpdf\PdfException;
  */
 trait PdfBookmarkTrait
 {
-    /**
-     * The space, in millimeters, between texts.
-     */
+    /** The space, in millimeters, between texts. */
     private const float SPACE = 1.25;
 
-    /**
-     * The bookmark root object number.
-     */
+    /** The bookmark root object number. */
     private int $bookmarkRoot = -1;
 
     /**
@@ -50,9 +46,7 @@ trait PdfBookmarkTrait
      */
     private array $bookmarks = [];
 
-    /**
-     * The page formatter.
-     */
+    /** The page formatter. */
     private ?\NumberFormatter $pageFormatter = null;
 
     /**

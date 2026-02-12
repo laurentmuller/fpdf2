@@ -26,30 +26,20 @@ enum PdfLayout: string implements PdfEnumDefaultInterface
 {
     use PdfEnumDefaultTrait;
 
-    /**
-     * This layout is not outputted at all (default value).
-     */
+    /** This layout is not outputted at all (default value). */
     #[EnumCase(extras: [self::NAME => true])]
     case DEFAULT = '';
 
-    /**
-     * Displays pages in one column.
-     */
+    /** Displays pages in one column. */
     case ONE_COLUMN = 'OneColumn';
 
-    /**
-     * Displays one page at a time.
-     */
+    /** Displays one page at a time. */
     case SINGLE_PAGE = 'SinglePage';
 
-    /**
-     * Displays pages in two columns, with odd-numbered pages on the left.
-     */
+    /** Displays pages in two columns, with odd-numbered pages on the left. */
     case TWO_COLUMN_LEFT = 'TwoColumnLeft';
 
-    /**
-     * Displays pages in two columns, with odd-numbered pages on the right.
-     */
+    /** Displays pages in two columns, with odd-numbered pages on the right. */
     case TWO_COLUMN_RIGHT = 'TwoColumnRight';
 
     /**

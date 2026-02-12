@@ -22,9 +22,7 @@ use PHPUnit\Framework\TestCase;
 
 abstract class AbstractCompareTestCase extends TestCase
 {
-    /**
-     * Pattern to remove the creation date and the producer.
-     */
+    /** Pattern to remove the creation date and the producer. */
     private const array PATTERN = [
         '/\/CreationDate.*\)/mi',
         '/\/Producer \(FPDF.*\)/mi',

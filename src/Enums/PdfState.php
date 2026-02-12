@@ -20,20 +20,12 @@ namespace fpdf\Enums;
  */
 enum PdfState
 {
-    /**
-     * The document is closed.
-     */
+    /** The document is closed. */
     case CLOSED;
-    /**
-     * The end page has been called.
-     */
+    /** The end page has been called. */
     case END_PAGE;
-    /**
-     * The document has no page (not started).
-     */
+    /** The document has no page (not started). */
     case NO_PAGE;
-    /**
-     * The start page has been called.
-     */
+    /** The start page has been called. */
     case PAGE_STARTED;
 }

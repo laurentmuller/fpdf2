@@ -27,9 +27,7 @@ use fpdf\PdfException;
  */
 class PdfPngParser implements PdfImageParserInterface
 {
-    /**
-     * THe PNG file header signature.
-     */
+    /** The PNG file header signature. */
     private const string FILE_HEADER = "\x89PNG\x0d\x0a\x1a\x0a";
 
     #[\Override]

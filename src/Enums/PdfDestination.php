@@ -20,14 +20,10 @@ namespace fpdf\Enums;
  */
 enum PdfDestination
 {
-    /**
-     * Send to the browser and force a file download with the given name parameter.
-     */
+    /** Send to the browser and force a file download with the given name parameter. */
     case DOWNLOAD;
 
-    /**
-     * Save to a local file with the given name parameter (may include a path).
-     */
+    /** Save to a local file with the given name parameter (may include a path). */
     case FILE;
 
     /**
@@ -37,8 +33,6 @@ enum PdfDestination
      */
     case INLINE;
 
-    /**
-     * Return the document as a string.
-     */
+    /** Return the document as a string. */
     case STRING;
 }

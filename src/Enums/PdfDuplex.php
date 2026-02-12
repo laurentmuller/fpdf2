@@ -28,21 +28,13 @@ enum PdfDuplex: string implements PdfEnumDefaultInterface
 {
     use PdfEnumDefaultTrait;
 
-    /**
-     * Duplex and flip on the long edge of the sheet.
-     */
+    /** Duplex and flip on the long edge of the sheet. */
     case DUPLEX_FLIP_LONG_EDGE = 'DuplexFlipLongEdge';
-    /**
-     * Duplex and flip on the short edge of the sheet.
-     */
+    /** Duplex and flip on the short edge of the sheet. */
     case DUPLEX_FLIP_SHORT_EDGE = 'DuplexFlipShortEdge';
-    /**
-     * No duplex used (default value).
-     */
+    /** No duplex used (default value). */
     #[EnumCase(extras: [self::NAME => true])]
     case NONE = 'None';
-    /**
-     * Print single-sided.
-     */
+    /** Print single-sided. */
     case SIMPLEX = 'Simplex';
 }

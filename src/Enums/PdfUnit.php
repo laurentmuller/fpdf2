@@ -18,24 +18,16 @@ namespace fpdf\Enums;
  */
 enum PdfUnit: string
 {
-    /**
-     * Centimeter.
-     */
+    /** Centimeter. */
     case CENTIMETER = 'cm';
 
-    /**
-     * Inch.
-     */
+    /** Inch. */
     case INCH = 'in';
 
-    /**
-     * Millimeter.
-     */
+    /** Millimeter. */
     case MILLIMETER = 'mm';
 
-    /**
-     * Point.
-     */
+    /** Point. */
     case POINT = 'pt';
 
     /**

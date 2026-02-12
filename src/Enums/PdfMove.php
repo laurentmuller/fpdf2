@@ -22,9 +22,7 @@ namespace fpdf\Enums;
  */
 enum PdfMove
 {
-    /**
-     * Move below of the printed cell.
-     */
+    /** Move below of the printed cell. */
     case BELOW;
 
     /**
@@ -35,8 +33,6 @@ enum PdfMove
      */
     case NEW_LINE;
 
-    /**
-     * Move to the right position of the printed cell.
-     */
+    /** Move to the right position of the printed cell. */
     case RIGHT;
 }

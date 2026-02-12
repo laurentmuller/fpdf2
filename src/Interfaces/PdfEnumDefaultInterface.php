@@ -20,9 +20,7 @@ namespace fpdf\Interfaces;
  */
 interface PdfEnumDefaultInterface
 {
-    /**
-     * The default attribute name.
-     */
+    /** The default attribute name. */
     public const string NAME = 'default';
 
     /**

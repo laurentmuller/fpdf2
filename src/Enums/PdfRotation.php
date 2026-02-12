@@ -20,20 +20,12 @@ namespace fpdf\Enums;
  */
 enum PdfRotation: int
 {
-    /**
-     * 180 degree clockwise.
-     */
+    /** 180 degree clockwise. */
     case CLOCKWISE_180 = 180;
-    /**
-     * 270 degree clockwise.
-     */
+    /** 270 degree clockwise. */
     case CLOCKWISE_270 = 270;
-    /**
-     * 90 degree clockwise.
-     */
+    /** 90 degree clockwise. */
     case CLOCKWISE_90 = 90;
-    /**
-     * 0 degree clockwise.
-     */
+    /** 0 degree clockwise. */
     case DEFAULT = 0;
 }

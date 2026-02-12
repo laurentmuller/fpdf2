@@ -20,9 +20,7 @@ namespace fpdf\Internal;
  */
 abstract class AbstractPdfNumber
 {
-    /**
-     * The object number.
-     */
+    /** The object number. */
     public int $number = 0;
 
     /**

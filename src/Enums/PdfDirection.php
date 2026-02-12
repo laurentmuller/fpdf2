@@ -28,13 +28,9 @@ enum PdfDirection: string implements PdfEnumDefaultInterface
 {
     use PdfEnumDefaultTrait;
 
-    /**
-     * Left to right (default value).
-     */
+    /** Left to right (default value). */
     #[EnumCase(extras: [self::NAME => true])]
     case L2R = 'L2R';
-    /**
-     * Right to left, including vertical writing systems, such as Chinese, Japanese and Korean.
-     */
+    /** Right to left, including vertical writing systems, such as Chinese, Japanese and Korean. */
     case R2L = 'R2L';
 }

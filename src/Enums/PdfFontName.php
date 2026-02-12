@@ -21,34 +21,22 @@ namespace fpdf\Enums;
  */
 enum PdfFontName: string
 {
-    /**
-     * The Arial font name (synonymous: sans serif).
-     */
+    /** The Arial font name (synonymous: sans serif). */
     case ARIAL = 'Arial';
 
-    /**
-     * The Courier font name (fixed-width).
-     */
+    /** The Courier font name (fixed-width). */
     case COURIER = 'Courier';
 
-    /**
-     * The Helvetica font name (synonymous: sans serif).
-     */
+    /** The Helvetica font name (synonymous: sans serif). */
     case HELVETICA = 'Helvetica';
 
-    /**
-     * The Symbol font name (symbolic).
-     */
+    /** The Symbol font name (symbolic). */
     case SYMBOL = 'Symbol';
 
-    /**
-     * The Times font name (serif).
-     */
+    /** The Times font name (serif). */
     case TIMES = 'Times';
 
-    /**
-     * The ZapfDingbats font name (symbolic).
-     */
+    /** The ZapfDingbats font name (symbolic). */
     case ZAPFDINGBATS = 'ZapfDingbats';
 
     /**

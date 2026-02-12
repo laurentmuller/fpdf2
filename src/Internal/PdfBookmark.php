@@ -20,9 +20,7 @@ namespace fpdf\Internal;
  */
 final class PdfBookmark
 {
-    /**
-     * @var array<string, int> the bookmark hierarchy
-     */
+    /** @var array<string, int> the bookmark hierarchy */
     public array $hierarchy = [];
 
     /**

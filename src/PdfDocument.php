@@ -53,14 +53,10 @@ use fpdf\Internal\PdfPageLink;
  */
 class PdfDocument
 {
-    /**
-     * The default line height in millimeters.
-     */
+    /** The default line height in millimeters. */
     final public const float LINE_HEIGHT = 5.0;
 
-    /**
-     * The FPDF version.
-     */
+    /** The FPDF version. */
     final public const string VERSION = '4.0';
 
     // the empty color

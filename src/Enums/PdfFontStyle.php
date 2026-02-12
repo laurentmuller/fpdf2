@@ -63,14 +63,10 @@ enum PdfFontStyle: string
      */
     case ITALIC_UNDERLINE = 'iu';
 
-    /**
-     * Regular.
-     */
+    /** Regular. */
     case REGULAR = '';
 
-    /**
-     * Underline.
-     */
+    /** Underline. */
     case UNDERLINE = 'u';
 
     /**

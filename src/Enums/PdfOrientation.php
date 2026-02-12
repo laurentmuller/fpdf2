@@ -18,13 +18,9 @@ namespace fpdf\Enums;
  */
 enum PdfOrientation
 {
-    /**
-     * Landscape orientation.
-     */
+    /** Landscape orientation. */
     case LANDSCAPE;
 
-    /**
-     * Portrait orientation.
-     */
+    /** Portrait orientation. */
     case PORTRAIT;
 }

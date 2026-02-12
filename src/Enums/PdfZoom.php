@@ -26,24 +26,16 @@ enum PdfZoom: string implements PdfEnumDefaultInterface
 {
     use PdfEnumDefaultTrait;
 
-    /**
-     * Uses viewer default mode (default value).
-     */
+    /** Uses viewer default mode (default value). */
     #[EnumCase(extras: [self::NAME => true])]
     case DEFAULT = '';
 
-    /**
-     * Displays the entire page on screen.
-     */
+    /** Displays the entire page on screen. */
     case FULL_PAGE = 'Fit';
 
-    /**
-     * Uses maximum width of the window.
-     */
+    /** Uses maximum width of the window. */
     case FULL_WIDTH = 'FitH null';
 
-    /**
-     * Uses real size. It is equivalent to 100% zoom.
-     */
+    /** Uses real size. It is equivalent to 100% zoom. */
     case REAL = 'XYZ null null 1';
 }

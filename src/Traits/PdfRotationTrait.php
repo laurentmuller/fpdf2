@@ -35,14 +35,10 @@ use fpdf\PdfRectangle;
  */
 trait PdfRotationTrait
 {
-    /**
-     * No rotation angle.
-     */
+    /** No rotation angle. */
     private const float NO_ANGLE = 0.0;
 
-    /**
-     * The current rotation, in degrees.
-     */
+    /** The current rotation, in degrees. */
     private float $angle = self::NO_ANGLE;
 
     /**

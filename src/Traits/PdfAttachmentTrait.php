@@ -30,9 +30,7 @@ use fpdf\PdfException;
  */
 trait PdfAttachmentTrait
 {
-    /**
-     * The attachement object number.
-     */
+    /** The attachement object number. */
     private int $attachmentNumber = -1;
 
     /**

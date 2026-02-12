@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- Updated PhpCsFixer configurations for line span in PHPDoc blocks.
+
 ## 4.0.1 - 2026-02-10
 
 - Added `PdfColorSpace` enumeration.
