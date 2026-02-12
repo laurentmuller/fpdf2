@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 4.0.2 - 2026-02-12
 
 - `PdfPngParser`: Added checksum control when reading chunks.
 - `PdfPngParser`: Added internal constants.
