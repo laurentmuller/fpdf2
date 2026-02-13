@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- `PdfColorSpace`: Added `getColors()` function.
+
 ## 4.0.2 - 2026-02-12
 
 - `PdfPngParser`: Added checksum control when reading chunks.

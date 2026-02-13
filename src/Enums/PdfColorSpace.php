@@ -22,4 +22,15 @@ enum PdfColorSpace: string
     case DEVICE_GRAY = 'DeviceGray';
     case DEVICE_RGB = 'DeviceRGB';
     case INDEXED = 'Indexed';
+
+    /**
+     * Gets the number of colors.
+     */
+    public function getColors(): int
+    {
+        return match ($this) {
+            self::DEVICE_RGB => 3,
+            default => 1,
+        };
+    }
 }

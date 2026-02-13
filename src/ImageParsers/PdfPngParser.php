@@ -87,7 +87,6 @@ class PdfPngParser implements PdfImageParserInterface
         $bitsPerComponent = $this->getBitsPerComponent($data[8], $file);
         $colorType = $this->getByte($data, 9);
         $colorSpace = $this->getColorSpace($colorType, $file);
-        $colors = $this->getColors($colorSpace);
 
         // check other values
         $this->checkCompression($data[10], $file);
@@ -123,7 +122,7 @@ class PdfPngParser implements PdfImageParserInterface
         // the decoded parameters
         $decodeParms = \sprintf(
             '/Predictor 15 /Colors %d /BitsPerComponent %d /Columns %d',
-            $colors,
+            $colorSpace->getColors(),
             $bitsPerComponent,
             $width
         );
@@ -277,14 +276,6 @@ class PdfPngParser implements PdfImageParserInterface
     private function getByte(string $data, int $offset = 0): int
     {
         return \ord($data[$offset]);
-    }
-
-    /**
-     * Gets the number of colors.
-     */
-    private function getColors(PdfColorSpace $colorSpace): int
-    {
-        return PdfColorSpace::DEVICE_RGB === $colorSpace ? 3 : 1;
     }
 
     /**
