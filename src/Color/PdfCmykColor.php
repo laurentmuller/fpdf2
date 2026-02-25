@@ -115,7 +115,7 @@ readonly class PdfCmykColor implements PdfColorInterface
     }
 
     #[\Override]
-    public function toCmykColor(): PdfCmykColor
+    public function toCmykColor(): self
     {
         return $this;
     }

@@ -85,7 +85,7 @@ readonly class PdfGrayColor implements PdfColorInterface
     }
 
     #[\Override]
-    public function toGrayColor(): PdfGrayColor
+    public function toGrayColor(): self
     {
         return $this;
     }

@@ -190,7 +190,7 @@ final class PdfRgbColorTest extends AbstractColorTestCase
     {
         $color = PdfRgbColor::instance(10, 20, 30);
         $actual = $color->toRgbColor();
-        self::assertTrue($color === $actual);
+        self::assertSame($actual, $color);
     }
 
     public function testToString(): void

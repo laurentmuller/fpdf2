@@ -68,8 +68,7 @@ final class PdfCmykColorTest extends AbstractColorTestCase
     {
         $color = PdfCmykColor::instance(10, 20, 30, 40);
         $actual = $color->toCmykColor();
-        self::assertTrue($color === $actual);
-
+        self::assertSame($actual, $color);
     }
 
     public function testToGrayColor(): void

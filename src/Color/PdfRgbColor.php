@@ -225,7 +225,7 @@ readonly class PdfRgbColor implements PdfColorInterface
     }
 
     #[\Override]
-    public function toRgbColor(): PdfRgbColor
+    public function toRgbColor(): self
     {
         return $this;
     }
