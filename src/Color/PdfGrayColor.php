@@ -17,6 +17,8 @@ use fpdf\Interfaces\PdfColorInterface;
 
 /**
  * Represents a grayed (level) color.
+ *
+ * The gray level is specified as an integer between 0 and 255.
  */
 readonly class PdfGrayColor implements PdfColorInterface
 {
@@ -73,9 +75,7 @@ readonly class PdfGrayColor implements PdfColorInterface
         return new self($level);
     }
 
-    /**
-     * Convert this color to a Cmyk color.
-     */
+    #[\Override]
     public function toCmykColor(): PdfCmykColor
     {
         /** @var int<0, 100> $black */
@@ -84,9 +84,13 @@ readonly class PdfGrayColor implements PdfColorInterface
         return PdfCmykColor::instance(0, 0, 0, $black);
     }
 
-    /**
-     * Convert this color to an RGB color.
-     */
+    #[\Override]
+    public function toGrayColor(): PdfGrayColor
+    {
+        return $this;
+    }
+
+    #[\Override]
     public function toRgbColor(): PdfRgbColor
     {
         return PdfRgbColor::instance($this->level, $this->level, $this->level);

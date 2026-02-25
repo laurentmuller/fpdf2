@@ -17,6 +17,8 @@ use fpdf\Interfaces\PdfColorInterface;
 
 /**
  * Represents an CMYK (cyan-magenta-yellow-black) color.
+ *
+ * Each component is an integer between 0 and 100.
  */
 readonly class PdfCmykColor implements PdfColorInterface
 {
@@ -112,9 +114,19 @@ readonly class PdfCmykColor implements PdfColorInterface
         return self::instance(0, 100, 0, 0);
     }
 
-    /**
-     * Convert this color to an RGB color.
-     */
+    #[\Override]
+    public function toCmykColor(): PdfCmykColor
+    {
+        return $this;
+    }
+
+    #[\Override]
+    public function toGrayColor(): PdfGrayColor
+    {
+        return $this->toRgbColor()->toGrayColor();
+    }
+
+    #[\Override]
     public function toRgbColor(): PdfRgbColor
     {
         $cyan = $this->asFloat($this->cyan);

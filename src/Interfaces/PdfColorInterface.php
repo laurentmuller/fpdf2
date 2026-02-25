@@ -13,8 +13,12 @@ declare(strict_types=1);
 
 namespace fpdf\Interfaces;
 
+use fpdf\Color\PdfCmykColor;
+use fpdf\Color\PdfGrayColor;
+use fpdf\Color\PdfRgbColor;
+
 /**
- * Class implementing this interface provides color for drawing, filling and text of the PDF document.
+ * Class implementing this interface provides color for drawing, filling, and text of the PDF document.
  */
 interface PdfColorInterface extends \Stringable
 {
@@ -32,4 +36,19 @@ interface PdfColorInterface extends \Stringable
      * Gets this color, as string, when required to be output to the dictionary.
      */
     public function getTag(): string;
+
+    /**
+     * Gets this instance as an CMYK color.
+     */
+    public function toCmykColor(): PdfCmykColor;
+
+    /**
+     * Gets this instance as a Gray color.
+     */
+    public function toGrayColor(): PdfGrayColor;
+
+    /**
+     * Gets this instance as an RGB color.
+     */
+    public function toRgbColor(): PdfRgbColor;
 }

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `PdfColorInterface`: Added conversion functions.
 - `PdfColorSpace`: Added `getColors()` function.
 
 ## 4.0.2 - 2026-02-12

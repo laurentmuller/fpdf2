@@ -17,6 +17,8 @@ use fpdf\Interfaces\PdfColorInterface;
 
 /**
  * Represents an RGB (red-green-blue) color.
+ *
+ * Each component is an integer between 0 and 255.
  */
 readonly class PdfRgbColor implements PdfColorInterface
 {
@@ -189,9 +191,7 @@ readonly class PdfRgbColor implements PdfColorInterface
         return self::instance(255, 0, 0);
     }
 
-    /**
-     * Convert this color to a CMYK color.
-     */
+    #[\Override]
     public function toCmykColor(): PdfCmykColor
     {
         $red = $this->asFloat($this->red);
@@ -212,9 +212,7 @@ readonly class PdfRgbColor implements PdfColorInterface
         );
     }
 
-    /**
-     * Convert this color to a gray color.
-     */
+    #[\Override]
     public function toGrayColor(): PdfGrayColor
     {
         $red = 0.299 * (float) $this->red;
@@ -224,6 +222,12 @@ readonly class PdfRgbColor implements PdfColorInterface
         $level = (int) ($red + $green + $blue);
 
         return PdfGrayColor::instance($level);
+    }
+
+    #[\Override]
+    public function toRgbColor(): PdfRgbColor
+    {
+        return $this;
     }
 
     /**
