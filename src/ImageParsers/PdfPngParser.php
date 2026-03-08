@@ -231,23 +231,23 @@ class PdfPngParser implements PdfImageParserInterface
         $mask = '';
         $colors = '';
         $data = (string) \gzuncompress($data);
-        $channels = $colorType === 4 ? 2 : 4; // Gray + alpha or RBG + alpha
+        $channels = 4 === $colorType ? 2 : 4; // Gray + alpha or RBG + alpha
 
         $pixel = 0;
-        for ($row = 0; $row < $height; $row++) {
+        for ($row = 0; $row < $height; ++$row) {
             $colors .= $data[$pixel]; // filter type
             $mask .= $data[$pixel++]; // filter type
             // data
-            for ($column = 0; $column < $width; $column++) {
-                for ($color = 0; $color < $channels - 1; $color++) {
+            for ($column = 0; $column < $width; ++$column) {
+                for ($color = 0; $color < $channels - 1; ++$color) {
                     $colors .= $data[$pixel++];
                 }
                 $mask .= $data[$pixel++];
             }
         }
 
-        $data =  (string) \gzcompress($colors);
-        $mask =  (string) \gzcompress($mask);
+        $data = (string) \gzcompress($colors);
+        $mask = (string) \gzcompress($mask);
 
         return [$data, $mask];
     }
