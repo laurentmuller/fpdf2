@@ -228,24 +228,26 @@ class PdfPngParser implements PdfImageParserInterface
      */
     private function extractAlphaChannel(int $width, int $height, int $colorType, string $data): array
     {
-        $isAlpha = 4 === $colorType;
-        $len = $isAlpha ? 2 * $width : 4 * $width;
-        $colorPattern = $isAlpha ? '/(.)./s' : '/(.{3})./s';
-        $alphaPattern = $isAlpha ? '/.(.)/s' : '/.{3}(.)/s';
-
-        $color = '';
-        $alpha = '';
+        $mask = '';
+        $colors = '';
         $data = (string) \gzuncompress($data);
-        for ($i = 0; $i < $height; ++$i) {
-            $pos = (1 + $len) * $i;
-            $color .= $data[$pos];
-            $alpha .= $data[$pos];
-            $line = \substr($data, $pos + 1, $len);
-            $color .= \preg_replace($colorPattern, '$1', $line);
-            $alpha .= \preg_replace($alphaPattern, '$1', $line);
+        $channels = $colorType === 4 ? 2 : 4; // Gray + alpha or RBG + alpha
+
+        $pixel = 0;
+        for ($row = 0; $row < $height; $row++) {
+            $colors .= $data[$pixel]; // filter type
+            $mask .= $data[$pixel++]; // filter type
+            // data
+            for ($column = 0; $column < $width; $column++) {
+                for ($color = 0; $color < $channels - 1; $color++) {
+                    $colors .= $data[$pixel++];
+                }
+                $mask .= $data[$pixel++];
+            }
         }
-        $data = (string) \gzcompress($color);
-        $mask = (string) \gzcompress($alpha);
+
+        $data =  (string) \gzcompress($colors);
+        $mask =  (string) \gzcompress($mask);
 
         return [$data, $mask];
     }

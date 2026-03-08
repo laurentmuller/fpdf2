@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `PdfPngParser`: Updated `extractAlphaChannel` function.
 - `PdfColorInterface`: Added conversion functions.
 - `PdfColorSpace`: Added `getColors()` function.
 
