@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 4.0.3 - 2026-03-08
 
 - `PdfPngParser`: Updated `extractAlphaChannel` function.
 - `PdfColorInterface`: Added conversion functions.
