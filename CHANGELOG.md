@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 4.1.0 - 2026-03-08
 
 - **BC Break!**: `PdfDocument`: Moved string conversion to `PdfEncoder`class.
 - **BC Break!**: `PdfDocument`: Moved meta-data to `PdfDocumentInfo` class.
