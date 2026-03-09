@@ -228,6 +228,7 @@ class PdfDocument
     protected float $y = 0.0;
     /** The zoom display mode. */
     protected PdfZoom|int $zoom;
+
     /**
      * Create a new instance.
      *
@@ -1566,7 +1567,6 @@ class PdfDocument
         return $this;
     }
 
-
     /**
      * Enables or disables the automatic page breaking mode.
      *
@@ -1608,7 +1608,6 @@ class PdfDocument
 
         return $this;
     }
-
 
     /**
      * Defines the color used for all drawing operations (lines, rectangles and cell borders).
@@ -1754,7 +1753,6 @@ class PdfDocument
         return $this;
     }
 
-
     /**
      * Sets the display layout.
      */
@@ -1881,7 +1879,6 @@ class PdfDocument
     {
         return $this->setXY($position->x, $position->y);
     }
-
 
     /**
      * Defines the right margin.
@@ -2106,7 +2103,6 @@ class PdfDocument
 
         return $this;
     }
-
 
     /**
      * Begin a new page.

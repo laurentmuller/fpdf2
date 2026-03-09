@@ -40,6 +40,7 @@ class PdfEncoder
     {
         return $this->convertEncoding($str, 'UTF-8', 'ISO-8859-1');
     }
+
     /**
      * Convert the given string from UTF8 to UTF-16BE.
      */
