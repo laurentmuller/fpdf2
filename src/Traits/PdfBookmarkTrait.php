@@ -79,7 +79,7 @@ trait PdfBookmarkTrait
         $this->validateLevel($level);
         // convert
         if (!$isUTF8) {
-            $text = $this->convertIsoToUtf8($text);
+            $text = $this->encoder->convertIsoToUtf8($text);
         }
         // add
         $page = $this->page;
@@ -316,7 +316,7 @@ trait PdfBookmarkTrait
     private function putBookmark(PdfBookmark $bookmark, int $number): void
     {
         $this->putNewObj();
-        $this->putf('<</Title %s', $this->textString($bookmark->text));
+        $this->putf('<</Title %s', $this->encoder->textString($bookmark->text));
         foreach ($bookmark->hierarchy as $key => $value) {
             $this->putf('/%s %d 0 R', $key, $number + $value);
         }

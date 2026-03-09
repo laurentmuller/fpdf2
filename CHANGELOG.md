@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **BC Break!**: `PdfDocument`: Moved string conversion to `PdfEncoder`class.
+- **BC Break!**: `PdfDocument`: Moved meta-data to `PdfDocumentInfo` class.
 - `PdfPngParser`: Replaced `extractAlphaChannel` function by
   `updateAlphaChannel` function.
 

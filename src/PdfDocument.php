@@ -106,6 +106,8 @@ class PdfDocument
     protected PdfSize $defaultPageSize;
     /** The commands for drawing color. */
     protected string $drawColor = self::EMPTY_COLOR;
+    /** @var PdfEncoder the encoder */
+    protected PdfEncoder $encoder;
     /**
      * The font encodings.
      *
@@ -142,6 +144,8 @@ class PdfDocument
      * @var array<string, PdfImage>
      */
     protected array $images = [];
+    /** @var PdfDocumentInfo the document information */
+    protected PdfDocumentInfo $info;
     /** The flag set when processing footer. */
     protected bool $inFooter = false;
     /**The flag set when processing the header. */
@@ -164,12 +168,6 @@ class PdfDocument
     protected array $links = [];
     /** The margins in user unit. */
     protected PdfMargins $margins;
-    /**
-     * The document properties.
-     *
-     * @var array<string, string>
-     */
-    protected array $metadata = [];
     /** The current object number. */
     protected int $objectNumber = 2;
     /**
@@ -218,8 +216,6 @@ class PdfDocument
     protected PdfState $state = PdfState::NO_PAGE;
     /** The commands for text color. */
     protected string $textColor = self::EMPTY_COLOR;
-    /** The document title. */
-    protected string $title = '';
     /** The underlining flag. */
     protected bool $underline = false;
     /** The viewer preferences */
@@ -232,7 +228,6 @@ class PdfDocument
     protected float $y = 0.0;
     /** The zoom display mode. */
     protected PdfZoom|int $zoom;
-
     /**
      * Create a new instance.
      *
@@ -280,10 +275,13 @@ class PdfDocument
         $this->lineWidth = $this->divide(0.567);
         // automatic page break
         $this->setAutoPageBreak(true, 2.0 * $margin);
-        // producer
-        $this->setProducer('FPDF2 ' . self::VERSION);
         // preferences
         $this->viewerPreferences = new PdfViewerPreferences();
+        // encoder
+        $this->encoder = new PdfEncoder();
+        // information
+        $this->info = new PdfDocumentInfo($this->encoder);
+        $this->info->setProducer('FPDF2 ' . self::VERSION);
     }
 
     /**
@@ -587,7 +585,7 @@ class PdfDocument
                 'BT %.2F %.2F Td (%s) Tj ET',
                 $this->scale($this->x + $dx),
                 $this->scaleY($this->y + 0.5 * $height + 0.3 * $this->fontSize),
-                $this->escape($text)
+                $this->encoder->escape($text)
             );
             if ($this->underline) {
                 $output .= $this->doUnderline(
@@ -720,6 +718,14 @@ class PdfDocument
     }
 
     /**
+     * Gets the encoder.
+     */
+    public function getEncoder(): PdfEncoder
+    {
+        return $this->encoder;
+    }
+
+    /**
      * Gets the current font size in the user unit.
      */
     public function getFontSize(): float
@@ -733,6 +739,14 @@ class PdfDocument
     public function getFontSizeInPoint(): float
     {
         return $this->fontSizeInPoint;
+    }
+
+    /**
+     * Gets the document information (meta-data).
+     */
+    public function getInfo(): PdfDocumentInfo
+    {
+        return $this->info;
     }
 
     /**
@@ -941,14 +955,6 @@ class PdfDocument
     }
 
     /**
-     * Gets the document title.
-     */
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    /**
      * Gets the top margin in the user unit.
      *
      * The default value is 10 mm.
@@ -1093,7 +1099,7 @@ class PdfDocument
      *                                calculated.</li>
      *                                </ul>
      * @param string          $type   the image format. If not specified, the type is inferred from the file extension.
-     * @param string|int|null $link   an URL or an identifier returned by <code>addLink()</code>
+     * @param string|int|null $link   a URL or an identifier returned by <code>addLink()</code>
      *
      * @throws PdfException if the image file is empty, or if the image cannot be processed
      */
@@ -1259,7 +1265,7 @@ class PdfDocument
      * @param float      $y      the ordinate of the rectangle
      * @param float      $width  the width of the rectangle
      * @param float      $height the height of the rectangle
-     * @param string|int $link   an URL or an identifier returned by <code>addLink()</code>
+     * @param string|int $link   a URL or an identifier returned by <code>addLink()</code>
      *
      * @see PdfDocument::addLink()
      * @see PdfDocument::setLink()
@@ -1484,7 +1490,7 @@ class PdfDocument
      * @param float                       $width  the width of the rectangle
      * @param float                       $height the height of the rectangle
      * @param PdfRectangleStyle|PdfBorder $style  the style of rendering
-     * @param string|int|null             $link   an URL or identifier returned by <code>addLink()</code>
+     * @param string|int|null             $link   a URL or identifier returned by <code>addLink()</code>
      */
     public function rect(
         float $x,
@@ -1521,7 +1527,7 @@ class PdfDocument
      *
      * @param PdfRectangle                $rectangle the rectangle to draw
      * @param PdfRectangleStyle|PdfBorder $style     the style of rendering
-     * @param string|int|null             $link      an URL or identifier returned by <code>addLink()</code>
+     * @param string|int|null             $link      a URL or identifier returned by <code>addLink()</code>
      */
     public function rectangle(
         PdfRectangle $rectangle,
@@ -1560,17 +1566,6 @@ class PdfDocument
         return $this;
     }
 
-    /**
-     * Defines the author of the document.
-     *
-     * @param string $author the name of the author
-     * @param bool   $isUTF8 indicates if the string is encoded in ISO-8859-1 (<code>false</code>) or
-     *                       UTF-8 (<code>true</code>)
-     */
-    public function setAuthor(string $author, bool $isUTF8 = false): static
-    {
-        return $this->addMetaData('Author', $author, $isUTF8);
-    }
 
     /**
      * Enables or disables the automatic page breaking mode.
@@ -1614,19 +1609,6 @@ class PdfDocument
         return $this;
     }
 
-    /**
-     * Defines the creator of the document.
-     *
-     * This is typically the name of the application that generates the PDF.
-     *
-     * @param string $creator the name of the creator
-     * @param bool   $isUTF8  indicates if the string is encoded in ISO-8859-1 (<code>false</code>)
-     *                        or UTF-8 (<code>true</code>)
-     */
-    public function setCreator(string $creator, bool $isUTF8 = false): static
-    {
-        return $this->addMetaData('Creator', $creator, $isUTF8);
-    }
 
     /**
      * Defines the color used for all drawing operations (lines, rectangles and cell borders).
@@ -1772,17 +1754,6 @@ class PdfDocument
         return $this;
     }
 
-    /**
-     * Associates keywords with the document.
-     *
-     * @param string $keywords The list of keywords separated by space
-     * @param bool   $isUTF8   Indicates if the string is encoded in ISO-8859-1 (<code>false</code>)
-     *                         or UTF-8 (<code>true</code>)
-     */
-    public function setKeywords(string $keywords, bool $isUTF8 = false): static
-    {
-        return $this->addMetaData('Keywords', $keywords, $isUTF8);
-    }
 
     /**
      * Sets the display layout.
@@ -1911,17 +1882,6 @@ class PdfDocument
         return $this->setXY($position->x, $position->y);
     }
 
-    /**
-     * Defines the producer of the document.
-     *
-     * @param string $producer the producer
-     * @param bool   $isUTF8   Indicates if the string is encoded in ISO-8859-1 (<code>false</code>)
-     *                         or UTF-8 (<code>true</code>)
-     */
-    public function setProducer(string $producer, bool $isUTF8 = false): static
-    {
-        return $this->addMetaData('Producer', $producer, $isUTF8);
-    }
 
     /**
      * Defines the right margin.
@@ -1933,18 +1893,6 @@ class PdfDocument
         $this->margins->right = $rightMargin;
 
         return $this;
-    }
-
-    /**
-     * Defines the subject of the document.
-     *
-     * @param string $subject the subject
-     * @param bool   $isUTF8  Indicates if the string is encoded in ISO-8859-1 (<code>false</code>)
-     *                        or UTF-8 (<code>true</code>)
-     */
-    public function setSubject(string $subject, bool $isUTF8 = false): static
-    {
-        return $this->addMetaData('Subject', $subject, $isUTF8);
     }
 
     /**
@@ -1961,20 +1909,6 @@ class PdfDocument
         $this->colorFlag = $this->fillColor !== $this->textColor;
 
         return $this;
-    }
-
-    /**
-     * Defines the title of the document.
-     *
-     * @param string $title  the title
-     * @param bool   $isUTF8 Indicates if the string is encoded in ISO-8859-1 (<code>false</code>)
-     *                       or UTF-8 (<code>true</code>)
-     */
-    public function setTitle(string $title, bool $isUTF8 = false): static
-    {
-        $this->title = $title;
-
-        return $this->addMetaData('Title', $title, $isUTF8);
     }
 
     /**
@@ -2078,7 +2012,7 @@ class PdfDocument
             'BT %.2F %.2F Td (%s) Tj ET',
             $this->scale($x),
             $this->scaleY($y),
-            $this->escape($text)
+            $this->encoder->escape($text)
         );
         if ($this->underline) {
             $output .= $this->doUnderline($x, $y, $text);
@@ -2173,22 +2107,6 @@ class PdfDocument
         return $this;
     }
 
-    /**
-     * Add the given key/value pair to document meta-datas.
-     *
-     * @param string $key    the meta-data key
-     * @param string $value  the meta-data value
-     * @param bool   $isUTF8 indicates if the value is encoded in ISO-8859-1 (<code>false</code>)
-     *                       or UTF-8 (<code>true</code>)
-     *
-     * @phpstan-param non-empty-string $key
-     */
-    protected function addMetaData(string $key, string $value, bool $isUTF8 = false): static
-    {
-        $this->metadata[$key] = $isUTF8 ? $value : $this->convertIsoToUtf8($value);
-
-        return $this;
-    }
 
     /**
      * Begin a new page.
@@ -2289,37 +2207,6 @@ class PdfDocument
     }
 
     /**
-     * Convert a string from one character encoding to another.
-     *
-     * @param string          $str           the string to be converted
-     * @param string          $to_encoding   the desired encoding of the result
-     * @param string[]|string $from_encoding the current encoding used to interpret string
-     *
-     * @return string the encoded string
-     */
-    protected function convertEncoding(string $str, string $to_encoding, array|string $from_encoding): string
-    {
-        /** @var string */
-        return \mb_convert_encoding($str, $to_encoding, $from_encoding);
-    }
-
-    /**
-     * Convert the given string from ISO-8859-1 to UTF-8.
-     */
-    protected function convertIsoToUtf8(string $str): string
-    {
-        return $this->convertEncoding($str, 'UTF-8', 'ISO-8859-1');
-    }
-
-    /**
-     * Convert the given string from UTF8 to UTF-16BE.
-     */
-    protected function convertUtf8ToUtf16(string $str): string
-    {
-        return "\xFE\xFF" . $this->convertEncoding($str, 'UTF-16BE', 'UTF-8');
-    }
-
-    /**
      * Divide the given value by this scale factor.
      *
      * @param float $value the value to divide
@@ -2402,18 +2289,6 @@ class PdfDocument
     }
 
     /**
-     * Escape special characters from the given string.
-     */
-    protected function escape(string $str): string
-    {
-        return \str_replace(
-            ['\\', '(', ')', "\r"],
-            ['\\\\', '\\(', '\\)', '\\r'],
-            $str
-        );
-    }
-
-    /**
      * Format the rectangle border output.
      */
     protected function formatBorders(
@@ -2446,18 +2321,6 @@ class PdfDocument
         }
 
         return $output;
-    }
-
-    /**
-     * Format the given timestamp.
-     *
-     * @param ?int $timestamp the timestamp to format or the current local time if the timestamp is null
-     */
-    protected function formatDate(?int $timestamp = null): string
-    {
-        $date = \date('YmdHisO', $timestamp);
-
-        return \sprintf("D:%s'%s'", \substr($date, 0, -2), \substr($date, -2));
     }
 
     /**
@@ -2529,11 +2392,11 @@ class PdfDocument
      */
     protected function httpEncode(string $name, string $value, bool $isUTF8): string
     {
-        if ($this->isAscii($value)) {
+        if ($this->encoder->isAscii($value)) {
             return \sprintf('%s="%s"', $name, $value);
         }
         if (!$isUTF8) {
-            $value = $this->convertIsoToUtf8($value);
+            $value = $this->encoder->convertIsoToUtf8($value);
         }
 
         return \sprintf("%s*=UTF-8''%s", $name, \rawurlencode($value));
@@ -2547,16 +2410,6 @@ class PdfDocument
     protected function implode(array $values): string
     {
         return \implode(self::NEW_LINE, $values) . self::NEW_LINE;
-    }
-
-    /**
-     * Returns if the given string is valid for the <code>ASCII</code> encoding.
-     *
-     * @return bool <code>true</code> if the given string is only containing <code>ASCII</code> characters
-     */
-    protected function isAscii(string $str): bool
-    {
-        return \mb_check_encoding($str, 'ASCII');
     }
 
     /**
@@ -2759,13 +2612,13 @@ class PdfDocument
                 '/Type /Annot /Subtype /Text /Rect [%s] /Name %s /Contents %s',
                 $rect,
                 $pageAnnotation->getNameValue(),
-                $this->textString($pageAnnotation->text)
+                $this->encoder->textString($pageAnnotation->text)
             );
             if ($pageAnnotation->isColor()) {
                 $output .= \sprintf('/C [%s]', $pageAnnotation->getColorTag());
             }
             if ($pageAnnotation->isTitle()) {
-                $output .= \sprintf('/T %s', $this->textString($pageAnnotation->title));
+                $output .= \sprintf('/T %s', $this->encoder->textString($pageAnnotation->title));
             }
             $output .= '>>';
             $this->put($output);
@@ -3030,13 +2883,13 @@ class PdfDocument
     }
 
     /**
-     * Put the creation date and meta-data to this buffer.
+     * Put the producer, the creation date and meta-data to this buffer.
      */
     protected function putInfo(): void
     {
-        $this->addMetaData('CreationDate', $this->formatDate());
-        foreach ($this->metadata as $key => $value) {
-            $this->putf('/%s %s', $key, $this->textString($value));
+        $this->info->setCreationDate();
+        foreach ($this->info->getMetadata() as $key => $value) {
+            $this->putf('/%s %s', $key, $this->encoder->textString($value));
         }
     }
 
@@ -3051,7 +2904,7 @@ class PdfDocument
             $rect = $pageLink->formatRectangle();
             $output .= \sprintf('/Type /Annot /Subtype /Link /Rect [%s] /Border [0 0 0] ', $rect);
             if (\is_string($pageLink->link)) {
-                $output .= \sprintf('/A <</S /URI /URI %s>>', $this->textString($pageLink->link));
+                $output .= \sprintf('/A <</S /URI /URI %s>>', $this->encoder->textString($pageLink->link));
             } else {
                 $link = $this->links[$pageLink->link];
                 $pageInfo = $this->pageInfos[$link->page] ?? new PdfPageInfo();
@@ -3398,18 +3251,6 @@ class PdfDocument
         $lines[] = [\substr($text, $lastIndex), false];
 
         return $lines;
-    }
-
-    /**
-     * Convert the given string.
-     */
-    protected function textString(string $str): string
-    {
-        if (!$this->isAscii($str)) {
-            $str = $this->convertUtf8ToUtf16($str);
-        }
-
-        return \sprintf('(%s)', $this->escape($str));
     }
 
     /**

@@ -404,8 +404,8 @@ class PdfPngParser implements PdfImageParserInterface
     /**
      * Update the image data and soft mask.
      *
-     * @param PdfImage $image      the image to update
-     * @param int      $colorType  the color type
+     * @param PdfImage $image     the image to update
+     * @param int      $colorType the color type
      */
     private function updateAlphaChannel(PdfImage $image, int $colorType): void
     {

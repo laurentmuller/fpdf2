@@ -97,17 +97,17 @@ trait PdfAttachmentTrait
             }
             $size = \strlen($contents);
             $time = \filemtime($file);
-            $date = $this->formatDate(\is_int($time) ? $time : null);
+            $date = $this->encoder->formatDate(\is_int($time) ? $time : null);
 
             $this->putNewObj();
             $attachment->number = $this->objectNumber;
             $this->put('<<');
             $this->put('/Type /Filespec');
-            $this->putf('/F (%s)', $this->escape($name));
-            $this->putf('/UF %s', $this->textString($name));
+            $this->putf('/F (%s)', $this->encoder->escape($name));
+            $this->putf('/UF %s', $this->encoder->textString($name));
             $this->putf('/EF <</F %d 0 R>>', $this->objectNumber + 1);
             if ($attachment->isDescription()) {
-                $this->putf('/Desc %s', $this->textString($attachment->description));
+                $this->putf('/Desc %s', $this->encoder->textString($attachment->description));
             }
             $this->put('/AFRelationship /Unspecified');
             $this->put('>>');
@@ -118,7 +118,7 @@ trait PdfAttachmentTrait
             $this->put('/Type /EmbeddedFile');
             $this->put('/Subtype /application#2Foctet-stream');
             $this->putf('/Length %d', $size);
-            $this->putf('/Params <</Size %d /ModDate %s>>', $size, $this->textString($date));
+            $this->putf('/Params <</Size %d /ModDate %s>>', $size, $this->encoder->textString($date));
             $this->put('>>');
             $this->putStream($contents);
             $this->putEndObj();
@@ -127,7 +127,7 @@ trait PdfAttachmentTrait
         $this->putNewObj();
         $this->attachmentNumber = $this->objectNumber;
         $array = \array_map(
-            fn(int $index, PdfAttachment $attachment): string => $this->textString(\sprintf('%03d %d 0 R', $index, $attachment->number)),
+            fn(int $index, PdfAttachment $attachment): string => $this->encoder->textString(\sprintf('%03d %d 0 R', $index, $attachment->number)),
             \array_keys($this->attachments),
             \array_values($this->attachments)
         );

@@ -127,6 +127,13 @@ final class PdfDocPropertiesTest extends AbstractPdfDocTestCase
         self::assertSame(1, $doc->getPage());
     }
 
+    public function testEncoder(): void
+    {
+        $doc = $this->createDocument();
+        $encoder = $doc->getEncoder();
+        self::assertTrue($encoder->isAscii('A'));
+    }
+
     public function testFontSize(): void
     {
         $doc = $this->createDocument();
@@ -431,9 +438,9 @@ final class PdfDocPropertiesTest extends AbstractPdfDocTestCase
     public function testTitle(): void
     {
         $doc = $this->createDocument();
-        self::assertSame('', $doc->getTitle());
-        $doc->setTitle('Title');
-        self::assertSame('Title', $doc->getTitle());
+        self::assertSame('', $doc->getInfo()->getTitle());
+        $doc->getInfo()->setTitle('Title');
+        self::assertSame('Title', $doc->getInfo()->getTitle());
     }
 
     public function testUnderline(): void

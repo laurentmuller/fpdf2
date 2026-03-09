@@ -68,11 +68,11 @@ final class PdfCompareBasicTest extends AbstractCompareTestCase
         $doc->link($x, $y, 100, 20, 'https://www.bibi.nu');
         $doc->addLink();
 
-        $doc->setAuthor('Author Ĝ');
-        $doc->setCreator('Creator');
-        $doc->setKeywords('Keywords');
-        $doc->setSubject('Subject');
-        $doc->setTitle('Title');
+        $doc->getInfo()->setAuthor('Author Ĝ')
+            ->setCreator('Creator')
+            ->setKeywords('Keywords')
+            ->setSubject('Subject')
+            ->setTitle('Title');
 
         $doc->addPage(PdfOrientation::LANDSCAPE);
         $doc->cell(text: 'This is  test 3456.', move: PdfMove::BELOW);
