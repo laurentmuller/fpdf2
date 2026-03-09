@@ -140,11 +140,9 @@ class PdfPngParser implements PdfImageParserInterface
         );
 
         if ($colorType >= 4) {
-            [$data, $softMask] = $this->extractAlphaChannel($width, $height, $colorType, $data);
+            $this->updateAlphaChannel($image, $colorType);
             $parent->updatePdfVersion(PdfVersion::VERSION_1_4)
                 ->setAlphaChannel(true);
-            $image->softMask = $softMask;
-            $image->data = $data;
         }
 
         return $image;
@@ -219,37 +217,6 @@ class PdfPngParser implements PdfImageParserInterface
         if (self::FILE_SIGNATURE !== $this->readString($stream, \strlen(self::FILE_SIGNATURE))) {
             throw PdfException::format('Incorrect PNG header signature: %s.', $file);
         }
-    }
-
-    /**
-     * Extract the alpha channel.
-     *
-     * @return array{0: string, 1: string}
-     */
-    private function extractAlphaChannel(int $width, int $height, int $colorType, string $data): array
-    {
-        $mask = '';
-        $colors = '';
-        $data = (string) \gzuncompress($data);
-        $channels = 4 === $colorType ? 2 : 4; // Gray + alpha or RBG + alpha
-
-        $pixel = 0;
-        for ($row = 0; $row < $height; ++$row) {
-            $colors .= $data[$pixel]; // filter type
-            $mask .= $data[$pixel++]; // filter type
-            // data
-            for ($column = 0; $column < $width; ++$column) {
-                for ($color = 0; $color < $channels - 1; ++$color) {
-                    $colors .= $data[$pixel++];
-                }
-                $mask .= $data[$pixel++];
-            }
-        }
-
-        $data = (string) \gzcompress($colors);
-        $mask = (string) \gzcompress($mask);
-
-        return [$data, $mask];
     }
 
     /**
@@ -432,5 +399,34 @@ class PdfPngParser implements PdfImageParserInterface
     {
         /** @phpstan-var int */
         return \unpack('N', $data)[1];
+    }
+
+    /**
+     * Update the image data and soft mask.
+     *
+     * @param PdfImage $image      the image to update
+     * @param int      $colorType  the color type
+     */
+    private function updateAlphaChannel(PdfImage $image, int $colorType): void
+    {
+        $mask = '';
+        $colors = '';
+        $data = (string) \gzuncompress($image->data);
+        $colorsCount = 4 === $colorType ? 1 : 3; // Gray + alpha or RBG + alpha
+
+        $pixel = 0;
+        for ($row = 0; $row < $image->height; ++$row) {
+            // filter type
+            $colors .= $data[$pixel];
+            $mask .= $data[$pixel++];
+            // data
+            for ($column = 0; $column < $image->width; ++$column) {
+                $colors .= \substr($data, $pixel, $colorsCount);
+                $pixel += $colorsCount;
+                $mask .= $data[$pixel++];
+            }
+        }
+        $image->data = (string) \gzcompress($colors);
+        $image->softMask = (string) \gzcompress($mask);
     }
 }

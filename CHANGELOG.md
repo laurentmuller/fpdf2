@@ -1,5 +1,10 @@
 # Change log
 
+## Unreleased
+
+- `PdfPngParser`: Replaced `extractAlphaChannel` function by
+  `updateAlphaChannel` function.
+
 ## 4.0.3 - 2026-03-08
 
 - `PdfPngParser`: Updated `extractAlphaChannel` function.
