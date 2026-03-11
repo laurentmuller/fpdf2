@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- Updated header comment.
+
 ## 4.1.0 - 2026-03-08
 
 - **BC Break!**: `PdfDocument`: Moved string conversion to `PdfEncoder`class.

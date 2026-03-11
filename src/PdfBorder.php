@@ -1,12 +1,12 @@
 <?php
 
 /*
- * This file is part of the 'fpdf' package.
+ * This file is part of the FPDF2 package.
  *
- * For the license information, please view the LICENSE
+ * (c) bibi.nu <bibi@bibi.nu>
+ *
+ * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
- * @author bibi.nu <bibi@bibi.nu>
  */
 
 declare(strict_types=1);
