@@ -375,7 +375,7 @@ class PdfDocument
      * Adds a new page to the document.
      *
      * If a page is already present, the <code>footer()</code> method is called first to output the footer. Then the
-     * page is added, the current position set to the top-left corner according to the left margin and top margin and
+     * page is added, the current position is set to the top-left corner according to margins, and
      * <code>header()</code> is called to output the header. The font, which was set before calling, is automatically
      * restored. There is no need to call <code>setFont()</code> again if you want to continue with the same font. The
      * same is <code>true</code> for colors and line width.
@@ -1048,7 +1048,7 @@ class PdfDocument
      * <li>No explicit dimension, in which case the image is put at 96 dpi.</li>
      * </ul>
      *
-     * Supported formats are JPEG, PNG and GIF. The GD extension is required for the GIF format.
+     * Supported formats are JPEG, PNG, and GIF. The GD extension is required for the GIF format.
      *
      * For the JPEG format, the following variants are allowed:
      * <ul>
@@ -1614,7 +1614,7 @@ class PdfDocument
     }
 
     /**
-     * Defines the color used for all drawing operations (lines, rectangles and cell borders).
+     * Defines the color used for all drawing operations (lines, rectangles, and cell borders).
      *
      * The method can be called before the first page is created, and the value is retained from page to page.
      *
@@ -1847,7 +1847,7 @@ class PdfDocument
     }
 
     /**
-     * Defines the left, the top and the right margins.
+     * Defines the left, the top, and the right margins.
      *
      * By default, they are equal to 1 cm. Call this method to change them.
      *
@@ -2182,7 +2182,7 @@ class PdfDocument
             throw PdfException::format('Some data has already been output, can not send PDF file (output started at %s:%d).', $file, $line);
         }
 
-        // output buffer ?
+        // output buffer?
         $length = \ob_get_length();
         if (false === $length || 0 === $length) {
             return;
@@ -2444,7 +2444,7 @@ class PdfDocument
     /**
      * Output the given string.
      *
-     * @throws PdfException if no page has been added, if the end page has been called or if the document is closed
+     * @throws PdfException if no page has been added, if the end page has been called, or if the document is closed
      */
     protected function out(string $output): void
     {
@@ -2883,7 +2883,7 @@ class PdfDocument
     }
 
     /**
-     * Put the producer, the creation date and meta-data to this buffer.
+     * Put the creation date and add meta-data to this buffer.
      */
     protected function putInfo(): void
     {
