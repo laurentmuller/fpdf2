@@ -20,7 +20,7 @@ jobs:
                 run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
             -   name: Lint Markdown
-                uses: DavidAnson/markdownlint-cli2-action@v15
+                uses: DavidAnson/markdownlint-cli2-action@v22
 
             -   name: Validate Composer
                 run: composer validate --strict
