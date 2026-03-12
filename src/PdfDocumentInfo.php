@@ -24,7 +24,9 @@ class PdfDocumentInfo
     /** @var string the title */
     private string $title = '';
 
-    public function __construct(private readonly PdfEncoder $encoder) {}
+    public function __construct(private readonly PdfEncoder $encoder)
+    {
+    }
 
     /**
      * Gets the meta-data.

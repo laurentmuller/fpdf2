@@ -30,6 +30,8 @@ $rules = [
     // --------------------------------------------------------------
     '@auto' => true,
     '@auto:risky' => true,
+    '@Symfony' => true,
+    '@Symfony:risky' => true,
     '@PHP8x3Migration' => true,
     '@PHP8x3Migration:risky' => true,
     '@PHPUnit11x0Migration:risky' => true,
@@ -53,7 +55,7 @@ $rules = [
     'attribute_empty_parentheses' => ['use_parentheses' => false],
     'native_function_invocation' => ['include' => ['@internal', '@all', '@compiler_optimized']],
     'php_unit_test_case_static_method_calls' => ['call_type' => 'self'],
-    'new_with_braces' => ['anonymous_class' => false, 'named_class' => true],
+    'new_with_parentheses' => ['anonymous_class' => false, 'named_class' => true],
     'ordered_imports' => ['imports_order' => ['const', 'class', 'function']],
     'blank_line_before_statement' => ['statements' => ['declare', 'try', 'return']],
     'header_comment' => ['header' => $comment, 'location' => 'after_open'],
@@ -80,7 +82,6 @@ $files = [
 ];
 
 $exclude = [
-    'font',
     'fonts',
     'Legacy',
     'resources',
@@ -88,14 +89,14 @@ $exclude = [
 
 $finder = Finder::create()
     ->in($paths)
-    ->append($files)
-    ->exclude($exclude);
+    ->notPath($exclude)
+    ->append($files);
 
 $config = new Config();
 
 return $config
-    ->setParallelConfig(ParallelConfigFactory::detect())
     ->setCacheFile(__DIR__ . '/cache/php-cs-fixer/.php-cs-fixer.cache')
+    ->setParallelConfig(ParallelConfigFactory::detect())
     ->setUnsupportedPhpVersionAllowed(false)
     ->setRiskyAllowed(true)
     ->setFinder($finder)

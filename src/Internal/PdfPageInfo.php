@@ -30,7 +30,8 @@ final class PdfPageInfo extends AbstractPdfNumber
     public function __construct(
         public ?PdfRotation $rotation = null,
         public ?PdfSize $size = null,
-    ) {}
+    ) {
+    }
 
     /**
      * @phpstan-assert-if-true PdfRotation $this->rotation

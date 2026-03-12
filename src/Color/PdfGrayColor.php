@@ -25,7 +25,9 @@ readonly class PdfGrayColor implements PdfColorInterface
     /**
      * @param int<0, 255> $level the gray level (0 to 255)
      */
-    public function __construct(public int $level) {}
+    public function __construct(public int $level)
+    {
+    }
 
     #[\Override]
     public function __toString(): string

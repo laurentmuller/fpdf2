@@ -68,7 +68,7 @@ trait PdfAttachmentTrait
         }
         $this->putf('/Names <</EmbeddedFiles %d 0 R>>', $this->attachmentNumber);
         $array = \array_map(
-            static fn(PdfAttachment $attachment): string => \sprintf('%d 0 R', $attachment->number),
+            static fn (PdfAttachment $attachment): string => \sprintf('%d 0 R', $attachment->number),
             $this->attachments
         );
         $this->putf('/AF [%s]', \implode(' ', $array));
@@ -127,7 +127,7 @@ trait PdfAttachmentTrait
         $this->putNewObj();
         $this->attachmentNumber = $this->objectNumber;
         $array = \array_map(
-            fn(int $index, PdfAttachment $attachment): string => $this->encoder->textString(\sprintf('%03d %d 0 R', $index, $attachment->number)),
+            fn (int $index, PdfAttachment $attachment): string => $this->encoder->textString(\sprintf('%03d %d 0 R', $index, $attachment->number)),
             \array_keys($this->attachments),
             \array_values($this->attachments)
         );

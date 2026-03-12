@@ -686,7 +686,9 @@ class PdfDocument
      *
      * @see PdfDocument::header()
      */
-    public function footer(): void {}
+    public function footer(): void
+    {
+    }
 
     /**
      * Gets the alias for the total number of pages.
@@ -950,7 +952,7 @@ class PdfDocument
         /** @var int[] $keys */
         $keys = \unpack('C*', $str);
         $charWidths = $this->currentFont->cw;
-        $width = \array_sum(\array_map(static fn(int $key): int => $charWidths[$key], $keys));
+        $width = \array_sum(\array_map(static fn (int $key): int => $charWidths[$key], $keys));
 
         return (float) $width * $this->fontSize / 1000.0;
     }
@@ -1006,7 +1008,9 @@ class PdfDocument
      *
      * @see PdfDocument::footer()
      */
-    public function header(): void {}
+    public function header(): void
+    {
+    }
 
     /**
      * Draws a horizontal line with current draw color and optionally the given line width.
@@ -2834,7 +2838,7 @@ class PdfDocument
         if ($image->isTransparencies()) {
             $transparencies = \array_reduce(
                 $image->transparencies,
-                static fn(string $carry, int $value): string => $carry . \sprintf('%1$d %1$d ', $value),
+                static fn (string $carry, int $value): string => $carry . \sprintf('%1$d %1$d ', $value),
                 ''
             );
             $this->putf('/Mask [%s]', $transparencies);

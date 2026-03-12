@@ -38,5 +38,6 @@ final class PdfBookmark
         public readonly float $y,
         public readonly int $page,
         public readonly ?int $link = null,
-    ) {}
+    ) {
+    }
 }

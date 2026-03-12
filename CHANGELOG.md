@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Updated PHP-CS-Fixer configuration to use Symfony rule sets.
 - Updated header comment.
 
 ## 4.1.0 - 2026-03-08
@@ -21,7 +22,7 @@
 
 - `PdfPngParser`: Added checksum control when reading chunks.
 - `PdfPngParser`: Added internal constants.
-- Updated PhpCsFixer configurations for line span in PHPDoc blocks.
+- Updated PHP-CS-Fixer configurations for line span in PHPDoc blocks.
 
 ## 4.0.1 - 2026-02-10
 
@@ -40,7 +41,7 @@
 
 - Updated PHPStan configuration.
 - Updated Rector to version 2.3.0 and configuration.
-- Updated Rector and PhpCsFixer configurations.
+- Updated Rector and PHP-CS-Fixer configurations.
 - Removed Psalm dependency.
 - Make test classes final.
 - Updated tests and examples.
@@ -117,7 +118,7 @@
 ## 3.0.12 - 2025-03-30
 
 - `PdfDocument`: Added `parseImage()` and `scaleImage()` functions.
-- `PhpCsFixer`: Added Symfony rule sets.
+- `PHP-CS-Fixer`: Added Symfony rule sets.
 - `composer.json`: Added composer validate script.
 - Added php unit plugin to Psalm.
 - Added type-coverage to PHPStan.
@@ -243,7 +244,7 @@
 
 ## 2.0.12 - 2024-11-25
 
-- Updated `php-cs-fixer` to version 3.65.0.
+- Updated `PHP-CS-Fixer` to version 3.65.0.
 - Updated `PHPunit` continuous integration action.
 - Updated `PHPStan` level to 10.
 - Split dependencies in dedicated folders using `bamarni/composer-bin-plugin`.
@@ -285,7 +286,7 @@
 - Updated PHPStan documentation.
 - Spelling correction in documentation.
 - Updated Symfony to version 7.1.4.
-- Added rector fix script to `composer.json`.
+- Added a rector fix script to `composer.json`.
 - Replaced links in tutorials.
 - Updated tutorials.
 - Internal changes in `PdfDocument` and `PdfViewerPreferences` classes.
@@ -384,14 +385,14 @@
 ## 1.9.0.2 - 2024-05-21
 
 - Updated tutorials.
-- Updated markdown lint configuration.
+- Updated Markdown lint configuration.
 - Updated `.gitattributes` to exclude `.github` folder.
 
 ## 1.9.0.1 - 2024-05-16
 
 - Updated rector configuration.
 - Updated `psalm/plugin-phpunit` plugin version.
-- Updated `PhpCsFixer` configuration.
+- Updated `PHP-CS-Fixer` configuration.
 - Updated `.gitattributes` to exclude non-essential files from distribution.
 
 ## 1.9.0.0 - 2024-04-29
@@ -704,7 +705,7 @@
   one had to cause a window refresh to make them show up.
 - It is no longer necessary to set the decimal separator as the dot to produce
   valid documents.
-- The clickable area in a cell was always on the left independently of the
+- The clickable area in a cell was always on the left, independently of the
   text alignment.
 - JPEG images in CMYK mode appeared in inverted colors.
 - Transparent PNG images in grayscale or true color mode were incorrectly
@@ -757,12 +758,12 @@
 
 - Line break and text justification support (MultiCell()).
 - Color support (SetDrawColor(), SetFillColor(), SetTextColor()). Possibility
-  to draw filled rectangles and paint cell background.
+  to draw filled rectangles and paint a cell background.
 - A cell whose width is declared null extends up to the right margin of the
   page.
 - Line width is now retained from page to page and defaults to 0.2 mm.
 - Added SetXY() method.
-- Fixed a passing by reference done in a deprecated manner for PHP4.
+- Fixed passing by reference done in a deprecated manner for PHP4.
 
 ## 1.2 - 2001-11-11
 

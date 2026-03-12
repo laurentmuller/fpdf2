@@ -58,7 +58,8 @@ final class PdfFont extends AbstractPdfNumber
         public readonly int $size1,
         public readonly int $size2,
         public readonly bool $subsetted,
-    ) {}
+    ) {
+    }
 
     /**
      * @phpstan-assert-if-true non-empty-string $this->diff

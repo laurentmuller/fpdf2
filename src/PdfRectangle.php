@@ -24,7 +24,9 @@ class PdfRectangle
      * @param float $width  the width
      * @param float $height the height
      */
-    public function __construct(public float $x, public float $y, public float $width, public float $height) {}
+    public function __construct(public float $x, public float $y, public float $width, public float $height)
+    {
+    }
 
     /**
      * Returns these x, y, width and height values as an array.

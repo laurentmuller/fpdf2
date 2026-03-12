@@ -29,7 +29,8 @@ final class PdfAttachment extends AbstractPdfNumber
         public readonly string $file,
         public readonly string $name,
         public readonly string $description,
-    ) {}
+    ) {
+    }
 
     /**
      * @phpstan-assert-if-true non-empty-string $this->description

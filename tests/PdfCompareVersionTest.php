@@ -46,5 +46,7 @@ final class PdfCompareVersionTest extends AbstractCompareTestCase
     }
 
     #[\Override]
-    protected function updateOldDocument(FPDF $doc): void {}
+    protected function updateOldDocument(FPDF $doc): void
+    {
+    }
 }

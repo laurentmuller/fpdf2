@@ -29,7 +29,8 @@ class PdfMargins
         public float $top,
         public float $right,
         public float $bottom
-    ) {}
+    ) {
+    }
 
     /**
      * Returns these left, top, right and bottom values as an array.
