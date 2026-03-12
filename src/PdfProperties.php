@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace fpdf;
 
 /**
- * Contains document information (meta-data).
+ * Contains document properties (meta-data).
  */
-class PdfDocumentInfo
+class PdfProperties
 {
     /** @var array<string, string> the meta-data */
     private array $metadata = [];

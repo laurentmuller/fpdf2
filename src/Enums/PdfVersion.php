@@ -42,6 +42,14 @@ enum PdfVersion: string implements PdfEnumDefaultInterface
     case VERSION_1_7 = '1.7';
 
     /**
+     * Gets this value, as string, when output to the document.
+     */
+    public function getOutput(): string
+    {
+        return \sprintf('%%PDF-%s', $this->value);
+    }
+
+    /**
      * Returns a value indicating if this version is smaller than the given version.
      *
      * @param PdfVersion $other the version to compare to
@@ -51,5 +59,16 @@ enum PdfVersion: string implements PdfEnumDefaultInterface
     public function isSmaller(PdfVersion $other): bool
     {
         return \version_compare($this->value, $other->value, '<');
+    }
+
+    /**
+     * Gets the highest version.
+     *
+     * @param PdfVersion $a the first version to compare
+     * @param PdfVersion $b the second version to compare
+     */
+    public static function max(PdfVersion $a, PdfVersion $b): PdfVersion
+    {
+        return $a->isSmaller($b) ? $b : $a;
     }
 }

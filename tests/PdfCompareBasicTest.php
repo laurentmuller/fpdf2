@@ -68,7 +68,7 @@ final class PdfCompareBasicTest extends AbstractCompareTestCase
         $doc->link($x, $y, 100, 20, 'https://www.bibi.nu');
         $doc->addLink();
 
-        $doc->getInfo()->setAuthor('Author Ĝ')
+        $doc->getProperties()->setAuthor('Author Ĝ')
             ->setCreator('Creator')
             ->setKeywords('Keywords')
             ->setSubject('Subject')

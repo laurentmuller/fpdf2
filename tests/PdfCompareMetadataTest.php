@@ -21,7 +21,7 @@ final class PdfCompareMetadataTest extends AbstractCompareTestCase
     #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void
     {
-        $doc->getInfo()->setTitle('Title æ', true)
+        $doc->getProperties()->setTitle('Title æ', true)
             ->setSubject('Subject')
             ->setAuthor('Author')
             ->setCreator('Creator')

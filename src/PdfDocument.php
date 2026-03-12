@@ -144,8 +144,6 @@ class PdfDocument
      * @var array<string, PdfImage>
      */
     protected array $images = [];
-    /** @var PdfDocumentInfo the document information */
-    protected PdfDocumentInfo $info;
     /** The flag set when processing footer. */
     protected bool $inFooter = false;
     /**The flag set when processing the header. */
@@ -210,6 +208,8 @@ class PdfDocument
     protected PdfSize $pageSize;
     /** The PDF version number. */
     protected PdfVersion $pdfVersion;
+    /** @var PdfProperties the document properties */
+    protected PdfProperties $properties;
     /** The scale factor (number of points in the user unit). */
     protected float $scaleFactor;
     /** The current document state. */
@@ -280,9 +280,9 @@ class PdfDocument
         $this->viewerPreferences = new PdfViewerPreferences();
         // encoder
         $this->encoder = new PdfEncoder();
-        // information
-        $this->info = new PdfDocumentInfo($this->encoder);
-        $this->info->setProducer('FPDF2 ' . self::VERSION);
+        // properties
+        $this->properties = new PdfProperties($this->encoder);
+        $this->properties->setProducer('FPDF2 ' . self::VERSION);
     }
 
     /**
@@ -745,14 +745,6 @@ class PdfDocument
     }
 
     /**
-     * Gets the document information (meta-data).
-     */
-    public function getInfo(): PdfDocumentInfo
-    {
-        return $this->info;
-    }
-
-    /**
      * Gets the height of the last printed cell.
      *
      * @return float the height or 0.0 if no printed cell
@@ -902,6 +894,14 @@ class PdfDocument
     public function getPrintableWidth(): float
     {
         return $this->getPageWidth() - $this->margins->left - $this->margins->right;
+    }
+
+    /**
+     * Gets the document properties (meta-data).
+     */
+    public function getProperties(): PdfProperties
+    {
+        return $this->properties;
     }
 
     /**
@@ -2804,7 +2804,7 @@ class PdfDocument
     protected function putHeader(): void
     {
         $this->updatePdfVersion($this->viewerPreferences->getVersion());
-        $this->putf('%%PDF-%s', $this->pdfVersion->value);
+        $this->put($this->pdfVersion->getOutput());
     }
 
     /**
@@ -2887,8 +2887,8 @@ class PdfDocument
      */
     protected function putInfo(): void
     {
-        $this->info->setCreationDate();
-        foreach ($this->info->getMetadata() as $key => $value) {
+        $this->properties->setCreationDate();
+        foreach ($this->properties->getMetadata() as $key => $value) {
             $this->putf('/%s %s', $key, $this->encoder->textString($value));
         }
     }

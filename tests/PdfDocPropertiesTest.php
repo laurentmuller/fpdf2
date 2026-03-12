@@ -438,9 +438,9 @@ final class PdfDocPropertiesTest extends AbstractPdfDocTestCase
     public function testTitle(): void
     {
         $doc = $this->createDocument();
-        self::assertSame('', $doc->getInfo()->getTitle());
-        $doc->getInfo()->setTitle('Title');
-        self::assertSame('Title', $doc->getInfo()->getTitle());
+        self::assertSame('', $doc->getProperties()->getTitle());
+        $doc->getProperties()->setTitle('Title');
+        self::assertSame('Title', $doc->getProperties()->getTitle());
     }
 
     public function testUnderline(): void

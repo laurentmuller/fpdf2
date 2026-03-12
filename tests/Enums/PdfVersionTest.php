@@ -20,6 +20,32 @@ use PHPUnit\Framework\TestCase;
 final class PdfVersionTest extends TestCase
 {
     /**
+     * @phpstan-return \Generator<int, array{PdfVersion, PdfVersion, PdfVersion}>
+     */
+    public static function getMax(): \Generator
+    {
+        yield [PdfVersion::VERSION_1_3, PdfVersion::VERSION_1_3, PdfVersion::VERSION_1_3];
+        yield [PdfVersion::VERSION_1_3, PdfVersion::VERSION_1_4, PdfVersion::VERSION_1_4];
+        yield [PdfVersion::VERSION_1_3, PdfVersion::VERSION_1_5, PdfVersion::VERSION_1_5];
+        yield [PdfVersion::VERSION_1_3, PdfVersion::VERSION_1_6, PdfVersion::VERSION_1_6];
+        yield [PdfVersion::VERSION_1_3, PdfVersion::VERSION_1_7, PdfVersion::VERSION_1_7];
+
+        yield [PdfVersion::VERSION_1_4, PdfVersion::VERSION_1_4, PdfVersion::VERSION_1_4];
+        yield [PdfVersion::VERSION_1_4, PdfVersion::VERSION_1_5, PdfVersion::VERSION_1_5];
+        yield [PdfVersion::VERSION_1_4, PdfVersion::VERSION_1_6, PdfVersion::VERSION_1_6];
+        yield [PdfVersion::VERSION_1_4, PdfVersion::VERSION_1_7, PdfVersion::VERSION_1_7];
+
+        yield [PdfVersion::VERSION_1_5, PdfVersion::VERSION_1_5, PdfVersion::VERSION_1_5];
+        yield [PdfVersion::VERSION_1_5, PdfVersion::VERSION_1_6, PdfVersion::VERSION_1_6];
+        yield [PdfVersion::VERSION_1_5, PdfVersion::VERSION_1_7, PdfVersion::VERSION_1_7];
+
+        yield [PdfVersion::VERSION_1_6, PdfVersion::VERSION_1_6, PdfVersion::VERSION_1_6];
+        yield [PdfVersion::VERSION_1_6, PdfVersion::VERSION_1_7, PdfVersion::VERSION_1_7];
+
+        yield [PdfVersion::VERSION_1_7, PdfVersion::VERSION_1_7, PdfVersion::VERSION_1_7];
+    }
+
+    /**
      * @phpstan-return \Generator<int, array{PdfVersion, PdfVersion, bool}>
      */
     public static function getSmallerVersions(): \Generator
@@ -54,6 +80,13 @@ final class PdfVersionTest extends TestCase
     public function testIsSmaller(PdfVersion $source, PdfVersion $other, bool $expected): void
     {
         $actual = $source->isSmaller($other);
+        self::assertSame($expected, $actual);
+    }
+
+    #[DataProvider('getMax')]
+    public function testMax(PdfVersion $a, PdfVersion $b, PdfVersion $expected): void
+    {
+        $actual = PdfVersion::max($a, $b);
         self::assertSame($expected, $actual);
     }
 

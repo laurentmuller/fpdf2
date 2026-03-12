@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **BC Break!**: Renamed `PdfDocumentInfo` class to `PdfProperties` and
+  renamed `getInfo()` function to `getProperties()` for `PdfDocument` class.
 - Updated PHP-CS-Fixer configuration to use Symfony rule sets.
 - Updated header comment.
 
