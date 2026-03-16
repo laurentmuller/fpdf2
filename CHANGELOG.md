@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- `PdfDocument`: Renamed `putInfo()` function to `putProperties()`.
+
 ## 4.2.0 - 2026-03-16
 
 - Updated `actions/checkout` to version 6.

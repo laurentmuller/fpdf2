@@ -2252,7 +2252,7 @@ class PdfDocument
         // info
         $this->putNewObj();
         $this->put('<<');
-        $this->putInfo();
+        $this->putProperties();
         $this->put('>>');
         $this->putEndObj();
         // catalog
@@ -2883,17 +2883,6 @@ class PdfDocument
     }
 
     /**
-     * Put the creation date and add meta-data to this buffer.
-     */
-    protected function putInfo(): void
-    {
-        $this->properties->setCreationDate();
-        foreach ($this->properties->getMetadata() as $key => $value) {
-            $this->putf('/%s %s', $key, $this->encoder->textString($value));
-        }
-    }
-
-    /**
      * Put links to this buffer.
      */
     protected function putLinks(int $page): void
@@ -3027,6 +3016,17 @@ class PdfDocument
         $this->putf('/MediaBox [0 0 %.2F %.2F]', $this->scale($width), $this->scale($height));
         $this->put('>>');
         $this->putEndObj();
+    }
+
+    /**
+     * Put properties to this buffer.
+     */
+    protected function putProperties(): void
+    {
+        $this->properties->setCreationDate();
+        foreach ($this->properties->getMetadata() as $key => $value) {
+            $this->putf('/%s %s', $key, $this->encoder->textString($value));
+        }
     }
 
     /**
