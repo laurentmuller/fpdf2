@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 4.2.0 - 2026-03-16
 
 - Updated `actions/checkout` to version 6.
 - Updated examples.
