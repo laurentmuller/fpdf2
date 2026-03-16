@@ -23,7 +23,7 @@ class PdfCustomDocument extends PdfDocument
     public function header(): void
     {
         // page header
-        $title = $this->getTitle();
+        $title = $this->getProperties()->getTitle();
         $this->setFont(PdfFontName::ARIAL, PdfFontStyle::BOLD, 15);
         $width = $this->getStringWidth($title) + 6.0;
         $this->setX(($this->width - $width) / 2);
@@ -111,8 +111,9 @@ class PdfCustomDocument extends PdfDocument
 }
 
 $pdf = new PdfCustomDocument();
-$pdf->setAuthor('Jules Verne');
-$pdf->setTitle('20000 Leagues Under the Seas');
+$properties = $pdf->getProperties();
+$properties->setAuthor('Jules Verne');
+$properties->setTitle('20000 Leagues Under the Seas');
 $pdf->printChapter(1, 'A RUNAWAY REEF', '20k_c1.txt');
 $pdf->printChapter(2, 'THE PROS AND CONS', '20k_c2.txt');
 $pdf->output();
