@@ -2237,8 +2237,10 @@ class PdfDocument
         $this->put('xref');
         $this->putf('0 %d', $this->writer->getObjectNumber() + 1);
         $this->put('0000000000 65535 f ');
-        for ($i = 1; $i <= $this->writer->getObjectNumber(); ++$i) {
-            $this->putf('%010d 00000 n ', $this->writer->getOffsets()[$i]);
+        $objectNumber = $this->writer->getObjectNumber();
+        $offsets = $this->writer->getOffsets();
+        for ($i = 1; $i <= $objectNumber; ++$i) {
+            $this->putf('%010d 00000 n ', $offsets[$i]);
         }
         // trailer
         $this->put('trailer');

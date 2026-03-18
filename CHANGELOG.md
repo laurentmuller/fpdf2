@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `PdfDocument`: Optimized the `endDoc()` function.
 - Replaced the local `FPDF` test class by the `setasign/fpdf` bundle.
 - Updated `PdfWriter` class.
 
