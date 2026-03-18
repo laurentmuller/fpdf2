@@ -22,8 +22,8 @@ final class PdfAnnotationTest extends AbstractPdfDocTestCase
 {
     public function testAnnotation(): void
     {
-        $doc = $this->createDocument()
-            ->setCompression(false);
+        $doc = $this->createDocument();
+        $doc->getWriter()->setCompression(false);
 
         $y = 0.0;
         $top = $doc->getTopMargin();

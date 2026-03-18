@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **BC Break!**: Moved the compression property to the `PdfWriter` class.
 - **BC Break!**: Moved all output functions to the new `PdfWriter` class.
 - `PdfDocument`: Renamed `putInfo()` function to `putProperties()`.
 

@@ -44,7 +44,7 @@ final class PdfCompareBasicTest extends AbstractCompareTestCase
     #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void
     {
-        $doc->setCompression(false);
+        $doc->getWriter()->setCompression(false);
         $doc->setFont('Arial', PdfFontStyle::BOLD, 16);
         $doc->cell(text: 'This is  test 3456.', move: PdfMove::BELOW);
         $doc->setFont('ZapfDingbats', PdfFontStyle::BOLD, 12);

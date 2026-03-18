@@ -49,7 +49,7 @@ abstract class AbstractCompareTestCase extends TestCase
     protected function createNewDocument(): PdfDocument
     {
         $doc = new PdfDocument();
-        $doc->setCompression(false);
+        $doc->getWriter()->setCompression(false);
         $doc->setFont(PdfFontName::ARIAL, PdfFontStyle::REGULAR, 9.0);
         $doc->addPage();
 

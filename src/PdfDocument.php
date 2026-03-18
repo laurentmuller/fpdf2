@@ -84,8 +84,6 @@ class PdfDocument
     protected array $charMaps = [];
     /** Indicates whether fill and text colors are different. */
     protected bool $colorFlag = false;
-    /** The compression flag. */
-    protected bool $compression = true;
     /** The current font. */
     protected ?PdfFont $currentFont = null;
     /** The current orientation. */
@@ -960,6 +958,14 @@ class PdfDocument
     }
 
     /**
+     * Gets the writer.
+     */
+    public function getWriter(): PdfWriter
+    {
+        return $this->writer;
+    }
+
+    /**
      * Gets the abscissa of the current position in the user unit.
      */
     public function getX(): float
@@ -1584,19 +1590,6 @@ class PdfDocument
     public function setCellMargin(float $margin): static
     {
         $this->cellMargin = \max(0.0, $margin);
-
-        return $this;
-    }
-
-    /**
-     * Activates or deactivates page compression.
-     *
-     * When activated, the internal representation of each page is compressed, which leads to a compression ratio of
-     * about 2 for the resulting document. Compression is on by default.
-     */
-    public function setCompression(bool $compression): static
-    {
-        $this->compression = $compression;
 
         return $this;
     }
@@ -2674,7 +2667,7 @@ class PdfDocument
                 $mapKey = $font->encoding ?? $name;
                 if (!isset($this->charMaps[$mapKey])) {
                     $map = $this->toUnicodeCmap($font->uv);
-                    $this->writer->putStreamObject($map, $this->compression);
+                    $this->writer->putStreamObject($map);
                     $this->charMaps[$mapKey] = $this->writer->getObjectNumber();
                 }
             }
@@ -2816,7 +2809,7 @@ class PdfDocument
         }
         // palette
         if (PdfColorSpace::INDEXED === $image->colorSpace) {
-            $this->writer->putStreamObject($image->palette, $this->compression);
+            $this->writer->putStreamObject($image->palette);
         }
     }
 
@@ -2907,7 +2900,7 @@ class PdfDocument
         if ('' !== $this->aliasNumberPages) {
             $this->writer->updateAliasNumberPages($this->page, $this->aliasNumberPages);
         }
-        $this->writer->putStreamObject($this->writer->getPages()[$page], $this->compression);
+        $this->writer->putStreamObject($this->writer->getPage($page));
         // links
         $this->putLinks($page);
         // annotations

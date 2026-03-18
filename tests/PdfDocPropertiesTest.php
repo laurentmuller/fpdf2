@@ -116,7 +116,7 @@ final class PdfDocPropertiesTest extends AbstractPdfDocTestCase
     public function testCompression(): void
     {
         $doc = $this->createDocument();
-        $doc->setCompression(false);
+        $doc->getWriter()->setCompression(false);
         self::assertSame(1, $doc->getPage());
     }
 

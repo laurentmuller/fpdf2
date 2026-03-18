@@ -26,6 +26,9 @@ class PdfWriter
     /** The buffer holding in-memory PDF. */
     protected string $buffer = '';
 
+    /** The compression flag. */
+    protected bool $compression = true;
+
     /** The object number. */
     protected int $objectNumber = 2;
 
@@ -90,6 +93,16 @@ class PdfWriter
     public function getOffsets(): array
     {
         return $this->offsets;
+    }
+
+    /**
+     * Gets the content of the given page.
+     *
+     * @param int $page the page to get content for
+     */
+    public function getPage(int $page): string
+    {
+        return $this->pages[$page] ?? '';
     }
 
     /**
@@ -211,13 +224,12 @@ class PdfWriter
     /**
      * Put the stream object to this buffer.
      *
-     * @param string $data        the data to put in the buffer
-     * @param bool   $compression indicates if the data should be compressed
+     * @param string $data the data to put in the buffer
      */
-    public function putStreamObject(string $data, bool $compression): self
+    public function putStreamObject(string $data): self
     {
         $entries = '';
-        if ($compression) {
+        if ($this->compression) {
             $entries = '/Filter /FlateDecode ';
             $data = (string) \gzcompress($data);
         }
@@ -226,6 +238,19 @@ class PdfWriter
         $this->putf('<<%s>>', $entries);
         $this->putStream($data);
         $this->putEndObj();
+
+        return $this;
+    }
+
+    /**
+     * Activates or deactivates page compression.
+     *
+     * When activated, the internal representation of each page is compressed, which leads to a compression ratio of
+     * about 2 for the resulting document. Compression is on by default.
+     */
+    public function setCompression(bool $compression): self
+    {
+        $this->compression = $compression;
 
         return $this;
     }
@@ -248,12 +273,10 @@ class PdfWriter
      */
     public function updateAliasNumberPages(int $page, string $aliasNumberPages): self
     {
-        if ('' !== $aliasNumberPages) {
-            /** @var string $thousandsSep */
-            $thousandsSep = \localeconv()['thousands_sep'];
-            $replace = \number_format(num: $page, thousands_separator: $thousandsSep);
-            $this->pages[$page] = \str_replace($aliasNumberPages, $replace, $this->pages[$page]);
-        }
+        /** @var string $thousandsSep */
+        $thousandsSep = \localeconv()['thousands_sep'];
+        $replace = \number_format(num: $page, thousands_separator: $thousandsSep);
+        $this->pages[$page] = \str_replace($aliasNumberPages, $replace, $this->pages[$page]);
 
         return $this;
     }

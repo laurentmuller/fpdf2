@@ -31,7 +31,7 @@ final class PdfCompareMultiCellTest extends AbstractCompareTestCase
     #[\Override]
     protected function updateNewDocument(PdfDocument $doc): void
     {
-        $doc->setCompression(false);
+        $doc->getWriter()->setCompression(false);
         $doc->multiCell(width: self::TEXT_WIDTH, text: 'ALL: ' . self::CONTENT, border: PdfBorder::all());
         $doc->lineBreak();
         $doc->multiCell(text: 'NONE: ' . self::CONTENT, border: PdfBorder::none());
