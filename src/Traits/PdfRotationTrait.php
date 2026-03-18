@@ -47,7 +47,7 @@ trait PdfRotationTrait
     public function endRotate(): void
     {
         if ($this->isAngle($this->angle)) {
-            $this->out('Q');
+            $this->writer->out($this->page, 'Q');
             $this->angle = self::NO_ANGLE;
         }
     }
@@ -74,7 +74,8 @@ trait PdfRotationTrait
         $sin = \sin($angle);
         $cx = $this->scale($x);
         $cy = $this->scaleY($y);
-        $this->outf(
+        $this->writer->outf(
+            $this->page,
             'q %.5F %.5F %.5F %.5F %.2F %.2F cm 1 0 0 1 %.2F %.2F cm',
             $cos,
             $sin,

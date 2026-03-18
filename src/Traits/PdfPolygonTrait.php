@@ -42,6 +42,6 @@ trait PdfPolygonTrait
             $type = 'l';
         }
         $output .= \strtolower($style->value);
-        $this->out($output);
+        $this->writer->out($this->page, $output);
     }
 }

@@ -99,33 +99,33 @@ trait PdfAttachmentTrait
             $time = \filemtime($file);
             $date = $this->encoder->formatDate(\is_int($time) ? $time : null);
 
-            $this->putNewObj();
-            $attachment->number = $this->objectNumber;
+            $this->writer->putNewObj();
+            $attachment->number = $this->writer->getObjectNumber();
             $this->put('<<');
             $this->put('/Type /Filespec');
             $this->putf('/F (%s)', $this->encoder->escape($name));
             $this->putf('/UF %s', $this->encoder->textString($name));
-            $this->putf('/EF <</F %d 0 R>>', $this->objectNumber + 1);
+            $this->putf('/EF <</F %d 0 R>>', $this->writer->getObjectNumber() + 1);
             if ($attachment->isDescription()) {
                 $this->putf('/Desc %s', $this->encoder->textString($attachment->description));
             }
             $this->put('/AFRelationship /Unspecified');
             $this->put('>>');
-            $this->putEndObj();
+            $this->writer->putEndObj();
 
-            $this->putNewObj();
+            $this->writer->putNewObj();
             $this->put('<<');
             $this->put('/Type /EmbeddedFile');
             $this->put('/Subtype /application#2Foctet-stream');
             $this->putf('/Length %d', $size);
             $this->putf('/Params <</Size %d /ModDate %s>>', $size, $this->encoder->textString($date));
             $this->put('>>');
-            $this->putStream($contents);
-            $this->putEndObj();
+            $this->writer->putStream($contents);
+            $this->writer->putEndObj();
         }
 
-        $this->putNewObj();
-        $this->attachmentNumber = $this->objectNumber;
+        $this->writer->putNewObj();
+        $this->attachmentNumber = $this->writer->getObjectNumber();
         $array = \array_map(
             fn (int $index, PdfAttachment $attachment): string => $this->encoder->textString(\sprintf('%03d %d 0 R', $index, $attachment->number)),
             \array_keys($this->attachments),
@@ -134,6 +134,6 @@ trait PdfAttachmentTrait
         $this->put('<<');
         $this->putf('/Names [%s]', \implode(' ', $array));
         $this->put('>>');
-        $this->putEndObj();
+        $this->writer->putEndObj();
     }
 }

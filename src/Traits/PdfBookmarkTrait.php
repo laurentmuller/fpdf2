@@ -200,16 +200,16 @@ trait PdfBookmarkTrait
         if ([] === $this->bookmarks) {
             return;
         }
-        $number = $this->objectNumber + 1;
+        $number = $this->writer->getObjectNumber() + 1;
         $lastReference = $this->updateBookmarks();
         foreach ($this->bookmarks as $bookmark) {
             $this->putBookmark($bookmark, $number);
         }
-        $this->putNewObj();
-        $this->bookmarkRoot = $this->objectNumber;
+        $this->writer->putNewObj();
+        $this->bookmarkRoot = $this->writer->getObjectNumber();
         $this->putf('<</Type /Outlines /First %d 0 R', $number);
         $this->putf('/Last %d 0 R>>', $number + $lastReference);
-        $this->putEndObj();
+        $this->writer->putEndObj();
     }
 
     private function formatBookmarkPage(int $page): string
@@ -315,7 +315,7 @@ trait PdfBookmarkTrait
 
     private function putBookmark(PdfBookmark $bookmark, int $number): void
     {
-        $this->putNewObj();
+        $this->writer->putNewObj();
         $this->putf('<</Title %s', $this->encoder->textString($bookmark->text));
         foreach ($bookmark->hierarchy as $key => $value) {
             $this->putf('/%s %d 0 R', $key, $number + $value);
@@ -323,7 +323,7 @@ trait PdfBookmarkTrait
         $pageNumber = $this->pageInfos[$bookmark->page]->number;
         $this->putf('/Dest [%d 0 R /XYZ 0 %.2F null]', $pageNumber, $bookmark->y);
         $this->put('/Count 0>>');
-        $this->putEndObj();
+        $this->writer->putEndObj();
     }
 
     private function updateBookmarks(): int

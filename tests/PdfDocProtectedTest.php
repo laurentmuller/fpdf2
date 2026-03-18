@@ -52,7 +52,7 @@ final class PdfDocProtectedTest extends TestCase
             ) {
                 parent::__construct($orientation, $unit, $size);
                 $this->close();
-                $this->out('fake');
+                $this->writer->out($this->page, 'fake');
             }
         };
         $doc->addPage();
@@ -70,7 +70,7 @@ final class PdfDocProtectedTest extends TestCase
             ) {
                 parent::__construct($orientation, $unit, $size);
                 $this->endPage();
-                $this->out('fake');
+                $this->writer->out($this->page, 'fake');
             }
         };
         $doc->addPage();
@@ -87,7 +87,7 @@ final class PdfDocProtectedTest extends TestCase
                 PdfSize|PdfPageSize $size = PdfPageSize::A4
             ) {
                 parent::__construct($orientation, $unit, $size);
-                $this->out('fake');
+                $this->writer->out($this->page, 'fake');
             }
         };
         $doc->addPage();

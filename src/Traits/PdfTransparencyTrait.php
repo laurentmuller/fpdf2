@@ -60,7 +60,7 @@ trait PdfTransparencyTrait
             alpha: \max(0.0, \min($alpha, 1.0)),
             blendMode: $blendMode,
         );
-        $this->outf('/GS%d gs', $index);
+        $this->writer->outf($this->page, '/GS%d gs', $index);
 
         return $this;
     }
@@ -89,14 +89,14 @@ trait PdfTransparencyTrait
     protected function putResources(): void
     {
         foreach ($this->transparencies as $transparency) {
-            $this->putNewObj();
-            $transparency->number = $this->objectNumber;
+            $this->writer->putNewObj();
+            $transparency->number = $this->writer->getObjectNumber();
             $this->putf(
                 '<</Type /ExtGState /ca %1$.3F /CA %1$.3F /BM /%2$s>>',
                 $transparency->alpha,
                 $transparency->getBlendModeValue()
             );
-            $this->putEndObj();
+            $this->writer->putEndObj();
         }
         parent::putResources();
     }
