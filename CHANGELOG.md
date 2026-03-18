@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `PdfFontType` enumeration.
 - `PdfDocument`: Updated output functions.
 - Updated tests.
 

@@ -18,6 +18,7 @@ use fpdf\Enums\PdfColorSpace;
 use fpdf\Enums\PdfDestination;
 use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
+use fpdf\Enums\PdfFontType;
 use fpdf\Enums\PdfLayout;
 use fpdf\Enums\PdfLineCap;
 use fpdf\Enums\PdfLineJoin;
@@ -54,19 +55,10 @@ class PdfDocument
 {
     /** The default line height in millimeters. */
     final public const float LINE_HEIGHT = 5.0;
-
     /** The FPDF version. */
     final public const string VERSION = '4.0';
-
     // the empty color
     private const string EMPTY_COLOR = '0 G';
-    // the true type font type
-    private const string FONT_TRUE_TYPE = 'TrueType';
-    // the type 1 font type
-    private const string FONT_TYPE_1 = 'Type1';
-    // the core font type
-    private const string FONT_TYPE_CORE = 'Core';
-
     /** The alias for the total number of pages. */
     protected string $aliasNumberPages = '{nb}';
     /** Indicates whether the alpha channel is used. */
@@ -320,7 +312,7 @@ class PdfDocument
             // Embedded font
             $key = $dir . $font->file;
             $font->file = $key;
-            if (self::FONT_TRUE_TYPE === $font->type) {
+            if (PdfFontType::TRUE_TYPE === $font->type) {
                 $this->fontFiles[$key] = new PdfFontFile($font->originalsize);
             } else {
                 $this->fontFiles[$key] = new PdfFontFile($font->size1, $font->size2);
@@ -2644,15 +2636,13 @@ class PdfDocument
             if ($font->subsetted) {
                 $name = 'AAAAAA+' . $name;
             }
-            $type = $font->type;
-            switch ($type) {
-                case self::FONT_TYPE_CORE:
-                    // core font
+            switch ($font->type) {
+                case PdfFontType::CORE:
                     $this->writer->putNewObj();
                     $this->writer->put('<</Type /Font');
                     $this->writer->putf('/BaseFont /%s', $name);
                     $this->writer->put('/Subtype /Type1');
-                    if ('Symbol' !== $name && 'ZapfDingbats' !== $name) {
+                    if (!(PdfFontName::tryFrom($name)?->useRegular() ?? false)) {
                         $this->writer->put('/Encoding /WinAnsiEncoding');
                     }
                     if ($font->isUv()) {
@@ -2661,13 +2651,12 @@ class PdfDocument
                     $this->writer->put('>>');
                     $this->writer->putEndObj();
                     break;
-                case self::FONT_TYPE_1:
-                case self::FONT_TRUE_TYPE:
-                    // Type1 or TrueType/OpenType font
+                case PdfFontType::TYPE_1:
+                case PdfFontType::TRUE_TYPE:
                     $this->writer->putNewObj();
                     $this->writer->put('<</Type /Font');
                     $this->writer->putf('/BaseFont /%s', $name);
-                    $this->writer->putf('/Subtype /%s', $type);
+                    $this->writer->putf('/Subtype /%s', $font->type->value);
                     $this->writer->put('/FirstChar 32 /LastChar 255');
                     $this->writer->putf('/Widths %d 0 R', $this->writer->getObjectNumber() + 1);
                     $this->writer->putf('/FontDescriptor %d 0 R', $this->writer->getObjectNumber() + 2);
@@ -2695,16 +2684,14 @@ class PdfDocument
                         $output .= \sprintf(' /%s %s', $descKey, $descValue);
                     }
                     if ($font->isFile()) {
-                        $fontFile = self::FONT_TYPE_1 === $type ? '' : '2';
-                        $number = $this->fontFiles[$font->file]->number;
-                        $output .= \sprintf(' /FontFile%s %d 0 R', $fontFile, $number);
+                        $fontFile = PdfFontType::TYPE_1 === $font->type ? '' : '2';
+                        $number = $this->fontFiles[$font->file]->formatNumber();
+                        $output .= \sprintf(' /FontFile%s %s', $fontFile, $number);
                     }
                     $output .= '>>';
                     $this->writer->put($output);
                     $this->writer->putEndObj();
                     break;
-                default:
-                    throw PdfException::format('Unsupported font type: %s.', $type);
             }
         }
     }

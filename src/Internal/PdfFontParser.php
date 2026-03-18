@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace fpdf\Internal;
 
+use fpdf\Enums\PdfFontType;
 use fpdf\PdfException;
 
 /**
@@ -20,7 +21,7 @@ use fpdf\PdfException;
  *
  * @internal
  *
- * @phpstan-type FontType = array{
+ * @phpstan-type DataFontType = array{
  *     name?: non-empty-string,
  *     type: string,
  *     file?: string,
@@ -57,11 +58,15 @@ final class PdfFontParser
         if (null === $name) {
             throw PdfException::format('No font name defined in file: %s.', $path);
         }
+        $type = PdfFontType::tryFrom($data['type']);
+        if (null === $type) {
+            throw PdfException::format('Invalid font type: %s.', $path);
+        }
 
         return new PdfFont(
             // common properties
             name: $name,
-            type: $data['type'],
+            type: $type,
             file: $this->getString($data, 'file'),
             encoding: $this->getEncoding($data),
             cw: $data['cw'],
@@ -81,14 +86,14 @@ final class PdfFontParser
     }
 
     /**
-     * @phpstan-return FontType
+     * @phpstan-return DataFontType
      */
     private function decodeJson(string $path): array
     {
         try {
             $content = (string) \file_get_contents($path);
 
-            /** @var FontType */
+            /** @var DataFontType */
             return \json_decode(json: $content, associative: true, flags: \JSON_THROW_ON_ERROR);
         } catch (\JsonException $e) {
             throw PdfException::instance(\sprintf('Unable to parse the font file: %s.', $path), $e);
@@ -96,7 +101,7 @@ final class PdfFontParser
     }
 
     /**
-     * @phpstan-param FontType $data
+     * @phpstan-param DataFontType $data
      */
     private function getEncoding(array $data): ?string
     {
@@ -106,7 +111,7 @@ final class PdfFontParser
     }
 
     /**
-     * @phpstan-param FontType $data
+     * @phpstan-param DataFontType $data
      */
     private function getInt(array $data, string $key): int
     {
@@ -118,7 +123,7 @@ final class PdfFontParser
     }
 
     /**
-     * @phpstan-param FontType $data
+     * @phpstan-param DataFontType $data
      */
     private function getString(array $data, string $key): ?string
     {

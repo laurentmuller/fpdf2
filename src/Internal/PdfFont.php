@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace fpdf\Internal;
 
+use fpdf\Enums\PdfFontType;
+
 /**
  * Contains information about a font.
  *
@@ -25,7 +27,7 @@ final class PdfFont extends AbstractPdfNumber
 
     /**
      * @param non-empty-string            $name         the font name
-     * @param string                      $type         the font type
+     * @param PdfFontType                 $type         the font type
      * @param ?string                     $file         the optional font file path
      * @param ?string                     $encoding     the optional font encoding
      * @param array<int, int>             $cw           the character widths
@@ -43,7 +45,7 @@ final class PdfFont extends AbstractPdfNumber
      */
     public function __construct(
         public readonly string $name,
-        public readonly string $type,
+        public readonly PdfFontType $type,
         public ?string $file,
         public readonly ?string $encoding,
         public readonly array $cw,

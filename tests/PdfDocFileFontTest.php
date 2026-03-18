@@ -59,7 +59,7 @@ final class PdfDocFileFontTest extends AbstractPdfDocTestCase
     public function testFontInvalidType(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessage('Unsupported font type: Test.');
+        self::expectExceptionMessageMatches('/Invalid font type:.*font_other.json.$/');
         $doc = $this->createDocument();
         $doc->addFont(
             family: 'Test',
@@ -103,16 +103,5 @@ final class PdfDocFileFontTest extends AbstractPdfDocTestCase
             file: 'fake.json',
             dir: self::FONTS_DIR
         );
-    }
-
-    public function testFontOther(): void
-    {
-        $doc = $this->createDocument();
-        $doc->addFont(
-            family: 'Test',
-            file: 'font_test.json',
-            dir: self::FONTS_DIR
-        );
-        self::assertSame(1, $doc->getPage());
     }
 }
