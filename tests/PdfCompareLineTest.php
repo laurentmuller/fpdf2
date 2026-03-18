@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace fpdf\Tests;
 
 use fpdf\PdfDocument;
+use fpdf\Tests\Fixture\FPDF;
 
 final class PdfCompareLineTest extends AbstractCompareTestCase
 {
@@ -26,7 +27,7 @@ final class PdfCompareLineTest extends AbstractCompareTestCase
     }
 
     #[\Override]
-    protected function updateOldDocument(\FPDF $doc): void
+    protected function updateOldDocument(FPDF $doc): void
     {
         $doc->Line(10, 10, 100, 100);
         $doc->SetLineWidth(1.0);

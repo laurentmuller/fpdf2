@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace fpdf\Tests;
 
 use fpdf\PdfDocument;
+use fpdf\Tests\Fixture\FPDF;
 
 final class PdfCompareWriteTest extends AbstractCompareTestCase
 {
@@ -24,7 +25,7 @@ final class PdfCompareWriteTest extends AbstractCompareTestCase
     }
 
     #[\Override]
-    protected function updateOldDocument(\FPDF $doc): void
+    protected function updateOldDocument(FPDF $doc): void
     {
         $doc->Write(5.0, "This is a write test.\nWith multi-lines.");
     }

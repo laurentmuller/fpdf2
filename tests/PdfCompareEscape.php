@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace fpdf\Tests;
 
 use fpdf\PdfDocument;
+use fpdf\Tests\Fixture\FPDF;
 
 final class PdfCompareEscape extends AbstractCompareTestCase
 {
@@ -27,7 +28,7 @@ final class PdfCompareEscape extends AbstractCompareTestCase
     }
 
     #[\Override]
-    protected function updateOldDocument(\FPDF $doc): void
+    protected function updateOldDocument(FPDF $doc): void
     {
         $text = $this->getText();
         $doc->Text(5.0, 15.0, $text);

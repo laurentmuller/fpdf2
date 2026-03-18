@@ -17,6 +17,7 @@ use fpdf\Enums\PdfMove;
 use fpdf\PdfBorder;
 use fpdf\PdfDocument;
 use fpdf\PdfException;
+use fpdf\Tests\Fixture\FPDF;
 
 final class PdfCompareBorderTest extends AbstractCompareTestCase
 {
@@ -41,7 +42,7 @@ final class PdfCompareBorderTest extends AbstractCompareTestCase
     }
 
     #[\Override]
-    protected function updateOldDocument(\FPDF $doc): void
+    protected function updateOldDocument(FPDF $doc): void
     {
         $width = 0.0;
         $height = 5.0;

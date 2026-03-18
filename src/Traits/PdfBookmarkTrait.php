@@ -190,7 +190,7 @@ trait PdfBookmarkTrait
         }
         parent::putCatalog();
         if ([] !== $this->bookmarks) {
-            $this->putf('/Outlines %d 0 R', $this->bookmarkRoot);
+            $this->writer->putf('/Outlines %d 0 R', $this->bookmarkRoot);
         }
     }
 
@@ -207,8 +207,8 @@ trait PdfBookmarkTrait
         }
         $this->writer->putNewObj();
         $this->bookmarkRoot = $this->writer->getObjectNumber();
-        $this->putf('<</Type /Outlines /First %d 0 R', $number);
-        $this->putf('/Last %d 0 R>>', $number + $lastReference);
+        $this->writer->putf('<</Type /Outlines /First %d 0 R', $number);
+        $this->writer->putf('/Last %d 0 R>>', $number + $lastReference);
         $this->writer->putEndObj();
     }
 
@@ -316,13 +316,13 @@ trait PdfBookmarkTrait
     private function putBookmark(PdfBookmark $bookmark, int $number): void
     {
         $this->writer->putNewObj();
-        $this->putf('<</Title %s', $this->encoder->textString($bookmark->text));
+        $this->writer->putf('<</Title %s', $this->encoder->textString($bookmark->text));
         foreach ($bookmark->hierarchy as $key => $value) {
-            $this->putf('/%s %d 0 R', $key, $number + $value);
+            $this->writer->putf('/%s %d 0 R', $key, $number + $value);
         }
         $pageNumber = $this->pageInfos[$bookmark->page]->number;
-        $this->putf('/Dest [%d 0 R /XYZ 0 %.2F null]', $pageNumber, $bookmark->y);
-        $this->put('/Count 0>>');
+        $this->writer->putf('/Dest [%d 0 R /XYZ 0 %.2F null]', $pageNumber, $bookmark->y);
+        $this->writer->put('/Count 0>>');
         $this->writer->putEndObj();
     }
 

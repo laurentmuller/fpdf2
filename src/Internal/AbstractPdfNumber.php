@@ -24,6 +24,14 @@ abstract class AbstractPdfNumber
     public int $number = 0;
 
     /**
+     * Format this number to use as output.
+     */
+    public function formatNumber(): string
+    {
+        return \sprintf('%d 0 R', $this->number);
+    }
+
+    /**
      * @phpstan-assert-if-true non-empty-string $value
      */
     protected function isString(?string $value): bool

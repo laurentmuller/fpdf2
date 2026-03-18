@@ -15,15 +15,16 @@ namespace fpdf\Tests;
 
 use fpdf\Enums\PdfVersion;
 use fpdf\PdfDocument;
+use fpdf\Tests\Fixture\FPDF;
 
 final class PdfCompareVersionTest extends AbstractCompareTestCase
 {
     public const PdfVersion PDF_VERSION = PdfVersion::VERSION_1_6;
 
     #[\Override]
-    protected function createOldDocument(): \FPDF
+    protected function createOldDocument(): FPDF
     {
-        $doc = new class extends \FPDF {
+        $doc = new class extends FPDF {
             #[\Override]
             public function _enddoc(): void
             {
@@ -45,7 +46,7 @@ final class PdfCompareVersionTest extends AbstractCompareTestCase
     }
 
     #[\Override]
-    protected function updateOldDocument(\FPDF $doc): void
+    protected function updateOldDocument(FPDF $doc): void
     {
     }
 }

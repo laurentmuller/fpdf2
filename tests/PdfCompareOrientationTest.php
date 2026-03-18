@@ -18,6 +18,7 @@ use fpdf\Enums\PdfPageSize;
 use fpdf\Enums\PdfRotation;
 use fpdf\PdfDocument;
 use fpdf\PdfSize;
+use fpdf\Tests\Fixture\FPDF;
 
 final class PdfCompareOrientationTest extends AbstractCompareTestCase
 {
@@ -56,7 +57,7 @@ final class PdfCompareOrientationTest extends AbstractCompareTestCase
     }
 
     #[\Override]
-    protected function updateOldDocument(\FPDF $doc): void
+    protected function updateOldDocument(FPDF $doc): void
     {
         $doc->Cell(0.0, 0.0, 'Portrait');
 

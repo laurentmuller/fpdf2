@@ -25,6 +25,7 @@ use fpdf\Enums\PdfZoom;
 use fpdf\PdfBorder;
 use fpdf\PdfDocument;
 use fpdf\PdfException;
+use fpdf\Tests\Fixture\FPDF;
 
 final class PdfCompareBasicTest extends AbstractCompareTestCase
 {
@@ -108,7 +109,7 @@ final class PdfCompareBasicTest extends AbstractCompareTestCase
     }
 
     #[\Override]
-    protected function updateOldDocument(\FPDF $doc): void
+    protected function updateOldDocument(FPDF $doc): void
     {
         $doc->SetCompression(false);
         $doc->SetFont('Arial', 'B', 16);

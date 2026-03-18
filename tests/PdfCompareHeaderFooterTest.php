@@ -19,6 +19,7 @@ use fpdf\Enums\PdfMove;
 use fpdf\Enums\PdfTextAlignment;
 use fpdf\PdfBorder;
 use fpdf\PdfDocument;
+use fpdf\Tests\Fixture\FPDF;
 
 final class PdfCompareHeaderFooterTest extends AbstractCompareTestCase
 {
@@ -64,9 +65,9 @@ final class PdfCompareHeaderFooterTest extends AbstractCompareTestCase
     }
 
     #[\Override]
-    protected function createOldDocument(): \FPDF
+    protected function createOldDocument(): FPDF
     {
-        $doc = new class extends \FPDF {
+        $doc = new class extends FPDF {
             #[\Override]
             public function Header(): void
             {
@@ -101,7 +102,7 @@ final class PdfCompareHeaderFooterTest extends AbstractCompareTestCase
     }
 
     #[\Override]
-    protected function updateOldDocument(\FPDF $doc): void
+    protected function updateOldDocument(FPDF $doc): void
     {
         $doc->Cell(w: 0.0, h: 5.0, txt: 'This is a header/footer test.');
         $doc->AddPage();

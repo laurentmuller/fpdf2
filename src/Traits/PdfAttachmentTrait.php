@@ -66,12 +66,12 @@ trait PdfAttachmentTrait
         if ([] === $this->attachments) {
             return;
         }
-        $this->putf('/Names <</EmbeddedFiles %d 0 R>>', $this->attachmentNumber);
+        $this->writer->putf('/Names <</EmbeddedFiles %d 0 R>>', $this->attachmentNumber);
         $array = \array_map(
-            static fn (PdfAttachment $attachment): string => \sprintf('%d 0 R', $attachment->number),
+            static fn (PdfAttachment $attachment): string => $attachment->formatNumber(),
             $this->attachments
         );
-        $this->putf('/AF [%s]', \implode(' ', $array));
+        $this->writer->putf('/AF [%s]', \implode(' ', $array));
     }
 
     protected function putResources(): void
@@ -101,25 +101,25 @@ trait PdfAttachmentTrait
 
             $this->writer->putNewObj();
             $attachment->number = $this->writer->getObjectNumber();
-            $this->put('<<');
-            $this->put('/Type /Filespec');
-            $this->putf('/F (%s)', $this->encoder->escape($name));
-            $this->putf('/UF %s', $this->encoder->textString($name));
-            $this->putf('/EF <</F %d 0 R>>', $this->writer->getObjectNumber() + 1);
+            $this->writer->put('<<');
+            $this->writer->put('/Type /Filespec');
+            $this->writer->putf('/F (%s)', $this->encoder->escape($name));
+            $this->writer->putf('/UF %s', $this->encoder->textString($name));
+            $this->writer->putf('/EF <</F %d 0 R>>', $this->writer->getObjectNumber() + 1);
             if ($attachment->isDescription()) {
-                $this->putf('/Desc %s', $this->encoder->textString($attachment->description));
+                $this->writer->putf('/Desc %s', $this->encoder->textString($attachment->description));
             }
-            $this->put('/AFRelationship /Unspecified');
-            $this->put('>>');
+            $this->writer->put('/AFRelationship /Unspecified');
+            $this->writer->put('>>');
             $this->writer->putEndObj();
 
             $this->writer->putNewObj();
-            $this->put('<<');
-            $this->put('/Type /EmbeddedFile');
-            $this->put('/Subtype /application#2Foctet-stream');
-            $this->putf('/Length %d', $size);
-            $this->putf('/Params <</Size %d /ModDate %s>>', $size, $this->encoder->textString($date));
-            $this->put('>>');
+            $this->writer->put('<<');
+            $this->writer->put('/Type /EmbeddedFile');
+            $this->writer->put('/Subtype /application#2Foctet-stream');
+            $this->writer->putf('/Length %d', $size);
+            $this->writer->putf('/Params <</Size %d /ModDate %s>>', $size, $this->encoder->textString($date));
+            $this->writer->put('>>');
             $this->writer->putStream($contents);
             $this->writer->putEndObj();
         }
@@ -131,9 +131,9 @@ trait PdfAttachmentTrait
             \array_keys($this->attachments),
             \array_values($this->attachments)
         );
-        $this->put('<<');
-        $this->putf('/Names [%s]', \implode(' ', $array));
-        $this->put('>>');
+        $this->writer->put('<<');
+        $this->writer->putf('/Names [%s]', \implode(' ', $array));
+        $this->writer->put('>>');
         $this->writer->putEndObj();
     }
 }

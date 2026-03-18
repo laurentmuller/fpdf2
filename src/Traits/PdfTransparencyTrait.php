@@ -79,11 +79,11 @@ trait PdfTransparencyTrait
         if ([] === $this->transparencies) {
             return;
         }
-        $this->put('/ExtGState <<');
+        $this->writer->put('/ExtGState <<');
         foreach ($this->transparencies as $transparency) {
-            $this->putf('/GS%d %d 0 R', $transparency->index, $transparency->number);
+            $this->writer->putf('/GS%d %s', $transparency->index, $transparency->formatNumber());
         }
-        $this->put('>>');
+        $this->writer->put('>>');
     }
 
     protected function putResources(): void
@@ -91,7 +91,7 @@ trait PdfTransparencyTrait
         foreach ($this->transparencies as $transparency) {
             $this->writer->putNewObj();
             $transparency->number = $this->writer->getObjectNumber();
-            $this->putf(
+            $this->writer->putf(
                 '<</Type /ExtGState /ca %1$.3F /CA %1$.3F /BM /%2$s>>',
                 $transparency->alpha,
                 $transparency->getBlendModeValue()

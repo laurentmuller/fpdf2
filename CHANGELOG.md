@@ -1,5 +1,10 @@
 # Change log
 
+## Unreleased
+
+- `PdfDocument`: Updated output functions.
+- Updated tests.
+
 ## 4.3.1 - 2026-03-18
 
 - `PdfDocument`: Optimized the `endDoc()` function.
