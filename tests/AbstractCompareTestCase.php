@@ -17,7 +17,6 @@ use fpdf\Enums\PdfDestination;
 use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
 use fpdf\PdfDocument;
-use fpdf\Tests\Legacy\FPDF;
 use PHPUnit\Framework\TestCase;
 
 abstract class AbstractCompareTestCase extends TestCase
@@ -56,9 +55,9 @@ abstract class AbstractCompareTestCase extends TestCase
         return $doc;
     }
 
-    protected function createOldDocument(): FPDF
+    protected function createOldDocument(): \FPDF
     {
-        $doc = new FPDF();
+        $doc = new \FPDF();
         $doc->SetCompression(false);
         $doc->SetFont('Arial', '', 9.0);
         $doc->AddPage();
@@ -68,5 +67,5 @@ abstract class AbstractCompareTestCase extends TestCase
 
     abstract protected function updateNewDocument(PdfDocument $doc): void;
 
-    abstract protected function updateOldDocument(FPDF $doc): void;
+    abstract protected function updateOldDocument(\FPDF $doc): void;
 }

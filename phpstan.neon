@@ -7,8 +7,6 @@ parameters:
 
     excludePaths:
         - tests/fonts
-        - tests/Legacy
-        - tests/Legacy/font
         - tests/resources
         - vendor
 

@@ -130,7 +130,7 @@ class PdfWriter
      * Outputs the specified content to a given page.
      *
      * @param int    $page   the page number where the output should be added
-     * @param string $output the content to be written to the specified
+     * @param string $output the content to be written
      *
      * @throws PdfException if no page has been added, if the end page has been called, or if the document is closed
      */
@@ -170,7 +170,6 @@ class PdfWriter
      */
     public function put(string|int $value): self
     {
-        // $this->buffer .= \sprintf('%s%s', $value, self::NEW_LINE);
         $this->buffer .= $value . self::NEW_LINE;
 
         return $this;

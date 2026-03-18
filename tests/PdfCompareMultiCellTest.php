@@ -15,7 +15,6 @@ namespace fpdf\Tests;
 
 use fpdf\PdfBorder;
 use fpdf\PdfDocument;
-use fpdf\Tests\Legacy\FPDF;
 
 final class PdfCompareMultiCellTest extends AbstractCompareTestCase
 {
@@ -50,7 +49,7 @@ final class PdfCompareMultiCellTest extends AbstractCompareTestCase
     }
 
     #[\Override]
-    protected function updateOldDocument(FPDF $doc): void
+    protected function updateOldDocument(\FPDF $doc): void
     {
         $doc->SetCompression(false);
         $doc->MultiCell(w: self::TEXT_WIDTH, h: 5.0, txt: 'ALL: ' . self::CONTENT, border: 'LRTB');

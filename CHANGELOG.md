@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Replaced the local `FPDF` test class by the `setasign/fpdf` bundle.
 - Updated `PdfWriter` class.
 
 ## 4.3.0 - 2026-03-18

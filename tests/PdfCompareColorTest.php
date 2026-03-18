@@ -19,7 +19,6 @@ use fpdf\Enums\PdfMove;
 use fpdf\Enums\PdfTextAlignment;
 use fpdf\PdfBorder;
 use fpdf\PdfDocument;
-use fpdf\Tests\Legacy\FPDF;
 
 final class PdfCompareColorTest extends AbstractCompareTestCase
 {
@@ -43,7 +42,7 @@ final class PdfCompareColorTest extends AbstractCompareTestCase
     }
 
     #[\Override]
-    protected function updateOldDocument(FPDF $doc): void
+    protected function updateOldDocument(\FPDF $doc): void
     {
         $doc->SetDrawColor(100);
         $doc->SetDrawColor(50, 100, 200);

@@ -18,7 +18,6 @@ use fpdf\Enums\PdfFontStyle;
 use fpdf\Enums\PdfMove;
 use fpdf\PdfDocument;
 use fpdf\PdfException;
-use fpdf\Tests\Legacy\FPDF;
 
 final class PdfCompareFontTest extends AbstractCompareTestCase
 {
@@ -80,7 +79,7 @@ final class PdfCompareFontTest extends AbstractCompareTestCase
     }
 
     #[\Override]
-    protected function updateOldDocument(FPDF $doc): void
+    protected function updateOldDocument(\FPDF $doc): void
     {
         $callback = static function (string $base_name, string $file_name, bool $add_page) use ($doc): void {
             $style = match (true) {

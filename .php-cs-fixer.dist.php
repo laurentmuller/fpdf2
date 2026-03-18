@@ -83,7 +83,6 @@ $files = [
 
 $exclude = [
     'fonts',
-    'Legacy',
     'resources',
 ];
 

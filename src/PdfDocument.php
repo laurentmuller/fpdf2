@@ -2705,7 +2705,7 @@ class PdfDocument
                     $this->writer->putEndObj();
                     // widths
                     $this->writer->putNewObj();
-                    $this->putf('[%s]', \implode(' ', \array_slice($font->cw, 32)));
+                    $this->putf('[%s ]', \implode(' ', \array_slice($font->cw, 32)));
                     $this->writer->putEndObj();
                     // descriptor
                     $this->writer->putNewObj();

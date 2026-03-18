@@ -32,7 +32,6 @@ $paths = [
 $skips = [
     __DIR__ . '/src/font',
     __DIR__ . '/tests/fonts',
-    __DIR__ . '/tests/Legacy',
     PreferPHPUnitThisCallRector::class,
     // no space before or after statements
     NewlineAfterStatementRector::class,

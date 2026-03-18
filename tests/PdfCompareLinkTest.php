@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace fpdf\Tests;
 
 use fpdf\PdfDocument;
-use fpdf\Tests\Legacy\FPDF;
 
 final class PdfCompareLinkTest extends AbstractCompareTestCase
 {
@@ -26,7 +25,7 @@ final class PdfCompareLinkTest extends AbstractCompareTestCase
     }
 
     #[\Override]
-    protected function updateOldDocument(FPDF $doc): void
+    protected function updateOldDocument(\FPDF $doc): void
     {
         $doc->Link(10, 10, 100, 5, 'https://wwww.bibi.nu');
         $doc->AddLink();

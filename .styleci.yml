@@ -6,8 +6,6 @@ finder:
     exclude:
         - "docs"
         - "tests/fonts"
-        - "tests/Legacy"
-        - "tests/Legacy/font"
         - "tests/resources"
         - "vendor"
     name: "*.php"

@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace fpdf\Tests;
 
 use fpdf\PdfDocument;
-use fpdf\Tests\Legacy\FPDF;
 
 final class PdfCompareMarginsTest extends AbstractCompareTestCase
 {
@@ -29,7 +28,7 @@ final class PdfCompareMarginsTest extends AbstractCompareTestCase
     }
 
     #[\Override]
-    protected function updateOldDocument(FPDF $doc): void
+    protected function updateOldDocument(\FPDF $doc): void
     {
         $doc->SetLeftMargin(20);
         $doc->SetTopMargin(20);
