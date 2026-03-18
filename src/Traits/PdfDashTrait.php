@@ -86,7 +86,7 @@ trait PdfDashTrait
      */
     public function resetDashPattern(): void
     {
-        $this->out('[] 0 d');
+        $this->writer->out($this->page, '[] 0 d');
     }
 
     /**
@@ -97,6 +97,6 @@ trait PdfDashTrait
      */
     public function setDashPattern(float $dashes, float $gaps): void
     {
-        $this->outf('[%.3F %.3F] 0 d', $this->scale($dashes), $this->scale($gaps));
+        $this->writer->outf($this->page, '[%.3F %.3F] 0 d', $this->scale($dashes), $this->scale($gaps));
     }
 }

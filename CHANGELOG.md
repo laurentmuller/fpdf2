@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **BC Break!**: Moved all output functions to the new `PdfWriter` class.
 - `PdfDocument`: Renamed `putInfo()` function to `putProperties()`.
 
 ## 4.2.0 - 2026-03-16

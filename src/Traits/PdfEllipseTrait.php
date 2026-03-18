@@ -66,7 +66,8 @@ trait PdfEllipseTrait
         $lx = 4.0 / 3.0 * (\M_SQRT2 - 1.0) * $rx;
         $ly = 4.0 / 3.0 * (\M_SQRT2 - 1.0) * $ry;
 
-        $this->outf(
+        $this->writer->outf(
+            $this->page,
             '%.2F %.2F m %.2F %.2F %.2F %.2F %.2F %.2F c',
             $this->scale($x + $rx),
             $this->scaleY($y),
@@ -77,7 +78,8 @@ trait PdfEllipseTrait
             $this->scale($x),
             $this->scaleY($y - $ry)
         );
-        $this->outf(
+        $this->writer->outf(
+            $this->page,
             '%.2F %.2F %.2F %.2F %.2F %.2F c',
             $this->scale($x - $lx),
             $this->scaleY($y - $ry),
@@ -86,7 +88,8 @@ trait PdfEllipseTrait
             $this->scale($x - $rx),
             $this->scaleY($y)
         );
-        $this->outf(
+        $this->writer->outf(
+            $this->page,
             '%.2F %.2F %.2F %.2F %.2F %.2F c',
             $this->scale($x - $rx),
             $this->scaleY($y + $ly),
@@ -95,7 +98,8 @@ trait PdfEllipseTrait
             $this->scale($x),
             $this->scaleY($y + $ry)
         );
-        $this->outf(
+        $this->writer->outf(
+            $this->page,
             '%.2F %.2F %.2F %.2F %.2F %.2F c %s',
             $this->scale($x + $lx),
             $this->scaleY($y + $ry),

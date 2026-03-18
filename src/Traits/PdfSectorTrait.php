@@ -66,12 +66,12 @@ trait PdfSectorTrait
         $arc = $this->computeSectorArc($deltaAngle, $radius);
 
         // put center
-        $this->outf('%.2F %.2F m', $this->scale($centerX), $this->scaleY($centerY));
+        $this->writer->outf($this->page, '%.2F %.2F m', $this->scale($centerX), $this->scaleY($centerY));
 
         // put the first point
         $x = $this->scale($centerX + $radius * \cos($startAngle));
         $y = $this->scaleY($centerY - $radius * \sin($startAngle));
-        $this->outf('%.2F %.2F l', $x, $y);
+        $this->writer->outf($this->page, '%.2F %.2F l', $x, $y);
 
         // draw arc
         if ($deltaAngle >= self::HALF_PI) {
@@ -157,7 +157,8 @@ trait PdfSectorTrait
         $y3 = $centerY - $radius * \sin($endAngle);
 
         // output
-        $this->outf(
+        $this->writer->outf(
+            $this->page,
             '%.2F %.2F %.2F %.2F %.2F %.2F c',
             $this->scale($x1),
             $this->scaleY($y1),
@@ -170,7 +171,7 @@ trait PdfSectorTrait
 
     private function terminateSector(PdfRectangleStyle $style): void
     {
-        $this->out($style->value);
+        $this->writer->out($this->page, $style->value);
     }
 
     private function validateSector(float $angle): float
