@@ -50,13 +50,34 @@ class PdfWriter
     protected PdfState $state = PdfState::NO_PAGE;
 
     /**
-     * Initialize a new page.
+     * Initialize a new page. After this call, this current state is {@link PdfState::PAGE_STARTED}.
      *
      * @param int $page the page number to initialize
      */
     public function beginPage(int $page): self
     {
         $this->pages[$page] = '';
+        $this->state = PdfState::PAGE_STARTED;
+
+        return $this;
+    }
+
+    /**
+     * Set this current state to {@link PdfState::CLOSED}.
+     */
+    public function close(): self
+    {
+        $this->state = PdfState::CLOSED;
+
+        return $this;
+    }
+
+    /**
+     * Set this current state to {@link PdfState::END_PAGE}.
+     */
+    public function endPage(): self
+    {
+        $this->state = PdfState::END_PAGE;
 
         return $this;
     }
@@ -96,31 +117,13 @@ class PdfWriter
     }
 
     /**
-     * Gets the content of the given page.
+     * Gets a value indicating if this current state is {@link PdfState::CLOSED}.
      *
-     * @param int $page the page to get content for
+     * @return bool true if closed
      */
-    public function getPage(int $page): string
+    public function isClosed(): bool
     {
-        return $this->pages[$page] ?? '';
-    }
-
-    /**
-     * Gets the content of pages.
-     *
-     * @return array<int, string>
-     */
-    public function getPages(): array
-    {
-        return $this->pages;
-    }
-
-    /**
-     * Gets the current state.
-     */
-    public function getState(): PdfState
-    {
-        return $this->state;
+        return PdfState::CLOSED === $this->state;
     }
 
     /**
@@ -167,7 +170,8 @@ class PdfWriter
      */
     public function put(string|int $value): self
     {
-        $this->buffer .= \sprintf('%s%s', $value, self::NEW_LINE);
+        // $this->buffer .= \sprintf('%s%s', $value, self::NEW_LINE);
+        $this->buffer .= $value . self::NEW_LINE;
 
         return $this;
     }
@@ -243,6 +247,18 @@ class PdfWriter
     }
 
     /**
+     * Put the content of the given page, as a stream object, to this buffer.
+     *
+     * @param int $page the page to get content for
+     */
+    public function putStreamPage(int $page): self
+    {
+        $this->putStreamObject($this->pages[$page]);
+
+        return $this;
+    }
+
+    /**
      * Activates or deactivates page compression.
      *
      * When activated, the internal representation of each page is compressed, which leads to a compression ratio of
@@ -251,16 +267,6 @@ class PdfWriter
     public function setCompression(bool $compression): self
     {
         $this->compression = $compression;
-
-        return $this;
-    }
-
-    /**
-     * sets the current state.
-     */
-    public function setState(PdfState $state): self
-    {
-        $this->state = $state;
 
         return $this;
     }

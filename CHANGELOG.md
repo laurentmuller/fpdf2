@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- Updated `PdfWriter` class.
+
 ## 4.3.0 - 2026-03-18
 
 - **BC Break!**: Moved the compression property to the `PdfWriter` class.

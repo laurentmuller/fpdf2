@@ -14,9 +14,7 @@ declare(strict_types=1);
 namespace fpdf\Enums;
 
 /**
- * The PDF document state enumeration.
- *
- * @see PdfDocument::getState()
+ * The {@link PDFWriter} state enumeration.
  */
 enum PdfState
 {

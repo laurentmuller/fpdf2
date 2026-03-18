@@ -27,7 +27,6 @@ use fpdf\Enums\PdfPageMode;
 use fpdf\Enums\PdfPageSize;
 use fpdf\Enums\PdfRectangleStyle;
 use fpdf\Enums\PdfRotation;
-use fpdf\Enums\PdfState;
 use fpdf\Enums\PdfTextAlignment;
 use fpdf\Enums\PdfUnit;
 use fpdf\Enums\PdfVersion;
@@ -377,7 +376,7 @@ class PdfDocument
         PdfPageSize|PdfSize|null $size = null,
         ?PdfRotation $rotation = null
     ): static {
-        if (PdfState::CLOSED === $this->writer->getState()) {
+        if ($this->writer->isClosed()) {
             throw PdfException::instance('The document is closed.');
         }
         // save context
@@ -619,7 +618,7 @@ class PdfDocument
      */
     public function close(): static
     {
-        if (PdfState::CLOSED === $this->writer->getState()) {
+        if ($this->writer->isClosed()) {
             return $this;
         }
         if (0 === $this->page) {
@@ -904,14 +903,6 @@ class PdfDocument
     public function getRightMargin(): float
     {
         return $this->margins->right;
-    }
-
-    /**
-     * Gets the document state.
-     */
-    public function getState(): PdfState
-    {
-        return $this->writer->getState();
     }
 
     /**
@@ -2110,7 +2101,6 @@ class PdfDocument
         $this->writer->beginPage($this->page);
         $this->pageLinks[$this->page] = [];
         $this->pageAnnotations[$this->page] = [];
-        $this->writer->setState(PdfState::PAGE_STARTED);
         $this->x = $this->margins->left;
         $this->y = $this->margins->top;
         $this->fontFamily = '';
@@ -2258,7 +2248,7 @@ class PdfDocument
         $this->put('startxref');
         $this->put($offset);
         $this->put('%%EOF');
-        $this->writer->setState(PdfState::CLOSED);
+        $this->writer->close();
     }
 
     /**
@@ -2266,7 +2256,7 @@ class PdfDocument
      */
     protected function endPage(): void
     {
-        $this->writer->setState(PdfState::END_PAGE);
+        $this->writer->endPage();
     }
 
     /**
@@ -2900,7 +2890,7 @@ class PdfDocument
         if ('' !== $this->aliasNumberPages) {
             $this->writer->updateAliasNumberPages($this->page, $this->aliasNumberPages);
         }
-        $this->writer->putStreamObject($this->writer->getPage($page));
+        $this->writer->putStreamPage($page);
         // links
         $this->putLinks($page);
         // annotations

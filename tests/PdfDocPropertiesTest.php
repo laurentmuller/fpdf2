@@ -22,7 +22,6 @@ use fpdf\Enums\PdfLineCap;
 use fpdf\Enums\PdfLineJoin;
 use fpdf\Enums\PdfPageMode;
 use fpdf\Enums\PdfRectangleStyle;
-use fpdf\Enums\PdfState;
 use fpdf\Enums\PdfUnit;
 use fpdf\Enums\PdfVersion;
 use fpdf\Enums\PdfZoom;
@@ -97,9 +96,9 @@ final class PdfDocPropertiesTest extends AbstractPdfDocTestCase
         $doc = $this->createDocument(true, false);
         $doc->setFont(PdfFontName::ARIAL, PdfFontStyle::BOLD_UNDERLINE);
         $doc->close();
-        self::assertSame(PdfState::CLOSED, $doc->getState());
+        self::assertTrue($doc->getWriter()->isClosed());
         $doc->close();
-        self::assertSame(PdfState::CLOSED, $doc->getState());
+        self::assertTrue($doc->getWriter()->isClosed());
     }
 
     public function testColorFlag(): void
