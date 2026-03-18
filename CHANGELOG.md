@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 4.3.1 - 2026-03-18
 
 - `PdfDocument`: Optimized the `endDoc()` function.
 - Replaced the local `FPDF` test class by the `setasign/fpdf` bundle.
