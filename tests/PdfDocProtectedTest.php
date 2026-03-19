@@ -92,22 +92,4 @@ final class PdfDocProtectedTest extends TestCase
         };
         $doc->addPage();
     }
-
-    public function testUTF8(): void
-    {
-        $doc = new class extends PdfDocument {
-            public function __construct(
-                PdfOrientation $orientation = PdfOrientation::PORTRAIT,
-                PdfUnit $unit = PdfUnit::MILLIMETER,
-                PdfSize|PdfPageSize $size = PdfPageSize::A4
-            ) {
-                parent::__construct($orientation, $unit, $size);
-                if ($this->isUTF8('fake')) {
-                    $this->pageSize->height = $this->getPageHeight();
-                }
-            }
-        };
-        $doc->addPage();
-        self::assertSame(1, $doc->getPage());
-    }
 }

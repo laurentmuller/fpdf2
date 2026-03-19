@@ -88,6 +88,22 @@ final class PdfFont extends AbstractPdfNumber
     }
 
     /**
+     * Returns if this font type is {@link PdfFontType::TRUE_TYPE}.
+     */
+    public function isTrueType(): bool
+    {
+        return PdfFontType::TRUE_TYPE === $this->type;
+    }
+
+    /**
+     * Returns if this font type is {@link PdfFontType::TYPE_1}.
+     */
+    public function isType1(): bool
+    {
+        return PdfFontType::TYPE_1 === $this->type;
+    }
+
+    /**
      * @phpstan-assert-if-true non-empty-array<int, int|int[]> $this->uv
      */
     public function isUv(): bool

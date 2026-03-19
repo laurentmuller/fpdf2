@@ -301,10 +301,7 @@ class PdfDocument
         if (\str_contains($file, '/') || \str_contains($file, '\\')) {
             throw PdfException::format('Incorrect font definition file name: %s.', $file);
         }
-        $dir ??= $this->fontPath;
-        if (!\str_ends_with($dir, '/') && !\str_ends_with($dir, '\\')) {
-            $dir .= \DIRECTORY_SEPARATOR;
-        }
+        $dir = \rtrim($dir ?? $this->fontPath, '\\/') . \DIRECTORY_SEPARATOR;
         $parser = new PdfFontParser();
         $font = $parser->parse($dir . $file);
         $font->index = \count($this->fonts) + 1;
@@ -312,7 +309,7 @@ class PdfDocument
             // Embedded font
             $key = $dir . $font->file;
             $font->file = $key;
-            if (PdfFontType::TRUE_TYPE === $font->type) {
+            if ($font->isTrueType()) {
                 $this->fontFiles[$key] = new PdfFontFile($font->originalsize);
             } else {
                 $this->fontFiles[$key] = new PdfFontFile($font->size1, $font->size2);
@@ -2389,16 +2386,6 @@ class PdfDocument
     }
 
     /**
-     * Returns if the given string is valid for the <code>UTF-8</code> encoding.
-     *
-     * @return bool <code>true</code> if the given string is only containing <code>UTF-8</code> characters
-     */
-    protected function isUTF8(string $str): bool
-    {
-        return \mb_check_encoding($str, 'UTF-8');
-    }
-
-    /**
      * Output the current font.
      *
      * Do nothing if no page is added or if the current font is <code>null</code>.
@@ -2528,10 +2515,9 @@ class PdfDocument
         foreach ($this->pageAnnotations[$page] as $pageAnnotation) {
             $this->writer->putNewObj();
             $output = '<<';
-            $rect = $pageAnnotation->formatRectangle();
             $output .= \sprintf(
                 '/Type /Annot /Subtype /Text /Rect [%s] /Name %s /Contents %s',
-                $rect,
+                $pageAnnotation->formatRectangle(),
                 $pageAnnotation->getNameValue(),
                 $this->encoder->textString($pageAnnotation->text)
             );
@@ -2684,7 +2670,7 @@ class PdfDocument
                         $output .= \sprintf(' /%s %s', $descKey, $descValue);
                     }
                     if ($font->isFile()) {
-                        $fontFile = PdfFontType::TYPE_1 === $font->type ? '' : '2';
+                        $fontFile = $font->isType1() ? '' : '2';
                         $number = $this->fontFiles[$font->file]->formatNumber();
                         $output .= \sprintf(' /FontFile%s %s', $fontFile, $number);
                     }

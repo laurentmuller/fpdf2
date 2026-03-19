@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `PdfDocument`: Removed the `isUTF8()` function.
+- Created test for the `PdfEncoder` class.
 - Added `PdfFontType` enumeration.
 - `PdfDocument`: Updated output functions.
 - Updated tests.
