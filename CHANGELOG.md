@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 4.3.2 - 2026-03-19
 
 - `PdfDocument`: Removed the `isUTF8()` function.
 - Created test for the `PdfEncoder` class.

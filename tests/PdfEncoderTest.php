@@ -67,9 +67,9 @@ final class PdfEncoderTest extends TestCase
 
     public function testFormatDate(): void
     {
-        $timestamp = 0;
-        $actual = $this->encoder->formatDate($timestamp);
-        self::assertSame("D:19700101010000+01'00'", $actual);
+        self::assertTrue(\date_default_timezone_set('UTC'));
+        $actual = $this->encoder->formatDate(0);
+        self::assertSame("D:19700101000000+00'00'", $actual);
     }
 
     public function testIsAscii(): void
