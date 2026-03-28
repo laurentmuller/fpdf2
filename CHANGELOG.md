@@ -1,5 +1,12 @@
 # Change log
 
+## Unreleased
+
+- **BC Break!**: Removed the `encode()` function from the `PdfEncoder` class.
+  - **BC Break!**: Moved `httpEncode()` function to the `PdfEncoder` class.
+- **BC Break!**: Removed `PdfNonFullScreenPageMode` enumeration and replaced
+  by `PdfPageMode` enumeration in the `PdfViewerPreferences` class.
+
 ## 4.3.2 - 2026-03-19
 
 - `PdfDocument`: Removed the `isUTF8()` function.

@@ -15,7 +15,7 @@ namespace fpdf;
 
 use fpdf\Enums\PdfDirection;
 use fpdf\Enums\PdfDuplex;
-use fpdf\Enums\PdfNonFullScreenPageMode;
+use fpdf\Enums\PdfPageMode;
 use fpdf\Enums\PdfScaling;
 use fpdf\Enums\PdfVersion;
 use fpdf\Interfaces\PdfEnumDefaultInterface;
@@ -33,7 +33,7 @@ class PdfViewerPreferences
     private bool $hideMenubar = false;
     private bool $hideToolbar = false;
     private bool $hideWindowUI = false;
-    private PdfNonFullScreenPageMode $nonFullScreenPageMode;
+    private PdfPageMode $nonFullScreenPageMode;
     private bool $pickTrayByPDFSize = false;
     private PdfScaling $scaling;
 
@@ -42,7 +42,7 @@ class PdfViewerPreferences
         $this->duplex = PdfDuplex::getDefault();
         $this->scaling = PdfScaling::getDefault();
         $this->direction = PdfDirection::getDefault();
-        $this->nonFullScreenPageMode = PdfNonFullScreenPageMode::getDefault();
+        $this->nonFullScreenPageMode = PdfPageMode::getDefault();
     }
 
     /**
@@ -68,9 +68,9 @@ class PdfViewerPreferences
     /**
      * Gets the document’s page mode, specifying how to display the document on exiting full-screen mode.
      *
-     * The default value is <code>PdfNonFullScreenPageMode::USE_NONE</code>.
+     * The default value is <code>PdfPageMode::USE_NONE</code>.
      */
-    public function getNonFullScreenPageMode(): PdfNonFullScreenPageMode
+    public function getNonFullScreenPageMode(): PdfPageMode
     {
         return $this->nonFullScreenPageMode;
     }
@@ -241,7 +241,7 @@ class PdfViewerPreferences
         $this->duplex = PdfDuplex::getDefault();
         $this->scaling = PdfScaling::getDefault();
         $this->direction = PdfDirection::getDefault();
-        $this->nonFullScreenPageMode = PdfNonFullScreenPageMode::getDefault();
+        $this->nonFullScreenPageMode = PdfPageMode::getDefault();
 
         return $this;
     }
@@ -333,7 +333,7 @@ class PdfViewerPreferences
     /**
      * Sets the document’s page mode, specifying how to display the document on exiting full-screen mode.
      */
-    public function setNonFullScreenPageMode(PdfNonFullScreenPageMode $nonFullScreenPageMode): self
+    public function setNonFullScreenPageMode(PdfPageMode $nonFullScreenPageMode): self
     {
         $this->nonFullScreenPageMode = $nonFullScreenPageMode;
 

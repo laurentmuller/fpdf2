@@ -74,6 +74,26 @@ class PdfEncoder
     }
 
     /**
+     * Encode the given name/value pair parameter.
+     *
+     * @param string $name   the parameter name
+     * @param string $value  the parameter value
+     * @param bool   $isUTF8 indicates if the value is encoded in ISO-8859-1 (<code>false</code>)
+     *                       or UTF-8 (<code>true</code>)
+     */
+    public function httpEncode(string $name, string $value, bool $isUTF8): string
+    {
+        if ($this->isAscii($value)) {
+            return \sprintf('%s="%s"', $name, $value);
+        }
+        if (!$isUTF8) {
+            $value = $this->convertIsoToUtf8($value);
+        }
+
+        return \sprintf("%s*=UTF-8''%s", $name, \rawurlencode($value));
+    }
+
+    /**
      * Returns if the given string is valid for the <code>ASCII</code> encoding.
      *
      * @return bool <code>true</code> if the given string is only containing <code>ASCII</code> characters

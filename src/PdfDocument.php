@@ -2334,26 +2334,11 @@ class PdfDocument
         }
 
         $disposition = $inline ? 'inline' : 'attachment';
-        $encoded = $this->httpEncode('filename', $name, $isUTF8);
+        $encoded = $this->encoder->httpEncode('filename', $name, $isUTF8);
         \header('Pragma: public');
         \header('Content-Type: application/pdf');
         \header('Cache-Control: private, max-age=0, must-revalidate');
         \header(\sprintf('Content-Disposition: %s; %s', $disposition, $encoded));
-    }
-
-    /**
-     * Encode the given name/value pair parameter.
-     */
-    protected function httpEncode(string $name, string $value, bool $isUTF8): string
-    {
-        if ($this->encoder->isAscii($value)) {
-            return \sprintf('%s="%s"', $name, $value);
-        }
-        if (!$isUTF8) {
-            $value = $this->encoder->convertIsoToUtf8($value);
-        }
-
-        return \sprintf("%s*=UTF-8''%s", $name, \rawurlencode($value));
     }
 
     /**

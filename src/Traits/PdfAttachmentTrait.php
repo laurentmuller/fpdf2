@@ -126,13 +126,13 @@ trait PdfAttachmentTrait
 
         $this->writer->putNewObj();
         $this->attachmentNumber = $this->writer->getObjectNumber();
-        $array = \array_map(
-            fn (int $index, PdfAttachment $attachment): string => $this->encoder->textString(\sprintf('%03d %d 0 R', $index, $attachment->number)),
+        $names = \array_map(
+            fn (int $index, PdfAttachment $attachment): string => $this->encoder->textString(\sprintf('%03d %s', $index, $attachment->formatNumber())),
             \array_keys($this->attachments),
             \array_values($this->attachments)
         );
         $this->writer->put('<<');
-        $this->writer->putf('/Names [%s]', \implode(' ', $array));
+        $this->writer->putf('/Names [%s]', \implode(' ', $names));
         $this->writer->put('>>');
         $this->writer->putEndObj();
     }
