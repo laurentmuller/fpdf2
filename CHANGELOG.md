@@ -1,9 +1,9 @@
 # Change log
 
-## Unreleased
+## 4.3.3 - 2026-03-28
 
 - **BC Break!**: Removed the `encode()` function from the `PdfEncoder` class.
-  - **BC Break!**: Moved `httpEncode()` function to the `PdfEncoder` class.
+- **BC Break!**: Moved `httpEncode()` function to the `PdfEncoder` class.
 - **BC Break!**: Removed `PdfNonFullScreenPageMode` enumeration and replaced
   by `PdfPageMode` enumeration in the `PdfViewerPreferences` class.
 
@@ -39,7 +39,7 @@
 ## 4.1.0 - 2026-03-08
 
 - **BC Break!**: `PdfDocument`: Moved string conversion to `PdfEncoder`class.
-- **BC Break!**: `PdfDocument`: Moved meta-data to `PdfDocumentInfo` class.
+- **BC Break!**: `PdfDocument`: Moved metadata to `PdfDocumentInfo` class.
 - `PdfPngParser`: Replaced `extractAlphaChannel` function by
   `updateAlphaChannel` function.
 
@@ -241,7 +241,7 @@
 - Updated Symfony to version 7.2.3.
 - Updated Rector to version 2.0.
 - Updated cache configurations.
-- Updated psalm to version 6.0.
+- Updated Psalm to version 6.0.
 - Added default title to the `addPageIndex()` function of
   the `PdfBookmarkTrait` trait.
 - Added function definitions in examples.
@@ -315,7 +315,7 @@
 - Updated PHPUnit schema version.
 - Updated `PdfSectorTrait` trait and tests.
 - Updated PHPStan documentation.
-- Spelling correction in documentation.
+- Spelling correction in the documentation.
 - Updated Symfony to version 7.1.4.
 - Added a rector fix script to `composer.json`.
 - Replaced links in tutorials.

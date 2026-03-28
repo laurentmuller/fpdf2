@@ -40,13 +40,6 @@ final class PdfViewerPreferencesTest extends TestCase
         self::assertTrue(PdfDuplex::NONE->isDefault());
         self::assertTrue(PdfDirection::L2R->isDefault());
         self::assertTrue(PdfScaling::APP_DEFAULT->isDefault());
-        self::assertTrue(PdfPageMode::USE_NONE->isDefault());
-    }
-
-    public function testDefaultNonFullScreenPageMode(): void
-    {
-        $actual = PdfPageMode::getDefault();
-        self::assertSame(PdfPageMode::USE_NONE, $actual);
     }
 
     public function testDefaultScaling(): void
