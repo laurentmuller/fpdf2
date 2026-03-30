@@ -11,6 +11,8 @@
 
 declare(strict_types=1);
 
+namespace fpdf\Tests;
+
 use fpdf\PdfEncoder;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -19,13 +21,16 @@ final class PdfEncoderTest extends TestCase
 {
     private PdfEncoder $encoder;
 
-    #[Override]
+    #[\Override]
     protected function setUp(): void
     {
         $this->encoder = new PdfEncoder();
     }
 
-    public static function getEscapes(): Generator
+    /**
+     * @return \Generator<int, array{0: string, 1: string}>
+     */
+    public static function getEscapes(): \Generator
     {
         yield ['\\', '\\\\'];
         yield ['(', '\\('];
@@ -70,6 +75,22 @@ final class PdfEncoderTest extends TestCase
         self::assertTrue(\date_default_timezone_set('UTC'));
         $actual = $this->encoder->formatDate(0);
         self::assertSame("D:19700101000000+00'00'", $actual);
+    }
+
+    public function testHttpEncode(): void
+    {
+        $actual = $this->encoder->httpEncode('key', 'value', true);
+        self::assertSame('key="value"', $actual);
+
+        $actual = $this->encoder->httpEncode('key', 'value', false);
+        self::assertSame('key="value"', $actual);
+
+        $value = \chr(1000);
+        $actual = $this->encoder->httpEncode('key', $value, true);
+        self::assertSame("key*=UTF-8''%E8", $actual);
+
+        $actual = $this->encoder->httpEncode('key', $value, false);
+        self::assertSame("key*=UTF-8''%C3%A8", $actual);
     }
 
     public function testIsAscii(): void

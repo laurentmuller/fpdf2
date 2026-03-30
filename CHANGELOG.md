@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- Updated test for `PdfEncoder` class.
+
 ## 4.3.3 - 2026-03-28
 
 - **BC Break!**: Removed the `encode()` function from the `PdfEncoder` class.
