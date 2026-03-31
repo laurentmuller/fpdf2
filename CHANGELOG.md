@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Updated PHPStan configuration.
 - Updated test for `PdfEncoder` class.
 
 ## 4.3.3 - 2026-03-28
