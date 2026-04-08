@@ -108,6 +108,6 @@ final class PdfFont extends AbstractPdfNumber
      */
     public function isUv(): bool
     {
-        return null !== $this->uv && [] !== $this->uv;
+        return $this->isArray($this->uv);
     }
 }

@@ -24,11 +24,24 @@ abstract class AbstractPdfNumber
     public int $number = 0;
 
     /**
-     * Format this number to use as output.
+     * Format this number to use for output.
      */
     public function formatNumber(): string
     {
         return \sprintf('%d 0 R', $this->number);
+    }
+
+    /**
+     * @template TKey of array-key
+     * @template TValue
+     *
+     * @param array<TKey, TValue>|null $array
+     *
+     * @phpstan-assert-if-true non-empty-array<TKey, TValue> $array
+     */
+    protected function isArray(?array $array): bool
+    {
+        return null !== $array && [] !== $array;
     }
 
     /**

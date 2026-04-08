@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Updated `AbstractPdfNumber` class.
 - Updated PHPStan configuration.
 - Updated test for `PdfEncoder` class.
 

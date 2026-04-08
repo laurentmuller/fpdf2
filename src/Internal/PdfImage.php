@@ -76,6 +76,6 @@ final class PdfImage extends AbstractPdfNumber
      */
     public function isTransparencies(): bool
     {
-        return null !== $this->transparencies && [] !== $this->transparencies;
+        return $this->isArray($this->transparencies);
     }
 }
