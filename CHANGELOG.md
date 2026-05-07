@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **BUG** Updated the `updateAliasNumberPages()` function of the `PdfWriter`
+ class to output the correct total pages.
 - Updated `AbstractPdfNumber` class.
 - Updated PHPStan configuration.
 - Updated test for `PdfEncoder` class.

@@ -271,16 +271,17 @@ class PdfWriter
     }
 
     /**
-     * Replace the alias number page by the given page number.
+     * Replace the alias number page by the given number of pages.
      *
      * @param int    $page             the page to update
-     * @param string $aliasNumberPages the alias number page
+     * @param int    $pages            the number of pages to replace alias for
+     * @param string $aliasNumberPages the number page alias
      */
-    public function updateAliasNumberPages(int $page, string $aliasNumberPages): self
+    public function updateAliasNumberPages(int $page, int $pages, string $aliasNumberPages): self
     {
         /** @var string $thousandsSep */
         $thousandsSep = \localeconv()['thousands_sep'];
-        $replace = \number_format(num: $page, thousands_separator: $thousandsSep);
+        $replace = \number_format(num: $pages, thousands_separator: $thousandsSep);
         $this->pages[$page] = \str_replace($aliasNumberPages, $replace, $this->pages[$page]);
 
         return $this;

@@ -2825,7 +2825,7 @@ class PdfDocument
         $this->writer->putEndObj();
         // page content
         if ('' !== $this->aliasNumberPages) {
-            $this->writer->updateAliasNumberPages($this->page, $this->aliasNumberPages);
+            $this->writer->updateAliasNumberPages($page, $this->page, $this->aliasNumberPages);
         }
         $this->writer->putStreamPage($page);
         // links
