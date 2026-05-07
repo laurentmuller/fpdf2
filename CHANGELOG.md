@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 4.3.4 - 2026-05-07
 
 - **BUG** Updated the `updateAliasNumberPages()` function of the `PdfWriter`
  class to output the correct total pages.
