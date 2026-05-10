@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- `PdfWriter`: Defines class members as private.
+
 ## 4.3.4 - 2026-05-07
 
 - **BUG** Updated the `updateAliasNumberPages()` function of the `PdfWriter`

@@ -24,30 +24,33 @@ class PdfWriter
     public const string NEW_LINE = "\n";
 
     /** The buffer holding in-memory PDF. */
-    protected string $buffer = '';
+    private string $buffer = '';
 
     /** The compression flag. */
-    protected bool $compression = true;
+    private bool $compression = true;
 
     /** The object number. */
-    protected int $objectNumber = 2;
+    private int $objectNumber = 2;
 
     /**
      * The object offsets.
      *
      * @var array<int, int>
      */
-    protected array $offsets = [];
+    private array $offsets = [];
 
     /**
      * The pages.
      *
      * @var array<int, string>
      */
-    protected array $pages = [];
+    private array $pages = [];
 
     /** The current state. */
-    protected PdfState $state = PdfState::NO_PAGE;
+    private PdfState $state = PdfState::NO_PAGE;
+
+    /** The thousand separator. */
+    private ?string $thousandsSep = null;
 
     /**
      * Initialize a new page. After this call, this current state is {@link PdfState::PAGE_STARTED}.
@@ -279,11 +282,18 @@ class PdfWriter
      */
     public function updateAliasNumberPages(int $page, int $pages, string $aliasNumberPages): self
     {
-        /** @var string $thousandsSep */
-        $thousandsSep = \localeconv()['thousands_sep'];
-        $replace = \number_format(num: $pages, thousands_separator: $thousandsSep);
+        $replace = \number_format(num: $pages, thousands_separator: $this->getThousandsSep());
         $this->pages[$page] = \str_replace($aliasNumberPages, $replace, $this->pages[$page]);
 
         return $this;
+    }
+
+    /**
+     * Gets the thousand separator.
+     */
+    private function getThousandsSep(): string
+    {
+        /** @phpstan-ignore cast.string */
+        return $this->thousandsSep ??= (string) \localeconv()['thousands_sep'];
     }
 }
