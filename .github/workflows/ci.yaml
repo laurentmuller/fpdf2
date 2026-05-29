@@ -18,8 +18,5 @@ jobs:
     validate-markdown:
         uses: laurentmuller/.github/.github/workflows/validate-markdown.yaml@main
 
-    validate-yaml:
-        uses: laurentmuller/.github/.github/workflows/validate-yaml.yaml@main
-
     phpunit:
         uses: laurentmuller/.github/.github/workflows/phpunit.yaml@main
