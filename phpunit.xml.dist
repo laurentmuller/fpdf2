@@ -11,7 +11,7 @@
     </php>
 
     <testsuites>
-        <testsuite name="FPDF2 Test Suite">
+        <testsuite name="FPDF2">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
