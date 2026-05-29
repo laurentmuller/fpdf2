@@ -20,3 +20,5 @@ jobs:
 
     phpunit:
         uses: laurentmuller/.github/.github/workflows/phpunit.yaml@main
+        with:
+            test-suite: 'FPDF2 Test Suite'
