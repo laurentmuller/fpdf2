@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `getCharactersWidth()` function to the `PdfFont` class.
 - Updated dependency of the `setasign/fpdf` repository to version 1.9 and
   updated tests accordingly.
 - Updated GitHub actions.

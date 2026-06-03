@@ -896,15 +896,15 @@ class PdfDocument
     }
 
     /**
-     * Gets the length of a string in the user unit.
+     * Gets the width of a string in the user unit.
      *
      * @param string $str the string to get width for
      *
-     * @return float the string width or 0.0 if the string is empty or if no font is set
+     * @return float the string width or 0.0 if no font is set or if the string is empty
      */
     public function getStringWidth(string $str): float
     {
-        if (!$this->currentFont instanceof PdfFont || '' === $str) {
+        if (!$this->currentFont instanceof PdfFont) {
             return 0.0;
         }
         $str = $this->cleanText($str);
@@ -912,12 +912,9 @@ class PdfDocument
             return 0.0;
         }
 
-        /** @var int[] $keys */
-        $keys = \unpack('C*', $str);
-        $charWidths = $this->currentFont->cw;
-        $width = \array_sum(\array_map(static fn (int $key): int => $charWidths[$key], $keys));
+        $width = (float) $this->currentFont->getCharactersWidth($str);
 
-        return (float) $width * $this->fontSize / 1000.0;
+        return $width * $this->fontSize / 1000.0;
     }
 
     /**

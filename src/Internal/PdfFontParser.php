@@ -53,7 +53,6 @@ final class PdfFontParser
         }
 
         $data = $this->decodeJson($path);
-        /** @phpstan-var non-empty-string|null $name */
         $name = $this->getString($data, 'name');
         if (null === $name) {
             throw PdfException::format('No font name defined in file: %s.', $path);
@@ -124,6 +123,8 @@ final class PdfFontParser
 
     /**
      * @phpstan-param DataFontType $data
+     *
+     * @phpstan-return non-empty-string|null
      */
     private function getString(array $data, string $key): ?string
     {

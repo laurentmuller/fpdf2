@@ -64,6 +64,21 @@ final class PdfFont extends AbstractPdfNumber
     }
 
     /**
+     * Gets the width of characters for the given string.
+     *
+     * @param non-empty-string $str the string to get width for
+     *
+     * @return int the string width
+     */
+    public function getCharactersWidth(string $str): int
+    {
+        /** @var int[] $keys */
+        $keys = \unpack('C*', $str);
+
+        return \array_sum(\array_map(fn (int $key): int => $this->cw[$key], $keys));
+    }
+
+    /**
      * @phpstan-assert-if-true non-empty-string $this->diff
      */
     public function isDiff(): bool
