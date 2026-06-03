@@ -42,7 +42,7 @@
     "require-dev": {
         "phpunit/phpunit": "^12.0",
         "bamarni/composer-bin-plugin": "^1.0",
-        "setasign/fpdf": "1.8.6"
+        "setasign/fpdf": "^1.0"
     },
     "extra": {
         "bamarni-bin": {
@@ -73,15 +73,15 @@
         "app-rector": "vendor-bin/rector/vendor/bin/rector process --dry-run --config rector.php",
         "app-rector-fix": "vendor-bin/rector/vendor/bin/rector process --config rector.php",
         "app-stan": "vendor-bin/phpstan/vendor/bin/phpstan analyse --configuration phpstan.neon --memory-limit 2G",
-        "app-test": "vendor/bin/phpunit",
         "app-markdown": "markdownlint-cli2",
+        "app-test": "vendor/bin/phpunit",
         "app-all": [
             "@app-validate",
             "@app-fixer",
             "@app-rector",
             "@app-stan",
-            "@app-test",
-            "@app-markdown"
+            "@app-markdown",
+            "@app-test"
         ]
     }
 }

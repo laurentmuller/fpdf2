@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Updated dependency of the `setasign/fpdf` repository to version 1.9 and
+  updated tests accordingly.
 - Updated GitHub actions.
 - Updated `composer.json` with the PHP platform to 8.3.31.
 - `PdfWriter`: Defines class members as private.

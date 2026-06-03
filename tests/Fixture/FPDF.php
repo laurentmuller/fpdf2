@@ -18,6 +18,13 @@ namespace fpdf\Tests\Fixture;
  */
 class FPDF extends \FPDF
 {
+    public function __construct(string $orientation = 'P', string $unit = 'mm', string $size = 'A4')
+    {
+        parent::__construct($orientation, $unit, $size);
+        // set producer metadata with one more space to be aligned with the FPDF2 version
+        $this->metadata = ['Producer' => 'FPDF  ' . self::VERSION];
+    }
+
     #[\Override]
     protected function _out(mixed $s): void
     {

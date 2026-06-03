@@ -57,6 +57,7 @@ class PdfDocument
     final public const float LINE_HEIGHT = 5.0;
     /** The FPDF version. */
     final public const string VERSION = '4.0';
+
     // the empty color
     private const string EMPTY_COLOR = '0 G';
     /** The alias for the total number of pages. */
