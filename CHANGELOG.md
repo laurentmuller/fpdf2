@@ -1,5 +1,10 @@
 # Change log
 
+## Unreleased
+
+- **BC Break!**: Removed `asArray()` function from the `PdfMargins`,
+  `PdfPoint`, `PdfRectangle` and `PdfSize` classes.
+
 ## 4.3.5 - 2026-06-03
 
 - Added `getCharactersWidth()` function to the `PdfFont` class.

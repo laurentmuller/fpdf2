@@ -18,13 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 final class PdfSizeTest extends TestCase
 {
-    public function testAsArray(): void
-    {
-        $actual = PdfSize::instance(10, 15)->asArray();
-        self::assertCount(2, $actual);
-        self::assertSame([10.0, 15.0], $actual);
-    }
-
     public function testConstructor(): void
     {
         $actual = new PdfSize(10, 15);

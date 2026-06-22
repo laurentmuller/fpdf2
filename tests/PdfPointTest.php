@@ -18,13 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 final class PdfPointTest extends TestCase
 {
-    public function testAsArray(): void
-    {
-        $actual = PdfPoint::instance(10, 15)->asArray();
-        self::assertCount(2, $actual);
-        self::assertSame([10.0, 15.0], $actual);
-    }
-
     public function testConstructor(): void
     {
         $actual = new PdfPoint(10, 15);

@@ -33,16 +33,6 @@ class PdfMargins
     }
 
     /**
-     * Returns these left, top, right and bottom values as an array.
-     *
-     * @return array{0: float, 1: float, 2: float, 3: float}
-     */
-    public function asArray(): array
-    {
-        return [$this->left, $this->top, $this->right, $this->bottom];
-    }
-
-    /**
      * Returns if the given margin is equal to this instance.
      *
      * To be equal, the left, the top, the right and the bottom values must be equal

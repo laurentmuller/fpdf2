@@ -27,16 +27,6 @@ class PdfSize
     }
 
     /**
-     * Returns these width and height values as an array.
-     *
-     * @return array{0: float, 1: float}
-     */
-    public function asArray(): array
-    {
-        return [$this->width, $this->height];
-    }
-
-    /**
      * Returns if the given size is equal to this instance.
      *
      * To be equal, the width and the height values must be equal

@@ -20,13 +20,6 @@ use PHPUnit\Framework\TestCase;
 
 final class PdfRectangleTest extends TestCase
 {
-    public function testAsArray(): void
-    {
-        $actual = PdfRectangle::instance(10, 20, 30, 40)->asArray();
-        self::assertCount(4, $actual);
-        self::assertSame([10.0, 20.0, 30.0, 40.0], $actual);
-    }
-
     public function testBottom(): void
     {
         $expected = 30.0;

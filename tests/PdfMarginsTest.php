@@ -18,13 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 final class PdfMarginsTest extends TestCase
 {
-    public function testAsArray(): void
-    {
-        $margins = PdfMargins::instance();
-        $actual = $margins->asArray();
-        self::assertSame([0.0, 0.0, 0.0, 0.0], $actual);
-    }
-
     public function testEquals(): void
     {
         $actual = PdfMargins::instance();
