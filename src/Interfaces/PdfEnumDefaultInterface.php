@@ -16,7 +16,7 @@ namespace fpdf\Interfaces;
 /**
  * Enumeration implementing this interface deals with a default value.
  *
- * @template T of PdfEnumDefaultInterface&\UnitEnum
+ * @template T of \UnitEnum&PdfEnumDefaultInterface
  */
 interface PdfEnumDefaultInterface
 {
