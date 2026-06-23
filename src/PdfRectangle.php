@@ -29,16 +29,6 @@ class PdfRectangle
     }
 
     /**
-     * Returns these x, y, width and height values as an array.
-     *
-     * @return array{0: float, 1: float, 2: float, 3: float}
-     */
-    public function asArray(): array
-    {
-        return [$this->x, $this->y, $this->width, $this->height];
-    }
-
-    /**
      * Gets the bottom coordinate.
      */
     public function bottom(): float
