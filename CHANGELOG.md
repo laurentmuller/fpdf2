@@ -1,5 +1,9 @@
 # Change log
 
+## 4.3.6 - 2026-06-23
+
+- Updated `PdfEnumDefaultInterface` interface.
+
 ## 4.3.5 - 2026-06-03
 
 - Added `getCharactersWidth()` function to the `PdfFont` class.
