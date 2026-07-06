@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- **BC Break!**: Update function `roundedRect()` of `PdfRoundedRectangleTrait`,
+  allowing optional abscissa and coordinate parameters.
+
+## 4.3.7 - 2026-07-06
+
+- Add rounded rectangle trait.
 - Update rector configuration.
 
 ## 4.3.6 - 2026-06-23

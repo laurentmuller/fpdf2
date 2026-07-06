@@ -23,7 +23,8 @@ use fpdf\PdfRectangle;
  * Trait to draw rounded rectangles.
  *
  * The code is inspired from FPDF script
- * <a href="https://www.fpdf.org/en/script/script7.php" target="_blank">Rounded rectangle</a>.
+ * <a href="https://www.fpdf.org/en/script/script7.php" target="_blank">Rounded rectangle</a>
+ * created by Maxime Delorme.
  *
  * @phpstan-require-extends PdfDocument
  */
@@ -32,25 +33,23 @@ trait PdfRoundedRectangleTrait
     /**
      * Output a rounded rectangle.
      *
-     * Do nothing if the radius is not positive.
-     *
-     * @param float             $x      the abscissa of the rectangle
-     * @param float             $y      the ordinate of the rectangle
      * @param float             $width  the width of the rectangle
      * @param float             $height the height of the rectangle
      * @param float             $radius the radius of the corners
+     * @param ?float            $x      the abscissa of the rectangle or null to use the current abscissa
+     * @param ?float            $y      the ordinate of the rectangle or null to use the current ordinate
      * @param PdfRectangleStyle $style  the style of rendering
      * @param PdfMove           $move   indicates where the current position should go after the call
      *
-     * @throws PdfException if the radius is smaller or equal to zero or if is greater than half the minimum of
+     * @throws PdfException if the radius is smaller than or equal to zero or if is greater than half the minimum of
      *                      the width and height
      */
     public function roundedRect(
-        float $x,
-        float $y,
         float $width,
         float $height,
         float $radius,
+        ?float $x = null,
+        ?float $y = null,
         PdfRectangleStyle $style = PdfRectangleStyle::BOTH,
         PdfMove $move = PdfMove::RIGHT
     ): static {
@@ -62,6 +61,9 @@ trait PdfRoundedRectangleTrait
         if ($radius > $maximum) {
             throw PdfException::format('Invalid radius: %s, maximum allowed: %s.', $radius, $maximum);
         }
+
+        $x ??= $this->x;
+        $y ??= $this->y;
 
         $length = 4.0 / 3.0 * (\M_SQRT2 - 1.0) * $radius;
 
@@ -122,14 +124,16 @@ trait PdfRoundedRectangleTrait
 
         switch ($move) {
             case PdfMove::RIGHT:
-                $this->x += $width;
+                $this->x = $x + $width;
+                $this->y = $y;
                 break;
             case PdfMove::NEW_LINE:
-                $this->y += $height;
                 $this->x = $this->margins->left;
+                $this->y = $y + $height;
                 break;
             case PdfMove::BELOW:
-                $this->y += $height;
+                $this->x = $x;
+                $this->y = $y + $height;
                 break;
         }
 
@@ -144,7 +148,7 @@ trait PdfRoundedRectangleTrait
      * @param PdfRectangleStyle $style  the style of rendering
      * @param PdfMove           $move   indicates where the current position should go after the call
      *
-     * @throws PdfException if the radius is smaller or equal to zero or if is greater than half the minimum of
+     * @throws PdfException if the radius is smaller than or equal to zero or if is greater than half the minimum of
      *                      the width and height
      */
     public function roundedRectangle(
@@ -154,11 +158,11 @@ trait PdfRoundedRectangleTrait
         PdfMove $move = PdfMove::RIGHT
     ): static {
         return $this->roundedRect(
-            x: $rect->x,
-            y: $rect->y,
             width: $rect->width,
             height: $rect->height,
             radius: $radius,
+            x: $rect->x,
+            y: $rect->y,
             style: $style,
             move: $move
         );

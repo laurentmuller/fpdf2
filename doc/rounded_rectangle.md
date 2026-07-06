@@ -10,11 +10,11 @@ Maxime Delorme.
 
 ```php
 public function roundedRect(
-    float $x,
-    float $y,
     float $width,
     float $height,
     float $radius,
+    ?float $x = null,
+    ?float $y = null,
     PdfRectangleStyle $style = PdfRectangleStyle::BOTH,
     PdfMove $move = PdfMove::RIGHT
 )
@@ -22,11 +22,11 @@ public function roundedRect(
 
 **Parameters:**
 
-- `$x`: the abscissa of the rectangle
-- `$y`: the ordinate of the rectangle
 - `$width`: the width of the rectangle
 - `$height`: the height of the rectangle
 - `$radius`: the radius of the corners
+- `$x`: the abscissa of the rectangle or `null` to use the current abscissa
+- `$y`: the ordinate of the rectangle or `null` to use the current ordinate
 - `$style`: the style of rendering
 - `$move`: indicates where the current position should go after the call
 
@@ -52,7 +52,7 @@ $pdf->setLineWidth(1.5);
 $pdf->setDrawColor(PdfRgbColor::red());
 $pdf->setFillColor(PdfRgbColor::darkGray());
 $pdf->roundedRect(10, 20, 50, 20, 3.5);
-$pdf->Output();
+$pdf->output();
 ```
 
 **Result:**
