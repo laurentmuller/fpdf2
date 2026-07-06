@@ -62,7 +62,7 @@ abstract class AbstractGdImageParser extends PdfPngParser
         \ob_start();
         \imagepng($image);
 
-        return (string) \ob_get_clean();
+        return \ob_get_clean();
     }
 
     /**

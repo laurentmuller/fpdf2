@@ -164,7 +164,7 @@ readonly class PdfCmykColor implements PdfColorInterface
      */
     private function asInt(float $value, float $multiplier): int
     {
-        /** @var int<0, 255> */
+        /** @phpstan-var int<0, 255> */
         return (int) \round(255.0 * (1.0 - $value) * $multiplier);
     }
 }

@@ -2291,7 +2291,7 @@ class PdfDocument
      */
     protected function getFontPath(): string
     {
-        /** @var string */
+        /** @phpstan-var string */
         return \defined('FPDF_FONTPATH') ? \constant('FPDF_FONTPATH') : __DIR__ . '/font/';
     }
 

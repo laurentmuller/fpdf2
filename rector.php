@@ -11,11 +11,9 @@
 
 declare(strict_types=1);
 
-use Rector\CodingStyle\Rector\ArrowFunction\StaticArrowFunctionRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\ClassLike\NewlineBetweenClassLikeStmtsRector;
 use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
-use Rector\CodingStyle\Rector\Closure\StaticClosureRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\Config\RectorConfig;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
@@ -30,7 +28,6 @@ $paths = [
 ];
 
 $skips = [
-    __DIR__ . '/src/font',
     __DIR__ . '/tests/fonts',
     PreferPHPUnitThisCallRector::class,
     // no space before or after statements
@@ -47,19 +44,15 @@ $sets = [
     SetList::PHP_83,
     SetList::CODE_QUALITY,
     SetList::CODING_STYLE,
+    SetList::DEAD_CODE,
     SetList::PRIVATIZATION,
     SetList::INSTANCEOF,
+    SetList::TYPE_DECLARATION,
 
     // PHP-Unit
     PHPUnitSetList::PHPUNIT_120,
     PHPUnitSetList::PHPUNIT_CODE_QUALITY,
     PHPUnitSetList::ANNOTATIONS_TO_ATTRIBUTES,
-];
-
-$rules = [
-    // static closure and arrow functions
-    StaticClosureRector::class,
-    StaticArrowFunctionRector::class,
 ];
 
 return RectorConfig::configure()
@@ -68,7 +61,6 @@ return RectorConfig::configure()
     ->withPaths($paths)
     ->withSkip($skips)
     ->withSets($sets)
-    ->withRules($rules)
     ->withConfiguredRule(ClassPropertyAssignToConstructorPromotionRector::class, [
         'rename_property' => false,
     ]);

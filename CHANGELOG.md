@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- Update rector configuration.
+
 ## 4.3.6 - 2026-06-23
 
 - Updated `PdfEnumDefaultInterface` interface.

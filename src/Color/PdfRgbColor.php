@@ -252,7 +252,7 @@ readonly class PdfRgbColor implements PdfColorInterface
      */
     private function asInt(float $value): int
     {
-        /** @var int<0 ,100> */
+        /** @phpstan-var int<0 ,100> */
         return (int) \round($value * 100.0);
     }
 
@@ -284,7 +284,7 @@ readonly class PdfRgbColor implements PdfColorInterface
      */
     private static function hexdec(string $value): int
     {
-        /** @var int<0, 255> */
+        /** @phpstan-var int<0, 255> */
         return (int) \hexdec($value);
     }
 
