@@ -16,6 +16,7 @@ Below is a list of examples:
 - [Dash lines](dash_lines.md)
 - [Polygon](polygon.md)
 - [Annotations](annotations.md)
+- [Rounded Rectangle](rounded_rectangle.md)
 
 **See also:**
 

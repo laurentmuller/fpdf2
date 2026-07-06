@@ -19,8 +19,8 @@ use fpdf\PdfDocument;
 /**
  * Trait to draw circles and ellipses.
  *
- *  The code is inspired from FPDF script
- *  <a href="http://www.fpdf.org/en/script/script6.php" target="_blank">Circles and ellipses</a>.
+ * The code is inspired from FPDF script
+ * <a href="http://www.fpdf.org/en/script/script6.php" target="_blank">Circles and ellipses</a>.
  *
  * @phpstan-require-extends PdfDocument
  */
