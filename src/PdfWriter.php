@@ -132,12 +132,9 @@ class PdfWriter
     /**
      * Outputs the specified content to a given page.
      *
-     * @param int    $page   the page number where the output should be added
-     * @param string $output the content to be written
-     *
      * @throws PdfException if no page has been added, if the end page has been called, or if the document is closed
      */
-    public function out(int $page, string $output): self
+    public function out(int $page, string|int|\BackedEnum $output): self
     {
         switch ($this->state) {
             case PdfState::NO_PAGE:
@@ -147,7 +144,7 @@ class PdfWriter
             case PdfState::CLOSED:
                 throw PdfException::instance('Invalid call: Document closed.');
             case PdfState::PAGE_STARTED:
-                $this->pages[$page] .= $output . self::NEW_LINE;
+                $this->pages[$page] .= $this->convertValue($output) . self::NEW_LINE;
                 break;
         }
 
@@ -173,9 +170,9 @@ class PdfWriter
     /**
      * Put the given value to this buffer.
      */
-    public function put(string|int $value): self
+    public function put(string|int|\BackedEnum $value): self
     {
-        $this->buffer .= $value . self::NEW_LINE;
+        $this->buffer .= $this->convertValue($value) . self::NEW_LINE;
 
         return $this;
     }
@@ -292,12 +289,17 @@ class PdfWriter
         return $this;
     }
 
+    private function convertValue(string|int|float|\BackedEnum $value): string|int|float
+    {
+        return $value instanceof \BackedEnum ? $value->value : $value;
+    }
+
     /**
      * @return array<string|int|float>
      */
     private function convertValues(string|int|float|\BackedEnum ...$values): array
     {
-        return \array_map(static fn (string|int|float|\BackedEnum $value): string|int|float => $value instanceof \BackedEnum ? $value->value : $value, $values);
+        return \array_map($this->convertValue(...), $values);
     }
 
     /**

@@ -2,8 +2,16 @@
 
 ## Unreleased
 
+- `PdfWriter`: Add `convertValue()` function.
+
+## 4.3.9 - 2026-07-07
+
 - `PdfWriter`: Allow `BackedEnum` class as parameters.
 - `PdfImage`: Add `isDeviceCmyk()` and `isIndexed()` properties.
+- Small correction for SymfonyInsight.
+
+## 4.3.8 - 2026-07-06
+
 - Update tests.
 - `PdfRoundedRectangleTrait`: Allow radius greater than half the minimum of the
   width and height.
