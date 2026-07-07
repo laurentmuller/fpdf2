@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `PdfImage`: Add `isDeviceCmyk()` and `isIndexed()` properties.
 - Update tests.
 - `PdfRoundedRectangleTrait`: Allow radius greater than half the minimum of the
   width and height.

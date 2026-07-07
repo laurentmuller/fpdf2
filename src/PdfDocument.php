@@ -2685,7 +2685,7 @@ class PdfDocument
         $this->writer->put('/Subtype /Image');
         $this->writer->putf('/Width %d', $image->width);
         $this->writer->putf('/Height %d', $image->height);
-        if (PdfColorSpace::INDEXED === $image->colorSpace) {
+        if ($image->isIndexed()) {
             $this->writer->putf(
                 '/ColorSpace [/Indexed /DeviceRGB %d %d 0 R]',
                 \intdiv(\strlen($image->palette), 3) - 1,
@@ -2693,7 +2693,7 @@ class PdfDocument
             );
         } else {
             $this->writer->putf('/ColorSpace /%s', $image->getColorSpaceValue());
-            if (PdfColorSpace::DEVICE_CMYK === $image->colorSpace) {
+            if ($image->isDeviceCmyk()) {
                 $this->writer->put('/Decode [1 0 1 0 1 0 1 0]');
             }
         }
@@ -2731,7 +2731,7 @@ class PdfDocument
             $this->putImage($softImage);
         }
         // palette
-        if (PdfColorSpace::INDEXED === $image->colorSpace) {
+        if ($image->isIndexed()) {
             $this->writer->putStreamObject($image->palette);
         }
     }

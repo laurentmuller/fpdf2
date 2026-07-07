@@ -64,6 +64,22 @@ final class PdfImage extends AbstractPdfNumber
     }
 
     /**
+     * @phpstan-assert-if-true PdfColorSpace::DEVICE_CMYK $this->colorSpace
+     */
+    public function isDeviceCmyk(): bool
+    {
+        return PdfColorSpace::DEVICE_CMYK === $this->colorSpace;
+    }
+
+    /**
+     * @phpstan-assert-if-true PdfColorSpace::INDEXED $this->colorSpace
+     */
+    public function isIndexed(): bool
+    {
+        return PdfColorSpace::INDEXED === $this->colorSpace;
+    }
+
+    /**
      * @phpstan-assert-if-true non-empty-string $this->softMask
      */
     public function isSoftMask(): bool
