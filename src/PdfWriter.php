@@ -157,14 +157,16 @@ class PdfWriter
     /**
      * Output a formatted string to a given page.
      *
-     * @param int              $page      the page number where the output should be added
-     * @param string           $format    the format string
-     * @param string|int|float ...$values the values to be formatted
+     * @param int                          $page      the page number where the output should be added
+     * @param string                       $format    the format string
+     * @param string|int|float|\BackedEnum ...$values the values to be formatted
      *
      * @throws PdfException if no page has been added, if the end page has been called, or if the document is closed
      */
-    public function outf(int $page, string $format, string|int|float ...$values): self
+    public function outf(int $page, string $format, string|int|float|\BackedEnum ...$values): self
     {
+        $values = $this->convertValues(...$values);
+
         return $this->out($page, \sprintf($format, ...$values));
     }
 
@@ -191,11 +193,13 @@ class PdfWriter
     /**
      * Put a formatted string to this buffer.
      *
-     * @param string           $format    the format string
-     * @param string|int|float ...$values the values to be formatted
+     * @param string                       $format    the format string
+     * @param string|int|float|\BackedEnum ...$values the values to be formatted
      */
-    public function putf(string $format, string|int|float ...$values): self
+    public function putf(string $format, string|int|float|\BackedEnum ...$values): self
     {
+        $values = $this->convertValues(...$values);
+
         return $this->put(\sprintf($format, ...$values));
     }
 
@@ -286,6 +290,14 @@ class PdfWriter
         $this->pages[$page] = \str_replace($aliasNumberPages, $replace, $this->pages[$page]);
 
         return $this;
+    }
+
+    /**
+     * @return array<string|int|float>
+     */
+    private function convertValues(string|int|float|\BackedEnum ...$values): array
+    {
+        return \array_map(static fn (string|int|float|\BackedEnum $value): string|int|float => $value instanceof \BackedEnum ? $value->value : $value, $values);
     }
 
     /**

@@ -107,7 +107,7 @@ trait PdfEllipseTrait
             $this->scaleY($y + $ly),
             $this->scale($x + $rx),
             $this->scaleY($y),
-            $style->value
+            $style
         );
     }
 }

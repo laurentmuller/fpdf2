@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `PdfWriter`: Allow `BackedEnum` class as parameters.
 - `PdfImage`: Add `isDeviceCmyk()` and `isIndexed()` properties.
 - Update tests.
 - `PdfRoundedRectangleTrait`: Allow radius greater than half the minimum of the

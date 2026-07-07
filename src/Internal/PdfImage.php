@@ -50,9 +50,13 @@ final class PdfImage extends AbstractPdfNumber
     ) {
     }
 
-    public function getColorSpaceValue(): string
+    /**
+     * Clear the image data and the soft mask.
+     */
+    public function clear(): void
     {
-        return $this->colorSpace->value;
+        $this->data = '';
+        $this->softMask = null;
     }
 
     /**

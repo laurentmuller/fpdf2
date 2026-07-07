@@ -94,7 +94,7 @@ trait PdfTransparencyTrait
             $this->writer->putf(
                 '<</Type /ExtGState /ca %1$.3F /CA %1$.3F /BM /%2$s>>',
                 $transparency->alpha,
-                $transparency->getBlendModeValue()
+                $transparency->blendMode,
             );
             $this->writer->putEndObj();
         }

@@ -33,9 +33,4 @@ final class PdfTransparency extends AbstractPdfNumber
         public readonly PdfBlendMode $blendMode = PdfBlendMode::NORMAL,
     ) {
     }
-
-    public function getBlendModeValue(): string
-    {
-        return $this->blendMode->value;
-    }
 }

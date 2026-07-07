@@ -1484,7 +1484,7 @@ class PdfDocument
                 $this->scaleY($y),
                 $this->scale($width),
                 $this->scale(-$height),
-                $style->value
+                $style
             );
         } elseif ($style->isAny()) {
             $this->writer->out($this->page, $this->formatBorders($x, $y, $width, $height, $style));
@@ -2416,7 +2416,7 @@ class PdfDocument
     protected function outLineCap(): void
     {
         if ($this->page > 0) {
-            $this->writer->outf($this->page, '%s J', $this->lineCap->value);
+            $this->writer->outf($this->page, '%s J', $this->lineCap);
         }
     }
 
@@ -2431,7 +2431,7 @@ class PdfDocument
     protected function outLineJoin(bool $force = false): void
     {
         if ($this->page > 0 && ($force || !$this->lineJoin->isDefault())) {
-            $this->writer->outf($this->page, '%s j', $this->lineJoin->value);
+            $this->writer->outf($this->page, '%s j', $this->lineJoin);
         }
     }
 
@@ -2528,16 +2528,16 @@ class PdfDocument
         if (\is_int($this->zoom)) {
             $this->writer->putf('/OpenAction [%d 0 R /XYZ null null %.2F]', $number, (float) $this->zoom / 100.0);
         } elseif (!$this->zoom->isDefault()) {
-            $this->writer->putf('/OpenAction [%d 0 R /%s]', $number, $this->zoom->value);
+            $this->writer->putf('/OpenAction [%d 0 R /%s]', $number, $this->zoom);
         }
 
         if (!$this->layout->isDefault()) {
-            $this->writer->putf('/PageLayout /%s', $this->layout->value);
+            $this->writer->putf('/PageLayout /%s', $this->layout);
             $this->updatePdfVersion($this->layout->getVersion());
         }
 
         if (!$this->pageMode->isDefault()) {
-            $this->writer->putf('/PageMode /%s', $this->pageMode->value);
+            $this->writer->putf('/PageMode /%s', $this->pageMode);
             $this->updatePdfVersion($this->pageMode->getVersion());
         }
 
@@ -2625,7 +2625,7 @@ class PdfDocument
                     $this->writer->putNewObj();
                     $this->writer->put('<</Type /Font');
                     $this->writer->putf('/BaseFont /%s', $name);
-                    $this->writer->putf('/Subtype /%s', $font->type->value);
+                    $this->writer->putf('/Subtype /%s', $font->type);
                     $this->writer->put('/FirstChar 32 /LastChar 255');
                     $this->writer->putf('/Widths %d 0 R', $this->writer->getObjectNumber() + 1);
                     $this->writer->putf('/FontDescriptor %d 0 R', $this->writer->getObjectNumber() + 2);
@@ -2692,7 +2692,7 @@ class PdfDocument
                 $this->writer->getObjectNumber() + 1
             );
         } else {
-            $this->writer->putf('/ColorSpace /%s', $image->getColorSpaceValue());
+            $this->writer->putf('/ColorSpace /%s', $image->colorSpace);
             if ($image->isDeviceCmyk()) {
                 $this->writer->put('/Decode [1 0 1 0 1 0 1 0]');
             }
@@ -2743,8 +2743,7 @@ class PdfDocument
     {
         foreach ($this->images as $image) {
             $this->putImage($image);
-            $image->data = '';
-            $image->softMask = null;
+            $image->clear();
         }
     }
 
@@ -2799,7 +2798,7 @@ class PdfDocument
             );
         }
         if ($pageInfo->isRotation()) {
-            $this->writer->putf('/Rotate %d', $pageInfo->rotation->value);
+            $this->writer->putf('/Rotate %d', $pageInfo->rotation);
         }
 
         $this->writer->put('/Resources 2 0 R');
