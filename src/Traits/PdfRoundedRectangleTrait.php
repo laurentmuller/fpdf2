@@ -116,7 +116,7 @@ trait PdfRoundedRectangleTrait
         );
 
         // style
-        $this->writer->out($this->page, \strtolower($style->value));
+        $this->writer->out($this->page, $style->lowercase());
 
         switch ($move) {
             case PdfMove::RIGHT:

@@ -41,7 +41,7 @@ trait PdfPolygonTrait
             $output .= \sprintf('%.2F %.2F %s ', $this->scale($point->x), $this->scaleY($point->y), $type);
             $type = 'l';
         }
-        $output .= \strtolower($style->value);
+        $output .= $style->lowercase();
         $this->writer->out($this->page, $output);
     }
 }

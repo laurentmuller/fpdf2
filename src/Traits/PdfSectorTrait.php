@@ -171,7 +171,7 @@ trait PdfSectorTrait
 
     private function terminateSector(PdfRectangleStyle $style): void
     {
-        $this->writer->out($this->page, $style);
+        $this->writer->out($this->page, $style->lowercase());
     }
 
     private function validateSector(float $angle): float

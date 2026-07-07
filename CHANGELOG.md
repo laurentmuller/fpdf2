@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-- `PdfWriter`: Add `convertValue()` function.
+- `PdfRectangleStyle`: Add `lowercase()` function.
+- `PdfWriter`: Add internal `convertValue()` function.
 
 ## 4.3.9 - 2026-07-07
 

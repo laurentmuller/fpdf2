@@ -30,4 +30,12 @@ enum PdfRectangleStyle: string
 
     /** Fill the rectangle. */
     case FILL = 'f';
+
+    /**
+     * Gets the lowercase value.
+     */
+    public function lowercase(): string
+    {
+        return \strtolower($this->value);
+    }
 }

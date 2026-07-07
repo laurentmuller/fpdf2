@@ -18,6 +18,13 @@ use PHPUnit\Framework\TestCase;
 
 final class PdfRectangleStyleTest extends TestCase
 {
+    public function testLowercase(): void
+    {
+        self::assertSame('s', PdfRectangleStyle::BORDER->lowercase());
+        self::assertSame('b', PdfRectangleStyle::BOTH->lowercase());
+        self::assertSame('f', PdfRectangleStyle::FILL->lowercase());
+    }
+
     public function testValue(): void
     {
         self::assertSame('S', PdfRectangleStyle::BORDER->value);
