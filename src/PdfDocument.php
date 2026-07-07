@@ -3000,10 +3000,10 @@ class PdfDocument
      * @param bool       $resetWidth a value indicating if the second line, if any; use all the printable width
      *                               (<code>true</code>) or keep with the desired width (<code>false</code>)
      *
-     * @return array<array{0: string, 1: bool}> an array where each entry contains the line text and a flag indicating
-     *                                          if the end line is explicit (<code>true</code>) or if caused by text
-     *                                          overflow (<code>false</code>).
-     *                                          Returns an empty array if the text is <code>null</code> or empty
+     * @return list<array{0: string, 1: bool}> an array where each entry contains the line text and a flag indicating
+     *                                         if the end line is explicit (<code>true</code>) or if caused by text
+     *                                         overflow (<code>false</code>).
+     *                                         Returns an empty array if the text is <code>null</code> or empty
      *
      * @throws PdfException if the given text is not empty and no font is set
      */
