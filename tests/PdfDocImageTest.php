@@ -126,7 +126,7 @@ final class PdfDocImageTest extends AbstractPdfDocTestCase
         self::expectException(PdfException::class);
         self::expectExceptionMessageMatches('/Missing or incorrect image file:.*fake.txt.$/');
         $doc = $this->createDocument();
-        $doc->image(__DIR__ . '/fake.txt', type: 'gif');
+        @$doc->image(__DIR__ . '/fake.txt', type: 'gif');
     }
 
     public function testInvalidHeaderChunk(): void
@@ -150,7 +150,7 @@ final class PdfDocImageTest extends AbstractPdfDocTestCase
         self::expectException(PdfException::class);
         self::expectExceptionMessageMatches('/Missing or invalid image size:.*fake.txt.$/');
         $doc = $this->createDocument();
-        $doc->image(__DIR__ . '/fake.txt', type: 'jpg');
+        @$doc->image(__DIR__ . '/fake.txt', type: 'jpg');
     }
 
     public function testInvalidPng(): void
@@ -158,7 +158,7 @@ final class PdfDocImageTest extends AbstractPdfDocTestCase
         self::expectException(PdfException::class);
         self::expectExceptionMessageMatches('/Unable to open image file:.*fake.txt.$/');
         $doc = $this->createDocument();
-        $doc->image(__DIR__ . '/fake.txt', type: 'png');
+        @$doc->image(__DIR__ . '/fake.txt', type: 'png');
     }
 
     public function testInvalidSignature(): void

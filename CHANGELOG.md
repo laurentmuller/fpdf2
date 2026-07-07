@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Update tests.
+- `PdfRoundedRectangleTrait`: Allow radius greater than half the minimum of the
+  width and height.
 - **BC Break!**: Update function `roundedRect()` of `PdfRoundedRectangleTrait`,
   allowing optional abscissa and coordinate parameters.
 

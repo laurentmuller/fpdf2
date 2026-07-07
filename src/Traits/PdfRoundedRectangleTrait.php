@@ -35,14 +35,14 @@ trait PdfRoundedRectangleTrait
      *
      * @param float             $width  the width of the rectangle
      * @param float             $height the height of the rectangle
-     * @param float             $radius the radius of the corners
+     * @param float             $radius the radius of the corners, the maximum value is half the minimum of the width
+     *                                  and height
      * @param ?float            $x      the abscissa of the rectangle or null to use the current abscissa
      * @param ?float            $y      the ordinate of the rectangle or null to use the current ordinate
      * @param PdfRectangleStyle $style  the style of rendering
      * @param PdfMove           $move   indicates where the current position should go after the call
      *
-     * @throws PdfException if the radius is smaller than or equal to zero or if is greater than half the minimum of
-     *                      the width and height
+     * @throws PdfException if the radius is not positive
      */
     public function roundedRect(
         float $width,
@@ -57,14 +57,10 @@ trait PdfRoundedRectangleTrait
         if ($radius <= 0.0) {
             throw PdfException::format('The radius must be positive, %s given.', $radius);
         }
-        $maximum = \min($width, $height) / 2.0;
-        if ($radius > $maximum) {
-            throw PdfException::format('Invalid radius: %s, maximum allowed: %s.', $radius, $maximum);
-        }
 
         $x ??= $this->x;
         $y ??= $this->y;
-
+        $radius = \min($radius, $width / 2.0, $height / 2.0);
         $length = 4.0 / 3.0 * (\M_SQRT2 - 1.0) * $radius;
 
         // top-left point
@@ -144,12 +140,12 @@ trait PdfRoundedRectangleTrait
      * Output a rounded rectangle.
      *
      * @param PdfRectangle      $rect   the rectangle to draw
-     * @param float             $radius the radius of the corners
+     * @param float             $radius the radius of the corners, the maximum value is half the minimum of the width
+     *                                  and height
      * @param PdfRectangleStyle $style  the style of rendering
      * @param PdfMove           $move   indicates where the current position should go after the call
      *
-     * @throws PdfException if the radius is smaller than or equal to zero or if is greater than half the minimum of
-     *                      the width and height
+     * @throws PdfException if the radius is not positive
      */
     public function roundedRectangle(
         PdfRectangle $rect,

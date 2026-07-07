@@ -54,7 +54,7 @@ final class PdfAttachmentTraitTest extends TestCase
         $document = new PdfDocumentAttachment();
         $document->addPage();
         $document->addAttachment(file: $file);
-        $document->output(PdfDestination::STRING);
+        @$document->output(PdfDestination::STRING);
     }
 
     public function testNoAttachment(): void

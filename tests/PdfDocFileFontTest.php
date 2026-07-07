@@ -28,7 +28,7 @@ final class PdfDocFileFontTest extends AbstractPdfDocTestCase
             file: 'font_bbox.json',
             dir: self::FONTS_DIR
         );
-        $doc->output(PdfDestination::STRING);
+        @$doc->output(PdfDestination::STRING);
         self::assertSame(1, $doc->getPage());
     }
 

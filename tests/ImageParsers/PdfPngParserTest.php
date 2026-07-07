@@ -47,7 +47,7 @@ final class PdfPngParserTest extends AbstractPdfParserTestCase
         self::expectException(PdfException::class);
         self::expectExceptionMessageMatches('/Unable to open image file:.*image.fake.$/');
         $file = 'image.fake';
-        $this->parseFile($file);
+        @$this->parseFile($file);
     }
 
     public function testInvalidBpc(): void

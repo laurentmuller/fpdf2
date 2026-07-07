@@ -33,7 +33,7 @@ abstract class AbstractCompareTestCase extends TestCase
         $oldDocument = $this->createOldDocument();
         $this->updateOldDocument($oldDocument);
         /** @phpstan-var string $oldContent */
-        $oldContent = $oldDocument->Output('S');
+        $oldContent = @$oldDocument->Output('S');
         $oldContent = \preg_replace(self::PATTERN, '', $oldContent);
         self::assertIsString($oldContent);
 

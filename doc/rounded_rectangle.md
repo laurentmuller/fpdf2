@@ -24,7 +24,8 @@ public function roundedRect(
 
 - `$width`: the width of the rectangle
 - `$height`: the height of the rectangle
-- `$radius`: the radius of the corners
+- `$radius`: the radius of the corners, the maximum value is half the minimum
+  of the width and height
 - `$x`: the abscissa of the rectangle or `null` to use the current abscissa
 - `$y`: the ordinate of the rectangle or `null` to use the current ordinate
 - `$style`: the style of rendering
@@ -51,7 +52,7 @@ $pdf->addPage();
 $pdf->setLineWidth(1.5);
 $pdf->setDrawColor(PdfRgbColor::red());
 $pdf->setFillColor(PdfRgbColor::darkGray());
-$pdf->roundedRect(10, 20, 50, 20, 3.5);
+$pdf->roundedRect(50, 20, 3.5);
 $pdf->output();
 ```
 
