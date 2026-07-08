@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace fpdf\Color;
 
 use fpdf\Interfaces\PdfColorInterface;
+use fpdf\PdfWriter;
 
 /**
  * Represents an RGB (red-green-blue) color.
@@ -34,7 +35,7 @@ readonly class PdfRgbColor implements PdfColorInterface
     #[\Override]
     public function __toString(): string
     {
-        return \sprintf(
+        return PdfWriter::sprintf(
             '%s(%d,%d,%d)',
             (new \ReflectionClass(self::class))->getShortName(),
             $this->red,
@@ -52,7 +53,7 @@ readonly class PdfRgbColor implements PdfColorInterface
      */
     public function asHex(string $prefix = ''): string
     {
-        return \sprintf('%s%02x%02x%02x', $prefix, $this->red, $this->green, $this->blue);
+        return PdfWriter::sprintf('%s%02x%02x%02x', $prefix, $this->red, $this->green, $this->blue);
     }
 
     /**
@@ -142,7 +143,7 @@ readonly class PdfRgbColor implements PdfColorInterface
     #[\Override]
     public function getOutput(): string
     {
-        return \sprintf('%s %s', $this->getTag(), $this->getSuffix());
+        return PdfWriter::sprintf('%s %s', $this->getTag(), $this->getSuffix());
     }
 
     #[\Override]
@@ -150,10 +151,10 @@ readonly class PdfRgbColor implements PdfColorInterface
     {
         // black?
         if ($this->isBlack()) {
-            return \sprintf('%.3F', 0.0);
+            return PdfWriter::sprintf('%.3F', 0.0);
         }
 
-        return \sprintf(
+        return PdfWriter::sprintf(
             '%.3F %.3F %.3F',
             $this->asFloat($this->red),
             $this->asFloat($this->green),

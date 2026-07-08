@@ -70,7 +70,7 @@ class PdfEncoder
     {
         $date = \date('YmdHisO', $timestamp);
 
-        return \sprintf("D:%s'%s'", \substr($date, 0, -2), \substr($date, -2));
+        return PdfWriter::sprintf("D:%s'%s'", \substr($date, 0, -2), \substr($date, -2));
     }
 
     /**
@@ -84,13 +84,13 @@ class PdfEncoder
     public function httpEncode(string $name, string $value, bool $isUTF8): string
     {
         if ($this->isAscii($value)) {
-            return \sprintf('%s="%s"', $name, $value);
+            return PdfWriter::sprintf('%s="%s"', $name, $value);
         }
         if (!$isUTF8) {
             $value = $this->convertIsoToUtf8($value);
         }
 
-        return \sprintf("%s*=UTF-8''%s", $name, \rawurlencode($value));
+        return PdfWriter::sprintf("%s*=UTF-8''%s", $name, \rawurlencode($value));
     }
 
     /**
@@ -112,6 +112,6 @@ class PdfEncoder
             $str = $this->convertUtf8ToUtf16($str);
         }
 
-        return \sprintf('(%s)', $this->escape($str));
+        return PdfWriter::sprintf('(%s)', $this->escape($str));
     }
 }

@@ -16,6 +16,7 @@ namespace fpdf\Internal;
 use fpdf\Enums\PdfAnnotationName;
 use fpdf\Interfaces\PdfColorInterface;
 use fpdf\PdfRectangle;
+use fpdf\PdfWriter;
 
 /**
  * Contains information about a page annotation.
@@ -45,7 +46,7 @@ final class PdfPageAnnotation extends AbstractPdfNumber
      */
     public function formatRectangle(): string
     {
-        return \sprintf(
+        return PdfWriter::sprintf(
             '%.2F %.2F %.2F %.2F',
             $this->rect->x,
             $this->rect->y,

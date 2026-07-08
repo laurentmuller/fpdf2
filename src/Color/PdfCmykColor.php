@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace fpdf\Color;
 
 use fpdf\Interfaces\PdfColorInterface;
+use fpdf\PdfWriter;
 
 /**
  * Represents an CMYK (cyan-magenta-yellow-black) color.
@@ -35,7 +36,7 @@ readonly class PdfCmykColor implements PdfColorInterface
     #[\Override]
     public function __toString(): string
     {
-        return \sprintf(
+        return PdfWriter::sprintf(
             '%s(%d,%d,%d,%d)',
             (new \ReflectionClass(self::class))->getShortName(),
             $this->cyan,
@@ -78,13 +79,13 @@ readonly class PdfCmykColor implements PdfColorInterface
     #[\Override]
     public function getOutput(): string
     {
-        return \sprintf('%s k', $this->getTag());
+        return PdfWriter::sprintf('%s k', $this->getTag());
     }
 
     #[\Override]
     public function getTag(): string
     {
-        return \sprintf(
+        return PdfWriter::sprintf(
             '%.3F %.3F %.3F %.3F',
             $this->asFloat($this->cyan),
             $this->asFloat($this->magenta),

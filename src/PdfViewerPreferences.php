@@ -363,7 +363,7 @@ class PdfViewerPreferences
 
     private function getOutputBool(string $key, bool $value): string
     {
-        return $value ? \sprintf('/%s true', $key) : '';
+        return $value ? PdfWriter::sprintf('/%s true', $key) : '';
     }
 
     /**
@@ -373,6 +373,6 @@ class PdfViewerPreferences
      */
     private function getOutputEnum(string $key, PdfEnumDefaultInterface&\BackedEnum $enum): string
     {
-        return $enum->isDefault() ? '' : \sprintf('/%s %s', $key, $enum->value);
+        return $enum->isDefault() ? '' : PdfWriter::sprintf('/%s %s', $key, $enum);
     }
 }

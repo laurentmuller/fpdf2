@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace fpdf\Color;
 
 use fpdf\Interfaces\PdfColorInterface;
+use fpdf\PdfWriter;
 
 /**
  * Represents a grayed (level) color.
@@ -32,7 +33,7 @@ readonly class PdfGrayColor implements PdfColorInterface
     #[\Override]
     public function __toString(): string
     {
-        return \sprintf(
+        return PdfWriter::sprintf(
             '%s(%d)',
             (new \ReflectionClass(self::class))->getShortName(),
             $this->level
@@ -58,13 +59,13 @@ readonly class PdfGrayColor implements PdfColorInterface
     #[\Override]
     public function getOutput(): string
     {
-        return \sprintf('%s g', $this->getTag());
+        return PdfWriter::sprintf('%s g', $this->getTag());
     }
 
     #[\Override]
     public function getTag(): string
     {
-        return \sprintf('%.3F', $this->asFloat());
+        return PdfWriter::sprintf('%.3F', $this->asFloat());
     }
 
     /**

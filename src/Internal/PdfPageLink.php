@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace fpdf\Internal;
 
 use fpdf\PdfRectangle;
+use fpdf\PdfWriter;
 
 /**
  * Contains information about a page link.
@@ -37,7 +38,7 @@ final class PdfPageLink extends AbstractPdfNumber
      */
     public function formatRectangle(): string
     {
-        return \sprintf(
+        return PdfWriter::sprintf(
             '%.2F %.2F %.2F %.2F',
             $this->rect->x,
             $this->rect->y,

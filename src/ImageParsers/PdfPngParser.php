@@ -19,6 +19,7 @@ use fpdf\Interfaces\PdfImageParserInterface;
 use fpdf\Internal\PdfImage;
 use fpdf\PdfDocument;
 use fpdf\PdfException;
+use fpdf\PdfWriter;
 
 /**
  * Parser for PNG images.
@@ -120,7 +121,7 @@ class PdfPngParser implements PdfImageParserInterface
         $this->checkPalette($colorSpace, $palette, $file);
 
         // the decoded parameters
-        $decodeParms = \sprintf(
+        $decodeParms = PdfWriter::sprintf(
             '/Predictor 15 /Colors %d /BitsPerComponent %d /Columns %d',
             $colorSpace->getColors(),
             $bitsPerComponent,

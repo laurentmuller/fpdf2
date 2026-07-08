@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `PdfWriter`: Add `sprintf()` function.
 - `PdfRectangleStyle`: Add `lowercase()` function.
 - `PdfWriter`: Add internal `convertValue()` function.
 

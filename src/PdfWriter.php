@@ -134,7 +134,7 @@ class PdfWriter
      *
      * @throws PdfException if no page has been added, if the end page has been called, or if the document is closed
      */
-    public function out(int $page, string|int|\BackedEnum $output): self
+    public function out(int $page, \BackedEnum|float|string|int $output): self
     {
         switch ($this->state) {
             case PdfState::NO_PAGE:
@@ -144,7 +144,7 @@ class PdfWriter
             case PdfState::CLOSED:
                 throw PdfException::instance('Invalid call: Document closed.');
             case PdfState::PAGE_STARTED:
-                $this->pages[$page] .= $this->convertValue($output) . self::NEW_LINE;
+                $this->pages[$page] .= self::convertValue($output) . self::NEW_LINE;
                 break;
         }
 
@@ -156,23 +156,21 @@ class PdfWriter
      *
      * @param int                          $page      the page number where the output should be added
      * @param string                       $format    the format string
-     * @param string|int|float|\BackedEnum ...$values the values to be formatted
+     * @param \BackedEnum|float|string|int ...$values the values to be formatted
      *
      * @throws PdfException if no page has been added, if the end page has been called, or if the document is closed
      */
-    public function outf(int $page, string $format, string|int|float|\BackedEnum ...$values): self
+    public function outf(int $page, string $format, \BackedEnum|float|string|int ...$values): self
     {
-        $values = $this->convertValues(...$values);
-
-        return $this->out($page, \sprintf($format, ...$values));
+        return $this->out($page, self::sprintf($format, ...$values));
     }
 
     /**
      * Put the given value to this buffer.
      */
-    public function put(string|int|\BackedEnum $value): self
+    public function put(\BackedEnum|float|string|int $value): self
     {
-        $this->buffer .= $this->convertValue($value) . self::NEW_LINE;
+        $this->buffer .= self::convertValue($value) . self::NEW_LINE;
 
         return $this;
     }
@@ -191,13 +189,11 @@ class PdfWriter
      * Put a formatted string to this buffer.
      *
      * @param string                       $format    the format string
-     * @param string|int|float|\BackedEnum ...$values the values to be formatted
+     * @param \BackedEnum|float|string|int ...$values the values to be formatted
      */
-    public function putf(string $format, string|int|float|\BackedEnum ...$values): self
+    public function putf(string $format, \BackedEnum|float|string|int ...$values): self
     {
-        $values = $this->convertValues(...$values);
-
-        return $this->put(\sprintf($format, ...$values));
+        return $this->put(self::sprintf($format, ...$values));
     }
 
     /**
@@ -240,7 +236,7 @@ class PdfWriter
             $entries = '/Filter /FlateDecode ';
             $data = (string) \gzcompress($data);
         }
-        $entries .= \sprintf('/Length %d', \strlen($data));
+        $entries .= self::sprintf('/Length %d', \strlen($data));
         $this->putNewObj();
         $this->putf('<<%s>>', $entries);
         $this->putStream($data);
@@ -275,6 +271,21 @@ class PdfWriter
     }
 
     /**
+     * Gets a formatted string.
+     *
+     * @param string                       $format    the format string
+     * @param \BackedEnum|float|string|int ...$values the values to be formatted
+     *
+     * @return string the formatted string
+     */
+    public static function sprintf(string $format, \BackedEnum|float|string|int ...$values): string
+    {
+        $values = self::convertValues(...$values);
+
+        return \sprintf($format, ...$values);
+    }
+
+    /**
      * Replace the alias number page by the given number of pages.
      *
      * @param int    $page             the page to update
@@ -289,17 +300,17 @@ class PdfWriter
         return $this;
     }
 
-    private function convertValue(string|int|float|\BackedEnum $value): string|int|float
+    private static function convertValue(\BackedEnum|float|string|int $value): string|int|float
     {
         return $value instanceof \BackedEnum ? $value->value : $value;
     }
 
     /**
-     * @return array<string|int|float>
+     * @return array<float|int|string>
      */
-    private function convertValues(string|int|float|\BackedEnum ...$values): array
+    private static function convertValues(\BackedEnum|float|string|int ...$values): array
     {
-        return \array_map($this->convertValue(...), $values);
+        return \array_map(self::convertValue(...), $values);
     }
 
     /**

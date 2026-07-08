@@ -16,6 +16,7 @@ namespace fpdf\Enums;
 use Elao\Enum\Attribute\EnumCase;
 use fpdf\Interfaces\PdfEnumDefaultInterface;
 use fpdf\PdfDocument;
+use fpdf\PdfWriter;
 use fpdf\Traits\PdfEnumDefaultTrait;
 
 /**
@@ -46,7 +47,7 @@ enum PdfVersion: string implements PdfEnumDefaultInterface
      */
     public function getOutput(): string
     {
-        return \sprintf('%%PDF-%s', $this->value);
+        return PdfWriter::sprintf('%%PDF-%s', $this);
     }
 
     /**

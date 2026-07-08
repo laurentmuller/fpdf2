@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace fpdf\Internal;
 
+use fpdf\PdfWriter;
+
 /**
  * Abstract class for object number.
  *
@@ -28,7 +30,7 @@ abstract class AbstractPdfNumber
      */
     public function formatNumber(): string
     {
-        return \sprintf('%d 0 R', $this->number);
+        return PdfWriter::sprintf('%d 0 R', $this->number);
     }
 
     /**

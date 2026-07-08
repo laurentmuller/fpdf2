@@ -16,6 +16,7 @@ namespace fpdf\Traits;
 use fpdf\Enums\PdfRectangleStyle;
 use fpdf\PdfDocument;
 use fpdf\PdfPoint;
+use fpdf\PdfWriter;
 
 /**
  * Trait to draw polygon.
@@ -38,7 +39,7 @@ trait PdfPolygonTrait
         $type = 'm';
         $output = '';
         foreach ($points as $point) {
-            $output .= \sprintf('%.2F %.2F %s ', $this->scale($point->x), $this->scaleY($point->y), $type);
+            $output .= PdfWriter::sprintf('%.2F %.2F %s ', $this->scale($point->x), $this->scaleY($point->y), $type);
             $type = 'l';
         }
         $output .= $style->lowercase();

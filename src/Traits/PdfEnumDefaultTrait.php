@@ -15,6 +15,7 @@ namespace fpdf\Traits;
 
 use Elao\Enum\ExtrasTrait;
 use fpdf\Interfaces\PdfEnumDefaultInterface;
+use fpdf\PdfWriter;
 
 /**
  * Trait for enumeration implementing <code>PdfEnumDefaultInterface</code> interface.
@@ -37,7 +38,7 @@ trait PdfEnumDefaultTrait
                 return $value;
             }
         }
-        throw new \LogicException(\sprintf('No default value found for "%s" enumeration.', self::class));
+        throw new \LogicException(PdfWriter::sprintf('No default value found for "%s" enumeration.', self::class));
     }
 
     public function isDefault(): bool

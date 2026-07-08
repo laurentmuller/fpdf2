@@ -15,6 +15,7 @@ namespace fpdf\Internal;
 
 use fpdf\Enums\PdfFontType;
 use fpdf\PdfException;
+use fpdf\PdfWriter;
 
 /**
  * Class to parse JSON font files.
@@ -95,7 +96,7 @@ final class PdfFontParser
             /** @var DataFontType */
             return \json_decode(json: $content, associative: true, flags: \JSON_THROW_ON_ERROR);
         } catch (\JsonException $e) {
-            throw PdfException::instance(\sprintf('Unable to parse the font file: %s.', $path), $e);
+            throw PdfException::instance(PdfWriter::sprintf('Unable to parse the font file: %s.', $path), $e);
         }
     }
 

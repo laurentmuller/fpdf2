@@ -17,6 +17,7 @@ use fpdf\Enums\PdfVersion;
 use fpdf\Internal\PdfAttachment;
 use fpdf\PdfDocument;
 use fpdf\PdfException;
+use fpdf\PdfWriter;
 
 /**
  * Trait to add file attachment support.
@@ -127,7 +128,7 @@ trait PdfAttachmentTrait
         $this->writer->putNewObj();
         $this->attachmentNumber = $this->writer->getObjectNumber();
         $names = \array_map(
-            fn (int $index, PdfAttachment $attachment): string => $this->encoder->textString(\sprintf('%03d %s', $index, $attachment->formatNumber())),
+            fn (int $index, PdfAttachment $attachment): string => $this->encoder->textString(PdfWriter::sprintf('%03d %s', $index, $attachment->formatNumber())),
             \array_keys($this->attachments),
             \array_values($this->attachments)
         );

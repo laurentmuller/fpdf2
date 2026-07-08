@@ -529,7 +529,7 @@ class PdfDocument
             } else {
                 $style = PdfRectangleStyle::BORDER;
             }
-            $output .= \sprintf(
+            $output .= PdfWriter::sprintf(
                 '%.2F %.2F %.2F %.2F re %s ',
                 $this->scale($this->x),
                 $this->scaleY($this->y),
@@ -551,9 +551,9 @@ class PdfDocument
                 default => $this->cellMargin,
             };
             if ($this->colorFlag) {
-                $output .= \sprintf('q %s ', $this->textColor);
+                $output .= PdfWriter::sprintf('q %s ', $this->textColor);
             }
-            $output .= \sprintf(
+            $output .= PdfWriter::sprintf(
                 'BT %.2F %.2F Td (%s) Tj ET',
                 $this->scale($this->x + $dx),
                 $this->scaleY($this->y + 0.5 * $height + 0.3 * $this->fontSize),
@@ -1968,7 +1968,7 @@ class PdfDocument
             return $this;
         }
         $this->checkCurrentFont();
-        $output = \sprintf(
+        $output = PdfWriter::sprintf(
             'BT %.2F %.2F Td (%s) Tj ET',
             $this->scale($x),
             $this->scaleY($y),
@@ -1978,7 +1978,7 @@ class PdfDocument
             $output .= $this->doUnderline($x, $y, $text);
         }
         if ($this->colorFlag) {
-            $output = \sprintf('q %s %s Q', $this->textColor, $output);
+            $output = PdfWriter::sprintf('q %s %s Q', $this->textColor, $output);
         }
         $this->writer->out($this->page, $output);
 
@@ -2190,7 +2190,7 @@ class PdfDocument
         $textWidth ??= $this->getStringWidth($str);
         $width = $textWidth + $this->wordSpacing * (float) \substr_count($str, ' ');
 
-        return \sprintf(
+        return PdfWriter::sprintf(
             ' %.2F %.2F %.2F %.2F re f',
             $this->scale($x),
             $this->scaleY($y - $up / 1000.0 * $this->fontSize),
@@ -2268,16 +2268,16 @@ class PdfDocument
         $right = $this->scale($x + $width);
         $bottom = $this->scaleY($y + $height);
         if ($border->left) {
-            $output .= \sprintf('%.2F %.2F m %.2F %.2F l S ', $left, $top, $left, $bottom);
+            $output .= PdfWriter::sprintf('%.2F %.2F m %.2F %.2F l S ', $left, $top, $left, $bottom);
         }
         if ($border->top) {
-            $output .= \sprintf('%.2F %.2F m %.2F %.2F l S ', $left, $top, $right, $top);
+            $output .= PdfWriter::sprintf('%.2F %.2F m %.2F %.2F l S ', $left, $top, $right, $top);
         }
         if ($border->right) {
-            $output .= \sprintf('%.2F %.2F m %.2F %.2F l S ', $right, $top, $right, $bottom);
+            $output .= PdfWriter::sprintf('%.2F %.2F m %.2F %.2F l S ', $right, $top, $right, $bottom);
         }
         if ($border->bottom) {
-            $output .= \sprintf('%.2F %.2F m %.2F %.2F l S ', $left, $bottom, $right, $bottom);
+            $output .= PdfWriter::sprintf('%.2F %.2F m %.2F %.2F l S ', $left, $bottom, $right, $bottom);
         }
 
         return $output;
@@ -2336,7 +2336,7 @@ class PdfDocument
         \header('Pragma: public');
         \header('Content-Type: application/pdf');
         \header('Cache-Control: private, max-age=0, must-revalidate');
-        \header(\sprintf('Content-Disposition: %s; %s', $disposition, $encoded));
+        \header(PdfWriter::sprintf('Content-Disposition: %s; %s', $disposition, $encoded));
     }
 
     /**
@@ -2498,17 +2498,17 @@ class PdfDocument
         foreach ($this->pageAnnotations[$page] as $pageAnnotation) {
             $this->writer->putNewObj();
             $output = '<<';
-            $output .= \sprintf(
+            $output .= PdfWriter::sprintf(
                 '/Type /Annot /Subtype /Text /Rect [%s] /Name %s /Contents %s',
                 $pageAnnotation->formatRectangle(),
                 $pageAnnotation->getNameValue(),
                 $this->encoder->textString($pageAnnotation->text)
             );
             if ($pageAnnotation->isColor()) {
-                $output .= \sprintf('/C [%s]', $pageAnnotation->getColorTag());
+                $output .= PdfWriter::sprintf('/C [%s]', $pageAnnotation->getColorTag());
             }
             if ($pageAnnotation->isTitle()) {
-                $output .= \sprintf('/T %s', $this->encoder->textString($pageAnnotation->title));
+                $output .= PdfWriter::sprintf('/T %s', $this->encoder->textString($pageAnnotation->title));
             }
             $output .= '>>';
             $this->writer->put($output);
@@ -2645,17 +2645,17 @@ class PdfDocument
                     $this->writer->putEndObj();
                     // descriptor
                     $this->writer->putNewObj();
-                    $output = \sprintf('<</Type /FontDescriptor /FontName /%s', $name);
+                    $output = PdfWriter::sprintf('<</Type /FontDescriptor /FontName /%s', $name);
                     foreach ($font->desc as $descKey => $descValue) {
                         if (\is_array($descValue)) { // FontBBox
-                            $descValue = \sprintf('[%s]', \implode(' ', $descValue));
+                            $descValue = PdfWriter::sprintf('[%s]', \implode(' ', $descValue));
                         }
-                        $output .= \sprintf(' /%s %s', $descKey, $descValue);
+                        $output .= PdfWriter::sprintf(' /%s %s', $descKey, $descValue);
                     }
                     if ($font->isFile()) {
                         $fontFile = $font->isType1() ? '' : '2';
                         $number = $this->fontFiles[$font->file]->formatNumber();
-                        $output .= \sprintf(' /FontFile%s %s', $fontFile, $number);
+                        $output .= PdfWriter::sprintf(' /FontFile%s %s', $fontFile, $number);
                     }
                     $output .= '>>';
                     $this->writer->put($output);
@@ -2704,7 +2704,7 @@ class PdfDocument
         }
         if ($image->isTransparencies()) {
             $transparencies = \array_map(
-                static fn (int $value): string => \sprintf('%1$d %1$d', $value),
+                static fn (int $value): string => PdfWriter::sprintf('%1$d %1$d', $value),
                 $image->transparencies
             );
             $this->writer->putf('/Mask [%s]', \implode(' ', $transparencies));
@@ -2718,7 +2718,7 @@ class PdfDocument
 
         // soft mask
         if ($image->isSoftMask()) {
-            $decodeParms = \sprintf('/Predictor 15 /Colors 1 /BitsPerComponent 8 /Columns %d', $image->width);
+            $decodeParms = PdfWriter::sprintf('/Predictor 15 /Colors 1 /BitsPerComponent 8 /Columns %d', $image->width);
             $softImage = new PdfImage(
                 width: $image->width,
                 height: $image->height,
@@ -2756,9 +2756,9 @@ class PdfDocument
             $this->writer->putNewObj();
             $output = '<<';
             $rect = $pageLink->formatRectangle();
-            $output .= \sprintf('/Type /Annot /Subtype /Link /Rect [%s] /Border [0 0 0] ', $rect);
+            $output .= PdfWriter::sprintf('/Type /Annot /Subtype /Link /Rect [%s] /Border [0 0 0] ', $rect);
             if (\is_string($pageLink->link)) {
-                $output .= \sprintf('/A <</S /URI /URI %s>>', $this->encoder->textString($pageLink->link));
+                $output .= PdfWriter::sprintf('/A <</S /URI /URI %s>>', $this->encoder->textString($pageLink->link));
             } else {
                 $link = $this->links[$pageLink->link];
                 $pageInfo = $this->pageInfos[$link->page] ?? new PdfPageInfo();
@@ -2769,7 +2769,7 @@ class PdfDocument
                         ? $this->scale($this->defaultPageSize->height)
                         : $this->scale($this->defaultPageSize->width);
                 }
-                $output .= \sprintf(
+                $output .= PdfWriter::sprintf(
                     '/Dest [%d 0 R /XYZ 0 %.2F null]',
                     $pageInfo->number,
                     $height - $this->scale($link->y)
@@ -3090,9 +3090,9 @@ class PdfDocument
         $ranges = [];
         foreach ($uv as $c => $v) {
             if (\is_array($v)) {
-                $ranges[] = \sprintf('<%02X> <%02X> <%04X>', $c, $c + $v[1] - 1, $v[0]);
+                $ranges[] = PdfWriter::sprintf('<%02X> <%02X> <%04X>', $c, $c + $v[1] - 1, $v[0]);
             } else {
-                $chars[] = \sprintf('<%02X> <%04X>', $c, $v);
+                $chars[] = PdfWriter::sprintf('<%02X> <%04X>', $c, $v);
             }
         }
         $output = [
@@ -3111,12 +3111,12 @@ class PdfDocument
             'endcodespacerange',
         ];
         if ([] !== $ranges) {
-            $output[] = \sprintf('%d beginbfrange', \count($ranges));
-            $output[] = \sprintf('%sendbfrange', $this->implode($ranges));
+            $output[] = PdfWriter::sprintf('%d beginbfrange', \count($ranges));
+            $output[] = PdfWriter::sprintf('%sendbfrange', $this->implode($ranges));
         }
         if ([] !== $chars) {
-            $output[] = \sprintf('%d beginbfchar', \count($chars));
-            $output[] = \sprintf('%sendbfchar', $this->implode($chars));
+            $output[] = PdfWriter::sprintf('%d beginbfchar', \count($chars));
+            $output[] = PdfWriter::sprintf('%sendbfchar', $this->implode($chars));
         }
         $output[] = 'endcmap';
         $output[] = 'CMapName currentdict /CMap defineresource pop';
