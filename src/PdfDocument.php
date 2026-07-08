@@ -535,7 +535,7 @@ class PdfDocument
                 $this->scaleY($this->y),
                 $this->scale($width),
                 $this->scale(-$height),
-                $style->value
+                $style
             );
         }
         if ('' === $output && $border->isAny()) {
@@ -2501,7 +2501,7 @@ class PdfDocument
             $output .= PdfWriter::sprintf(
                 '/Type /Annot /Subtype /Text /Rect [%s] /Name %s /Contents %s',
                 $pageAnnotation->formatRectangle(),
-                $pageAnnotation->getNameValue(),
+                $pageAnnotation->name,
                 $this->encoder->textString($pageAnnotation->text)
             );
             if ($pageAnnotation->isColor()) {

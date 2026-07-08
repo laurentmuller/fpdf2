@@ -60,11 +60,6 @@ final class PdfPageAnnotation extends AbstractPdfNumber
         return $this->color?->getTag() ?? '';
     }
 
-    public function getNameValue(): string
-    {
-        return $this->name->value;
-    }
-
     /**
      * @phpstan-assert-if-true PdfColorInterface $this->color
      */

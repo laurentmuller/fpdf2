@@ -38,7 +38,7 @@ trait PdfEnumDefaultTrait
                 return $value;
             }
         }
-        throw new \LogicException(PdfWriter::sprintf('No default value found for "%s" enumeration.', self::class));
+        throw new \LogicException(PdfWriter::sprintf('No default value found for "%s" enumeration.', static::class));
     }
 
     public function isDefault(): bool
