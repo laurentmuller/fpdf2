@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 4.3.10 - 2026-07-08
 
 - `PdfWriter`: Add `sprintf()` function.
 - `PdfRectangleStyle`: Add `lowercase()` function.
