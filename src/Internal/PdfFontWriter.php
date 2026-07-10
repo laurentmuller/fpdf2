@@ -63,10 +63,13 @@ readonly class PdfFontWriter
         if ($font->subsetted) {
             $name = 'AAAAAA+' . $name;
         }
-        if (PdfFontType::CORE === $font->type) {
-            $this->putFontCore($name, $font, $mapKey, $charMaps);
-        } else {
-            $this->putFontOther($name, $font, $mapKey, $fontFiles, $charMaps, $encodings);
+        switch ($font->type) {
+            case PdfFontType::CORE:
+                $this->putFontCore($name, $font, $mapKey, $charMaps);
+                break;
+            default:
+                $this->putFontOther($name, $font, $mapKey, $charMaps, $fontFiles, $encodings);
+                break;
         }
     }
 
@@ -116,14 +119,6 @@ readonly class PdfFontWriter
     }
 
     /**
-     * @param string[] $values $values
-     */
-    private function implode(array $values): string
-    {
-        return \implode(PdfWriter::NEW_LINE, $values) . PdfWriter::NEW_LINE;
-    }
-
-    /**
      * Write a font object of type Core.
      *
      * @param array<string, int> $charMaps
@@ -151,16 +146,16 @@ readonly class PdfFontWriter
     /**
      * Write a font object of TrueType or Type1.
      *
-     * @param array<string, PdfFontFile> $fontFiles
      * @param array<string, int>         $charMaps
+     * @param array<string, PdfFontFile> $fontFiles
      * @param array<string, int>         $encodings
      */
     private function putFontOther(
         string $name,
         PdfFont $font,
         string $mapKey,
-        array $fontFiles,
         array $charMaps,
+        array $fontFiles,
         array $encodings
     ): void {
         $this->writer->putNewObj();
@@ -236,16 +231,16 @@ readonly class PdfFontWriter
         ];
         if ([] !== $ranges) {
             $output[] = PdfWriter::sprintf('%d beginbfrange', \count($ranges));
-            $output[] = PdfWriter::sprintf('%sendbfrange', $this->implode($ranges));
+            $output[] = PdfWriter::sprintf('%sendbfrange', $this->writer->implode($ranges));
         }
         if ([] !== $chars) {
             $output[] = PdfWriter::sprintf('%d beginbfchar', \count($chars));
-            $output[] = PdfWriter::sprintf('%sendbfchar', $this->implode($chars));
+            $output[] = PdfWriter::sprintf('%sendbfchar', $this->writer->implode($chars));
         }
         $output[] = 'endcmap';
         $output[] = 'CMapName currentdict /CMap defineresource pop';
         $output[] = 'end';
 
-        return $this->implode($output) . 'end';
+        return $this->writer->implode($output) . 'end';
     }
 }

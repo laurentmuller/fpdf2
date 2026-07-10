@@ -2340,16 +2340,6 @@ class PdfDocument
     }
 
     /**
-     * Join the given strings with a new line as the separator and add an extra new line at the end.
-     *
-     * @param string[] $values
-     */
-    protected function implode(array $values): string
-    {
-        return \implode(PdfWriter::NEW_LINE, $values) . PdfWriter::NEW_LINE;
-    }
-
-    /**
      * Checks if and where headers have been sent.
      *
      * @param-out string $filename the source file name where output started
