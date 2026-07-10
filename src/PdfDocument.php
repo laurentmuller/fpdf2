@@ -14,11 +14,9 @@ declare(strict_types=1);
 namespace fpdf;
 
 use fpdf\Enums\PdfAnnotationName;
-use fpdf\Enums\PdfColorSpace;
 use fpdf\Enums\PdfDestination;
 use fpdf\Enums\PdfFontName;
 use fpdf\Enums\PdfFontStyle;
-use fpdf\Enums\PdfFontType;
 use fpdf\Enums\PdfLayout;
 use fpdf\Enums\PdfLineCap;
 use fpdf\Enums\PdfLineJoin;
@@ -42,7 +40,9 @@ use fpdf\Interfaces\PdfImageParserInterface;
 use fpdf\Internal\PdfFont;
 use fpdf\Internal\PdfFontFile;
 use fpdf\Internal\PdfFontParser;
+use fpdf\Internal\PdfFontWriter;
 use fpdf\Internal\PdfImage;
+use fpdf\Internal\PdfImageWriter;
 use fpdf\Internal\PdfLink;
 use fpdf\Internal\PdfPageAnnotation;
 use fpdf\Internal\PdfPageInfo;
@@ -2553,115 +2553,12 @@ class PdfDocument
      */
     protected function putFonts(): void
     {
-        // embedding font file
-        foreach ($this->fontFiles as $file => $info) {
-            $this->writer->putNewObj();
-            $this->fontFiles[$file]->number = $this->writer->getObjectNumber();
-            $content = (string) \file_get_contents($file);
-            $compressed = \str_ends_with($file, '.z');
-            $length1 = $info->length1;
-            $length2 = $info->length2;
-            if (!$compressed && $info->isLength2()) {
-                $content = \substr($content, 6, $length1) . \substr($content, 6 + $length1 + 6, $length2);
-            }
-            $this->writer->putf('<</Length %d', \strlen($content));
-            if ($compressed) {
-                $this->writer->put('/Filter /FlateDecode');
-            }
-            $this->writer->putf('/Length1 %d', $length1);
-            if ($info->isLength2()) {
-                $this->writer->putf('/Length2 %d /Length3 0', $length2 ?? 0);
-            }
-            $this->writer->put('>>');
-            $this->writer->putStream($content);
-            $this->writer->putEndObj();
+        $writer = new PdfFontWriter($this->writer);
+        foreach ($this->fontFiles as $file => $fontFile) {
+            $writer->putFontFile($file, $fontFile);
         }
-
-        // fonts
-        foreach ($this->fonts as $key => $font) {
-            // encoding
-            if ($font->isDiff()) {
-                $encoding = $font->encoding ?? '';
-                if (!isset($this->encodings[$encoding])) {
-                    $this->writer->putNewObj();
-                    $this->writer->putf('<</Type /Encoding /BaseEncoding /WinAnsiEncoding /Differences [%s]>>', $font->diff);
-                    $this->writer->putEndObj();
-                    $this->encodings[$encoding] = $this->writer->getObjectNumber();
-                }
-            }
-            // ToUnicode CMap
-            $mapKey = '';
-            $name = $font->name;
-            if ($font->isUv()) {
-                $mapKey = $font->encoding ?? $name;
-                if (!isset($this->charMaps[$mapKey])) {
-                    $map = $this->toUnicodeCmap($font->uv);
-                    $this->writer->putStreamObject($map);
-                    $this->charMaps[$mapKey] = $this->writer->getObjectNumber();
-                }
-            }
-            // font object
-            $this->fonts[$key]->number = $this->writer->getObjectNumber() + 1;
-            if ($font->subsetted) {
-                $name = 'AAAAAA+' . $name;
-            }
-            switch ($font->type) {
-                case PdfFontType::CORE:
-                    $this->writer->putNewObj();
-                    $this->writer->put('<</Type /Font');
-                    $this->writer->putf('/BaseFont /%s', $name);
-                    $this->writer->put('/Subtype /Type1');
-                    if (!(PdfFontName::tryFrom($name)?->useRegular() ?? false)) {
-                        $this->writer->put('/Encoding /WinAnsiEncoding');
-                    }
-                    if ($font->isUv()) {
-                        $this->writer->putf('/ToUnicode %d 0 R', $this->charMaps[$mapKey]);
-                    }
-                    $this->writer->put('>>');
-                    $this->writer->putEndObj();
-                    break;
-                case PdfFontType::TYPE_1:
-                case PdfFontType::TRUE_TYPE:
-                    $this->writer->putNewObj();
-                    $this->writer->put('<</Type /Font');
-                    $this->writer->putf('/BaseFont /%s', $name);
-                    $this->writer->putf('/Subtype /%s', $font->type);
-                    $this->writer->put('/FirstChar 32 /LastChar 255');
-                    $this->writer->putf('/Widths %d 0 R', $this->writer->getObjectNumber() + 1);
-                    $this->writer->putf('/FontDescriptor %d 0 R', $this->writer->getObjectNumber() + 2);
-                    if ($font->isEncoding() && $font->isDiff()) {
-                        $this->writer->putf('/Encoding %d 0 R', $this->encodings[$font->encoding]);
-                    } else {
-                        $this->writer->put('/Encoding /WinAnsiEncoding');
-                    }
-                    if ($font->isUv()) {
-                        $this->writer->putf('/ToUnicode %d 0 R', $this->charMaps[$mapKey]);
-                    }
-                    $this->writer->put('>>');
-                    $this->writer->putEndObj();
-                    // widths
-                    $this->writer->putNewObj();
-                    $this->writer->putf('[%s]', \implode(' ', \array_slice($font->cw, 32)));
-                    $this->writer->putEndObj();
-                    // descriptor
-                    $this->writer->putNewObj();
-                    $output = PdfWriter::sprintf('<</Type /FontDescriptor /FontName /%s', $name);
-                    foreach ($font->desc as $descKey => $descValue) {
-                        if (\is_array($descValue)) { // FontBBox
-                            $descValue = PdfWriter::sprintf('[%s]', \implode(' ', $descValue));
-                        }
-                        $output .= PdfWriter::sprintf(' /%s %s', $descKey, $descValue);
-                    }
-                    if ($font->isFile()) {
-                        $fontFile = $font->isType1() ? '' : '2';
-                        $number = $this->fontFiles[$font->file]->formatNumber();
-                        $output .= PdfWriter::sprintf(' /FontFile%s %s', $fontFile, $number);
-                    }
-                    $output .= '>>';
-                    $this->writer->put($output);
-                    $this->writer->putEndObj();
-                    break;
-            }
+        foreach ($this->fonts as $font) {
+            $writer->putFont($font, $this->fontFiles, $this->encodings, $this->charMaps);
         }
     }
 
@@ -2675,75 +2572,13 @@ class PdfDocument
     }
 
     /**
-     * Put an image to this writer.
-     */
-    protected function putImage(PdfImage $image): void
-    {
-        $this->writer->putNewObj();
-        $image->number = $this->writer->getObjectNumber();
-        $this->writer->put('<</Type /XObject');
-        $this->writer->put('/Subtype /Image');
-        $this->writer->putf('/Width %d', $image->width);
-        $this->writer->putf('/Height %d', $image->height);
-        if ($image->isIndexed()) {
-            $this->writer->putf(
-                '/ColorSpace [/Indexed /DeviceRGB %d %d 0 R]',
-                \intdiv(\strlen($image->palette), 3) - 1,
-                $this->writer->getObjectNumber() + 1
-            );
-        } else {
-            $this->writer->putf('/ColorSpace /%s', $image->colorSpace);
-            if ($image->isDeviceCmyk()) {
-                $this->writer->put('/Decode [1 0 1 0 1 0 1 0]');
-            }
-        }
-        $this->writer->putf('/BitsPerComponent %d', $image->bitsPerComponent);
-        $this->writer->putf('/Filter /%s', $image->filter);
-        if ($image->isDecodeParms()) {
-            $this->writer->putf('/DecodeParms <<%s>>', $image->decodeParms);
-        }
-        if ($image->isTransparencies()) {
-            $transparencies = \array_map(
-                static fn (int $value): string => PdfWriter::sprintf('%1$d %1$d', $value),
-                $image->transparencies
-            );
-            $this->writer->putf('/Mask [%s]', \implode(' ', $transparencies));
-        }
-        if ($image->isSoftMask()) {
-            $this->writer->putf('/SMask %d 0 R', $this->writer->getObjectNumber() + 1);
-        }
-        $this->writer->putf('/Length %d>>', \strlen($image->data));
-        $this->writer->putStream($image->data);
-        $this->writer->putEndObj();
-
-        // soft mask
-        if ($image->isSoftMask()) {
-            $decodeParms = PdfWriter::sprintf('/Predictor 15 /Colors 1 /BitsPerComponent 8 /Columns %d', $image->width);
-            $softImage = new PdfImage(
-                width: $image->width,
-                height: $image->height,
-                colorSpace: PdfColorSpace::DEVICE_GRAY,
-                bitsPerComponent: 8,
-                data: $image->softMask,
-                filter: $image->filter,
-                decodeParms: $decodeParms
-            );
-            $this->putImage($softImage);
-        }
-        // palette
-        if ($image->isIndexed()) {
-            $this->writer->putStreamObject($image->palette);
-        }
-    }
-
-    /**
      * Put images to this writer.
      */
     protected function putImages(): void
     {
+        $writer = new PdfImageWriter($this->writer);
         foreach ($this->images as $image) {
-            $this->putImage($image);
-            $image->clear();
+            $writer->putImage($image);
         }
     }
 
@@ -2887,19 +2722,12 @@ class PdfDocument
     protected function putResourceDictionary(): void
     {
         // fonts
-        $this->writer->put('/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]');
-        $this->writer->put('/Font <<');
-        foreach ($this->fonts as $font) {
-            $this->writer->putf('/F%d %s', $font->index, $font->formatNumber());
-        }
-        $this->writer->put('>>');
+        $writer = new PdfFontWriter($this->writer);
+        $writer->putResourceFonts($this->fonts);
 
         // images
-        $this->writer->put('/XObject <<');
-        foreach ($this->images as $image) {
-            $this->writer->putf('/I%d %s', $image->index, $image->formatNumber());
-        }
-        $this->writer->put('>>');
+        $writer = new PdfImageWriter($this->writer);
+        $writer->putResourceImages($this->images);
     }
 
     /**
@@ -3077,52 +2905,6 @@ class PdfDocument
         $lines[] = [\substr($text, $lastIndex), false];
 
         return $lines;
-    }
-
-    /**
-     * Convert the V type array to the Unicode character map.
-     *
-     * @phpstan-param array<int, int|int[]> $uv
-     */
-    protected function toUnicodeCmap(array $uv): string
-    {
-        $chars = [];
-        $ranges = [];
-        foreach ($uv as $c => $v) {
-            if (\is_array($v)) {
-                $ranges[] = PdfWriter::sprintf('<%02X> <%02X> <%04X>', $c, $c + $v[1] - 1, $v[0]);
-            } else {
-                $chars[] = PdfWriter::sprintf('<%02X> <%04X>', $c, $v);
-            }
-        }
-        $output = [
-            '/CIDInit /ProcSet findresource begin',
-            '12 dict begin',
-            'begincmap',
-            '/CIDSystemInfo',
-            '<</Registry (Adobe)',
-            '/Ordering (UCS)',
-            '/Supplement 0',
-            '>> def',
-            '/CMapName /Adobe-Identity-UCS def',
-            '/CMapType 2 def',
-            '1 begincodespacerange',
-            '<00> <FF>',
-            'endcodespacerange',
-        ];
-        if ([] !== $ranges) {
-            $output[] = PdfWriter::sprintf('%d beginbfrange', \count($ranges));
-            $output[] = PdfWriter::sprintf('%sendbfrange', $this->implode($ranges));
-        }
-        if ([] !== $chars) {
-            $output[] = PdfWriter::sprintf('%d beginbfchar', \count($chars));
-            $output[] = PdfWriter::sprintf('%sendbfchar', $this->implode($chars));
-        }
-        $output[] = 'endcmap';
-        $output[] = 'CMapName currentdict /CMap defineresource pop';
-        $output[] = 'end';
-
-        return $this->implode($output) . 'end';
     }
 
     /**

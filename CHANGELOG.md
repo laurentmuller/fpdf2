@@ -1,5 +1,10 @@
 # Change log
 
+## Unreleased
+
+- Delegate writing images to the `PdfImageWriter` class.
+- Delegate writing fonts and font files to the `PdfFontWriter` class.
+
 ## 4.3.10 - 2026-07-08
 
 - `PdfWriter`: Add `sprintf()` function.
