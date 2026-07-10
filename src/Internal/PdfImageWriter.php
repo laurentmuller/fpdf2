@@ -68,7 +68,9 @@ readonly class PdfImageWriter
         $this->writer->putEndObj();
 
         // soft mask
-        $this->putSofMaskImage($image);
+        if ($image->isSoftMask()) {
+            $this->putSofMaskImage($image);
+        }
 
         // palette
         if ($image->isIndexed()) {
@@ -93,9 +95,6 @@ readonly class PdfImageWriter
 
     private function putSofMaskImage(PdfImage $image): void
     {
-        if (!$image->isSoftMask()) {
-            return;
-        }
         $decodeParms = PdfWriter::sprintf('/Predictor 15 /Colors 1 /BitsPerComponent 8 /Columns %d', $image->width);
         $softImage = new PdfImage(
             width: $image->width,
