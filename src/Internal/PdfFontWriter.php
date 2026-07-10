@@ -119,6 +119,16 @@ readonly class PdfFontWriter
     }
 
     /**
+     * Join the given strings with a new line as the separator and add an extra new line at the end.
+     *
+     * @param string[] $values
+     */
+    private function implode(array $values): string
+    {
+        return \implode(PdfWriter::NEW_LINE, $values) . PdfWriter::NEW_LINE;
+    }
+
+    /**
      * Write a font object of type Core.
      *
      * @param array<string, int> $charMaps
@@ -231,16 +241,16 @@ readonly class PdfFontWriter
         ];
         if ([] !== $ranges) {
             $output[] = PdfWriter::sprintf('%d beginbfrange', \count($ranges));
-            $output[] = PdfWriter::sprintf('%sendbfrange', $this->writer->implode($ranges));
+            $output[] = PdfWriter::sprintf('%sendbfrange', $this->implode($ranges));
         }
         if ([] !== $chars) {
             $output[] = PdfWriter::sprintf('%d beginbfchar', \count($chars));
-            $output[] = PdfWriter::sprintf('%sendbfchar', $this->writer->implode($chars));
+            $output[] = PdfWriter::sprintf('%sendbfchar', $this->implode($chars));
         }
         $output[] = 'endcmap';
         $output[] = 'CMapName currentdict /CMap defineresource pop';
         $output[] = 'end';
 
-        return $this->writer->implode($output) . 'end';
+        return $this->implode($output) . 'end';
     }
 }

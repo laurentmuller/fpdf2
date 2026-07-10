@@ -120,16 +120,6 @@ class PdfWriter
     }
 
     /**
-     * Join the given strings with a new line as the separator and add an extra new line at the end.
-     *
-     * @param string[] $values
-     */
-    public function implode(array $values): string
-    {
-        return \implode(self::NEW_LINE, $values) . self::NEW_LINE;
-    }
-
-    /**
      * Gets a value indicating if this current state is {@link PdfState::CLOSED}.
      *
      * @return bool true if closed

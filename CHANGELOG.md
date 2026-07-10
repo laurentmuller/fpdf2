@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Move function `implode()` from `PdfWriter` to `PdfFontWriter`.
 - `PdfWriter`: Add `implode()` function.
 - Delegate writing images to the `PdfImageWriter` class.
 - Delegate writing fonts and font files to the `PdfFontWriter` class.
