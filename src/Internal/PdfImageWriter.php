@@ -101,7 +101,7 @@ readonly class PdfImageWriter
             height: $image->height,
             colorSpace: PdfColorSpace::DEVICE_GRAY,
             bitsPerComponent: 8,
-            data: $image->softMask,
+            data: (string) $image->softMask,
             filter: $image->filter,
             decodeParms: $decodeParms
         );
