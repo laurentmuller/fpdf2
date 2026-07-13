@@ -67,7 +67,7 @@ trait PdfAttachmentTrait
         if ([] === $this->attachments) {
             return;
         }
-        $this->writer->putf('/Names <</EmbeddedFiles %d 0 R>>', $this->attachmentNumber);
+        $this->writer->putf('/Names <</EmbeddedFiles %s>>', PdfWriter::formatNumber($this->attachmentNumber));
         $array = \array_map(
             static fn (PdfAttachment $attachment): string => $attachment->formatNumber(),
             $this->attachments
@@ -106,7 +106,7 @@ trait PdfAttachmentTrait
             $this->writer->put('/Type /Filespec');
             $this->writer->putf('/F (%s)', $this->encoder->escape($name));
             $this->writer->putf('/UF %s', $this->encoder->textString($name));
-            $this->writer->putf('/EF <</F %d 0 R>>', $this->writer->getObjectNumber() + 1);
+            $this->writer->putf('/EF <</F %s>>', PdfWriter::formatNumber($this->writer->getObjectNumber() + 1));
             if ($attachment->isDescription()) {
                 $this->writer->putf('/Desc %s', $this->encoder->textString($attachment->description));
             }

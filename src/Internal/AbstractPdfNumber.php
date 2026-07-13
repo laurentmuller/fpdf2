@@ -30,7 +30,7 @@ abstract class AbstractPdfNumber
      */
     public function formatNumber(): string
     {
-        return PdfWriter::sprintf('%d 0 R', $this->number);
+        return PdfWriter::formatNumber($this->number);
     }
 
     /**

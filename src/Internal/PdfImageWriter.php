@@ -38,9 +38,9 @@ readonly class PdfImageWriter
         $this->writer->putf('/Height %d', $image->height);
         if ($image->isIndexed()) {
             $this->writer->putf(
-                '/ColorSpace [/Indexed /DeviceRGB %d %d 0 R]',
+                '/ColorSpace [/Indexed /DeviceRGB %d %s]',
                 \intdiv(\strlen($image->palette), 3) - 1,
-                $this->writer->getObjectNumber() + 1
+                PdfWriter::formatNumber($this->writer->getObjectNumber() + 1)
             );
         } else {
             $this->writer->putf('/ColorSpace /%s', $image->colorSpace);
@@ -61,7 +61,7 @@ readonly class PdfImageWriter
             $this->writer->putf('/Mask [%s]', \implode(' ', $transparencies));
         }
         if ($image->isSoftMask()) {
-            $this->writer->putf('/SMask %d 0 R', $this->writer->getObjectNumber() + 1);
+            $this->writer->putf('/SMask %s', PdfWriter::formatNumber($this->writer->getObjectNumber() + 1));
         }
         $this->writer->putf('/Length %d>>', \strlen($image->data));
         $this->writer->putStream($image->data);

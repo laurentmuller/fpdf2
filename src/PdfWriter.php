@@ -86,6 +86,14 @@ class PdfWriter
     }
 
     /**
+     * Format the given object number for output.
+     */
+    public static function formatNumber(int $number): string
+    {
+        return self::sprintf('%d 0 R', $number);
+    }
+
+    /**
      * Gets the buffer holding in-memory PDF.
      */
     public function getBuffer(): string

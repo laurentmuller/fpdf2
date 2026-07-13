@@ -147,7 +147,7 @@ readonly class PdfFontWriter
             $this->writer->put('/Encoding /WinAnsiEncoding');
         }
         if ($font->isUv()) {
-            $this->writer->putf('/ToUnicode %d 0 R', $charMaps[$mapKey]);
+            $this->writer->putf('/ToUnicode %s', PdfWriter::formatNumber($charMaps[$mapKey]));
         }
         $this->writer->put('>>');
         $this->writer->putEndObj();
@@ -173,15 +173,15 @@ readonly class PdfFontWriter
         $this->writer->putf('/BaseFont /%s', $name);
         $this->writer->putf('/Subtype /%s', $font->type);
         $this->writer->put('/FirstChar 32 /LastChar 255');
-        $this->writer->putf('/Widths %d 0 R', $this->writer->getObjectNumber() + 1);
-        $this->writer->putf('/FontDescriptor %d 0 R', $this->writer->getObjectNumber() + 2);
+        $this->writer->putf('/Widths %s', PdfWriter::formatNumber($this->writer->getObjectNumber() + 1));
+        $this->writer->putf('/FontDescriptor %s', PdfWriter::formatNumber($this->writer->getObjectNumber() + 2));
         if ($font->isEncoding() && $font->isDiff()) {
-            $this->writer->putf('/Encoding %d 0 R', $encodings[$font->encoding]);
+            $this->writer->putf('/Encoding %s', PdfWriter::formatNumber($encodings[$font->encoding]));
         } else {
             $this->writer->put('/Encoding /WinAnsiEncoding');
         }
         if ($font->isUv()) {
-            $this->writer->putf('/ToUnicode %d 0 R', $charMaps[$mapKey]);
+            $this->writer->putf('/ToUnicode %s', PdfWriter::formatNumber($charMaps[$mapKey]));
         }
         $this->writer->put('>>');
         $this->writer->putEndObj();

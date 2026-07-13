@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- Move `formatNumber()` function to the `PdfWriter` class.
+
 ## 4.3.11 - 2026-07-13
 
 - `PdfAttachmentTrait`: Update `putAttachments()` function.

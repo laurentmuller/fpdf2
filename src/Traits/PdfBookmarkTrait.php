@@ -22,6 +22,7 @@ use fpdf\Enums\PdfUnit;
 use fpdf\Internal\PdfBookmark;
 use fpdf\PdfDocument;
 use fpdf\PdfException;
+use fpdf\PdfWriter;
 
 /**
  * Trait to handle bookmarks and page index.
@@ -190,7 +191,7 @@ trait PdfBookmarkTrait
         }
         parent::putCatalog();
         if ([] !== $this->bookmarks) {
-            $this->writer->putf('/Outlines %d 0 R', $this->bookmarkRoot);
+            $this->writer->putf('/Outlines %s', PdfWriter::formatNumber($this->bookmarkRoot));
         }
     }
 
@@ -207,8 +208,8 @@ trait PdfBookmarkTrait
         }
         $this->writer->putNewObj();
         $this->bookmarkRoot = $this->writer->getObjectNumber();
-        $this->writer->putf('<</Type /Outlines /First %d 0 R', $number);
-        $this->writer->putf('/Last %d 0 R>>', $number + $lastReference);
+        $this->writer->putf('<</Type /Outlines /First %s', PdfWriter::formatNumber($number));
+        $this->writer->putf('/Last %s>>', PdfWriter::formatNumber($number + $lastReference));
         $this->writer->putEndObj();
     }
 
@@ -318,10 +319,10 @@ trait PdfBookmarkTrait
         $this->writer->putNewObj();
         $this->writer->putf('<</Title %s', $this->encoder->textString($bookmark->text));
         foreach ($bookmark->hierarchy as $key => $value) {
-            $this->writer->putf('/%s %d 0 R', $key, $number + $value);
+            $this->writer->putf('/%s %s', $key, PdfWriter::formatNumber($number + $value));
         }
         $pageNumber = $this->pageInfos[$bookmark->page]->number;
-        $this->writer->putf('/Dest [%d 0 R /XYZ 0 %.2F null]', $pageNumber, $bookmark->y);
+        $this->writer->putf('/Dest [%s /XYZ 0 %.2F null]', PdfWriter::formatNumber($pageNumber), $bookmark->y);
         $this->writer->put('/Count 0>>');
         $this->writer->putEndObj();
     }

@@ -2516,9 +2516,9 @@ class PdfDocument
         $this->writer->put('/Pages 1 0 R');
 
         if (\is_int($this->zoom)) {
-            $this->writer->putf('/OpenAction [%d 0 R /XYZ null null %.2F]', $number, (float) $this->zoom / 100.0);
+            $this->writer->putf('/OpenAction [%s /XYZ null null %.2F]', PdfWriter::formatNumber($number), (float) $this->zoom / 100.0);
         } elseif (!$this->zoom->isDefault()) {
-            $this->writer->putf('/OpenAction [%d 0 R /%s]', $number, $this->zoom);
+            $this->writer->putf('/OpenAction [%s /%s]', PdfWriter::formatNumber($number), $this->zoom);
         }
 
         if (!$this->layout->isDefault()) {
@@ -2595,8 +2595,8 @@ class PdfDocument
                         : $this->scale($this->defaultPageSize->width);
                 }
                 $output .= PdfWriter::sprintf(
-                    '/Dest [%d 0 R /XYZ 0 %.2F null]',
-                    $pageInfo->number,
+                    '/Dest [%s /XYZ 0 %.2F null]',
+                    PdfWriter::formatNumber($pageInfo->number),
                     $height - $this->scale($link->y)
                 );
             }
@@ -2643,7 +2643,7 @@ class PdfDocument
         if ($this->alphaChannel) {
             $this->writer->put('/Group <</Type /Group /S /Transparency /CS /DeviceRGB>>');
         }
-        $this->writer->putf('/Contents %d 0 R>>', $this->writer->getObjectNumber() + 1);
+        $this->writer->putf('/Contents %s>>', PdfWriter::formatNumber($this->writer->getObjectNumber() + 1));
         $this->writer->putEndObj();
         // page content
         if ('' !== $this->aliasNumberPages) {
@@ -2742,8 +2742,8 @@ class PdfDocument
     {
         $objectNumber = $this->writer->getObjectNumber();
         $this->writer->putf('/Size %d', $objectNumber + 1);
-        $this->writer->putf('/Root %d 0 R', $objectNumber);
-        $this->writer->putf('/Info %d 0 R', $objectNumber - 1);
+        $this->writer->putf('/Root %s', PdfWriter::formatNumber($objectNumber));
+        $this->writer->putf('/Info %s', PdfWriter::formatNumber($objectNumber - 1));
     }
 
     /**
