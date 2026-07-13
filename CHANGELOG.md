@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 4.3.11 - 2026-07-13
 
 - `PdfAttachmentTrait`: Update `putAttachments()` function.
 - Move function `implode()` from `PdfWriter` to `PdfFontWriter`.
