@@ -128,7 +128,7 @@ trait PdfAttachmentTrait
         $this->writer->putNewObj();
         $this->attachmentNumber = $this->writer->getObjectNumber();
         $names = \array_map(
-            fn (int $index, PdfAttachment $attachment): string => $this->encoder->textString(PdfWriter::sprintf('%03d %s', $index, $attachment->formatNumber())),
+            static fn (int $index, PdfAttachment $attachment): string => PdfWriter::sprintf('(%03d) %s', $index, $attachment->formatNumber()),
             \array_keys($this->attachments),
             \array_values($this->attachments)
         );

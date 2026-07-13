@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `PdfAttachmentTrait`: Update `putAttachments()` function.
 - Move function `implode()` from `PdfWriter` to `PdfFontWriter`.
 - `PdfWriter`: Add `implode()` function.
 - Delegate writing images to the `PdfImageWriter` class.
