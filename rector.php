@@ -52,7 +52,8 @@ $sets = [
     // PHP-Unit
     PHPUnitSetList::PHPUNIT_120,
     PHPUnitSetList::PHPUNIT_CODE_QUALITY,
-    PHPUnitSetList::ANNOTATIONS_TO_ATTRIBUTES,
+    PHPUnitSetList::PHPUNIT_MOCK_TO_STUB,
+    PHPUnitSetList::PHPUNIT_NARROW_ASSERTS,
 ];
 
 return RectorConfig::configure()

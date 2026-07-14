@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Update rector to version 2.5.7 and configuration.
+- Create unit test for `PdfWriter` class.
 - Move `formatNumber()` function to the `PdfWriter` class.
 
 ## 4.3.11 - 2026-07-13
