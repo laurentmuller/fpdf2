@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `PdfWriter`: Add validate state transitions.
+- `PdfState`: Add `isAllowed()` function.
 - Update rector to version 2.5.7 and configuration.
 - Create unit test for `PdfWriter` class.
 - Move `formatNumber()` function to the `PdfWriter` class.

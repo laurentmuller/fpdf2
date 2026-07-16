@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace fpdf;
 
 /**
- * Represent a margins.
+ * Represent margins.
  */
 class PdfMargins
 {
@@ -35,7 +35,7 @@ class PdfMargins
     /**
      * Returns if the given margin is equal to this instance.
      *
-     * To be equal, the left, the top, the right and the bottom values must be equal
+     * To be equal, the left, the top, the right, and the bottom values must be equal
      */
     public function equals(self $other): bool
     {

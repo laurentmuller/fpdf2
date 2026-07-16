@@ -58,24 +58,6 @@ final class PdfDocProtectedTest extends TestCase
         $doc->addPage();
     }
 
-    public function testOutEndPage(): void
-    {
-        self::expectException(PdfException::class);
-        self::expectExceptionMessage('Invalid call: End page.');
-        $doc = new class extends PdfDocument {
-            public function __construct(
-                PdfOrientation $orientation = PdfOrientation::PORTRAIT,
-                PdfUnit $unit = PdfUnit::MILLIMETER,
-                PdfSize|PdfPageSize $size = PdfPageSize::A4
-            ) {
-                parent::__construct($orientation, $unit, $size);
-                $this->endPage();
-                $this->writer->out($this->page, 'fake');
-            }
-        };
-        $doc->addPage();
-    }
-
     public function testOutNoPage(): void
     {
         self::expectException(PdfException::class);

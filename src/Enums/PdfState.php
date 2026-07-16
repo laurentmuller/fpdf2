@@ -26,4 +26,23 @@ enum PdfState
     case NO_PAGE;
     /** The start page has been called. */
     case PAGE_STARTED;
+
+    /**
+     * Returns a value indicating if the transition from this state to the new given state is allowed.
+     *
+     * @param PdfState $newState the new state to validate
+     *
+     * @return bool true if alllowed; false otherwise
+     */
+    public function isAllowed(self $newState): bool
+    {
+        $allowed = match ($this) {
+            PdfState::NO_PAGE => [PdfState::NO_PAGE, PdfState::PAGE_STARTED, PdfState::CLOSED],
+            PdfState::PAGE_STARTED => [PdfState::END_PAGE],
+            PdfState::END_PAGE => [PdfState::END_PAGE, PdfState::PAGE_STARTED, PdfState::CLOSED],
+            PdfState::CLOSED => [PdfState::CLOSED],
+        };
+
+        return \in_array($newState, $allowed, true);
+    }
 }

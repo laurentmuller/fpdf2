@@ -56,9 +56,14 @@ class PdfWriter
      * Initialize a new page. After this call, this current state is {@link PdfState::PAGE_STARTED}.
      *
      * @param int $page the page number to initialize
+     *
+     * @throws PdfException if this current state is not {@link PdfState::NO_PAGE} or {@link PdfState::END_PAGE}
      */
     public function beginPage(int $page): self
     {
+        if (!$this->state->isAllowed(PdfState::PAGE_STARTED)) {
+            throw PdfException::format('Invalid state: "%s".', $this->state->name);
+        }
         $this->pages[$page] = '';
         $this->state = PdfState::PAGE_STARTED;
 
@@ -67,9 +72,14 @@ class PdfWriter
 
     /**
      * Set this current state to {@link PdfState::CLOSED}.
+     *
+     * @throws PdfException if this current state is not {@link PdfState::NO_PAGE} or {@link PdfState::END_PAGE}
      */
     public function close(): self
     {
+        if (!$this->state->isAllowed(PdfState::CLOSED)) {
+            throw PdfException::format('Invalid state: "%s".', $this->state->name);
+        }
         $this->state = PdfState::CLOSED;
 
         return $this;
@@ -77,9 +87,14 @@ class PdfWriter
 
     /**
      * Set this current state to {@link PdfState::END_PAGE}.
+     *
+     * @throws PdfException if this current state is not {@link PdfState::PAGE_STARTED}
      */
     public function endPage(): self
     {
+        if (!$this->state->isAllowed(PdfState::END_PAGE)) {
+            throw PdfException::format('Invalid state: "%s".', $this->state->name);
+        }
         $this->state = PdfState::END_PAGE;
 
         return $this;

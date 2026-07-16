@@ -26,6 +26,70 @@ final class PdfWriterTest extends TestCase
         $this->writer = new PdfWriter();
     }
 
+    public function testBeginPageValid(): void
+    {
+        $this->writer->setCompression(false);
+        $this->writer->beginPage(1);
+        $this->writer->endPage();
+        $this->writer->putStreamPage(1);
+        self::assertSameBuffer(
+            $this->writer,
+            '3 0 obj',
+            '<</Length 0>>',
+            'stream',
+            '',
+            'endstream',
+            'endobj',
+        );
+    }
+
+    public function testExceptionBeginPagePageStarted(): void
+    {
+        self::expectException(PdfException::class);
+        self::expectExceptionMessage('Invalid state: "PAGE_STARTED".');
+        $this->writer->beginPage(1);
+        $this->writer->beginPage(2);
+    }
+
+    public function testExceptionCloseStartPage(): void
+    {
+        self::expectException(PdfException::class);
+        self::expectExceptionMessage('Invalid state: "PAGE_STARTED".');
+        $this->writer->beginPage(1);
+        $this->writer->close();
+    }
+
+    public function testExceptionEndPageNoPage(): void
+    {
+        self::expectException(PdfException::class);
+        self::expectExceptionMessage('Invalid state: "NO_PAGE".');
+        $this->writer->endPage();
+    }
+
+    public function testExceptionOutClosed(): void
+    {
+        self::expectException(PdfException::class);
+        self::expectExceptionMessage('Invalid call: Document closed.');
+        $this->writer->close();
+        $this->writer->out(1, 'fake');
+    }
+
+    public function testExceptionOutEndPage(): void
+    {
+        self::expectException(PdfException::class);
+        self::expectExceptionMessage('Invalid call: End page.');
+        $this->writer->beginPage(1);
+        $this->writer->endPage();
+        $this->writer->out(1, 'fake');
+    }
+
+    public function testExceptionOutNoPage(): void
+    {
+        self::expectException(PdfException::class);
+        self::expectExceptionMessage('Invalid call: No page added.');
+        $this->writer->out(1, 'fake');
+    }
+
     public function testFormatNumber(): void
     {
         $actual = PdfWriter::formatNumber(1);
@@ -39,29 +103,6 @@ final class PdfWriterTest extends TestCase
         self::assertSame([], $this->writer->getOffsets());
         self::assertSame(0, $this->writer->getOffset());
         self::assertFalse($this->writer->isClosed());
-    }
-
-    public function testOutExceptionClosed(): void
-    {
-        self::expectException(PdfException::class);
-        self::expectExceptionMessage('Invalid call: Document closed.');
-        $this->writer->close();
-        $this->writer->out(0, 'fake');
-    }
-
-    public function testOutExceptionEndPage(): void
-    {
-        self::expectException(PdfException::class);
-        self::expectExceptionMessage('Invalid call: End page.');
-        $this->writer->endPage();
-        $this->writer->out(0, 'fake');
-    }
-
-    public function testOutExceptionNoPage(): void
-    {
-        self::expectException(PdfException::class);
-        self::expectExceptionMessage('Invalid call: No page added.');
-        $this->writer->out(0, 'fake');
     }
 
     public function testOutf(): void
@@ -82,7 +123,7 @@ final class PdfWriterTest extends TestCase
         );
     }
 
-    public function testOutNoException(): void
+    public function testOutValid(): void
     {
         $this->writer->beginPage(1);
         $this->writer->out(1, 'content');
