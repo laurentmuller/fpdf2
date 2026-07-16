@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 4.3.12 - 2026-07-16
 
 - `PdfWriter`: Add validate state transitions.
 - `PdfState`: Add `isAllowed()` function.
