@@ -1,5 +1,10 @@
 # Change log
 
+## Unreleased
+
+- `PdfException`: Allows `UnitEnum` values for the `format()` function.
+- `PdfWriter`: Allows `UnitEnum` values for formatting functions.
+
 ## 4.3.12 - 2026-07-16
 
 - `PdfWriter`: Add validate state transitions.

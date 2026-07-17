@@ -12,6 +12,7 @@
 declare(strict_types=1);
 
 use fpdf\Enums\PdfDirection;
+use fpdf\Enums\PdfState;
 use fpdf\PdfException;
 use fpdf\PdfWriter;
 use PHPUnit\Framework\TestCase;
@@ -43,29 +44,6 @@ final class PdfWriterTest extends TestCase
         );
     }
 
-    public function testExceptionBeginPagePageStarted(): void
-    {
-        self::expectException(PdfException::class);
-        self::expectExceptionMessage('Invalid state: "PAGE_STARTED".');
-        $this->writer->beginPage(1);
-        $this->writer->beginPage(2);
-    }
-
-    public function testExceptionCloseStartPage(): void
-    {
-        self::expectException(PdfException::class);
-        self::expectExceptionMessage('Invalid state: "PAGE_STARTED".');
-        $this->writer->beginPage(1);
-        $this->writer->close();
-    }
-
-    public function testExceptionEndPageNoPage(): void
-    {
-        self::expectException(PdfException::class);
-        self::expectExceptionMessage('Invalid state: "NO_PAGE".');
-        $this->writer->endPage();
-    }
-
     public function testExceptionOutClosed(): void
     {
         self::expectException(PdfException::class);
@@ -88,6 +66,29 @@ final class PdfWriterTest extends TestCase
         self::expectException(PdfException::class);
         self::expectExceptionMessage('Invalid call: No page added.');
         $this->writer->out(1, 'fake');
+    }
+
+    public function testExceptionStateNoPageToEndPage(): void
+    {
+        self::expectException(PdfException::class);
+        self::expectExceptionMessage('Unable to move state from "NO_PAGE" to "END_PAGE".');
+        $this->writer->endPage();
+    }
+
+    public function testExceptionStatePageStartedToClosed(): void
+    {
+        self::expectException(PdfException::class);
+        self::expectExceptionMessage('Unable to move state from "PAGE_STARTED" to "CLOSED".');
+        $this->writer->beginPage(1);
+        $this->writer->close();
+    }
+
+    public function testExceptionStatePageStartedToPageStarted(): void
+    {
+        self::expectException(PdfException::class);
+        self::expectExceptionMessage('Unable to move state from "PAGE_STARTED" to "PAGE_STARTED".');
+        $this->writer->beginPage(1);
+        $this->writer->beginPage(2);
     }
 
     public function testFormatNumber(): void
@@ -203,6 +204,12 @@ final class PdfWriterTest extends TestCase
             'endstream',
             'endobj',
         );
+    }
+
+    public function testPutUnitEnum(): void
+    {
+        $this->writer->put(PdfState::CLOSED);
+        self::assertSameBuffer($this->writer, 'CLOSED');
     }
 
     public function testUpdateAliasNumberPages(): void

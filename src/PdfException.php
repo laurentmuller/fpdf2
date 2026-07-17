@@ -21,12 +21,12 @@ class PdfException extends \RuntimeException
     /**
      * Create a new instance for the given string format and values.
      *
-     * @param string                       $format    the string format
-     * @param \BackedEnum|float|string|int ...$values the values
+     * @param string                                 $format    the string format
+     * @param \BackedEnum|\UnitEnum|float|string|int ...$values the values
      *
-     * @see https://www.php.net/manual/en/function.sprintf.php sprintf
+     * @see PdfWriter::sprintf()
      */
-    public static function format(string $format, \BackedEnum|float|string|int ...$values): self
+    public static function format(string $format, \BackedEnum|\UnitEnum|float|string|int ...$values): self
     {
         try {
             return new self(PdfWriter::sprintf($format, ...$values));
