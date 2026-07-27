@@ -45,9 +45,10 @@ $sets = [
     SetList::CODE_QUALITY,
     SetList::CODING_STYLE,
     SetList::DEAD_CODE,
-    SetList::PRIVATIZATION,
     SetList::INSTANCEOF,
+    SetList::PRIVATIZATION,
     SetList::TYPE_DECLARATION,
+    SetList::IF,
 
     // PHP-Unit
     PHPUnitSetList::PHPUNIT_120,

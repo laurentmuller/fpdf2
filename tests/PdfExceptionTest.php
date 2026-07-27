@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace fpdf\Tests;
 
+use fpdf\Enums\PdfState;
 use fpdf\PdfException;
 use PHPUnit\Framework\TestCase;
 
@@ -44,11 +45,25 @@ final class PdfExceptionTest extends TestCase
         self::assertSame($previous, $actual->getPrevious());
     }
 
+    public function testInvalidFontFile(): void
+    {
+        $previous = new \InvalidArgumentException();
+        $actual = PdfException::invalidFontFile('path', $previous);
+        self::assertSame('Unable to parse the font file: "path".', $actual->getMessage());
+        self::assertSame($previous, $actual->getPrevious());
+    }
+
     public function testInvalidFormat(): void
     {
         $values = [0.00, 1];
         $format = 'Float: %0.2f, Integer: %d, String: %s';
         $actual = PdfException::format($format, ...$values);
         self::assertSame($format, $actual->getMessage());
+    }
+
+    public function testInvalidState(): void
+    {
+        $actual = PdfException::invalidState(PdfState::PAGE_STARTED, PdfState::CLOSED);
+        self::assertSame('Unable to move state from "PAGE_STARTED" to "CLOSED".', $actual->getMessage());
     }
 }

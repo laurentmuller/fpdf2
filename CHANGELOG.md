@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Update rector to version 2.5.8 and configuration.
+- `PdfDocument`: Remove default values when assigned in the constructor.
+- `PdfWriter`: Update `getThousandsSep()` function.
+- `PdfException`: Add `invalidState()` and `invalidFontFile()` functions.
 - `PdfException`: Allows `UnitEnum` values for the `format()` function.
 - `PdfWriter`: Allows `UnitEnum` values for formatting functions.
 

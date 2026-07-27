@@ -47,7 +47,7 @@ final class PdfDocFileFontTest extends AbstractPdfDocTestCase
     public function testFontInvalidJson(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessageMatches('/Unable to parse the font file:.*font_no_name.php.$/');
+        self::expectExceptionMessageMatches('/Unable to parse the font file: ".*font_no_name.php".$/');
         $doc = $this->createDocument();
         $doc->addFont(
             family: 'Test',

@@ -65,7 +65,7 @@ class PdfDocument
     /** Indicates whether the alpha channel is used. */
     protected bool $alphaChannel = false;
     /** The automatic page breaking. */
-    protected bool $autoPageBreak = false;
+    protected bool $autoPageBreak;
     /** The cell margin in the user unit. */
     protected float $cellMargin;
     /**
@@ -111,7 +111,7 @@ class PdfDocument
      */
     protected array $fontFiles = [];
     /** The directory containing fonts. */
-    protected string $fontPath = '';
+    protected string $fontPath;
     /**
      * The used fonts.
      *
@@ -161,7 +161,7 @@ class PdfDocument
      */
     protected array $pageAnnotations = [];
     /** The threshold used to trigger page breaks. */
-    protected float $pageBreakTrigger = 0.0;
+    protected float $pageBreakTrigger;
     /**
      * The page-related data.
      *

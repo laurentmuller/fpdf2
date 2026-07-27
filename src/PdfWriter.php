@@ -62,7 +62,7 @@ class PdfWriter
     public function beginPage(int $page): self
     {
         if (!$this->state->isAllowed(PdfState::PAGE_STARTED)) {
-            throw PdfException::format('Unable to move state from "%s" to "%s".', $this->state, PdfState::PAGE_STARTED);
+            throw PdfException::invalidState($this->state, PdfState::PAGE_STARTED);
         }
         $this->pages[$page] = '';
         $this->state = PdfState::PAGE_STARTED;
@@ -78,7 +78,7 @@ class PdfWriter
     public function close(): self
     {
         if (!$this->state->isAllowed(PdfState::CLOSED)) {
-            throw PdfException::format('Unable to move state from "%s" to "%s".', $this->state, PdfState::CLOSED);
+            throw PdfException::invalidState($this->state, PdfState::CLOSED);
         }
         $this->state = PdfState::CLOSED;
 
@@ -93,7 +93,7 @@ class PdfWriter
     public function endPage(): self
     {
         if (!$this->state->isAllowed(PdfState::END_PAGE)) {
-            throw PdfException::format('Unable to move state from "%s" to "%s".', $this->state, PdfState::END_PAGE);
+            throw PdfException::invalidState($this->state, PdfState::END_PAGE);
         }
         $this->state = PdfState::END_PAGE;
 
@@ -348,7 +348,6 @@ class PdfWriter
      */
     private function getThousandsSep(): string
     {
-        /** @phpstan-ignore cast.string */
-        return $this->thousandsSep ??= (string) \localeconv()['thousands_sep'];
+        return $this->thousandsSep ??= \localeconv()['thousands_sep'];
     }
 }
