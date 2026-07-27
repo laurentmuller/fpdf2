@@ -27,7 +27,7 @@ abstract class AbstractGdImageParser extends PdfPngParser
     {
         $image = $this->createImageFromFile($file);
         if (!$image instanceof \GdImage) {
-            throw PdfException::format('Missing or incorrect image file: %s.', $file);
+            throw PdfException::format('Missing or incorrect image file: "%s".', $file);
         }
 
         $data = $this->toPngData($image);

@@ -37,7 +37,7 @@ final class PdfJpgParserTest extends AbstractPdfParserTestCase
     public function testInvalid(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessageMatches('/Missing or invalid image size:.*image.fake.$/');
+        self::expectExceptionMessageMatches('/Missing or invalid image size: ".*image.fake".$/');
         $file = 'image.fake';
         @$this->parseFile($file);
     }
@@ -45,7 +45,7 @@ final class PdfJpgParserTest extends AbstractPdfParserTestCase
     public function testInvalidType(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessageMatches('/Invalid JPEG image type \(1\):.*image.gif.$/');
+        self::expectExceptionMessageMatches('/Invalid JPEG image type \(1\): ".*image.gif".$/');
         $file = 'image.gif';
         $this->parseFile($file);
     }

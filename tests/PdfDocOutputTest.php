@@ -41,7 +41,7 @@ final class PdfDocOutputTest extends AbstractPdfDocTestCase
     public function testOutputFileInvalid(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessage('Unable to create output file: ///doc.pdf.');
+        self::expectExceptionMessage('Unable to create output file: "///doc.pdf".');
         $doc = $this->createDocument();
         @$doc->output(PdfDestination::FILE, '///doc.pdf');
     }

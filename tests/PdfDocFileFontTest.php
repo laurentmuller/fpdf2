@@ -59,7 +59,7 @@ final class PdfDocFileFontTest extends AbstractPdfDocTestCase
     public function testFontInvalidType(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessageMatches('/Invalid font type:.*font_other.json.$/');
+        self::expectExceptionMessageMatches('/Invalid font type: ".*font_other.json".$/');
         $doc = $this->createDocument();
         $doc->addFont(
             family: 'Test',
@@ -84,7 +84,7 @@ final class PdfDocFileFontTest extends AbstractPdfDocTestCase
     public function testFontNoName(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessageMatches('/No font name defined in file:.*font_no_name.json.$/');
+        self::expectExceptionMessageMatches('/No font name defined in file: ".*font_no_name.json".$/');
         $doc = $this->createDocument();
         $doc->addFont(
             family: 'Test',
@@ -96,7 +96,7 @@ final class PdfDocFileFontTest extends AbstractPdfDocTestCase
     public function testFontNotExist(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessageMatches('/Unable to find the font file:.*fake.json.$/');
+        self::expectExceptionMessageMatches('/Unable to find the font file: ".*fake.json".$/');
         $doc = $this->createDocument();
         $doc->addFont(
             family: 'Test',

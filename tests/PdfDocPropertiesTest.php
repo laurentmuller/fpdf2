@@ -371,7 +371,7 @@ final class PdfDocPropertiesTest extends AbstractPdfDocTestCase
     public function testSetFontInvalid(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessage('Undefined font: fake.');
+        self::expectExceptionMessage('Undefined font: "fake".');
         $doc = $this->createDocument(false, false);
         $doc->setFont('Fake');
     }

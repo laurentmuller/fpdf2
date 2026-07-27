@@ -160,7 +160,7 @@ class PdfPngParser implements PdfImageParserInterface
     {
         $value = $this->getByte($data);
         if (0 !== $value) {
-            throw PdfException::format('Compression method %d not supported: %s.', $value, $file);
+            throw PdfException::format('Compression method %d not supported: "%s".', $value, $file);
         }
     }
 
@@ -175,7 +175,7 @@ class PdfPngParser implements PdfImageParserInterface
     {
         $value = $this->getByte($data);
         if (0 !== $value) {
-            throw PdfException::format('Filter method %d not supported: %s.', $value, $file);
+            throw PdfException::format('Filter method %d not supported: "%s".', $value, $file);
         }
     }
 
@@ -190,7 +190,7 @@ class PdfPngParser implements PdfImageParserInterface
     {
         $value = $this->getByte($data);
         if (0 !== $value) {
-            throw PdfException::format('Interlacing %d not supported: %s.', $value, $file);
+            throw PdfException::format('Interlacing %d not supported: "%s".', $value, $file);
         }
     }
 
@@ -202,7 +202,7 @@ class PdfPngParser implements PdfImageParserInterface
     private function checkPalette(PdfColorSpace $colorSpace, string $palette, string $file): void
     {
         if (PdfColorSpace::INDEXED === $colorSpace && '' === $palette) {
-            throw PdfException::format('Missing palette: %s.', $file);
+            throw PdfException::format('Missing palette: "%s".', $file);
         }
     }
 
@@ -216,7 +216,7 @@ class PdfPngParser implements PdfImageParserInterface
     private function checkSignature(mixed $stream, string $file): void
     {
         if (self::FILE_SIGNATURE !== $this->readString($stream, \strlen(self::FILE_SIGNATURE))) {
-            throw PdfException::format('Incorrect PNG header signature: %s.', $file);
+            throw PdfException::format('Incorrect PNG header signature: "%s".', $file);
         }
     }
 
@@ -231,7 +231,7 @@ class PdfPngParser implements PdfImageParserInterface
     {
         $bcp = $this->getByte($data);
         if ($bcp > 8) {
-            throw PdfException::format('Bits per component %d not supported: %s.', $bcp, $file);
+            throw PdfException::format('Bits per component %d not supported: "%s".', $bcp, $file);
         }
 
         return $bcp;
@@ -259,7 +259,7 @@ class PdfPngParser implements PdfImageParserInterface
             0, 4 => PdfColorSpace::DEVICE_GRAY,
             2, 6 => PdfColorSpace::DEVICE_RGB,
             3 => PdfColorSpace::INDEXED,
-            default => throw PdfException::format('Color type %d not supported: %s.', $colorType, $file),
+            default => throw PdfException::format('Color type %d not supported: "%s".', $colorType, $file),
         };
     }
 
@@ -310,7 +310,7 @@ class PdfPngParser implements PdfImageParserInterface
     {
         $stream = \fopen($file, 'r');
         if (!\is_resource($stream)) {
-            throw PdfException::format('Unable to open image file: %s.', $file);
+            throw PdfException::format('Unable to open image file: "%s".', $file);
         }
 
         return $stream;
@@ -329,10 +329,10 @@ class PdfPngParser implements PdfImageParserInterface
     {
         [$length, $type, $data] = $this->readChunk($stream);
         if (self::HEADER_LENGTH !== $length) {
-            throw PdfException::format('Incorrect PNG header length (%d): %s.', $length, $file);
+            throw PdfException::format('Incorrect PNG header length (%d): "%s".', $length, $file);
         }
         if (self::CHUNK_HEADER !== $type) {
-            throw PdfException::format('Incorrect PNG header chunk (%s): %s.', $type, $file);
+            throw PdfException::format('Incorrect PNG header chunk (%s): "%s".', $type, $file);
         }
 
         return $data;

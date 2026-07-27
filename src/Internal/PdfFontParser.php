@@ -49,17 +49,17 @@ final class PdfFontParser
     public function parse(string $path): PdfFont
     {
         if (!\file_exists($path)) {
-            throw PdfException::format('Unable to find the font file: %s.', $path);
+            throw PdfException::format('Unable to find the font file: "%s".', $path);
         }
 
         $data = $this->decodeJson($path);
         $name = $this->getString($data, 'name');
         if (null === $name) {
-            throw PdfException::format('No font name defined in file: %s.', $path);
+            throw PdfException::format('No font name defined in file: "%s".', $path);
         }
         $type = PdfFontType::tryFrom($data['type']);
         if (null === $type) {
-            throw PdfException::format('Invalid font type: %s.', $path);
+            throw PdfException::format('Invalid font type: "%s".', $path);
         }
 
         return new PdfFont(

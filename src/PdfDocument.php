@@ -300,7 +300,7 @@ class PdfDocument
             return $this;
         }
         if (\str_contains($file, '/') || \str_contains($file, '\\')) {
-            throw PdfException::format('Incorrect font definition file name: %s.', $file);
+            throw PdfException::format('Incorrect font definition file name: "%s".', $file);
         }
         $dir = \rtrim($dir ?? $this->fontPath, '\\/') . \DIRECTORY_SEPARATOR;
         $parser = new PdfFontParser();
@@ -1397,7 +1397,7 @@ class PdfDocument
                 break;
             case PdfDestination::FILE:
                 if (false === \file_put_contents($name, $buffer)) {
-                    throw PdfException::format('Unable to create output file: %s.', $name);
+                    throw PdfException::format('Unable to create output file: "%s".', $name);
                 }
         }
 
@@ -1670,7 +1670,7 @@ class PdfDocument
             }
             $name = PdfFontName::tryFromFamily($family);
             if (!$name instanceof PdfFontName) {
-                throw PdfException::format('Undefined font: %s.', $family);
+                throw PdfException::format('Undefined font: "%s".', $family);
             }
             if ($name->useRegular()) {
                 $style = PdfFontStyle::REGULAR;
@@ -2311,7 +2311,7 @@ class PdfDocument
             'png' => new PdfPngParser(),
             'webp' => new PdfWebpParser(),
             'bmp' => new PdfBmpParser(),
-            default => throw PdfException::format('Unsupported image type: %s.', $type),
+            default => throw PdfException::format('Unsupported image type: "%s".', $type),
         };
     }
 
@@ -2452,7 +2452,7 @@ class PdfDocument
         if ('' === $type) {
             $type = \pathinfo($file, \PATHINFO_EXTENSION);
             if ('' === $type) {
-                throw PdfException::format('Image file has no extension and no type was specified: %s.', $file);
+                throw PdfException::format('Image file has no extension and no type was specified: "%s".', $file);
             }
         }
 

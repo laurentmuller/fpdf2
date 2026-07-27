@@ -21,7 +21,7 @@ final class PdfGifParserTest extends AbstractPdfParserTestCase
     public function testInvalid(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessageMatches('/Missing or incorrect image file:.*image.fake.$/');
+        self::expectExceptionMessageMatches('/Missing or incorrect image file: ".*image.fake".$/');
         $file = 'image.fake';
         @$this->parseFile($file);
     }

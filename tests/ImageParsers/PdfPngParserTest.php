@@ -45,7 +45,7 @@ final class PdfPngParserTest extends AbstractPdfParserTestCase
     public function testInvalid(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessageMatches('/Unable to open image file:.*image.fake.$/');
+        self::expectExceptionMessageMatches('/Unable to open image file: ".*image.fake".$/');
         $file = 'image.fake';
         @$this->parseFile($file);
     }
@@ -53,7 +53,7 @@ final class PdfPngParserTest extends AbstractPdfParserTestCase
     public function testInvalidBpc(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessageMatches('/Bits per component 16 not supported:.*invalid_bpc.png.$/');
+        self::expectExceptionMessageMatches('/Bits per component 16 not supported: ".*invalid_bpc.png".$/');
         $file = 'invalid_bpc.png';
         $this->parseFile($file);
     }
@@ -61,7 +61,7 @@ final class PdfPngParserTest extends AbstractPdfParserTestCase
     public function testInvalidColorType(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessageMatches('/Color type 12 not supported:.*invalid_color_type.png.$/');
+        self::expectExceptionMessageMatches('/Color type 12 not supported: ".*invalid_color_type.png".$/');
         $file = 'invalid_color_type.png';
         $this->parseFile($file);
     }
@@ -69,7 +69,7 @@ final class PdfPngParserTest extends AbstractPdfParserTestCase
     public function testInvalidColorTypeWithPalette(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessageMatches('/Missing palette:.*invalid_color_type_with_palette.png.$/');
+        self::expectExceptionMessageMatches('/Missing palette: ".*invalid_color_type_with_palette.png".$/');
         $file = 'invalid_color_type_with_palette.png';
         $this->parseFile($file);
     }
@@ -77,7 +77,7 @@ final class PdfPngParserTest extends AbstractPdfParserTestCase
     public function testInvalidCompression(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessageMatches('/Compression method 16 not supported:.*invalid_compression.png.$/');
+        self::expectExceptionMessageMatches('/Compression method 16 not supported: ".*invalid_compression.png".$/');
         $file = 'invalid_compression.png';
         $this->parseFile($file);
     }
@@ -93,7 +93,7 @@ final class PdfPngParserTest extends AbstractPdfParserTestCase
     public function testInvalidFilter(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessageMatches('/Filter method 16 not supported:.*invalid_filter.png.$/');
+        self::expectExceptionMessageMatches('/Filter method 16 not supported: ".*invalid_filter.png".$/');
         $file = 'invalid_filter.png';
         $this->parseFile($file);
     }
@@ -101,7 +101,7 @@ final class PdfPngParserTest extends AbstractPdfParserTestCase
     public function testInvalidHeaderChunk(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessageMatches('/Incorrect PNG header chunk \(.*\):.*invalid_header_chunk.png.$/');
+        self::expectExceptionMessageMatches('/Incorrect PNG header chunk \(.*\): ".*invalid_header_chunk.png".$/');
         $file = 'invalid_header_chunk.png';
         $this->parseFile($file);
     }
@@ -109,7 +109,7 @@ final class PdfPngParserTest extends AbstractPdfParserTestCase
     public function testInvalidHeaderLength(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessageMatches('/Incorrect PNG header length \(0\):.*invalid_header_length.png.$/');
+        self::expectExceptionMessageMatches('/Incorrect PNG header length \(0\): ".*invalid_header_length.png".$/');
         $file = 'invalid_header_length.png';
         $this->parseFile($file);
     }
@@ -117,7 +117,7 @@ final class PdfPngParserTest extends AbstractPdfParserTestCase
     public function testInvalidInterlacing(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessageMatches('/Interlacing 16 not supported:.*invalid_interlacing.png.$/');
+        self::expectExceptionMessageMatches('/Interlacing 16 not supported: ".*invalid_interlacing.png".$/');
         $file = 'invalid_interlacing.png';
         $this->parseFile($file);
     }
@@ -125,7 +125,7 @@ final class PdfPngParserTest extends AbstractPdfParserTestCase
     public function testInvalidSignature(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessageMatches('/Incorrect PNG header signature:.*invalid_signature.png.$/');
+        self::expectExceptionMessageMatches('/Incorrect PNG header signature: ".*invalid_signature.png".$/');
         $file = 'invalid_signature.png';
         $this->parseFile($file);
     }
