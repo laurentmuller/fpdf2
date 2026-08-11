@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 4.3.13 - 2026-08-11
 
 - **BC Break!**: Renamed `AbstractPdfParserTestCase` class to
   `AbstractPdfImageParserTestCase`.
