@@ -16,7 +16,7 @@ namespace fpdf\Tests\ImageParsers;
 use fpdf\ImageParsers\PdfJpgParser;
 use fpdf\PdfException;
 
-final class PdfJpgParserTest extends AbstractPdfParserTestCase
+final class PdfJpgImageParserTest extends AbstractPdfImageParserTestCase
 {
     public function testImageCmyk(): void
     {
@@ -45,7 +45,7 @@ final class PdfJpgParserTest extends AbstractPdfParserTestCase
     public function testInvalidType(): void
     {
         self::expectException(PdfException::class);
-        self::expectExceptionMessageMatches('/Invalid JPEG image type \(1\): ".*image.gif".$/');
+        self::expectExceptionMessageMatches('/JPEG image type 1 is invalid: ".*image.gif".$/');
         $file = 'image.gif';
         $this->parseFile($file);
     }

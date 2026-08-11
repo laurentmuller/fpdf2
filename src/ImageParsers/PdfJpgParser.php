@@ -27,14 +27,13 @@ class PdfJpgParser implements PdfImageParserInterface
     #[\Override]
     public function parse(PdfDocument $parent, string $file): PdfImage
     {
-        /* @var array{0: int, 1: int, 2: int, channels?: int, bits?: int}|false $size */
         $size = \getimagesize($file);
         if (!\is_array($size)) {
             throw PdfException::format('Missing or invalid image size: "%s".', $file);
         }
 
         if (\IMG_JPG !== $size[2]) {
-            throw PdfException::format('Invalid JPEG image type (%d): "%s".', $size[2], $file);
+            throw PdfException::format('JPEG image type %d is invalid: "%s".', $size[2], $file);
         }
 
         $channels = $size['channels'] ?? 3;

@@ -18,7 +18,7 @@ use fpdf\Internal\PdfImage;
 use fpdf\PdfDocument;
 use PHPUnit\Framework\TestCase;
 
-abstract class AbstractPdfParserTestCase extends TestCase
+abstract class AbstractPdfImageParserTestCase extends TestCase
 {
     abstract protected function createParser(): PdfImageParserInterface;
 

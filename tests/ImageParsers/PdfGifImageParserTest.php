@@ -16,7 +16,7 @@ namespace fpdf\Tests\ImageParsers;
 use fpdf\ImageParsers\PdfGifParser;
 use fpdf\PdfException;
 
-final class PdfGifParserTest extends AbstractPdfParserTestCase
+final class PdfGifImageParserTest extends AbstractPdfImageParserTestCase
 {
     public function testInvalid(): void
     {

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- **BC Break!**: Renamed `AbstractPdfParserTestCase` class to
+  `AbstractPdfImageParserTestCase`.
+- `PdfJpgParser`: Update image type exception message.
 - Update exception messages.
 - Update rector to version 2.5.8 and configuration.
 - `PdfDocument`: Remove default values when assigned in the constructor.

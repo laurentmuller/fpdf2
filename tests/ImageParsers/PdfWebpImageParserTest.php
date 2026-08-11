@@ -13,21 +13,21 @@ declare(strict_types=1);
 
 namespace fpdf\Tests\ImageParsers;
 
-use fpdf\ImageParsers\PdfBmpParser;
+use fpdf\ImageParsers\PdfWebpParser;
 
-final class PdfBmpParserTest extends AbstractPdfParserTestCase
+final class PdfWebpImageParserTest extends AbstractPdfImageParserTestCase
 {
     public function testValid(): void
     {
-        $file = 'image.bmp';
+        $file = 'image.webp';
         $image = $this->parseFile($file);
-        self::assertSame(256, $image->width);
-        self::assertSame(256, $image->height);
+        self::assertSame(320, $image->width);
+        self::assertSame(214, $image->height);
     }
 
     #[\Override]
-    protected function createParser(): PdfBmpParser
+    protected function createParser(): PdfWebpParser
     {
-        return new PdfBmpParser();
+        return new PdfWebpParser();
     }
 }
