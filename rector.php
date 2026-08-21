@@ -16,8 +16,8 @@ use Rector\CodingStyle\Rector\ClassLike\NewlineBetweenClassLikeStmtsRector;
 use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\Config\RectorConfig;
-use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector;
+use Rector\PHPUnit\PHPUnit100\Rector\Class_\ParentTestClassConstructorRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\SetList;
 
@@ -37,6 +37,8 @@ $skips = [
     NewlineBetweenClassLikeStmtsRector::class,
     // don't rename exception
     CatchExceptionNameMatchingTypeRector::class,
+    // skip parent constructor for tests
+    ParentTestClassConstructorRector::class,
 ];
 
 $sets = [
@@ -51,7 +53,6 @@ $sets = [
     SetList::IF,
 
     // PHP-Unit
-    PHPUnitSetList::PHPUNIT_120,
     PHPUnitSetList::PHPUNIT_CODE_QUALITY,
     PHPUnitSetList::PHPUNIT_MOCK_TO_STUB,
     PHPUnitSetList::PHPUNIT_NARROW_ASSERTS,
@@ -63,6 +64,6 @@ return RectorConfig::configure()
     ->withPaths($paths)
     ->withSkip($skips)
     ->withSets($sets)
-    ->withConfiguredRule(ClassPropertyAssignToConstructorPromotionRector::class, [
-        'rename_property' => false,
-    ]);
+    ->withComposerBased(
+        phpunit: true,
+    );

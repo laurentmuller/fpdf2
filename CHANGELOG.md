@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+- Update Rector to version 2.6.2 and configuration.
+
 ## 4.3.13 - 2026-08-11
 
 - **BC Break!**: Renamed `AbstractPdfParserTestCase` class to
