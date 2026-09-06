@@ -16,6 +16,7 @@ use Rector\CodingStyle\Rector\ClassLike\NewlineBetweenClassLikeStmtsRector;
 use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\Config\RectorConfig;
+use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector;
 use Rector\PHPUnit\PHPUnit100\Rector\Class_\ParentTestClassConstructorRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
@@ -39,18 +40,19 @@ $skips = [
     CatchExceptionNameMatchingTypeRector::class,
     // skip parent constructor for tests
     ParentTestClassConstructorRector::class,
+    // skip protected orientation parameter
+    ClassPropertyAssignToConstructorPromotionRector::class => [
+        __DIR__ . '/src/PdfDocument.php',
+    ],
 ];
 
 $sets = [
     // global
-    SetList::PHP_83,
     SetList::CODE_QUALITY,
     SetList::CODING_STYLE,
     SetList::DEAD_CODE,
-    SetList::INSTANCEOF,
     SetList::PRIVATIZATION,
     SetList::TYPE_DECLARATION,
-    SetList::IF,
 
     // PHP-Unit
     PHPUnitSetList::PHPUNIT_CODE_QUALITY,
@@ -61,9 +63,13 @@ $sets = [
 return RectorConfig::configure()
     ->withCache(__DIR__ . '/cache/rector')
     ->withRootFiles()
+    ->reportUnusedSkips()
+    ->withPhpSets(php83: true)
     ->withPaths($paths)
     ->withSkip($skips)
     ->withSets($sets)
     ->withComposerBased(
+        phpunit: true,
+    )->withAttributesSets(
         phpunit: true,
     );

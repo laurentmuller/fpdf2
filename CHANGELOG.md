@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Update Rector to version 2.6.6 and configuration.
 - Update Rector to version 2.6.2 and configuration.
 
 ## 4.3.13 - 2026-08-11
@@ -22,7 +23,7 @@
 - `PdfWriter`: Add validate state transitions.
 - `PdfState`: Add `isAllowed()` function.
 - Update rector to version 2.5.7 and configuration.
-- Create unit test for `PdfWriter` class.
+- Create a unit test for `PdfWriter` class.
 - Move `formatNumber()` function to the `PdfWriter` class.
 
 ## 4.3.11 - 2026-07-13
@@ -67,14 +68,14 @@
 - Added `getCharactersWidth()` function to the `PdfFont` class.
 - Updated dependency of the `setasign/fpdf` repository to version 1.9 and
   updated tests accordingly.
-- Updated GitHub actions.
+- Updated GitHub Actions.
 - Updated `composer.json` with the PHP platform to 8.3.31.
 - `PdfWriter`: Defines class members as private.
 
 ## 4.3.4 - 2026-05-07
 
 - **BUG** Updated the `updateAliasNumberPages()` function of the `PdfWriter`
- class to output the correct total pages.
+  class to output the correct total pages.
 - Updated `AbstractPdfNumber` class.
 - Updated PHPStan configuration.
 - Updated test for `PdfEncoder` class.
@@ -321,8 +322,8 @@
 - Updated Rector to version 2.0.
 - Updated cache configurations.
 - Updated Psalm to version 6.0.
-- Added default title to the `addPageIndex()` function of
-  the `PdfBookmarkTrait` trait.
+- Added a default title to the `addPageIndex()` function of the
+  `PdfBookmarkTrait` trait.
 - Added function definitions in examples.
 - Updated examples.
 - **BC Break!**: Created dedicated colors namespace. Now the `setDrawColor()`,
@@ -513,8 +514,8 @@
 - **Breakdown !** Modified the `PdfDocument` class:
   - Updated `cell()` function by replacing default `$width` argument value
     `0.0` with `null`.
-  - Updated `multiCell()` function by replacing default `$width` argument value
-    `0.0` with `null`.
+  - Updated `multiCell()` function by replacing default `$width` argument
+    value `0.0` with `null`.
   - Updated tests accordingly.
 
 ## 1.8.4.16 - 2024-04-27
@@ -529,13 +530,13 @@
 ## 1.8.4.15 - 2024-04-17
 
 - Modified the `PdfDocument` class:
-  - The `cleanText()` function no longer removes new line
-    characters (`"\n"`) at the end of string.
+  - The `cleanText()` function no longer removes new line characters (`"\n"`)
+    at the end of the string.
 
 ## 1.8.4.14 - 2024-04-12
 
 - Modified the `PdfDocument` class:
-  - Updated `write()` function signature with default height value.
+  - Updated `write()` function signature with the default height value.
 
 ## 1.8.4.13 - 2024-03-28
 
@@ -612,7 +613,8 @@
 - Modified the `PdfDocument` class:
   - Added `updateWordSpacing()` function.
   - Corrected `multiCell()` function to handle correct borders.
-  - Updated `cleanText()` function to trim line feed character only at the end.
+  - Updated `cleanText()` function to trim line feed character only at the
+    end.
   - Updated `parsePngStream()` function.
   - Updated `setLink()` and `createLink()` functions signature.
 - Removed `tutorial` directory.
@@ -625,7 +627,8 @@
 - Added the `PdfRectangle` class.
 - Modified the `PdfDocument` class:
   - Updated class constructor by replacing `float[]` parameter by `PdfSize`.
-  - Updated `addPage()` function by replacing `float[]` parameter by `PdfSize`.
+  - Updated `addPage()` function by replacing `float[]` parameter by
+    `PdfSize`.
   - Added `rectangle()` function.
   - Added `linePoints()` function.
   - Replaced width and height in point members by `PdfSize`.
@@ -695,7 +698,7 @@
 
 ## 1.86.0 - 2023-06-25
 
-- Added a parameter to AddFont() to specify the directory where to load the
+- Added a parameter to AddFont () to specify the directory where to load the
   font definition file.
 - Fixed a bug related to the PDF creation date.
 
@@ -721,23 +724,25 @@
 
 ## 1.81 - 2015-12-20
 
-- Added GetPageWidth() and GetPageHeight().
-- Fixed a bug in SetXY().
+- Added GetPageWidth () and GetPageHeight ().
+- Fixed a bug in SetXY ().
 
 ## 1.8 - 2015-11-29
 
 - PHP 5.1.0 or higher is now required.
 - The MakeFont now subsets fonts, which can greatly reduce font sizes.
 - Added ToUnicode CMaps to improve text extraction.
-- Added a parameter to AddPage() to rotate the page.
-- Added a parameter to SetY() to indicate whether the x position should be reset
+- Added a parameter to AddPage () to rotate the page.
+- Added a parameter to SetY () to indicate whether the x position should be
+  reset
   or not.
-- Added a parameter to Output() to specify the encoding of the name, and special
+- Added a parameter to Output () to specify the encoding of the name, and
+  special
   characters are now properly encoded. Additionally, the order of the first two
   parameters was reversed to be more logical. However, the old order is still
   supported for compatibility.
-- The Error() method now throws an exception.
-- Adding contents before the first AddPage() or after Close() now raises an
+- The Error () method now throws an exception.
+- Adding contents before the first AddPage () or after Close () now raises an
   error.
 - Outputting text with no font selected now raises an error.
 
@@ -757,7 +762,7 @@
 - Custom page sizes are now checked to ensure that width is smaller than height.
 - Standard font files were changed to use the same format as user fonts.
 - A bug in the embedding of Type1 fonts was fixed.
-- A bug related to SetDisplayMode() and the current locale was fixed.
+- A bug related to SetDisplayMode () and the current locale was fixed.
 - A display issue occurring with the Adobe Reader X plug-in was fixed.
 - An issue related to transparency with some versions of Adobe Reader was fixed.
 - The Content-Length header was removed because it caused an issue when the
@@ -773,7 +778,7 @@
   specified in UTF-8.
 - Fixed a bug: when a PNG was inserted through a URL, an error sometimes
   occurred.
-- An automatic page break in Header() doesn't cause an infinite loop anymore.
+- An automatic page break in Header () doesn't cause an infinite loop anymore.
 - Removed some warning messages appearing with recent PHP versions.
 - Added HTTP headers to reduce problems with IE.
 
@@ -786,18 +791,18 @@
 - Fixed a problem related to Type1 font embedding, which caused trouble to some
   PDF processors.
 - The file name sent to the browser could not contain a space character.
-- The Cell() method could not print the number 0 (you had to pass the
+- The Cell () method could not print the number 0 (you had to pass the
   string '0').
 
 ## 1.52 - 2003-12-30
 
-- Image() now displays the image at 72 dpi if no dimension is given.
-- Output() takes a string as the second parameter to indicate the destination.
-- Open() is now called automatically by AddPage().
+- Image () now displays the image at 72 dpi if no dimension is given.
+- Output () takes a string as the second parameter to indicate the destination.
+- Open () is now called automatically by AddPage ().
 - Inserting remote JPEG images doesn't generate an error any longer.
 - The decimal separator is forced to dot in the constructor.
 - Added several encodings (Turkish, Thai, Hebrew, Ukrainian and Vietnamese).
-- The last line of a right-aligned MultiCell() was not correctly aligned if it
+- The last line of a right-aligned MultiCell () was not correctly aligned if it
   was terminated by a carriage return.
 - No more error messages about already sent headers when outputting the PDF to
   the standard output from the command line.
@@ -825,33 +830,33 @@
 
 ## 1.5 - 2002-05-28
 
-- TrueType font (AddFont()) and encoding support (Western and Eastern Europe,
+- TrueType font (AddFont ()) and encoding support (Western and Eastern Europe,
   Cyrillic and Greek).
-- Added Write() method.
+- Added Write () method.
 - Added underlined style.
-- Internal and external link support (AddLink(), SetLink(), Link()).
-- Added right margin management and methods SetRightMargin(), SetTopMargin().
-- Modification of SetDisplayMode() to select the page layout.
-- The border parameter of MultiCell() now lets choosing borders to draw
-  as Cell().
-- When a document contains no page, Close() now calls AddPage() instead of
+- Internal and external link support (AddLink (), SetLink (), Link ()).
+- Added right margin management and methods SetRightMargin (), SetTopMargin ().
+- Modification of SetDisplayMode () to select the page layout.
+- The border parameter of MultiCell () now lets choosing borders to draw
+  as Cell ().
+- When a document contains no page, Close () now calls AddPage () instead of
   causing a fatal error.
 
 ## 1.41 - 2002-03-13
 
-- Fixed SetDisplayMode() which no longer worked (the PDF viewer used its
+- Fixed SetDisplayMode () which no longer worked (the PDF viewer used its
   default display).
 
 ## 1.4 - 2002-03-02
 
 - PHP3 is no longer supported.
-- Page compression (SetCompression()).
+- Page compression (SetCompression ()).
 - Choice of page format and possibility to change orientation inside the
   document.
-- Added AcceptPageBreak() method.
-- Ability to print the total number of pages (AliasNbPages()).
+- Added AcceptPageBreak () method.
+- Ability to print the total number of pages (AliasNbPages ()).
 - Choice of cell borders to draw.
-- New mode for Cell(): the current position can now move under the cell.
+- New mode for Cell (): the current position can now move under the cell.
 - Ability to include an image by specifying height only (width is calculated
   automatically).
 - Fixed a bug: when a justified line triggered a page break, the footer
@@ -859,37 +864,37 @@
 
 ## 1.31 - 2002-01-12
 
-- Fixed a bug in drawing frame with MultiCell(): the last line always started
+- Fixed a bug in drawing frame with MultiCell (): the last line always started
   from the left margin.
 - Removed Expires HTTP header (gives trouble in some situations).
 - Added Content-disposition HTTP header (seems to help in some situations).
 
 ## 1.3 - 2001-12-03
 
-- Line break and text justification support (MultiCell()).
-- Color support (SetDrawColor(), SetFillColor(), SetTextColor()). Possibility
+- Line break and text justification support (MultiCell ()).
+- Color support (SetDrawColor (), SetFillColor (), SetTextColor ()). Possibility
   to draw filled rectangles and paint a cell background.
 - A cell whose width is declared null extends up to the right margin of the
   page.
 - Line width is now retained from page to page and defaults to 0.2 mm.
-- Added SetXY() method.
+- Added SetXY () method.
 - Fixed passing by reference done in a deprecated manner for PHP4.
 
 ## 1.2 - 2001-11-11
 
-- Added the font metric files and GetStringWidth() method.
+- Added the font metric files and GetStringWidth () method.
 - Centering and right-aligning text in cells.
-- Display mode control (SetDisplayMode()).
-- Added methods to set document properties (SetAuthor(), SetCreator(),
-  SetKeywords(), SetSubject(), SetTitle()).
+- Display mode control (SetDisplayMode ()).
+- Added methods to set document properties (SetAuthor (), SetCreator (),
+  SetKeywords (), SetSubject (), SetTitle ()).
 - Possibility to force PDF download by the browser.
-- Added SetX() and GetX() methods.
+- Added SetX () and GetX () methods.
 - During the automatic page break, the current abscissa is now retained.
 
 ## 1.11 - 2001-10-20
 
-- PNG support doesn't require PHP4/zlib anymore. Data are now put directly
-  into `PDF` without any decompression/recompression stage.
+- PNG support doesn't require PHP4/zlib anymore. Data is now put directly into
+  `PDF` without any decompression/recompression stage.
 - Image insertion now works correctly even with the magic_quotes_runtime option
   set to on.
 
@@ -899,7 +904,7 @@
 
 ## 1.01 - 2001-10-03
 
-- Fixed a bug involving page break: in case when Header() doesn't specify a
+- Fixed a bug involving page break: in case when Header () doesn't specify a
   font, the one from the previous page was not restored and produced an
   incorrect document.
 
