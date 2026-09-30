@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Update namespace of `PdfStateTest` class.
+- Update php-cs-fixer to v3.95.27.
+- Update phpstan/phpstan to 2.2.16.
+- Update rector/rector to 2.6.7.
 - Update this document.
 - Update Rector to version 2.6.6 and configuration.
 - Update Rector to version 2.6.2 and configuration.

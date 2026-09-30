@@ -216,16 +216,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v5.8.0",
+            "version": "v5.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "044a6a392ff8ad0d61f14370a5fbbd0a0107152f"
+                "reference": "9e33da9553fe7786f0962b35f4e4ecf01be89def"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/044a6a392ff8ad0d61f14370a5fbbd0a0107152f",
-                "reference": "044a6a392ff8ad0d61f14370a5fbbd0a0107152f",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/9e33da9553fe7786f0962b35f4e4ecf01be89def",
+                "reference": "9e33da9553fe7786f0962b35f4e4ecf01be89def",
                 "shasum": ""
             },
             "require": {
@@ -267,9 +267,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
-                "source": "https://github.com/nikic/PHP-Parser/tree/v5.8.0"
+                "source": "https://github.com/nikic/PHP-Parser/tree/v5.9.0"
             },
-            "time": "2026-07-04T14:30:18+00:00"
+            "time": "2026-09-13T18:51:52+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -736,16 +736,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "12.5.34",
+            "version": "12.5.37",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "6cbff63d670de92cb1cb3d2ff9f40327e9da9c7f"
+                "reference": "684340c1590e5f3f3b859f5e80619725d88b63ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/6cbff63d670de92cb1cb3d2ff9f40327e9da9c7f",
-                "reference": "6cbff63d670de92cb1cb3d2ff9f40327e9da9c7f",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/684340c1590e5f3f3b859f5e80619725d88b63ba",
+                "reference": "684340c1590e5f3f3b859f5e80619725d88b63ba",
                 "shasum": ""
             },
             "require": {
@@ -814,7 +814,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.5.34"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.5.37"
             },
             "funding": [
                 {
@@ -822,7 +822,7 @@
                     "type": "other"
                 }
             ],
-            "time": "2026-08-27T08:38:28+00:00"
+            "time": "2026-09-29T12:08:54+00:00"
         },
         {
             "name": "sebastian/cli-parser",
