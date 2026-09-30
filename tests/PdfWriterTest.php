@@ -11,6 +11,8 @@
 
 declare(strict_types=1);
 
+namespace fpdf\Tests;
+
 use fpdf\Enums\PdfDirection;
 use fpdf\Enums\PdfState;
 use fpdf\PdfException;
@@ -21,7 +23,7 @@ final class PdfWriterTest extends TestCase
 {
     private PdfWriter $writer;
 
-    #[Override]
+    #[\Override]
     protected function setUp(): void
     {
         $this->writer = new PdfWriter();
