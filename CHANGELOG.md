@@ -2,8 +2,9 @@
 
 ## Unreleased
 
-- Update namespace of `PdfWriterTest` class.
-- Update namespace of `PdfStateTest` class.
+- Update phpstan/phpstan to 2.3.0 and the configuration.
+- Update the namespace of `PdfWriterTest` class.
+- Update the namespace of `PdfStateTest` class.
 - Update php-cs-fixer to v3.95.27.
 - Update phpstan/phpstan to 2.2.16.
 - Update rector/rector to 2.6.7.
