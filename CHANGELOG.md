@@ -1,6 +1,8 @@
 # Change log
 
 ## Unreleased
+
+- Update `CHANGELOG.md`.
 - Update `composer.json` to allow PHP version 8.4.
 - Update phpstan/phpstan to 2.3.0 and the configuration.
 - Update the namespace of `PdfWriterTest` class.
