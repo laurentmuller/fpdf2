@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 4.3.14 - 2026-10-25
 
 - Update `CHANGELOG.md`.
 - Update `composer.json` to allow PHP version 8.4.
