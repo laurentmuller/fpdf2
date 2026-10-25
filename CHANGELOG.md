@@ -1,5 +1,9 @@
 # Change log
 
+## 4.3.15 - 2026-10-25
+
+- Update `composer.json` to allow `elao/enum` version 3.0.
+
 ## 4.3.14 - 2026-10-25
 
 - Update `CHANGELOG.md`.

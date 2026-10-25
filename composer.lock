@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c81867cbf08aa5350eb10afe8d8bf101",
+    "content-hash": "bcaca5170a5fb409e6c0c3699e7ef559",
     "packages": [
         {
             "name": "elao/enum",
